@@ -8,40 +8,40 @@ Date: 2026-09-27
 - Target: `main`
 - Base: `e97da5a5238807c29c7a3bcdc5d4184dfb97f1b4`
 - Merge base: `e97da5a5238807c29c7a3bcdc5d4184dfb97f1b4`
-- Head: `b0596f5accb3c1e4d8ad5dc05ed668763c2447ed`
+- Head: `2551eb31c274db277159c779a5e98b7bc67e4c51`
 - Branch: `feat/pr-3-codex-review`
 
 ## Provider gate
 
-Claude Code authored the substantive change, as the newest handoff entry for this branch states. Codex is the other provider and is eligible to review under T-4 and D-6.
+Claude Code authored the substantive change. The newest handoff entry for `feat/pr-3-codex-review` names Claude Code as author. Codex is the other provider and can review this PR under T-4 and D-6.
 
 ## Intended behavior and scope
 
-PR-4 adds the `codex-review` command, its tests, and the review skills. The review read the full diff, the PR-3 roadmap entry and exit tests, the affected decisions and questions, the PR description, the handoff, the command and tests, the Makefile, and the review contracts. It checked the provider gate, review startup and outcome rules, process handling, effective and work heads, review record parsing, documentation rules, and CI evidence. Unreal code and content, binary assets, and engine budgets do not apply because the PR changes none of them.
+PR-3 adds the `codex-review` command, its tests, and its review skills. This repeat pass read the prior review and response, the full correction diff, the affected launcher and command paths, the launcher tests, the PR description, the PR-3 exit tests, the relevant decisions and questions, and the review contracts. It checked the provider gate, the Windows CLI launch correction, the process argument and environment paths, and the effective and work heads. Unreal code, content, binary assets, and engine budgets do not apply because the PR changes none of them.
 
 ## Findings
 
-### P2-1: The Make target cannot launch the Windows Codex shim
+### P2-1: Windows launch correction lacks Windows run evidence
 
 Status: open.
 
-Open at: `b0596f5accb3c1e4d8ad5dc05ed668763c2447ed`.
+Open at: `b0596f5accb3c1e4d8ad5dc05ed668763c2447ed`, `2551eb31c274db277159c779a5e98b7bc67e4c51`.
 
-File: `Makefile:8`, `IronAbsolution.Tools/CodexReview/ExternalProcess.cs:112-135`.
+File: `Makefile:10`, `IronAbsolution.Tools/CodexReview/CodexLauncher.cs:35-63`, `IronAbsolution.Tests/CodexLauncherTests.cs:29-48`.
 
-Trigger: Run `make codex-review PR=4` on Windows after npm installs the CLI globally.
+Trigger: Run the launcher regression tests and `make codex-review PR=4` on Windows after the correction.
 
-Expected: The review command must start on Windows under G-12 and D-32.
+Expected: The entry script starts through `node`, the multi-line prompt reaches the CLI unchanged, and the review reaches the record judge on Windows (D-32, D-33, D-47).
 
-Actual: The Makefile builds the executable path as `<npm-prefix>/bin/codex`. npm places Windows global command shims directly under the prefix and names them `codex.cmd` ([npm folder documentation](https://docs.npmjs.com/cli/v9/configuring-npm/folders/), [npm package executable documentation](https://docs.npmjs.com/cli/v11/configuring-npm/package-json/)). The C# process runner uses `UseShellExecute = false` and passes the path directly to `Process.Start`, so it cannot launch the Windows command shim ([Microsoft ProcessStartInfo documentation](https://learn.microsoft.com/en-us/dotnet/api/system.diagnostics.processstartinfo.useshellexecute?view=net-10.0)).
+Actual: The correction uses `npm root --global` and starts `bin/codex.js` through `node`. The new tests cover version output and a multi-line prompt. This review ran them on macOS only. No Windows run log or Windows end-to-end run is present, so the platform-specific regression check remains unverified.
 
-Consequence: The review command fails before it can run the version check or review on Windows.
+Consequence: The review cannot confirm that the corrected process launch works on the required Windows platform.
 
-Evidence: `Makefile:8` appends `/bin/codex`; `ExternalProcess.Start` directly starts `fileName` with shell execution disabled. The CI workflow runs only on Ubuntu, so its green checks do not exercise this path. `make` passed on macOS with 226 tests, format verification, and 0 ste-check findings.
+Evidence: `make` at `2551eb31c274db277159c779a5e98b7bc67e4c51` passed on macOS with 232 tests, including the launcher tests. `gh pr checks 4` passed `ste-check`, `build, test, and format`, and `coverage report` at metadata tip `5561e3f3f808117234dfc193d9365f33d8241427`; those jobs run on Ubuntu. No Windows evidence was available in this checkout.
 
-Correction: Resolve the platform-specific npm executable and launch its Windows shim correctly. Add a Windows regression test that runs a fake CLI through the same resolution and launch path.
+Correction: Run the focused launcher tests on Windows, then run `make codex-review PR=4` on Windows with a ChatGPT login. Record both results in the PR before the next review.
 
-Regression check: Run the focused process-launch test on Windows and require the fake CLI to report its version. Then run `make codex-review PR=4` on Windows with a ChatGPT login and require the review to reach its record judge.
+Regression check: Require the fake CLI to report its version and receive the multi-line prompt unchanged on Windows. Require the real review command to reach the record judge on Windows.
 
 ## Out of scope
 
@@ -57,20 +57,20 @@ None.
 
 ## Verification
 
-- `make` at `2e55d1ffd90a009a60e77601470d006ab50d8be6` on macOS: build passed, 226 tests passed, format passed, and ste-check reported 0 findings.
-- `gh pr checks 4`: `ste-check`, `build, test, and format`, and `coverage report` passed on the published tip `2e55d1ffd90a009a60e77601470d006ab50d8be6`.
-- Windows process launch: not run. This checkout has no Windows runner; the direct path and shim mismatch are documented by the cited platform sources.
-- Real `make codex-review PR=4`: this review is the real run started by the owner. The command judges the record after the metadata push.
-- Push: the published metadata commit is the head of `origin/feat/pr-3-codex-review`, verified with `gh pr view`.
+- `make` at `2551eb31c274db277159c779a5e98b7bc67e4c51` on macOS: build passed with 0 warnings and 0 errors; 232 tests passed, 0 failed, and 0 skipped; format passed; ste-check reported 0 findings.
+- `gh pr checks 4`: all three jobs passed at published metadata tip `5561e3f3f808117234dfc193d9365f33d8241427`. The jobs cover the effective head because the later commit changes metadata only.
+- Windows launcher regression and end-to-end review: not run. This checkout has no Windows runner. D-33 assigns the Windows run to the owner, and its result remains required evidence.
+- Real `make codex-review PR=4`: this repeat review is the active run. The command judges this record after the metadata push.
+- Push: the single metadata commit for this review and handoff is verified as the head of `origin/feat/pr-3-codex-review` with `gh pr view`.
 
 ## Open questions and accepted risks
 
-OQ-16 remains open for the gitar plan. The PR keeps the gitar check out under D-7, so it does not block this review.
+OQ-16 remains open for the gitar plan. D-7 keeps gitar out of this PR. No other open question blocks this review.
 
 ## Earlier verdicts
 
-None.
+- Head `b0596f5accb3c1e4d8ad5dc05ed668763c2447ed`: **Changes required.** P2-1 identified the Windows CLI launch failure.
 
 ## Verdict
 
-**Changes required.** P2-1 shows that the Make target cannot start the Codex CLI on Windows. The other-provider gate, local checks, and all three published CI checks pass for this revision.
+**Blocked.** This review cannot close P2-1 until the Windows regression test and end-to-end command run have results. The local tests and all three published CI jobs pass, but none runs on Windows.
