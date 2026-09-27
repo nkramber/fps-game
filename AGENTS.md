@@ -145,7 +145,7 @@ Read AGENTS.md, the newest handoff entry, and .claude/skills/pr-review/SKILL.md.
 Confirm that the Author field of the handoff names the other provider. If not, stop with the verdict Blocked.
 Review the full diff against the roadmap entry, its exit tests, the tenets, and the registers.
 Write docs/reviews/pr-<n>.md in the format of the pr-review skill, for the full head sha.
-Commit it with the subject "docs: review record of #<n> (PR-N)", push it, and stop. Do not merge.
+Commit it with the subject "docs: review record of #<n> (PR-<roadmap id>)", push it, and stop. Do not merge.
 ```
 
 ## Automated review pass

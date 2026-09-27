@@ -3,9 +3,11 @@
 SOLUTION := IronAbsolution.slnx
 TOOLS_PROJECT := IronAbsolution.Tools/IronAbsolution.Tools.csproj
 
-# The Codex CLI of the cross-provider review. The codex-review target installs the newest
-# release there first (D-47). Set `CODEX` to give another path, as on Windows.
-CODEX ?= $(shell npm prefix --global)/bin/codex
+# The entry script of the Codex CLI of the cross-provider review. The codex-review target
+# installs the newest release first, and the command starts the script with `node` (D-47).
+# `npm root` gives the global package folder on macOS and on Windows. The `bin/codex` link of
+# macOS is absent on Windows, where npm writes a `codex.cmd` shim.
+CODEX ?= $(shell npm root --global)/@openai/codex/bin/codex.js
 
 .PHONY: verify where hooks build test format ste-check codex-review clean
 

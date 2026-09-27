@@ -21,7 +21,7 @@ An uncommitted review record has three effects:
 - An author can commit an approval that the author never read, and then report the wrong verdict.
 - No reader of the PR head can read the record, because the record is not on the PR head.
 
-Write the commit subject with a conventional prefix, and end it with `(PR-N)`: for example, "docs: review record of #N (PR-N)".
+Write the commit subject with a conventional prefix, and end it with the roadmap id of the PR. The GitHub number and the roadmap id differ: for example, "docs: review record of #4 (PR-3)".
 Write the commit message in an impersonal voice. Name no provider, agent, harness, or model (T-6, D-16).
 
 Fetch the remote and read the handoff again before you write the entry. Take the highest session number and add one (L-2).

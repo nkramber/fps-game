@@ -47,7 +47,7 @@ public sealed class CodexReviewCommandTests
 
         Assert.Equal((int)CodexReviewExit.Refused, exitCode);
         Assert.Equal(3, exitCode);
-        Assert.Contains("The Codex CLI is missing", errors.ToString(), StringComparison.Ordinal);
+        Assert.Contains($"The Codex CLI is missing: no file at '{missing}'", errors.ToString(), StringComparison.Ordinal);
         Assert.Contains("D-47", errors.ToString(), StringComparison.Ordinal);
     }
 

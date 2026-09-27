@@ -30,7 +30,7 @@ public static class CodexReviewCommand
     /// <summary>The option that gives the GitHub number of the PR.</summary>
     public const string PullRequestOption = "--pr";
 
-    /// <summary>The option that gives the path of the Codex CLI (D-47).</summary>
+    /// <summary>The option that gives the path of the entry script `bin/codex.js` of the Codex CLI (D-47).</summary>
     public const string CodexOption = "--codex";
 
     /// <summary>Reads the options and runs one review round.</summary>
@@ -62,7 +62,7 @@ public static class CodexReviewCommand
         string? codex = options.Value(CodexOption);
         if (codex is null)
         {
-            errors.WriteLine($"Error: {Name} needs {CodexOption} <path>, the path of the Codex CLI. `make codex-review` gives it (D-47).");
+            errors.WriteLine($"Error: {Name} needs {CodexOption} <path>, the path of `bin/codex.js` of the Codex CLI. `make codex-review` gives it (D-47).");
             return Program.FaultExitCode;
         }
 
@@ -170,18 +170,12 @@ public static class CodexReviewCommand
     private static CodexReviewExit Review(string root, int pullRequest, string codex, TextWriter output, TextWriter errors)
     {
         GitRepository git = new GitRepository(root);
-        IReadOnlyList<string> removed = CodexReviewSettings.ApiCredentialVariables;
-        ProcessResult versionResult;
-        try
+        if (!File.Exists(codex))
         {
-            versionResult = ExternalProcess.Run(codex, ["--version"], root, removed);
-        }
-        catch (InvalidOperationException exception)
-        {
-            return Refuse(pullRequest, [$"The Codex CLI is missing. {exception.Message}. Run `make codex-review`, which installs it (D-47)."], errors);
+            return Refuse(pullRequest, [CodexLauncher.MissingProblem(codex)], errors);
         }
 
-        CodexVersion version = CodexVersion.Parse(versionResult.RequireSuccess());
+        CodexVersion version = CodexLauncher.ReadVersion(codex, root);
         PullRequestView view = ReadPullRequest(root, pullRequest);
         if (view.State != StartChecks.OpenState)
         {
@@ -189,7 +183,7 @@ public static class CodexReviewCommand
             return Refuse(pullRequest, [StartChecks.NotOpenProblem(pullRequest, view.State)], errors);
         }
 
-        string loginStatus = CodexReviewSettings.LoginStatusText(ExternalProcess.Run(codex, CodexReviewSettings.LoginStatusArguments, root, removed));
+        string loginStatus = CodexReviewSettings.LoginStatusText(CodexLauncher.Run(codex, CodexReviewSettings.LoginStatusArguments, root));
         StartFacts facts = GatherStartFacts(root, git, pullRequest, view, version, loginStatus);
         List<string> problems = [.. StartChecks.Problems(facts)];
         if (problems.Count == 0)
@@ -219,7 +213,7 @@ public static class CodexReviewCommand
         output.WriteLine($"{Name}: transcript: {transcript}");
 
         IReadOnlyList<string> arguments = CodexReviewSettings.ReviewArguments(worktree, lastMessage, CodexReviewSettings.ReviewPrompt(pullRequest, view.Branch));
-        FileRunResult run = ExternalProcess.RunToFiles(codex, arguments, worktree, transcript, errorLog, removed, CodexReviewSettings.ReviewLimit);
+        FileRunResult run = CodexLauncher.RunToFiles(codex, arguments, worktree, transcript, errorLog, CodexReviewSettings.ReviewLimit);
         if (run.TimedOut)
         {
             errors.WriteLine($"{Name}: {CodexReviewExit.Fault} (exit {(int)CodexReviewExit.Fault}). The review ran longer than {CodexReviewSettings.ReviewLimit.TotalMinutes} minutes, and the command stopped it (D-50). Read the transcript {transcript} and the log {errorLog}. The worktree stays at {worktree}.");
@@ -322,7 +316,7 @@ public static class CodexReviewCommand
     {
         string directory = Path.Combine(Path.GetTempPath(), "iron-absolution-codex-probe-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(directory);
-        ProcessResult result = ExternalProcess.Run(codex, CodexReviewSettings.ProbeArguments(directory), directory, CodexReviewSettings.ApiCredentialVariables);
+        ProcessResult result = CodexLauncher.Run(codex, CodexReviewSettings.ProbeArguments(directory), directory);
         Directory.Delete(directory, recursive: true);
         if (result.ExitCode == 0 && result.StandardOutput.Contains("agent_message", StringComparison.Ordinal))
         {
