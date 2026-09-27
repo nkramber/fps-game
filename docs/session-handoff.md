@@ -1,3 +1,36 @@
+## Session 4: 2026-09-27, Claude Code
+
+Author: Claude Code
+Session: author PR-2, round 2. Repository: iron-absolution. Branch: `feat/pr-2-tools-ste-check`. PR: #3. Role: author. Base: `d9561582b1fd9cb25086705770a8d6529bdad5a5`.
+
+### What this session did, and why
+
+- The Codex review of head `b73d3c7` gave the verdict Changes required, with one finding: P2-1.
+- P2-1: rule STE 6.6 counted sentences across a heading. The fix ends the paragraph at a heading, a list item, a table row, and a fence.
+- `docs/reviews/pr-3-response.md` answers the finding. The regression test failed on the old code in each of its five cases.
+
+### The state of the build
+
+- The effective head is `cbc4689`. `make` passes on the Mac: 100 tests, a clean format, and 0 findings of ste-check.
+- This entry commit is the remote head. The session reads its CI before the owner starts the next review.
+
+### What is in flight
+
+- PR #3 needs a repeat Codex review of the new head.
+
+### Traps and gotchas
+
+- The same paragraph defect is in the checker of the-thing-below. This repository does not change that repository.
+- The hook of `make hooks` runs ste-check on each commit in this checkout.
+
+### The questions that block progress
+
+- None blocks PR-2.
+
+### The next concrete action
+
+- The owner starts the repeat Codex review of PR #3.
+
 ## Session 3: 2026-09-27, Claude Code
 
 Author: Claude Code
