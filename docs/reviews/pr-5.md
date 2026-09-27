@@ -8,18 +8,18 @@ Date: 2026-09-27
 - Target: `main`
 - Base: `6acc6a85798182781a6fc1193c6e37d90dd03020`
 - Merge base: `6acc6a85798182781a6fc1193c6e37d90dd03020`
-- Head: `614847a4ab3538b89e907f12552d1847cfb6a846`
+- Head: `eb76650f9ae45b4e9a0b7b0479147f16b83bf261`
 - Branch: `feat/pr-4-doc-gate-rotation`
 
 ## Provider gate
 
-Claude Code authored the substantive change. The newest author handoff entry for this branch names Claude Code and Role: author. Codex is the other provider. The gate passes under T-4 and D-6.
+Claude Code authored the substantive changes, as the author handoff entries for this branch state. The response and handoff confirm that Claude Code made the fixes in `614847a` and `eb76650`. Codex is the other provider. The gate passes under T-4 and D-6.
 
 ## Intended behavior and scope
 
-PR-4 adds the `doc-gate` command and workflow, and the `handoff-rotate` command and Makefile target. This repeat review read the PR description, the earlier review and response, the PR comments, the PR-4 entry and exit tests, section 6 of `docs/design.md`, D-56 to D-59, and OQ-16. It inspected all changed files: the workflow, pull request template, agent and skill instructions, commands, rules, Git integration, tests, Makefile, and project documents. It checked the `doc-gate` inputs and permissions, its diff and commit reads, the handoff parse and rotation, and the error paths. No focused roadmap exists for PR-4. Unreal code, game content, binary assets, and game platform budgets do not apply because this PR changes none of them.
+PR-4 adds the `doc-gate` command and workflow, and the `handoff-rotate` command and Makefile target. This round read the PR description, the response file, both earlier review rounds, all PR comments, the PR-4 entry and exit tests, design guardrails, D-42 and D-56 to D-59, OQ-16, the session runbook, and the complete change set. It rechecked the handoff parse and rotation, the documents gate inputs and permissions, the changed workflow, command errors, tests, documents, and the P2-2 boundary fix. No focused roadmap exists for PR-4. Unreal code, game content, binary assets, and game platform budgets do not apply because this PR changes none of them.
 
-The prior P2-1 trigger now returns a contextual fault in both commands. Its two regression tests cover the exit code and error. A separate boundary probe found that the largest accepted session number wraps when the command adds one.
+The round 2 fix checks the largest session number before it creates either output. Its regression test requires exit 1, a contextual error, and unchanged files. No blocking finding remains at effective head `eb76650`.
 
 ## Findings
 
@@ -31,23 +31,23 @@ Open at: `b5993f4a8eed3353208619a50a1d6448d9434dfd`.
 
 File: `IronAbsolution.Tools/HandoffRotate/HandoffRotateRules.cs:66`.
 
-Trigger: Run `make handoff-rotate` when a handoff heading contains a numeric session value greater than `Int32.MaxValue`.
+Trigger: Run `make handoff-rotate` when a handoff heading contains a number greater than `Int32.MaxValue`.
 
-Expected: The command reports invalid handoff data with its file and session context, makes no file change, and exits 1 (T-2, D-40, D-58).
+Expected: The command reports invalid handoff data with file and session context, changes no file, and exits 1 (T-2, D-40, D-58).
 
-Actual: `int.Parse` threw an unhandled `OverflowException`, and the process exited 134.
+Actual: The initial parse threw an unhandled `OverflowException` and exited 134. Commit `614847a` changed the parse to `int.TryParse` and added contextual faults in both commands.
 
-Consequence: A damaged or unexpected session heading aborted the session-end command without a contextual fault report.
+Consequence: The session-end command stopped without its required contextual fault report.
 
-Evidence: The trigger reproduced in review round 1. In this round, `HandoffRotateTests.ASessionNumberTooLargeForAnIntIsAFaultThatChangesNoFile` and `DocGateTests.ASessionNumberTooLargeForAnIntIsAFaultOfTheCommand` pass in the full test run. The command now uses `int.TryParse` and reports the file and value.
+Evidence: The trigger reproduced in round 1. In round 2, both `HandoffRotateTests.ASessionNumberTooLargeForAnIntIsAFaultThatChangesNoFile` and `DocGateTests.ASessionNumberTooLargeForAnIntIsAFaultOfTheCommand` passed in `make`.
 
 Correction: Parse each heading with `int.TryParse` and raise a contextual fault when its value exceeds the supported range. Do not change either file on that fault.
 
-Regression check: Both named tests require exit 1 and the path and value in the error. The rotation test also requires both files to stay unchanged.
+Regression check: The two named tests require exit 1 and the file and value in the error. The rotation test also requires both files to stay unchanged. Both pass in `make` at `eb76650`.
 
 ### P2-2: The next session number wraps at the largest accepted value
 
-Status: open.
+Status: fixed in `eb76650f9ae45b4e9a0b7b0479147f16b83bf261`.
 
 Open at: `614847a4ab3538b89e907f12552d1847cfb6a846`.
 
@@ -55,41 +55,40 @@ File: `IronAbsolution.Tools/HandoffRotate/HandoffRotateRules.cs:110`.
 
 Trigger: Run `make handoff-rotate` when the newest heading is `## Session 2147483647:`.
 
-Expected: The command reports a contextual fault and changes no file, or represents the next session number without overflow. The command promises the highest session number plus one (D-58), and T-2 forbids a silent invalid result.
+Expected: The command reports a contextual fault and changes no file when it cannot represent the next session number (T-2, D-40, D-58).
 
-Actual: The unchecked addition wraps to `-2147483648`. The command exits 0 and reports that value as the next session number.
+Actual: At `614847a`, unchecked addition wrapped to `-2147483648`; the command exited 0 and printed the invalid number. At `eb76650`, `Rotate` rejects `int.MaxValue` before either file write.
 
-Consequence: The session end instructions can assign an invalid negative session number after a successful command.
+Consequence: Without the fix, the session-end instructions could assign a negative session number after a successful command.
 
-Evidence: A direct run of the built tool on 11 ordered entries, with the newest numbered `2147483647`, exited 0 and printed `The next session number is -2147483648.`
+Evidence: The trigger reproduced in round 2. `HandoffRotateTests.TheLargestSessionNumberIsAFaultThatChangesNoFile` requires exit 1, the handoff path and value in the error, and unchanged handoff and archive files. The test passes in the 272-test `make` run at `eb76650`.
 
 Correction: Check the increment before rotation writes either file. Report the handoff path and maximum value, and exit 1 without changing either file when no positive next number can be represented.
 
-Regression check: Add a command test for a newest entry numbered `2147483647`. Require exit 1, a contextual error, and unchanged handoff and archive files.
+Regression check: `HandoffRotateTests.TheLargestSessionNumberIsAFaultThatChangesNoFile` passes at `eb76650` and fails when the new check is absent.
 
 ## Out of scope
 
-The `ste-check` session number parser has a separate `int.Parse` path. The author handoff assigns that PR-2 issue to a fresh session. This review does not widen P2-1 to that separate command.
+The separate session-number parser in `ste-check` remains assigned to the PR-2 follow-up named in the author handoff. This PR does not change that command.
 
 ## PR comments
 
-None. `gh pr view 5 --comments` and the GraphQL review-thread query returned no comments or threads.
+None. The issue-comment export and GraphQL review-thread query returned no comments or threads.
 
 ## Description edits
 
-- Changed the test count from 37 new and 269 total to 39 new and 271 total. `make` verified 271 passing tests at the reviewed head.
+None.
 
 ## Verification
 
-- `git fetch origin`, `git status --short --branch`, base lookup, and merge-base lookup: the review checkout is `review/pr-5`; base and merge base are `6acc6a85798182781a6fc1193c6e37d90dd03020`.
-- Effective-head lookup: `614847a4ab3538b89e907f12552d1847cfb6a846` is the newest commit outside the documents set. Later commits change documents alone.
-- `make` on macOS at effective head `614847a4ab3538b89e907f12552d1847cfb6a846`: build passed with 0 warnings and 0 errors; 271 tests passed, 0 failed, and 0 skipped; format passed; ste-check reported 0 findings.
-- `dotnet test IronAbsolution.Tests/IronAbsolution.Tests.csproj --no-build --filter ...`: this filter invocation did not run under the repository's Microsoft Testing Platform setup. The full test suite ran through `make`.
-- Direct boundary probe with the built tool: newest session `2147483647`; exit 0; output incorrectly reported next session `-2147483648` (P2-2).
-- `gh pr checks 5`: `build, test, and format`, `coverage report`, `doc-gate`, and `ste-check` passed at the effective head. The `doc-gate` check also passed after the verified test-count edit to the PR description.
-- `cmp -s AGENTS.md CLAUDE.md`: identical.
+- `git fetch origin`, `git status --short --branch`, and revision lookup: branch `review/pr-5`; base and merge base `6acc6a85798182781a6fc1193c6e37d90dd03020`; current PR tip before this metadata commit `b964463dd7d63d1752c80e26b20ff426b6dc40dd`.
+- Effective-head lookup: `eb76650f9ae45b4e9a0b7b0479147f16b83bf261` is the newest commit outside the documents set. Later commits change documents alone.
+- `make` on macOS at `eb76650`: build passed with 0 warnings and 0 errors; 272 tests passed, 0 failed, and 0 skipped; format passed; ste-check reported 0 findings.
+- `gh pr checks 5`: `build, test, and format`, `coverage report`, `doc-gate`, and `ste-check` passed on the current PR revision. The current branch tip changes only review and handoff metadata after the effective head.
+- `git diff --check origin/main...HEAD`: passed.
+- `cmp -s AGENTS.md CLAUDE.md`: passed; the files are identical.
 - OQ-16: gitar remains outside this review under D-7. It does not block this PR.
-- Push: the review record and handoff entry share one metadata commit on `origin/feat/pr-4-doc-gate-rotation`; `gh pr view` verified the pushed head.
+- Push: this record and the handoff entry are one metadata commit. `gh pr view` will verify the pushed head.
 
 ## Open questions and accepted risks
 
@@ -98,7 +97,8 @@ OQ-16 remains open for the gitar plan under D-7. It does not block this review.
 ## Earlier verdicts
 
 - Round 1 at `b5993f4a8eed3353208619a50a1d6448d9434dfd`: **Changes required**. P2-1 showed that an out-of-range session number crashed the rotation command.
+- Round 2 at `614847a4ab3538b89e907f12552d1847cfb6a846`: **Changes required**. P2-2 showed that the largest accepted session number produced a negative next number.
 
 ## Verdict
 
-**Changes required.** P2-1 is fixed at the reviewed head. P2-2 shows that the command reports a negative next session number for a valid `Int32.MaxValue` heading, so this revision needs a boundary correction.
+**Ready for owner merge.** P2-1 and P2-2 pass their regression checks at effective head `eb76650`. The local build, tests, format, document checks, and hosted checks pass.
