@@ -213,16 +213,20 @@ PR-4 ports the doc-gate and handoff-rotate commands of what-you-carry. The doc-g
 
 #### PR-5: Ruleset of main as code
 
-PR-5 ports `.github/rulesets/main.json` and `docs/runbooks/main-ruleset.md` from what-you-carry, with a test that binds the check names to the jobs. The owner applies the live ruleset.
+PR-5 ports `.github/rulesets/main.json` and `docs/runbooks/main-ruleset.md` from what-you-carry, with a test that binds the check names to the jobs. D-60 to D-63 resolve the divergences of the port. They set the bypass, the required checks, the scope of the file, and the application of the live ruleset. The author session applies the live ruleset before the merge (D-63).
 
 - Exit tests: 1. The ruleset test passes. 2. A `gh api` read of the live ruleset matches the file.
-- Gate: exit tests 1 and 2 pass, and the owner applies the ruleset.
+- Correction of 2026-09-27: the entry said "The owner applies the live ruleset." The owner told the author session to apply it before the merge (D-63).
+- Review focus: the bindings of the check names to the jobs, the bypass, and the steps of the runbook.
+- Check clause: the `review-gate` check comes in PR-6, and PR-6 adds it to the ruleset.
+- Gate: exit tests 1 and 2 pass, and the live ruleset matches the file before the merge.
+- Status: ✅ done in PR #6.
 
 > *In plain English:* GitHub now refuses a merge to main without a PR and green checks.
 
 #### PR-6: Review gate and auto-merge
 
-PR-6 ports the review-gate workflow. It reads the review record of the PR head as data and posts the review-gate check run. It honors the `review-override` label that only the owner adds to a PR with no code (D-35). The owner turns on auto-merge in the repository settings. The auto-merge procedure of the role models then applies (D-12).
+PR-6 ports the review-gate workflow. It reads the review record of the PR head as data and posts the review-gate check run. It honors the `review-override` label that only the owner adds to a PR with no code (D-35). It adds `review-gate` to the required checks of the ruleset of `main` (D-61). The owner turns on auto-merge in the repository settings. The auto-merge procedure of the role models then applies (D-12).
 
 - Exit tests: 1. A PR with no approving record for its head gets a red review-gate check. 2. A PR with an approving record gets a green check.
 - Gate: exit tests 1 and 2 pass.
@@ -333,7 +337,7 @@ After that, each phase gets a focused roadmap just before it starts. `docs/roadm
 3. PR-2: tools project and ste-check.
 4. PR-3: automatic Codex review.
 5. PR-4: documents gate and handoff rotation.
-6. PR-5: ruleset of main as code. The owner applies the live ruleset.
+6. PR-5: ruleset of main as code. The author session applies the live ruleset before the merge (D-63).
 7. PR-6: review gate and auto-merge. The owner turns on auto-merge.
 8. Gate of phase 0.
 9. The owner installs the engine and Xcode on the Mac, and the engine on the Windows PC (D-28, D-33).

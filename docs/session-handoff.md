@@ -1,3 +1,180 @@
+## Session 23: 2026-09-27, Claude Code
+
+Author: Claude Code
+Session: author PR-5, merge. Repository: iron-absolution. Branch: `feat/pr-5-main-ruleset`. PR: #6. Role: author. Base: `f5e9514ebae89c1a5a6a189a8213f2b44f9d1bf5`.
+
+### What this session did, and why
+
+- Review round 2 approved the effective head `1fe466b` with the verdict `Ready for owner merge`. The two rounds used the exit codes 10 and 0.
+- On the instruction of the owner, the session created the live ruleset of `main` from the file of the PR head (D-63). The ruleset id is 24080063, with the enforcement `active`.
+- Exit test 2 passed: the comparison of `docs/runbooks/main-ruleset.md` gave an empty diff. PR #6 then read `CLEAN` and `MERGEABLE` under the live ruleset.
+
+### The state of the build
+
+- The effective head is `1fe466b`. `make` passes on the Mac: 288 tests, a clean format, and 0 findings of ste-check.
+- The remote head is the commit of this entry. The state is pending merge.
+- The live ruleset of `main` requires `ste-check`, `build, test, and format`, `coverage report`, and `doc-gate` (D-61).
+
+### What is in flight
+
+- The owner confirms the squash merge of PR #6. PR-5 merges under its own ruleset.
+
+### Traps and gotchas
+
+- A renamed or removed required job blocks every merge until the live ruleset changes. The runbook gives the order.
+- PR-6 must plan when `review-gate` joins the live ruleset, because a required check that never reports blocks the merge.
+- No session merges with `gh pr merge --admin` (D-60).
+
+### The questions that block progress
+
+- None. OQ-16 still holds gitar (D-7).
+
+### The next concrete action
+
+- After the merge, write the transitional prompt of PR-6.
+- For a fresh session: the session number check of `ste-check` reads a heading number with `int.Parse`, so a number too large for an int stops the check with no context (T-2).
+
+## Session 22: 2026-09-27, Codex
+
+Author: Codex
+Session: reviewer PR-6, round 2. Repository: iron-absolution. Branch: `feat/pr-5-main-ruleset`. PR: #6. Role: reviewer. Base: `f5e9514ebae89c1a5a6a189a8213f2b44f9d1bf5`.
+
+### What this session did, and why
+
+- Re-reviewed PR-5 at effective head `1fe466b`. The review found that the new D-61 test fixes P2-1.
+- Updated `docs/reviews/pr-6.md` with the round-two result and preserved the earlier verdict.
+
+### The state of the build
+
+- `make` passes: 288 tests, clean format, and 0 findings from ste-check.
+- All four hosted checks pass on the PR branch. The effective work head is `1fe466b`.
+- The review record and this handoff entry are in one metadata commit on the PR branch.
+- The live ruleset does not exist yet. The author session must apply it and compare it with the PR file before merge (D-63).
+
+### What is in flight
+
+- The PR awaits the live ruleset comparison and the merge gate.
+
+### Traps and gotchas
+
+- The ruleset test keeps the four checks of D-61 as a subset. Roadmap PR-6 adds `review-gate`.
+- The review approves the effective work head. Later work changes need a new review.
+
+### The questions that block progress
+
+- None. OQ-16 still holds gitar under D-7.
+
+### The next concrete action
+
+- Apply the live ruleset from the PR head and run the comparison in `docs/runbooks/main-ruleset.md` (exit test 2, D-63).
+
+## Session 21: 2026-09-27, Claude Code
+
+Author: Claude Code
+Session: author PR-5, round 2. Repository: iron-absolution. Branch: `feat/pr-5-main-ruleset`. PR: #6. Role: author. Base: `f5e9514ebae89c1a5a6a189a8213f2b44f9d1bf5`.
+
+### What this session did, and why
+
+- Review round 1 gave `Changes required` with the exit code 10. P2-1: no test held the four checks of D-61, so a check could leave the file and its workflow together.
+- The trigger reproduced. `1fe466b` adds `TheRulesetRequiresEachCheckOfTheDecision`, which holds the four names as a subset. `docs/reviews/pr-6-response.md` records the answer.
+
+### The state of the build
+
+- The effective head is `1fe466b`. `make` passes on the Mac: 288 tests, a clean format, and 0 findings of ste-check.
+- The remote head is the commit of this entry. The state is pending merge.
+- No live ruleset exists yet. `main` has no branch protection.
+
+### What is in flight
+
+- The review round 2 of `make codex-review PR=6`.
+- After an approval and green checks, the session applies the live ruleset from the PR head and runs the comparison of `docs/runbooks/main-ruleset.md` (exit test 2, D-63).
+
+### Traps and gotchas
+
+- The ruleset requires the four checks by name. A renamed or removed job blocks every merge until the live ruleset changes.
+- A required check that no workflow of `main` has yet can block the PR that adds it. PR-6 must plan the order of `review-gate`.
+
+### The questions that block progress
+
+- None. OQ-16 still holds gitar (D-7).
+
+### The next concrete action
+
+- Run `make codex-review PR=6` after the checks are green.
+- For a fresh session: the session number check of `ste-check` reads a heading number with `int.Parse`, so a number too large for an int stops the check with no context (T-2).
+
+## Session 20: 2026-09-27, Codex
+
+Author: Codex
+Session: reviewer PR-5, round 1. Repository: iron-absolution. Branch: `feat/pr-5-main-ruleset`. PR: #6. Role: reviewer. Base: `f5e9514ebae89c1a5a6a189a8213f2b44f9d1bf5`.
+
+### What this session did, and why
+
+- Reviewed the ruleset, its tests, the setup runbook, and the related documents.
+- Found that the tests allow one of the four required checks and its matching job to disappear together.
+- Wrote `docs/reviews/pr-6.md` with verdict `Changes required` for effective head `2d0f013`.
+
+### The state of the build
+
+- `make` passes on the Mac: 287 tests, a clean format, and 0 findings of ste-check.
+- The four hosted checks pass on PR head `2d0f013`.
+- The pushed metadata commit will be the remote head. The PR work head remains `2d0f013`.
+
+### What is in flight
+
+- P2-1 needs a test that fixes the four check names of D-61.
+- The live ruleset does not exist yet. D-63 assigns its setup and comparison to the author session after review approval and before merge.
+
+### Traps and gotchas
+
+- Ruleset tests currently derive their expected checks from the ruleset file and workflows.
+- OQ-16 keeps the gitar pass out of this PR under D-7.
+
+### The questions that block progress
+
+- None. OQ-16 still holds the gitar pass.
+
+### The next concrete action
+
+- The author fixes P2-1, runs its regression check, and starts the next review round.
+
+## Session 19: 2026-09-27, Claude Code
+
+Author: Claude Code
+Session: author PR-5, round 1. Repository: iron-absolution. Branch: `feat/pr-5-main-ruleset`. PR: #6. Role: author. Base: `f5e9514ebae89c1a5a6a189a8213f2b44f9d1bf5`.
+
+### What this session did, and why
+
+- The exit tests of PR-4 on a clean checkout of `main` passed: 272 tests, a clean format, and 0 findings. `make handoff-rotate` moved no entry and changed no file.
+- PR-5 ports `.github/rulesets/main.json`, `RulesetTests`, and `docs/runbooks/main-ruleset.md` from what-you-carry.
+- The owner answered four divergences of D-13: D-60 (admin bypass through a PR merge), D-61 (four required checks, a test in both directions), D-62 (the ruleset alone), and D-63 (the session applies the live ruleset before the merge).
+- The agent files, the PR template, and the merge procedure now forbid `gh pr merge --admin` (D-60).
+
+### The state of the build
+
+- `make` passes on the Mac: 287 tests, a clean format, and 0 findings of ste-check.
+- The remote head is the commit of this entry. The state is pending merge.
+- No live ruleset exists yet. `main` has no branch protection.
+
+### What is in flight
+
+- The review round 1 of `make codex-review PR=6`.
+- After an approval and green checks, the session applies the live ruleset from the PR head and runs the comparison of `docs/runbooks/main-ruleset.md` (exit test 2).
+
+### Traps and gotchas
+
+- The ruleset requires the four checks by name. A renamed or removed job blocks every merge until the live ruleset changes.
+- A required check that no workflow of `main` has yet can block the PR that adds it. PR-6 must plan the order of `review-gate`.
+
+### The questions that block progress
+
+- None. OQ-16 still holds gitar (D-7).
+
+### The next concrete action
+
+- Run `make codex-review PR=6` after the checks are green.
+- For a fresh session: the session number check of `ste-check` reads a heading number with `int.Parse`, so a number too large for an int stops the check with no context (T-2).
+
 ## Session 18: 2026-09-27, Claude Code
 
 Author: Claude Code
@@ -169,176 +346,3 @@ Session: author PR-4, round 2. Repository: iron-absolution. Branch: `feat/pr-4-d
 
 - Finish the review loop of PR #5, then give the owner the merge summary.
 - For a fresh session: the session number check of `ste-check` reads a heading number with `int.Parse`, so a number too large for an int stops the check with no context (T-2).
-
-## Session 13: 2026-09-27, Codex
-
-Author: Codex
-Session: reviewer PR-5, round 1. Repository: iron-absolution. Branch: `review/pr-5`. PR: #5. Role: reviewer. Base: `6acc6a85798182781a6fc1193c6e37d90dd03020`.
-
-### What this session did, and why
-
-- Reviewed PR #5 against its exit tests, guardrails, decisions, and PR comments.
-- Ran `make`. The build, 269 tests, format, and ste-check passed.
-- Reproduced P2-1: an out-of-range session number crashes `handoff-rotate` with exit 134.
-- Added `docs/reviews/pr-5.md` with the revision-specific review.
-
-### The state of the build
-
-- The reviewed work head is `b5993f4a8eed3353208619a50a1d6448d9434dfd`. All four hosted checks pass at this head.
-- The review record and this handoff entry await one metadata commit and push to `feat/pr-4-doc-gate-rotation`.
-
-### What is in flight
-
-- P2-1 needs a contextual range check and a regression test.
-- The PR needs a new review round after the correction.
-
-### Traps and gotchas
-
-- `HandoffRotateRules.Parse` uses `int.Parse` for a session number. An out-of-range value bypasses the command fault handler.
-
-### The questions that block progress
-
-- OQ-16 still holds the gitar plan under D-7. It does not block this review.
-
-### The next concrete action
-
-- Correct P2-1, add its regression test, and run the focused command test.
-
-## Session 12: 2026-09-27, Claude Code
-
-Author: Claude Code
-Session: author PR-4, round 1. Repository: iron-absolution. Branch: `feat/pr-4-doc-gate-rotation`. PR: #5. Role: author. Base: `6acc6a85798182781a6fc1193c6e37d90dd03020`.
-
-### What this session did, and why
-
-- Ran the exit tests of PR-3 on a clean `main` first: `make hooks`, then `make`. The result was 232 tests, a clean format, and 0 findings.
-- Ported the `doc-gate` and `handoff-rotate` commands of what-you-carry, with their tests. The owner resolved four divergences as D-56 to D-59.
-- D-56 gives the gate its own workflow, `.github/workflows/doc-gate.yml`, because the `edited` event in `ci.yml` would cancel the build.
-- D-57 takes the full rule set. D-58 sorts an entry out of place back in order. D-59 adds `make handoff-rotate`.
-- Updated the agent files, the PR template, the one-pr-one-session skill, the runbook, and the PR-4 entry of the design doc.
-- This session ran `make handoff-rotate` on this entry. It moved session 2 to the archive, which is exit test 2 on the live files.
-
-### The state of the build
-
-- `make` passes on the Mac. The test count and the checks of the pushed head are in the PR.
-- The remote head is the commit of this entry on `feat/pr-4-doc-gate-rotation`. The state is pending merge.
-
-### What is in flight
-
-- The checks of PR #5, then `make codex-review PR=5` (D-54).
-- Exit test 1 runs on PR #5 itself: the first description leaves one Documents line empty, and the `doc-gate` check must go red.
-
-### Traps and gotchas
-
-- The handoff has no title. Its first line is the newest heading, so a parse that looks for a line end before the heading skips the newest entry.
-- The session line writes `` Branch: `<branch>` `` with a colon. The gate looks for that exact form.
-- The `doc-gate` check reads the description of the PR. Edit the description, not a file, to fix a Documents line.
-
-### The questions that block progress
-
-- None blocks PR-4. OQ-16 still holds gitar (D-7).
-
-### The next concrete action
-
-- Finish the review loop of PR #5, then give the owner the merge summary.
-
-## Session 11: 2026-09-27, Claude Code
-
-Author: Claude Code
-Session: author PR-3, merge. Repository: iron-absolution. Branch: `feat/pr-3-codex-review`. PR: #4. Role: author. Base: `e97da5a5238807c29c7a3bcdc5d4184dfb97f1b4`.
-
-### What this session did, and why
-
-- Review round 3 approved the effective head `2551eb3` with the verdict `Ready for owner merge`. `make codex-review` gave the exit code 0.
-- The three rounds used the exit codes 10, 10, and 0. The command pushed and judged each record, then removed the worktree and the branch.
-- The session moved session 1 to `docs/session-handoff-archive.md` by hand, to keep ten entries. PR-4 adds the rotation command.
-
-### The state of the build
-
-- The effective head is `2551eb3`. `make` passes on the Mac: 232 tests, a clean format, and 0 findings of ste-check.
-- This entry commit is the remote head. The state is pending merge.
-
-### What is in flight
-
-- The owner confirms the squash merge of PR #4.
-
-### Traps and gotchas
-
-- Each review round adds a Codex entry. Rotate by hand until PR-4 merges.
-- The first line of `docs/session-handoff.md` is the newest entry. The file has no title.
-
-### The questions that block progress
-
-- None blocks PR-3. OQ-16 still holds gitar (D-7).
-
-### The next concrete action
-
-- After the merge, write the transitional prompt of PR-4.
-
-## Session 10: 2026-09-27, Codex
-
-Author: Codex
-Session: reviewer PR-3, round 3. Repository: iron-absolution. Branch: `feat/pr-3-codex-review`. PR: #4. Role: reviewer. Base: `e97da5a5238807c29c7a3bcdc5d4184dfb97f1b4`.
-
-### What this session did, and why
-
-- The review checked the launcher correction and its regression tests again.
-- D-55 says the tools and review need no Windows run. P2-1 is fixed in `2551eb3`.
-- The review record now approves effective head `2551eb3`.
-
-### The state of the build
-
-- `make` passed on macOS: 232 tests, clean format, and 0 ste-check findings.
-- All three CI jobs passed at metadata tip `241375c`.
-- This metadata commit is the remote head.
-
-### What is in flight
-
-- The owner reads the review and gives the merge confirmation after the merge summary.
-
-### Traps and gotchas
-
-- Documents commits do not move the effective head (D-49).
-- OQ-16 does not block PR-3. D-7 keeps gitar out.
-
-### The questions that block progress
-
-- None.
-
-### The next concrete action
-
-- Give the owner the merge summary, then wait for the merge decision.
-
-## Session 9: 2026-09-27, Claude Code
-
-Author: Claude Code
-Session: author PR-3, round 3. Repository: iron-absolution. Branch: `feat/pr-3-codex-review`. PR: #4. Role: author. Base: `e97da5a5238807c29c7a3bcdc5d4184dfb97f1b4`.
-
-### What this session did, and why
-
-- Review round 2 gave `Blocked`: P2-1 stayed open, because no Windows run proved the launch fix.
-- The owner refuted that demand: all development work runs on the Mac (D-55). D-33 has a dated note of the scope.
-- G-12, `CLAUDE.md`, `AGENTS.md`, and the review standard of the pr-review skill now bind Windows to the game alone.
-- `docs/reviews/pr-4-response.md` gives the round 2 answer: no merit, D-55.
-
-### The state of the build
-
-- The effective head stays `2551eb3`, because this round changed documents alone. `make` passes on the Mac: 232 tests, a clean format, and 0 findings of ste-check.
-- This entry commit is the remote head.
-
-### What is in flight
-
-- Review round 3 runs when the checks of this head are green (D-54).
-
-### Traps and gotchas
-
-- P2-1 lists two heads. The effective head of round 3 is `2551eb3` again, so an open P2-1 keeps two heads and no three-strike stop follows.
-- Handoff rotation comes in PR-4. The file holds nine entries now, and the limit is ten.
-
-### The questions that block progress
-
-- None blocks PR-3.
-
-### The next concrete action
-
-- Read the verdict of round 3, then write the merge summary or answer the findings.

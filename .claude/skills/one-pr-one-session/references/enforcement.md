@@ -25,7 +25,8 @@ Read this table when a question asks who catches a break of a rule. A row that n
 | A review round stops after 90 minutes | Machine | `make codex-review` fails the round with exit 1 (D-50) |
 | A PR with no code merges without a review record only through the owner label | Machine after PR-6 | `review-gate` and the `review-override` label (D-35). Before PR-6, the owner starts Codex by hand (D-49) |
 | A P0 to P2 finding open in three rounds stops the fix loop, and the owner decides | Machine for the stop, owner for the answer | `make codex-review` exits 11 from the `Open at:` lines (D-14) |
-| A PR merges only with every required check green, every review thread resolved, and a squash merge | Machine after PR-5 | The ruleset of `main` in `.github/rulesets/main.json` (PR-5) |
+| A PR merges only with every required check green, every review thread resolved, and a squash merge | Machine after PR-5 | The ruleset of `main` in `.github/rulesets/main.json` (D-61). `RulesetTests` binds each required check to one job |
+| No session uses the admin bypass of the ruleset | Agent and owner | The bypass is for the owner alone, and no session merge passes `--admin` (D-5, D-60) |
 | A merge needs an approving record of the effective head | Machine after PR-6, owner before | `review-gate` (PR-6). Until then, the owner reads the record (D-5) |
 | No review round uses API pricing | Machine | `make codex-review` removes the API credential variables and uses the ChatGPT login (D-14, D-53) |
 | The owner confirms each merge after the merge summary: What, How, CI, and Codex review | Agent and owner | `references/review-and-merge.md` asks with `AskUserQuestion`. No machine reads the summary or the confirmation |
