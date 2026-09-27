@@ -2,6 +2,40 @@
 
 This file holds the entries that the rotation moves out of `docs/session-handoff.md`, newest first.
 
+## Session 17: 2026-09-27, Codex
+
+Author: Codex
+Session: reviewer PR-5, round 3. Repository: iron-absolution. Branch: `feat/pr-4-doc-gate-rotation`. PR: #5. Role: reviewer. Base: `6acc6a85798182781a6fc1193c6e37d90dd03020`.
+
+### What this session did, and why
+
+- Rechecked P2-2 at the new effective head, `eb76650`.
+- The fix rejects Session `2147483647` before either file write, with a contextual fault.
+- Updated `docs/reviews/pr-5.md`. Both earlier findings now pass their regression checks.
+- `make` passed with 272 tests. All four hosted checks passed.
+
+### The state of the build
+
+- The effective head is `eb76650`. The current remote tip before this metadata commit was `b964463`.
+- The review record and this handoff entry form one metadata commit. The state is pending merge.
+
+### What is in flight
+
+- The owner reads the merge summary and confirms the merge of PR #5.
+
+### Traps and gotchas
+
+- A heading at `2147483647` parses as an int, but the next session value does not fit.
+- The current branch tip has review and handoff metadata after the effective head.
+
+### The questions that block progress
+
+- None blocks this PR. OQ-16 still holds the gitar plan under D-7.
+
+### The next concrete action
+
+- Give the owner the merge summary for PR #5.
+
 ## Session 16: 2026-09-27, Claude Code
 
 Author: Claude Code
