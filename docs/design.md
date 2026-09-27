@@ -195,6 +195,7 @@ PR-3 ports `make codex-review PR=<n>` from what-you-carry (D-14). It ports the p
 - Correction of 2026-09-27: exit test 3 said "A run with an API key in the environment refuses to start." The owner chose the behavior of what-you-carry instead (D-53).
 - Review focus: the provider gate, the exit codes, and the three-strike stop.
 - Gate: exit tests 1 to 3 pass.
+- Status: ✅ done in PR #4.
 
 > *In plain English:* After each push, the author runs one command. Codex then reviews the PR and writes its verdict into the repository.
 
