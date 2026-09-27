@@ -382,6 +382,23 @@ public sealed class DocGateTests
         Assert.Contains("git merge-base no-such-branch HEAD", revisionErrors, StringComparison.Ordinal);
     }
 
+    [Fact]
+    public void ASessionNumberTooLargeForAnIntIsAFaultOfTheCommand()
+    {
+        // Review P2-1 of PR #5: the parse of the handoff threw an unhandled overflow.
+        using TemporaryGitRepository repo = new TemporaryGitRepository();
+        repo.Commit("chore: base", ("README.md", "base"));
+        repo.CreateBranch(Branch);
+        repo.Commit("feat: sample", (DocGateRules.HandoffPath, Entry(Branch).Replace("Session 12", "Session 99999999999999999999", StringComparison.Ordinal)));
+        string bodyPath = Path.Combine(repo.Root, "body.md");
+        File.WriteAllText(bodyPath, Body());
+
+        (int exitCode, _, string errors) = RunCommand("--root", repo.Root, "--base", "main", "--head", "HEAD", "--body", bodyPath, "--title", Title, "--branch", Branch);
+
+        Assert.Equal(Program.FaultExitCode, exitCode);
+        Assert.Contains("'docs/session-handoff.md' has the heading 'Session 99999999999999999999'", errors, StringComparison.Ordinal);
+    }
+
     private static (int ExitCode, string Output, string Errors) RunCommand(params string[] args)
     {
         using StringWriter output = new StringWriter();

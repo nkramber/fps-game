@@ -91,10 +91,10 @@ public sealed class HandoffRotateTests
             List<string> before = TrimmedEntries(handoff).Concat(TrimmedEntries(archive)).ToList();
             List<string> after = TrimmedEntries(rotation.Handoff).Concat(TrimmedEntries(rotation.Archive)).ToList();
             Assert.True(before.SequenceEqual(after, StringComparer.Ordinal), $"Seed {seed}: the entry texts or their order changed.");
-            Assert.True(HandoffRotateRules.Parse(rotation.Handoff).Entries.Count == Math.Min(handoffCount, HandoffRotateRules.KeepCount), $"Seed {seed}: the handoff holds the wrong count.");
+            Assert.True(HandoffRotateRules.Parse(rotation.Handoff, HandoffRotateRules.HandoffPath).Entries.Count == Math.Min(handoffCount, HandoffRotateRules.KeepCount), $"Seed {seed}: the handoff holds the wrong count.");
             Assert.True(rotation.Archive.StartsWith(ArchivePreamble, StringComparison.Ordinal), $"Seed {seed}: the archive title changed.");
             Assert.True(rotation.Moved.Count == Math.Max(0, handoffCount - HandoffRotateRules.KeepCount), $"Seed {seed}: the moved count is wrong.");
-            HandoffFile oldArchive = HandoffRotateRules.Parse(archive);
+            HandoffFile oldArchive = HandoffRotateRules.Parse(archive, HandoffRotateRules.ArchivePath);
             if (oldArchive.Entries.Count > 0)
             {
                 string oldEntries = archive[oldArchive.Preamble.Length..];
@@ -119,7 +119,7 @@ public sealed class HandoffRotateTests
         Assert.Empty(rotation.Moved);
         Assert.Empty(rotation.Reordered);
         Assert.Equal(handoff, rotation.Handoff);
-        Assert.True(HandoffRotateRules.Parse(archive).Entries[0].Number < HandoffRotateRules.Parse(handoff).Entries[^1].Number);
+        Assert.True(HandoffRotateRules.Parse(archive, HandoffRotateRules.ArchivePath).Entries[0].Number < HandoffRotateRules.Parse(handoff, HandoffRotateRules.HandoffPath).Entries[^1].Number);
     }
 
     [Fact]
@@ -155,7 +155,7 @@ public sealed class HandoffRotateTests
     {
         // Eleven entries, newest first, with the newest one at the end of the file.
         string ordered = Entries(111, 101);
-        HandoffFile parsed = HandoffRotateRules.Parse(ordered);
+        HandoffFile parsed = HandoffRotateRules.Parse(ordered, HandoffRotateRules.HandoffPath);
         string outOfOrder = string.Join("\n\n", parsed.Entries.Skip(1).Select(entry => entry.Text.TrimEnd())) + "\n\n" + parsed.Entries[0].Text.TrimEnd() + "\n";
 
         HandoffRotation rotation = HandoffRotateRules.Rotate(outOfOrder, ArchivePreamble);
@@ -190,9 +190,38 @@ public sealed class HandoffRotateTests
     public void AHeadingWithNoColonIsNoEntry()
     {
         // The parse reads the heading form of the session number check of ste-check (D-20).
-        HandoffFile parsed = HandoffRotateRules.Parse("## Session 3: 2026-09-27, Codex\n\n## Session notes\n\n## Session 2 2026-09-27\n");
+        HandoffFile parsed = HandoffRotateRules.Parse("## Session 3: 2026-09-27, Codex\n\n## Session notes\n\n## Session 2 2026-09-27\n", HandoffRotateRules.HandoffPath);
 
         Assert.Equal([3], parsed.Entries.Select(entry => entry.Number));
+    }
+
+    [Fact]
+    public void ASessionNumberTooLargeForAnIntIsAFaultThatChangesNoFile()
+    {
+        // Review P2-1 of PR #5: `int.Parse` threw an unhandled overflow, and the process exited 134.
+        string root = Path.Combine(Path.GetTempPath(), "handoff-rotate-" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(Path.Combine(root, "docs"));
+        string handoffPath = Path.Combine(root, "docs", "session-handoff.md");
+        string archivePath = Path.Combine(root, "docs", "session-handoff-archive.md");
+        string handoff = "## Session 99999999999999999999: 2026-09-27, Codex\n\n- The work.\n\n" + Entries(11, 1);
+        try
+        {
+            File.WriteAllText(handoffPath, handoff);
+            File.WriteAllText(archivePath, ArchivePreamble);
+
+            (int exitCode, string output, string errors) = RunCommand("--root", root);
+
+            Assert.Equal(Program.FaultExitCode, exitCode);
+            Assert.Empty(output);
+            Assert.Contains("'docs/session-handoff.md' has the heading 'Session 99999999999999999999'", errors, StringComparison.Ordinal);
+            Assert.Contains("No file changed.", errors, StringComparison.Ordinal);
+            Assert.Equal(handoff, File.ReadAllText(handoffPath));
+            Assert.Equal(ArchivePreamble, File.ReadAllText(archivePath));
+        }
+        finally
+        {
+            Directory.Delete(root, recursive: true);
+        }
     }
 
     [Fact]
@@ -291,6 +320,6 @@ public sealed class HandoffRotateTests
 
     private static List<string> TrimmedEntries(string text)
     {
-        return HandoffRotateRules.Parse(text).Entries.Select(entry => entry.Text.TrimEnd()).ToList();
+        return HandoffRotateRules.Parse(text, HandoffRotateRules.HandoffPath).Entries.Select(entry => entry.Text.TrimEnd()).ToList();
     }
 }

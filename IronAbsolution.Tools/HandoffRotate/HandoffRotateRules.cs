@@ -52,10 +52,13 @@ public static class HandoffRotateRules
 
     /// <summary>Splits a handoff text at each line that starts with `## Session N:`.</summary>
     /// <param name="text">The text of the handoff or of the archive.</param>
+    /// <param name="path">The path of the file, for the message of a fault.</param>
     /// <returns>The text before the first entry, and each entry in file order.</returns>
-    public static HandoffFile Parse(string text)
+    /// <exception cref="InvalidOperationException">A session number is too large for an int. The message names the file and the number.</exception>
+    public static HandoffFile Parse(string text, string path)
     {
         ArgumentNullException.ThrowIfNull(text);
+        ArgumentException.ThrowIfNullOrEmpty(path);
 
         MatchCollection matches = SessionHeading.Matches(text);
         List<HandoffEntry> entries = [];
@@ -63,7 +66,13 @@ public static class HandoffRotateRules
         {
             Match match = matches[index];
             int end = index + 1 < matches.Count ? matches[index + 1].Index : text.Length;
-            int number = int.Parse(match.Groups[1].Value, CultureInfo.InvariantCulture);
+            string digits = match.Groups[1].Value;
+            if (!int.TryParse(digits, NumberStyles.None, CultureInfo.InvariantCulture, out int number))
+            {
+                throw new InvalidOperationException(
+                    $"'{path}' has the heading 'Session {digits}', and that number is larger than {int.MaxValue} (T-2). Give the entry its correct session number.");
+            }
+
             entries.Add(new HandoffEntry(number, text[match.Index..end]));
         }
 
@@ -89,7 +98,7 @@ public static class HandoffRotateRules
         ArgumentNullException.ThrowIfNull(handoffText);
         ArgumentNullException.ThrowIfNull(archiveText);
 
-        HandoffFile handoff = Parse(handoffText);
+        HandoffFile handoff = Parse(handoffText, HandoffPath);
         if (handoff.Entries.Count == 0)
         {
             throw new InvalidOperationException(
@@ -107,7 +116,7 @@ public static class HandoffRotateRules
 
         List<HandoffEntry> kept = ordered.Take(KeepCount).ToList();
         List<HandoffEntry> moved = ordered.Skip(KeepCount).ToList();
-        HandoffFile archive = Parse(archiveText);
+        HandoffFile archive = Parse(archiveText, ArchivePath);
         if (archive.Entries.Count > 0 && archive.Entries[0].Number >= moved[^1].Number)
         {
             // A rotation that stopped after the write of the archive leaves this state.

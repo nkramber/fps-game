@@ -131,12 +131,13 @@ public static class DocGateRules
     /// <summary>Gives the first session entry of the handoff text, or null when the text holds none.</summary>
     /// <param name="handoffText">The text of the handoff.</param>
     /// <returns>The text of the first entry, from its heading to the next heading.</returns>
+    /// <exception cref="InvalidOperationException">A session number is too large for an int.</exception>
     public static string? NewestHandoffEntry(string handoffText)
     {
         ArgumentNullException.ThrowIfNull(handoffText);
 
         // The handoff has no title, so its first line is the newest heading (D-20).
-        IReadOnlyList<HandoffEntry> entries = HandoffRotateRules.Parse(handoffText).Entries;
+        IReadOnlyList<HandoffEntry> entries = HandoffRotateRules.Parse(handoffText, HandoffPath).Entries;
         return entries.Count == 0 ? null : entries[0].Text;
     }
 
