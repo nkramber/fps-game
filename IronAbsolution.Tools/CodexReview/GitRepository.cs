@@ -6,6 +6,11 @@ using System.Threading.Tasks;
 
 namespace IronAbsolution.Tools.CodexReview;
 
+/// <summary>The hash and the full message of one commit.</summary>
+/// <param name="Sha">The full hash of the commit.</param>
+/// <param name="Message">The subject and the body, as `git log --format=%B` gives them.</param>
+public sealed record CommitMessage(string Sha, string Message);
+
 /// <summary>Runs git in one checkout. Every failure carries the command, the exit code, and stderr (T-2).</summary>
 public sealed class GitRepository
 {
@@ -44,6 +49,46 @@ public sealed class GitRepository
     public string MergeBase(string first, string second)
     {
         return this.Run(["merge-base", first, second]).Trim();
+    }
+
+    /// <summary>
+    /// Gives every path that changes from the first revision to the second. A move gives both
+    /// paths, because the rename detection of git hides the old path. A code file that moves into
+    /// `docs/` then still counts as a code change.
+    /// </summary>
+    /// <param name="mergeBase">The start of the diff.</param>
+    /// <param name="head">The end of the diff.</param>
+    /// <returns>Each changed path, with forward slashes, in the order of git.</returns>
+    /// <exception cref="InvalidOperationException">A revision is not valid, or git failed.</exception>
+    public IReadOnlyList<string> ChangedPaths(string mergeBase, string head)
+    {
+        string output = this.Run(["diff", "--name-only", "--no-renames", mergeBase, head]);
+        return output.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+    }
+
+    /// <summary>Gives the full message of each commit that the head holds and the base does not, newest first.</summary>
+    /// <param name="baseRevision">The base of the range. The range does not hold it or its ancestors.</param>
+    /// <param name="head">The end of the range.</param>
+    /// <returns>The hash and the message of each commit.</returns>
+    /// <exception cref="InvalidOperationException">A revision is not valid, git failed, or git gave a record of another form.</exception>
+    public IReadOnlyList<CommitMessage> CommitMessages(string baseRevision, string head)
+    {
+        // `-z` ends each record with a NUL byte, so a message with blank lines stays one record.
+        string output = this.Run(["log", "-z", "--format=%H%n%B", $"{baseRevision}..{head}"]);
+        List<CommitMessage> messages = [];
+        foreach (string record in output.Split('\0', StringSplitOptions.RemoveEmptyEntries))
+        {
+            int lineEnd = record.IndexOf('\n', StringComparison.Ordinal);
+            if (lineEnd < 0)
+            {
+                throw new InvalidOperationException(
+                    $"`git log {baseRevision}..{head}` in '{this.path}' gave the record '{record}'. The expected form is the hash, a line end, and the message.");
+            }
+
+            messages.Add(new CommitMessage(record[..lineEnd], record[(lineEnd + 1)..]));
+        }
+
+        return messages;
     }
 
     /// <summary>

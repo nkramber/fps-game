@@ -9,6 +9,7 @@ Status: the owner accepts it on the condition of D-27. Written in ASD-STE100 (D-
 - 2026-09-27 second pass: the owner answered the open questions (D-24 to D-38). The license is now MIT (D-24).
 - 2026-09-27 third pass: Steam lists a game with the name Emberline. The project name is now Iron Absolution (D-39).
 - 2026-09-27 fourth pass: the owner resolved the divergences of the PR-3 port (D-46 to D-53). D-53 corrects exit test 3 of PR-3. D-55 scopes G-12 to the game.
+- 2026-09-27 fifth pass: the owner resolved the divergences of the PR-4 port (D-56 to D-59).
 
 ## 1. Thesis
 
@@ -201,10 +202,12 @@ PR-3 ports `make codex-review PR=<n>` from what-you-carry (D-14). It ports the p
 
 #### PR-4: Documents gate and handoff rotation
 
-PR-4 ports the doc-gate and handoff-rotate commands of what-you-carry. The doc-gate job reads the Documents section of the PR and checks that the newest handoff entry names the branch.
+PR-4 ports the doc-gate and handoff-rotate commands of what-you-carry. The doc-gate job reads the Documents section of the PR and checks that the newest handoff entry names the branch. D-56 to D-59 resolve the divergences of the port. They set the workflow file of the gate, its rule set, the sort of an entry out of place, and the Makefile target.
 
 - Exit tests: 1. A PR with an empty Documents line gets a red check. 2. Rotation moves the eleventh entry to the archive.
+- Review focus: the rules against the diff, the parse of a handoff with no title, and the inputs of the workflow.
 - Gate: exit tests 1 and 2 pass.
+- Status: ✅ done in PR #5.
 
 > *In plain English:* A machine checks that each PR says what it did to each document, and it keeps the handoff short.
 

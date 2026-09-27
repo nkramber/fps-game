@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using IronAbsolution.Tools.CodexReview;
+using IronAbsolution.Tools.DocGate;
+using IronAbsolution.Tools.HandoffRotate;
 using IronAbsolution.Tools.SteCheck;
 
 namespace IronAbsolution.Tools;
@@ -16,8 +18,6 @@ public static class Program
     public static readonly IReadOnlyDictionary<string, string> PlannedCommands =
         new SortedDictionary<string, string>(StringComparer.Ordinal)
         {
-            ["doc-gate"] = "PR-4",
-            ["handoff-rotate"] = "PR-4",
             ["review-gate"] = "PR-6",
         };
 
@@ -58,6 +58,16 @@ public static class Program
             return CodexReviewCommand.Run(args[1..], output, errors);
         }
 
+        if (command == DocGateCommand.Name)
+        {
+            return DocGateCommand.Run(args[1..], output, errors);
+        }
+
+        if (command == HandoffRotateCommand.Name)
+        {
+            return HandoffRotateCommand.Run(args[1..], output, errors);
+        }
+
         if (PlannedCommands.TryGetValue(command, out string? pullRequest))
         {
             errors.WriteLine(
@@ -75,6 +85,8 @@ public static class Program
         errors.WriteLine("The commands that exist:");
         errors.WriteLine($"  {SteCheckCommand.Name}: ready");
         errors.WriteLine($"  {CodexReviewCommand.Name}: ready");
+        errors.WriteLine($"  {DocGateCommand.Name}: ready");
+        errors.WriteLine($"  {HandoffRotateCommand.Name}: ready");
         errors.WriteLine("The planned commands, with the PR that adds each one:");
         foreach (KeyValuePair<string, string> entry in PlannedCommands)
         {

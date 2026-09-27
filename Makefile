@@ -9,7 +9,7 @@ TOOLS_PROJECT := IronAbsolution.Tools/IronAbsolution.Tools.csproj
 # macOS is absent on Windows, where npm writes a `codex.cmd` shim.
 CODEX ?= $(shell npm root --global)/@openai/codex/bin/codex.js
 
-.PHONY: verify where hooks build test format ste-check codex-review clean
+.PHONY: verify where hooks build test format ste-check handoff-rotate codex-review clean
 
 ## verify: every check that this machine can run.
 verify: build test format ste-check
@@ -33,6 +33,15 @@ format:
 # project itself, as the pre-commit hook does, so the target runs alone too.
 ste-check:
 	dotnet run --project $(TOOLS_PROJECT) -- ste-check --root .
+
+## handoff-rotate: keep the 10 newest handoff entries, and move each older entry to the archive (D-58, D-59).
+#
+# Run it after you add the handoff entry, and before the commit. The command also puts an
+# entry that sits under an older one back in its place, and it names that entry. It prints the
+# next session number. The doc-gate command has no target. The doc-gate workflow runs it on
+# each PR (D-56).
+handoff-rotate:
+	dotnet run --project $(TOOLS_PROJECT) -- handoff-rotate --root .
 
 ## codex-review: the cross-provider review of one PR through the Codex CLI (D-14, D-47).
 #

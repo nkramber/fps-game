@@ -1,3 +1,41 @@
+## Session 12: 2026-09-27, Claude Code
+
+Author: Claude Code
+Session: author PR-4, round 1. Repository: iron-absolution. Branch: `feat/pr-4-doc-gate-rotation`. PR: #5. Role: author. Base: `6acc6a85798182781a6fc1193c6e37d90dd03020`.
+
+### What this session did, and why
+
+- Ran the exit tests of PR-3 on a clean `main` first: `make hooks`, then `make`. The result was 232 tests, a clean format, and 0 findings.
+- Ported the `doc-gate` and `handoff-rotate` commands of what-you-carry, with their tests. The owner resolved four divergences as D-56 to D-59.
+- D-56 gives the gate its own workflow, `.github/workflows/doc-gate.yml`, because the `edited` event in `ci.yml` would cancel the build.
+- D-57 takes the full rule set. D-58 sorts an entry out of place back in order. D-59 adds `make handoff-rotate`.
+- Updated the agent files, the PR template, the one-pr-one-session skill, the runbook, and the PR-4 entry of the design doc.
+- This session ran `make handoff-rotate` on this entry. It moved session 2 to the archive, which is exit test 2 on the live files.
+
+### The state of the build
+
+- `make` passes on the Mac. The test count and the checks of the pushed head are in the PR.
+- The remote head is the commit of this entry on `feat/pr-4-doc-gate-rotation`. The state is pending merge.
+
+### What is in flight
+
+- The checks of PR #5, then `make codex-review PR=5` (D-54).
+- Exit test 1 runs on PR #5 itself: the first description leaves one Documents line empty, and the `doc-gate` check must go red.
+
+### Traps and gotchas
+
+- The handoff has no title. Its first line is the newest heading, so a parse that looks for a line end before the heading skips the newest entry.
+- The session line writes `` Branch: `<branch>` `` with a colon. The gate looks for that exact form.
+- The `doc-gate` check reads the description of the PR. Edit the description, not a file, to fix a Documents line.
+
+### The questions that block progress
+
+- None blocks PR-4. OQ-16 still holds gitar (D-7).
+
+### The next concrete action
+
+- Finish the review loop of PR #5, then give the owner the merge summary.
+
 ## Session 11: 2026-09-27, Claude Code
 
 Author: Claude Code
@@ -313,36 +351,3 @@ Session: author PR-2, round 1. Repository: iron-absolution. Branch: `feat/pr-2-t
 ### The next concrete action
 
 - The owner starts the Codex review of PR #3.
-
-## Session 2: 2026-09-27, Codex
-
-Author: Codex
-Session: reviewer PR-1, round 2. Repository: fps-game. Branch: `docs/pr-1-foundation`. PR: #2. Role: reviewer. Base: `bfb71cfcf715e35b0df336605a759606cc4d7345`.
-
-### What this session did, and why
-
-- Reviewed the full PR-1 diff against the roadmap, decisions, questions, and exit tests.
-- Checked local and external links, ids, the author provider, and the primary-source claims.
-- Added `docs/reviews/pr-2.md`. No finding changes a phase, its order, or its gate (D-27).
-- Committed and pushed the review record and this handoff entry.
-
-### The state of the build
-
-- The effective implementation head is `a9fb5caf0fa6860fe33426aa7672bf24b6597ba3`. No CI checks exist on PR #2. PR-2 creates the ste-check job.
-
-### What is in flight
-
-- PR #2 needs the owner's merge decision.
-
-### Traps and gotchas
-
-- The role-model `ste-check` reports `DOCS 1` and `AGENTS 2` findings that do not apply here. See `docs/reviews/pr-2.md`.
-- Xcode 16.2 cannot build Unreal Engine 5.8. Phase 1 needs Xcode 26.1.1 (D-28).
-
-### The questions that block progress
-
-- None blocks PR-1. OQ-9, OQ-10, and OQ-12 wait for phase 2. OQ-16 waits for gitar. OQ-21 waits for phase 8.
-
-### The next concrete action
-
-- The owner can review the four-part merge summary and decide whether to merge.

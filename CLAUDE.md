@@ -67,7 +67,7 @@ At the end of a session, do these steps:
 1. Fetch the remote.
 2. Print the highest session number with `grep -m1 '^## Session ' docs/session-handoff.md`, and add one.
 3. Add a new entry at the top with one edit. Never append to an older entry.
-4. Keep the ten newest entries. PR-4 adds the rotation command that moves older entries to the archive.
+4. Run `make handoff-rotate`. It keeps the ten newest entries and moves each older entry to the archive (D-58).
 5. Commit the entry with the work that it describes.
 6. Push, then fetch, and check that the status shows no `[ahead N]`.
 
@@ -158,10 +158,11 @@ The Makefile is the entry point (D-41). Run each target from the checkout root.
 
 - `make`: build, test, format, and ste-check. Run it before each push.
 - `make ste-check`: the STE checker, the reference check, the session number check, and the size check (D-17).
+- `make handoff-rotate`: move each handoff entry after the tenth to the archive, and print the next session number (D-58, D-59).
 - `make hooks`: install the pre-commit hook in this checkout, one time (D-43).
 - `make codex-review PR=<n>`: the cross-provider review of one PR. The exit codes are 0 approve, 10 changes, 11 three-strike stop, 3 refused start, and 1 fault (D-14).
 
-The CI of each PR runs the `ste-check`, `build, test, and format`, and `coverage report` jobs (D-42, D-45).
+The CI of each PR runs the `ste-check`, `build, test, and format`, and `coverage report` jobs (D-42, D-45). The `doc-gate` workflow runs on each push and on each edit of the description (D-56).
 
 ## PR gate
 
@@ -170,7 +171,7 @@ A PR merges only when every line holds:
 - [ ] Tests written and green (T-3). A PR of documents alone needs the ste-check job instead.
 - [ ] No silent failure. Every error carries context (T-2).
 - [ ] The `ste-check` job is green.
-- [ ] The `doc-gate` job is green. PR-4 creates it.
+- [ ] The `doc-gate` job is green (D-56, D-57).
 - [ ] The other provider reviewed the PR, and its review record says `Ready for owner merge` for the effective head (T-4, D-14).
 - [ ] The `review-gate` check is green. PR-6 creates it.
 - [ ] No review thread stays open, and the ruleset of `main` holds. PR-5 creates the ruleset.

@@ -23,6 +23,8 @@ public sealed class ProgramTests
         Assert.Contains("no command", errors.ToString(), StringComparison.Ordinal);
         Assert.Contains("ste-check: ready", errors.ToString(), StringComparison.Ordinal);
         Assert.Contains("codex-review: ready", errors.ToString(), StringComparison.Ordinal);
+        Assert.Contains("doc-gate: ready", errors.ToString(), StringComparison.Ordinal);
+        Assert.Contains("handoff-rotate: ready", errors.ToString(), StringComparison.Ordinal);
         Assert.Empty(output.ToString());
     }
 
@@ -39,8 +41,6 @@ public sealed class ProgramTests
     }
 
     [Theory]
-    [InlineData("doc-gate", "PR-4")]
-    [InlineData("handoff-rotate", "PR-4")]
     [InlineData("review-gate", "PR-6")]
     public void APlannedCommandIsAFaultThatNamesThePullRequest(string command, string pullRequest)
     {

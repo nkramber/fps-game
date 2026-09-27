@@ -1,0 +1,62 @@
+# The documents gate of every PR (D-5, D-22, D-56, D-57). The rules live in the `doc-gate`
+# command of IronAbsolution.Tools. This file only gathers the inputs.
+#
+# The gate has its own workflow, and not a job in ci.yml (D-56). The `edited` type runs the gate
+# again when the author corrects the description. In ci.yml, that event would start the build,
+# test, and coverage jobs again, and cancel the run of the same head.
+#
+# The description and the title reach the tool through the environment and a file, never
+# through the text of the shell, so no text of a PR runs as a command. The event is
+# pull_request, so the tool comes from the PR head. A PR can change the rules that judge it, and
+# the cross-provider review of the tools covers that change (T-4).
+name: doc-gate
+
+on:
+  pull_request:
+    types: [opened, edited, reopened, synchronize]
+
+# The job reads the checkout alone (T-2).
+permissions:
+  contents: read
+
+# A newer event of a PR cancels the older run of this workflow for that PR, so the runner
+# serves the newest head and the newest description.
+concurrency:
+  group: doc-gate-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+env:
+  DOTNET_NOLOGO: "true"
+  DOTNET_CLI_TELEMETRY_OPTOUT: "true"
+
+jobs:
+  doc-gate:
+    name: doc-gate
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      PR_BODY: ${{ github.event.pull_request.body }}
+      PR_TITLE: ${{ github.event.pull_request.title }}
+      HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+      HEAD_REF: ${{ github.event.pull_request.head.ref }}
+      BASE_REF: ${{ github.event.pull_request.base.ref }}
+    steps:
+      # The full history gives the base branch, the merge base, and each commit of the PR.
+      - name: Check out the branch with its history
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Install the .NET SDK of global.json
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          global-json-file: global.json
+
+      - name: Write the PR description to a file
+        run: printf '%s\n' "$PR_BODY" > "$RUNNER_TEMP/pr-body.md"
+
+      - name: Check the documents of the PR
+        run: >-
+          dotnet run --project IronAbsolution.Tools/IronAbsolution.Tools.csproj --
+          doc-gate --root "$GITHUB_WORKSPACE" --base "origin/${BASE_REF}" --head "$HEAD_SHA"
+          --body "$RUNNER_TEMP/pr-body.md" --title "$PR_TITLE" --branch "$HEAD_REF"

@@ -6,15 +6,16 @@ Read this table when a question asks who catches a break of a rule. A row that n
 
 | Rule | Enforcement | Mechanism |
 |---|---|---|
-| The PR changes `docs/session-handoff.md`, and the newest entry names the PR branch | Machine after PR-4, agent before | `doc-gate` (PR-4) |
-| The documents matrix gives each category exactly one line, with a disposition and a reason of five words or more | Machine after PR-4, agent before | `doc-gate` (PR-4) |
-| Each matrix line agrees with the changed paths | Machine after PR-4, agent before | `doc-gate` (PR-4) |
-| The description and the newest handoff entry put no documents off to later work | Machine after PR-4, by a fixed list of phrases | `doc-gate` (PR-4) |
+| The PR changes `docs/session-handoff.md`, and the newest entry names the PR branch | Machine | `doc-gate` (D-57) |
+| The documents matrix gives each category exactly one line, with a disposition and a reason of five words or more | Machine | `doc-gate` (D-57) |
+| Each matrix line agrees with the changed paths | Machine | `doc-gate` (D-57) |
+| The description and the newest handoff entry put no documents off to later work | Machine, by a fixed list of phrases | `doc-gate` (D-57) |
+| No title or branch names a merge record of an earlier PR | Machine | `doc-gate` (D-5, D-57) |
 | Each document follows STE, each cited id and path resolves, and no live document cites a superseded decision as current | Machine | The `ste-check` job and the pre-commit hook (D-17, D-43) |
 | The agent files, each skill file, and the top handoff entry stay under their byte limits | Machine | The SIZE rules of `ste-check` (D-17) |
 | `CLAUDE.md` and `AGENTS.md` stay identical | Machine | The AGENTS 1 rule of `ste-check` (D-12) |
 | Each session number is new, and the entries stay newest first | Machine | The HANDOFF rules of `ste-check`. The session fetches first (L-2) |
-| The handoff keeps 10 entries, and each older entry moves to the archive with its text intact | Machine, when the session runs the command | HANDOFF 3 of `ste-check` finds the eleventh entry. PR-4 adds `handoff-rotate` |
+| The handoff keeps 10 entries, and each older entry moves to the archive with its text intact | Machine, when the session runs the command | HANDOFF 3 of `ste-check` finds the eleventh entry. `make handoff-rotate` moves it and puts an entry out of place back in order (D-58, D-59) |
 | No commit lands on `main` or on no branch | Machine | The pre-commit hook (D-43). After PR-5, the ruleset of `main` too |
 | The handoff and the review record do not move the work head, and a documents commit does not move the effective head | Machine | `make codex-review` reads the metadata set (D-14) and the documents set (D-49) |
 | A session reads the newest handoff entry, looks up register ids in one command, and waits on checks with one command | Agent | The read order of `AGENTS.md`, this skill, and `docs/runbooks/session-context.md` |
@@ -29,7 +30,7 @@ Read this table when a question asks who catches a break of a rule. A row that n
 | No review round uses API pricing | Machine | `make codex-review` removes the API credential variables and uses the ChatGPT login (D-14, D-53) |
 | The owner confirms each merge after the merge summary: What, How, CI, and Codex review | Agent and owner | `references/review-and-merge.md` asks with `AskUserQuestion`. No machine reads the summary or the confirmation |
 | The owner merges until PR-6, and auto-merge can merge after it | Owner, then machine | D-5, and the auto-merge of PR-6 (D-12) |
-| No commit or PR carries an attribution line | Machine for the trailers, agent and owner for the text | `.claude/settings.json` sets the attribution to empty text (T-6, D-16) |
+| No commit or PR carries an attribution line | Machine for the trailers and the generation lines, agent and owner for the text | `.claude/settings.json` sets the attribution to empty text (T-6, D-16). `doc-gate` refuses a co-author trailer, a generation line, or a robot line in the title, the description, or a commit (D-57) |
 | A reason is true and specific | Agent and owner | The author writes it, and the cross-provider review checks it |
 | The design doc, the registers, and the roadmap agree with the PR | Agent | The author, then the cross-provider review |
 | A session starts clean and works on one PR | Agent and owner | The start gate of this skill. The owner starts a new session for each PR |
