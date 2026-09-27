@@ -1,8 +1,8 @@
-# fps-game: agent instructions
+# iron-absolution: agent instructions
 
 `CLAUDE.md` and `AGENTS.md` are identical (D-12). Edit both together. Both files follow ASD-STE100 (D-17).
 
-The project is an original, fast first-person shooter with limited resources, in Unreal Engine 5. The goal is one complete, polished level that the player can play again (D-1, D-37). The working title and project name is Emberline (D-26). The repository holds no game code yet.
+The project is an original, fast first-person shooter with limited resources, in Unreal Engine 5. The goal is one complete, polished level that the player can play again (D-1, D-37). The working title is Iron Absolution, and the project name in code is `IronAbsolution` (D-39). The repository holds no game code yet.
 
 ## First action
 
@@ -76,7 +76,7 @@ Each entry has this form (D-20):
 ```
 ## Session N: <UTC date>, <Claude Code|Codex>
 Author: <Claude Code|Codex>
-Session: author PR-N, round K. Repository: fps-game. Branch: `<branch>`. PR: #<n>. Role: author. Base: `<sha>`.
+Session: author PR-N, round K. Repository: iron-absolution. Branch: `<branch>`. PR: #<n>. Role: author. Base: `<sha>`.
 ### What this session did, and why
 ### The state of the build
 ### What is in flight
@@ -95,7 +95,7 @@ After the PR of the session merges, write one prompt that starts the next sessio
 Start PR-<n>: <the one concern>
 
 PR #<x> merged to `main` as <sha>. Read the newest session handoff entry first.
-Repository: fps-game. Branch: `<prefix>/pr-<n>-<slug>`. Base: `<sha>`. Role: author.
+Repository: iron-absolution. Branch: `<prefix>/pr-<n>-<slug>`. Base: `<sha>`. Role: author.
 Load the skills of the task before any change.
 <Each exit test of the merged PR that needs `main`, and the order: run it before the PR work.>
 Open questions for this PR: <each OQ-# with its subject, or `none`>.
@@ -114,7 +114,7 @@ First action: <the first concrete action>.
 
 ## Code rules
 
-The repository has no code yet. PR-2 adds the C# tools project and its conventions (D-15).
+The C# tools project `IronAbsolution.Tools` holds the commands of the repository gates (D-15). Load `.claude/skills/csharp-conventions/SKILL.md` before you write or review C# (D-44).
 
 - Unreal best practices govern each rule and each implementation of the engine work, the game code, and the content (D-34). A tenet or a role-model rule gives way to them in that scope.
 - Follow the Epic C++ coding standard: https://dev.epicgames.com/documentation/unreal-engine/epic-cplusplus-coding-standard-for-unreal-engine.
@@ -138,7 +138,7 @@ The provider that did not write the PR reviews it (D-6). Codex reviews a PR that
 PR-3 adds `make codex-review PR=<n>` (D-14). Until PR-3 merges, the owner starts Codex by hand in a clean checkout of the PR head, with this prompt:
 
 ```
-Review PR #<n> of nkramber/fps-game as the cross-provider reviewer.
+Review PR #<n> of nkramber/iron-absolution as the cross-provider reviewer.
 Read AGENTS.md, the newest handoff entry, and docs/reviews/readme.md.
 Confirm that the Author field of the handoff names the other provider. If not, stop with the verdict Blocked.
 Review the full diff against the roadmap entry, its exit tests, the tenets, and the registers.
@@ -152,7 +152,13 @@ Gitar is a documented plan only (D-7). Add no gitar step, wait, script, template
 
 ## Build and test commands
 
-No build, test, or check command exists yet. PR-2 adds the tools project, the Makefile, and `ste-check`. Until then, check each document by hand against the ste-writing skill, and check each link and id.
+The Makefile is the entry point (D-41). Run each target from the checkout root.
+
+- `make`: build, test, format, and ste-check. Run it before each push.
+- `make ste-check`: the STE checker, the reference check, the session number check, and the size check (D-17).
+- `make hooks`: install the pre-commit hook in this checkout, one time (D-43).
+
+The CI of each PR runs the `ste-check`, `build, test, and format`, and `coverage report` jobs (D-42, D-45).
 
 ## PR gate
 
@@ -160,7 +166,7 @@ A PR merges only when every line holds:
 
 - [ ] Tests written and green (T-3). A PR of documents alone needs the ste-check job instead.
 - [ ] No silent failure. Every error carries context (T-2).
-- [ ] The `ste-check` job is green. PR-2 creates it.
+- [ ] The `ste-check` job is green.
 - [ ] The `doc-gate` job is green. PR-4 creates it.
 - [ ] The other provider reviewed the PR, and its review record says `Ready for owner merge` for the effective head (T-4, D-14).
 - [ ] The `review-gate` check is green. PR-6 creates it.

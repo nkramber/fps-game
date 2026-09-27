@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Tests runs under Microsoft.Testing.Platform (MTP), and `xunit.v3` is the one test
+    package (D-40). Coverlet writes the Cobertura file that ReportGenerator reads (D-45).
+  -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>IronAbsolution.Tests</RootNamespace>
+    <AssemblyName>IronAbsolution.Tests</AssemblyName>
+    <IsPackable>false</IsPackable>
+    <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
+    <!--
+      The generated entry point of `xunit.v3` runs the console runner unless this property
+      is on. The console runner reads no extension, so the coverage option of Coverlet fails there.
+    -->
+    <UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="xunit.v3" Version="4.0.1" />
+    <PackageReference Include="coverlet.MTP" Version="10.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../IronAbsolution.Tools/IronAbsolution.Tools.csproj" />
+  </ItemGroup>
+
+</Project>

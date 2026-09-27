@@ -14,7 +14,7 @@ Source: ASD-STE100 Issue 8 (2021-04-30), Part 1, Writing rules. Issue 9 (2025-01
 1. Write the text.
 2. Check each sentence against the checklist below.
 3. Correct each sentence that fails.
-4. Run the checker before each commit, when PR-2 adds it.
+4. Run `make ste-check` before each commit. The pre-commit hook runs it too (D-43).
 5. Read the text again as a reader who does not know the subject.
 
 ## Checklist (the rules that fail most often)
@@ -116,7 +116,7 @@ Source: ASD-STE100 Issue 8 (2021-04-30), Part 1, Writing rules. Issue 9 (2025-01
 
 The rules permit these as written. They are technical names (rule 1.5):
 
-- The working title and project name: Emberline (D-26). The repository: fps-game.
+- The working title: Iron Absolution. The project name in code: IronAbsolution (D-39). The repository: iron-absolution.
 - The role models: what-you-carry, the-thing-below.
 - Tools and platforms: Unreal Engine, Unreal Editor, Blueprint, Enhanced Input, World Partition, Lumen, Nanite, TSR, Temporal Super Resolution, Xcode, macOS, Windows, Apple Silicon, C++, C#, .NET, Python, Git, Git LFS, GitHub, GitHub Actions, Makefile, Meshy, Blender, Houdini, gitar.
 - The two harnesses: Claude Code, Codex.
@@ -155,7 +155,7 @@ Process terms:
 
 ## The checker
 
-PR-2 ports the `ste-check` command of the-thing-below into the tools project of this repository (D-15, D-17). Until then, check each file by hand against this skill. The command reads every live document that git tracks. It prints one line for each finding: the file, the line, the rule id, and what the rule saw. It exits 1 on any finding.
+The `ste-check` command of the tools project is a port of the checker of the-thing-below (D-15, D-17). Run it with `make ste-check`. The command reads every live document that git tracks. It prints one line for each finding: the file, the line, the rule id, and what the rule saw. It exits 1 on any finding.
 
 | Rule id | What the checker flags |
 |---|---|

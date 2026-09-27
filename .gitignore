@@ -30,3 +30,9 @@ Thumbs.db
 crashinfo*
 
 # Keep source assets, project files, plugins, and config under version control.
+
+# .NET build output and test results of the tools project (D-15)
+bin/
+obj/
+TestResults/
+artifacts/

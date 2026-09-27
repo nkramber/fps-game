@@ -1,0 +1,125 @@
+# The build, test, format, coverage, and STE checks of every PR (D-15, D-17, D-42, D-45).
+#
+# The runner uses a label with a version, and a move to a newer image takes a PR (D-42).
+# Each action pins a full commit SHA, and every other download checks its SHA-512 (D-42).
+# PR-2 runs the tools on Linux alone. The engine CI of phase 1 adds its own jobs (D-31).
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+# The jobs read the checkout alone (T-2).
+permissions:
+  contents: read
+
+# A PR shares one group, and a new push cancels the run of the older head. Each push to `main`
+# takes a group of its own commit, so a quick second merge never drops the run of the first.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.ref || github.sha }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  DOTNET_NOLOGO: "true"
+  DOTNET_CLI_TELEMETRY_OPTOUT: "true"
+  REPORT_GENERATOR_VERSION: "5.5.11"
+  # The SHA-512 of the package file of that version. It matches the `packageHash` of the
+  # NuGet catalog entry of the version.
+  REPORT_GENERATOR_SHA512: 5a971b175a894b20c276a7f892d4f24d0b2a5c7f16c29d1698fdc501d967e4e5ef5d60b9dc84a9ceda321994c7e288786352d1f91f5afc82ad97cf74db9edad5
+
+jobs:
+  ste-check:
+    name: ste-check
+    # Every document PR takes this check, so it reads no path rule (D-17).
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Check out the branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install the .NET SDK of global.json
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          global-json-file: global.json
+
+      # The command reads every live document that git tracks and holds the four dated record paths (D-17).
+      - name: Run the STE checker
+        run: dotnet run --project IronAbsolution.Tools/IronAbsolution.Tools.csproj -- ste-check --root .
+
+  build-test-format:
+    name: build, test, and format
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Check out the branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install the .NET SDK of global.json
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          global-json-file: global.json
+
+      - name: Build the solution
+        run: dotnet build IronAbsolution.slnx --configuration Release
+
+      - name: Run every test
+        run: dotnet test --solution IronAbsolution.slnx --configuration Release --no-build
+
+      - name: Check the format
+        run: dotnet format IronAbsolution.slnx --verify-no-changes
+
+  coverage:
+    name: coverage report
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Check out the branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install the .NET SDK of global.json
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          global-json-file: global.json
+
+      - name: Build the solution
+        run: dotnet build IronAbsolution.slnx --configuration Release
+
+      - name: Measure the coverage with Coverlet
+        run: |
+          dotnet test --solution IronAbsolution.slnx --configuration Release --no-build \
+            -- --coverlet --coverlet-output-format cobertura --results-directory artifacts/coverage
+
+      # The step downloads the package file, checks its SHA-512, and installs from that folder
+      # alone (D-42).
+      - name: Write the Markdown summary with ReportGenerator
+        run: |
+          set -euo pipefail
+          package="dotnet-reportgenerator-globaltool.$REPORT_GENERATOR_VERSION.nupkg"
+          mkdir -p report-generator-download
+          curl --location --fail --silent --show-error \
+            --output "report-generator-download/$package" \
+            "https://api.nuget.org/v3-flatcontainer/dotnet-reportgenerator-globaltool/$REPORT_GENERATOR_VERSION/$package"
+          actual=$(sha512sum "report-generator-download/$package" | cut -d ' ' -f 1)
+          if [ "$actual" != "$REPORT_GENERATOR_SHA512" ]; then
+            echo "The SHA-512 of $package does not match the value of this workflow (T-2)." >&2
+            echo "  expected: $REPORT_GENERATOR_SHA512" >&2
+            echo "  actual:   $actual" >&2
+            exit 1
+          fi
+          echo "The SHA-512 of $package matches."
+          dotnet tool install --global dotnet-reportgenerator-globaltool \
+            --version "$REPORT_GENERATOR_VERSION" --source "$PWD/report-generator-download"
+          reportgenerator \
+            "-reports:artifacts/coverage/*.cobertura.*xml" \
+            "-targetdir:artifacts/coverage-report" \
+            "-reporttypes:MarkdownSummaryGithub;Cobertura"
+          cat artifacts/coverage-report/SummaryGithub.md >> "$GITHUB_STEP_SUMMARY"
+
+      # No coverage number fails the build. The review reads the report (D-45).
+      - name: Upload the coverage report
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: coverage-report
+          path: artifacts/coverage-report
+          retention-days: 14

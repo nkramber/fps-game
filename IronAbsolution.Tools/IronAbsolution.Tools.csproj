@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Tools holds the commands of the repository gates (D-15). PR-2 adds the ste-check command. -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>IronAbsolution.Tools</RootNamespace>
+    <AssemblyName>IronAbsolution.Tools</AssemblyName>
+  </PropertyGroup>
+
+</Project>

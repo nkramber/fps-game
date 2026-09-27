@@ -5,7 +5,7 @@ Status: research, checked 2026-09-26. The link check ran on 2026-09-27. Written 
 - Purpose: give evidence for the roadmap in `docs/design.md`, and find the choices that the owner must make. This file does not design systems.
 - Labels: **evidence** comes from the machine or from a primary source. A **recommendation** is advice, not a decision. An **assumption** has no check yet. An **unknown** had no answer.
 - The registers hold the settled items (`docs/decisions.md`) and the open items (`docs/questions.md`). Nothing here is a decision.
-- On 2026-09-27 the owner decided most choices of this file: D-24 and D-26 to D-38. Where a recommendation below differs from a decision, the decision wins.
+- On 2026-09-27 the owner decided most choices of this file: D-24 and D-26 to D-38. Later that day, D-39 superseded D-26. Where a recommendation below differs from a decision, the decision wins.
 
 ## 0. Development machine
 

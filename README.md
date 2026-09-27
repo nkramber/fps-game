@@ -1,10 +1,10 @@
-# fps-game
+# iron-absolution
 
-Emberline (working title, D-26) is an original, fast first-person shooter with limited resources, planned in Unreal Engine 5.8 for macOS and Windows. The first goal is one complete, polished level that the player can play again (D-1, D-37). Agents and people start at `AGENTS.md`.
+Iron Absolution (working title, D-39) is an original, fast first-person shooter with limited resources, planned in Unreal Engine 5.8 for macOS and Windows. The first goal is one complete, polished level that the player can play again (D-1, D-37). Agents and people start at `AGENTS.md`.
 
 ## Status
 
-- The repository holds plans and rules only. It has no Unreal project, no game code, and no assets. Nothing is playable.
+- The repository holds plans, rules, and a C# tools project that checks the documents. It has no Unreal project, no game code, and no assets. Nothing is playable.
 - The high-level roadmap is sections 7 and 8 of `docs/design.md`. The owner accepts it on the condition of D-27.
 - The next work is phase 0: the tools, the automatic Codex review, and the gates of the role models.
 
@@ -22,7 +22,7 @@ Emberline (working title, D-26) is an original, fast first-person shooter with l
 
 ## Setup
 
-No setup exists yet. Phase 1 of the roadmap proves and documents the engine, the toolchain, and Git LFS. PR-2 adds the tools project and its commands.
+The tools project needs the .NET SDK of `global.json`. Run `make` to build, test, and check the repository, and run `make hooks` one time. Phase 1 of the roadmap proves and documents the engine, the toolchain, and Git LFS.
 
 ## Repository conventions
 

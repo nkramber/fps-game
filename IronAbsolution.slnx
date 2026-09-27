@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="IronAbsolution.Tools/IronAbsolution.Tools.csproj" />
+  <Project Path="IronAbsolution.Tests/IronAbsolution.Tests.csproj" />
+</Solution>

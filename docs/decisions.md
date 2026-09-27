@@ -1,6 +1,6 @@
 # Decisions
 
-Status: active register. Owner: the owner of `nkramber/fps-game`. Started 2026-09-26. Written in ASD-STE100 (D-17).
+Status: active register. Owner: the owner of `nkramber/iron-absolution`. Started 2026-09-26. Written in ASD-STE100 (D-17).
 
 This file records each owner decision. Each decision has an id (D-#). The numbers never change. A reversed decision stays in this file with a dated note in the "Effect" column. These decisions are the source of the design doc (`docs/design.md`).
 
@@ -12,6 +12,7 @@ How to read this file:
 - The owner gave D-1 to D-11 in the brief of session 1 on 2026-09-26.
 - The owner gave D-12 to D-23 in answers to questions on 2026-09-27. The session asked each question with options and a recommended option.
 - The owner answered the open questions on 2026-09-27 in the same way. D-24 to D-38 record these answers.
+- The owner gave D-39 to D-45 on 2026-09-27 in PR-2. D-40 to D-45 resolve the divergences of the role models that the port of PR-2 met (D-13).
 - For D-15, the owner asked for the best fit, and the session recommended it. The owner then chose it.
 
 How to add a decision:
@@ -31,12 +32,13 @@ Find a row with `grep -n -E '^\| D-(12|14) \|' docs/decisions.md`.
 | D-2 | 2026-09-26 | Originality | The setting, characters, weapons, names, art, audio, and level design are all original. The project copies no protected game content. | Reference games inform feel and pacing, not mechanics, assets, names, or layouts. The review checks it. Each asset has a provenance record. |
 | D-3 | 2026-09-26 | Engine | The game uses Unreal Engine 5. | The exact version (OQ-4), the platforms (OQ-5), and the split between C++ and Blueprint (OQ-6) stay open. |
 | D-4 | 2026-09-26 | Level form | The first level is a compact, hand-authored level. World Partition is not a default. The project adopts large-world tools only when a measurement shows a need. | Binds the level architecture in `docs/research/technology-and-art-pipeline.md` section 4. |
-| D-26 | 2026-09-27 | Name | The Unreal project, its primary C++ module, and the tools project use the name Emberline. | Resolves OQ-3. PR-2 creates the tools project with this name. The display title can change at any time. |
+| D-26 | 2026-09-27 | Name | The Unreal project, its primary C++ module, and the tools project use the name Emberline. | Resolves OQ-3. PR-2 creates the tools project with this name. The display title can change at any time. Superseded by D-39 on 2026-09-27: Steam lists an upcoming game with the name Emberline. |
 | D-27 | 2026-09-27 | Roadmap acceptance | The owner accepts the high-level roadmap, on one condition. The Codex review of PR-1 must find nothing that changes a phase, its order, or its gate. | Resolves OQ-18. Focused roadmaps can start after the merge of PR-1 (D-11). |
 | D-32 | 2026-09-27 | Platforms and budget | The first level ships on macOS and Windows from the start. Windows: 120 fps at 1440p on the owner's PC (Intel Core i9-13900K, NVIDIA RTX 4090, 32 GB DDR5). macOS: 60 fps at 4K output on the M4 with 16 GB, through TSR from a measured internal resolution. Input: keyboard and mouse. | Resolves OQ-5. Gamepad support waits for OQ-21. D-33 sets the Windows validation. |
 | D-36 | 2026-09-27 | Direction method | Phase 2 gives two or three original proposals for the setting, tone, and art, and for the mechanic that gives resources back. The owner picks. The sandbox of phase 4 tests the mechanic before level production. | Sets the method of OQ-9 and OQ-10. The choices stay open. |
 | D-37 | 2026-09-27 | Level scope | The first clear takes 30 minutes or more, in a fuller level with more spaces and roster variety. Replay-value features are not a primary goal. "Replayable" in D-1 means that the player can start the level again and play it again. | Resolves OQ-11. Revises in part D-1. |
 | D-11 | 2026-09-26 | Roadmap order | The high-level roadmap comes first. The owner reviews and accepts it. Focused roadmaps for its phases come after that. | OQ-18 holds the acceptance. `docs/roadmaps/readme.md` gives the rule for focused roadmaps. |
+| D-39 | 2026-09-27 | Name | The working title is Iron Absolution. The Unreal project, its primary C++ module, and the tools project use the name `IronAbsolution`. The repository is `nkramber/iron-absolution`, and the local checkout folder is `iron-absolution`. | Supersedes D-26. The owner picked the name from a screen of candidates (`docs/research/name-screen.md`). The session renamed the GitHub repository and the local folder on the instruction of the owner. GitHub redirects the old URL. |
 
 ## Process, review, and tools
 
@@ -61,6 +63,12 @@ Find a row with `grep -n -E '^\| D-(12|14) \|' docs/decisions.md`.
 | D-31 | 2026-09-27 | Engine CI | Hosted runners run each check that needs no engine. Each engine PR attaches local logs of its build, tests, and package. | Resolves OQ-8. Think again at the gate of phase 3. |
 | D-33 | 2026-09-27 | Windows validation | The owner runs the Windows builds and tests from documented commands, and posts the logs in the PR. | Phase 1 writes the Windows commands. No session gets remote access to the Windows PC. |
 | D-35 | 2026-09-27 | Review override | After PR-6, the owner can add the `review-override` label of the role models to a PR with no code. That PR then merges without a Codex review. Only the owner adds the label. | Resolves OQ-19. Revises in part D-6. PR-6 adds the label to the review gate. |
+| D-40 | 2026-09-27 | Tools stack | The tools project follows the-thing-below: the target framework in `Directory.Build.props`, its strict build settings, xunit.v3 on the Microsoft Testing Platform, an `.editorconfig`, and a `dotnet format` check. A usage error exits 1. | Resolves a divergence of D-13 in PR-2. what-you-carry sets the framework in each project and uses xunit 2 on VSTest. |
+| D-41 | 2026-09-27 | Makefile | The Makefile follows the-thing-below. `make` alone runs `verify`. A separate `ste-check` target exists. | Resolves a divergence of D-13 in PR-2. what-you-carry prints help by default and runs ste-check inside `lint`. |
+| D-42 | 2026-09-27 | CI layout | The CI follows the-thing-below: one `ci.yml` workflow for every job, actions pinned by commit SHA, pinned runner images, and a time limit on each job. | Resolves a divergence of D-13 in PR-2. what-you-carry uses one workflow for each check and actions pinned by tag. |
+| D-43 | 2026-09-27 | Pre-commit hook | The repository has the pre-commit hook of the-thing-below. It refuses a commit on `main` or on no branch, and it runs ste-check. `make hooks` installs it. | Resolves a divergence of D-13 in PR-2. what-you-carry has no hook. |
+| D-44 | 2026-09-27 | C# skill | A new csharp-conventions skill covers the C# tools alone. It takes the errors, style, tests, and command rules of the-thing-below, and two rules of what-you-carry: no clever one-liners, and tune only on measurement. | Resolves a divergence of D-13 in PR-2. The determinism and Godot rules of both role models do not transfer (D-12). |
+| D-45 | 2026-09-27 | Test coverage | The test project writes coverage with coverlet, and a CI job writes a coverage report. No threshold applies. | Resolves a divergence of D-13 in PR-2. what-you-carry has no coverage. |
 
 ## Engine and technology
 
