@@ -225,6 +225,35 @@ public sealed class HandoffRotateTests
     }
 
     [Fact]
+    public void TheLargestSessionNumberIsAFaultThatChangesNoFile()
+    {
+        // Review P2-2 of PR #5: the next number of Session 2147483647 wrapped to -2147483648, and the command exited 0.
+        string root = Path.Combine(Path.GetTempPath(), "handoff-rotate-" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(Path.Combine(root, "docs"));
+        string handoffPath = Path.Combine(root, "docs", "session-handoff.md");
+        string archivePath = Path.Combine(root, "docs", "session-handoff-archive.md");
+        string handoff = Entries(int.MaxValue, int.MaxValue - 10);
+        try
+        {
+            File.WriteAllText(handoffPath, handoff);
+            File.WriteAllText(archivePath, ArchivePreamble);
+
+            (int exitCode, string output, string errors) = RunCommand("--root", root);
+
+            Assert.Equal(Program.FaultExitCode, exitCode);
+            Assert.Empty(output);
+            Assert.Contains("'docs/session-handoff.md' has Session 2147483647", errors, StringComparison.Ordinal);
+            Assert.Contains("No file changed.", errors, StringComparison.Ordinal);
+            Assert.Equal(handoff, File.ReadAllText(handoffPath));
+            Assert.Equal(ArchivePreamble, File.ReadAllText(archivePath));
+        }
+        finally
+        {
+            Directory.Delete(root, recursive: true);
+        }
+    }
+
+    [Fact]
     public void TheCommandMovesEntriesAndExitsZeroOrOne()
     {
         string root = Path.Combine(Path.GetTempPath(), "handoff-rotate-" + Guid.NewGuid().ToString("N"));

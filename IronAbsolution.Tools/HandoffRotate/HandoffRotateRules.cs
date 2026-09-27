@@ -90,8 +90,9 @@ public static class HandoffRotateRules
     /// <param name="archiveText">The text of the archive.</param>
     /// <returns>The two new texts, the moved and the sorted entries, and the next session number.</returns>
     /// <exception cref="InvalidOperationException">
-    /// The handoff has no entry, it holds one number two times, or the archive top is not older
-    /// than each moved entry. The message names the file and the number.
+    /// The handoff has no entry, it holds one number two times, its newest number has no next
+    /// number, or the archive top is not older than each moved entry. The message names the
+    /// file and the number.
     /// </exception>
     public static HandoffRotation Rotate(string handoffText, string archiveText)
     {
@@ -107,6 +108,13 @@ public static class HandoffRotateRules
 
         CheckNoDuplicate(handoff.Entries);
         IReadOnlyList<HandoffEntry> ordered = SortNewestFirst(handoff.Entries, out IReadOnlyList<int> reordered);
+        if (ordered[0].Number == int.MaxValue)
+        {
+            // The next number would wrap to a negative number (T-2).
+            throw new InvalidOperationException(
+                $"'{HandoffPath}' has Session {int.MaxValue}, the largest number that the command holds, so no next session number exists. Give the entry its correct session number.");
+        }
+
         int nextSession = ordered[0].Number + 1;
         if (ordered.Count <= KeepCount)
         {
