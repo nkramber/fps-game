@@ -1,3 +1,39 @@
+## Session 15: 2026-09-27, Codex
+
+Author: Codex
+Session: reviewer PR-5, round 2. Repository: iron-absolution. Branch: `feat/pr-4-doc-gate-rotation`. PR: #5. Role: reviewer. Base: `6acc6a85798182781a6fc1193c6e37d90dd03020`.
+
+### What this session did, and why
+
+- Rechecked the fix for P2-1 and the full PR-4 scope.
+- Ran the review in the `review/pr-5` worktree.
+- Found P2-2: session `2147483647` makes the next session value wrap to `-2147483648`.
+- Updated `docs/reviews/pr-5.md` with the fixed finding, the new finding, and the verdict for effective head `614847a`.
+- Corrected the stale test count in the PR description. Its `doc-gate` check passed again.
+
+### The state of the build
+
+- `make` passes at effective head `614847a`: 271 tests, clean format, and 0 ste-check findings.
+- The hosted build, coverage, `doc-gate`, and `ste-check` checks pass at that head.
+- The review record and this handoff entry are metadata changes on `feat/pr-4-doc-gate-rotation`. They do not move the effective head.
+
+### What is in flight
+
+- P2-2 needs a checked increment and a regression test that proves no file changes on overflow.
+
+### Traps and gotchas
+
+- `int.TryParse` rejects values above `Int32.MaxValue`, but `Int32.MaxValue` itself still overflows when the command adds one.
+- A description edit runs `doc-gate` again. The corrected test count passed that check.
+
+### The questions that block progress
+
+- None blocks this review. OQ-16 still holds the gitar plan under D-7.
+
+### The next concrete action
+
+- Correct P2-2, add its regression test, and start a new review round on the corrected head.
+
 ## Session 14: 2026-09-27, Claude Code
 
 Author: Claude Code
@@ -310,40 +346,3 @@ Session: reviewer PR-3, round 1. Repository: iron-absolution. Branch: `feat/pr-3
 ### The next concrete action
 
 - The author answers P2-1, then reruns the Windows process-launch test and the review.
-
-## Session 5: 2026-09-27, Claude Code
-
-Author: Claude Code
-Session: author PR-3, round 1. Repository: iron-absolution. Branch: `feat/pr-3-codex-review`. PR: #4. Role: author. Base: `e97da5a5238807c29c7a3bcdc5d4184dfb97f1b4`.
-
-### What this session did, and why
-
-- The exit tests of PR-2 passed on `main`: `make hooks`, then `make` gave 100 tests, a clean format, and 0 findings.
-- The session ported the `codex-review` command of what-you-carry into `IronAbsolution.Tools/CodexReview/` (D-14). The gitar start check stays out (D-7).
-- A subagent of the session ported the pr-review, review-response, and one-pr-one-session skills (D-46). The session read and corrected the three SKILL.md files and the merge steps.
-- The owner answered eight divergences and one conflict: D-46 to D-53. D-53 corrects exit test 3 of PR-3.
-- The merge steps now give the two options of the owner: `Yes, squash-merge it` and `No, not yet`.
-
-### The state of the build
-
-- The effective head is `b0596f5`. `make` passes on the Mac: 226 tests, a clean format, and 0 findings of ste-check.
-- This entry commit is the remote head. The CI of PR #4 runs on it.
-
-### What is in flight
-
-- Exit test 2 needs a real run of `make codex-review PR=4`. It installs the newest Codex CLI with npm and uses the ChatGPT login of the owner.
-
-### Traps and gotchas
-
-- `make ste-check` reads tracked files alone. Run `git add` on a new document before the check.
-- The pre-commit hook refuses a commit on no branch, so the review worktree takes the branch `review/pr-<n>` (D-48).
-- The PR-1 and PR-2 entries of `docs/design.md` have no done mark. The PR-3 entry has one, as the one-pr-one-session skill asks.
-- The records of PR #2 and PR #3 use the old finding form `- Status:`. The new parser refuses that form, and those records stay as history.
-
-### The questions that block progress
-
-- None blocks PR-3.
-
-### The next concrete action
-
-- The owner confirms the first run of `make codex-review PR=4`. The session then answers the verdict with the review-response skill.
