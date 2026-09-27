@@ -1,3 +1,37 @@
+## Session 14: 2026-09-27, Claude Code
+
+Author: Claude Code
+Session: author PR-4, round 2. Repository: iron-absolution. Branch: `feat/pr-4-doc-gate-rotation`. PR: #5. Role: author. Base: `6acc6a85798182781a6fc1193c6e37d90dd03020`.
+
+### What this session did, and why
+
+- Review round 1 gave `Changes required` with one finding, P2-1: a session number too large for an int crashed `handoff-rotate` with exit 134.
+- The trigger reproduced, so the finding has full merit. `614847a` makes the parse a contextual fault with exit 1 in both commands.
+- Two regression tests fail on the old parse. `docs/reviews/pr-5-response.md` holds the answer.
+
+### The state of the build
+
+- The effective head is `614847a`. `make` passes on the Mac: 271 tests, a clean format, and 0 findings of ste-check.
+- The remote head is the commit of this entry. The state is pending merge.
+
+### What is in flight
+
+- The checks of the new head, then review round 2 with `make codex-review PR=5` (D-54).
+
+### Traps and gotchas
+
+- Exit test 1 ran on PR #5 itself: the first description had an empty `docs/runbooks/` line, and `doc-gate` went red. The edit made it green, and the build jobs did not run again.
+- The session line writes `` Branch: `<branch>` `` with a colon. The gate looks for that exact form.
+
+### The questions that block progress
+
+- None blocks PR-4. OQ-16 still holds gitar (D-7).
+
+### The next concrete action
+
+- Finish the review loop of PR #5, then give the owner the merge summary.
+- For a fresh session: the session number check of `ste-check` reads a heading number with `int.Parse`, so a number too large for an int stops the check with no context (T-2).
+
 ## Session 13: 2026-09-27, Codex
 
 Author: Codex
@@ -313,36 +347,3 @@ Session: author PR-3, round 1. Repository: iron-absolution. Branch: `feat/pr-3-c
 ### The next concrete action
 
 - The owner confirms the first run of `make codex-review PR=4`. The session then answers the verdict with the review-response skill.
-
-## Session 4: 2026-09-27, Claude Code
-
-Author: Claude Code
-Session: author PR-2, round 2. Repository: iron-absolution. Branch: `feat/pr-2-tools-ste-check`. PR: #3. Role: author. Base: `d9561582b1fd9cb25086705770a8d6529bdad5a5`.
-
-### What this session did, and why
-
-- The Codex review of head `b73d3c7` gave the verdict Changes required, with one finding: P2-1.
-- P2-1: rule STE 6.6 counted sentences across a heading. The fix ends the paragraph at a heading, a list item, a table row, and a fence.
-- `docs/reviews/pr-3-response.md` answers the finding. The regression test failed on the old code in each of its five cases.
-
-### The state of the build
-
-- The effective head is `cbc4689`. `make` passes on the Mac: 100 tests, a clean format, and 0 findings of ste-check.
-- This entry commit is the remote head. The session reads its CI before the owner starts the next review.
-
-### What is in flight
-
-- PR #3 needs a repeat Codex review of the new head.
-
-### Traps and gotchas
-
-- The same paragraph defect is in the checker of the-thing-below. This repository does not change that repository.
-- The hook of `make hooks` runs ste-check on each commit in this checkout.
-
-### The questions that block progress
-
-- None blocks PR-2.
-
-### The next concrete action
-
-- The owner starts the repeat Codex review of PR #3.
