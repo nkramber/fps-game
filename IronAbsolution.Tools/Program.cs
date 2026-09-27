@@ -4,6 +4,7 @@ using System.IO;
 using IronAbsolution.Tools.CodexReview;
 using IronAbsolution.Tools.DocGate;
 using IronAbsolution.Tools.HandoffRotate;
+using IronAbsolution.Tools.ReviewGate;
 using IronAbsolution.Tools.SteCheck;
 
 namespace IronAbsolution.Tools;
@@ -14,12 +15,12 @@ public static class Program
     /// <summary>The exit code of a run that found a fault (T-2, D-40).</summary>
     public const int FaultExitCode = 1;
 
-    /// <summary>The commands that no PR has written yet, and the PR that adds each one (G-8).</summary>
+    /// <summary>
+    /// The commands that no PR has written yet, and the PR that adds each one (G-8). PR-6 wrote
+    /// the last planned command of phase 0, so the list is empty until a roadmap plans another.
+    /// </summary>
     public static readonly IReadOnlyDictionary<string, string> PlannedCommands =
-        new SortedDictionary<string, string>(StringComparer.Ordinal)
-        {
-            ["review-gate"] = "PR-6",
-        };
+        new SortedDictionary<string, string>(StringComparer.Ordinal);
 
     /// <summary>Reads the command name and runs it.</summary>
     /// <param name="args">The command name, then the arguments of that command.</param>
@@ -68,6 +69,11 @@ public static class Program
             return HandoffRotateCommand.Run(args[1..], output, errors);
         }
 
+        if (command == ReviewGateCommand.Name)
+        {
+            return ReviewGateCommand.Run(args[1..], output, errors);
+        }
+
         if (PlannedCommands.TryGetValue(command, out string? pullRequest))
         {
             errors.WriteLine(
@@ -87,6 +93,13 @@ public static class Program
         errors.WriteLine($"  {CodexReviewCommand.Name}: ready");
         errors.WriteLine($"  {DocGateCommand.Name}: ready");
         errors.WriteLine($"  {HandoffRotateCommand.Name}: ready");
+        errors.WriteLine($"  {ReviewGateCommand.Name}: ready");
+        if (PlannedCommands.Count == 0)
+        {
+            errors.WriteLine("The planned commands: none.");
+            return;
+        }
+
         errors.WriteLine("The planned commands, with the PR that adds each one:");
         foreach (KeyValuePair<string, string> entry in PlannedCommands)
         {

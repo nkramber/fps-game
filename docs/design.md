@@ -226,10 +226,15 @@ PR-5 ports `.github/rulesets/main.json` and `docs/runbooks/main-ruleset.md` from
 
 #### PR-6: Review gate and auto-merge
 
-PR-6 ports the review-gate workflow. It reads the review record of the PR head as data and posts the review-gate check run. It honors the `review-override` label that only the owner adds to a PR with no code (D-35). It adds `review-gate` to the required checks of the ruleset of `main` (D-61). The owner turns on auto-merge in the repository settings. The auto-merge procedure of the role models then applies (D-12).
+PR-6 ports the review-gate workflow and the `review-gate` command. The workflow runs the tool of the base branch, and the tool reads the review record of the PR head as data. The job is the required check, and no mode file exists (D-64). The command honors the `review-override` label that only the owner adds to a PR with no code (D-35, D-65). A PR of documents alone merges through that label alone (D-66). PR-6 adds `review-gate` to the required checks in the file of the ruleset of `main` (D-61, D-64).
 
-- Exit tests: 1. A PR with no approving record for its head gets a red review-gate check. 2. A PR with an approving record gets a green check.
-- Gate: exit tests 1 and 2 pass.
+GitHub runs the workflow only from the default branch, so PR-6 gets no `review-gate` check. PR-6 merges under the four checks of D-61. The live ruleset takes `review-gate` after the merge, and the owner turns on auto-merge (D-67). The auto-merge procedure of the role models then applies (D-12).
+
+- Exit tests: 1. A PR with no approving record for its head gets a red review-gate check. 2. A PR with an approving record gets a green check. 3. After the merge, the comparison of the live ruleset with the file on `main` gives an empty diff.
+- Correction of 2026-09-27: the exit tests 1 and 2 need the workflow on `main`. The command tests prove both on real commits in PR-6. The first PR after PR-6 proves both on GitHub (D-67).
+- Review focus: the trust boundary of the workflow, the label rules against D-65, and the order of D-67.
+- Gate: exit tests 1 to 3 pass.
+- Status: ✅ done in PR #7.
 
 > *In plain English:* GitHub merges a PR by itself only after the checks, the Codex review, and the owner's confirmation.
 
@@ -338,7 +343,7 @@ After that, each phase gets a focused roadmap just before it starts. `docs/roadm
 4. PR-3: automatic Codex review.
 5. PR-4: documents gate and handoff rotation.
 6. PR-5: ruleset of main as code. The author session applies the live ruleset before the merge (D-63).
-7. PR-6: review gate and auto-merge. The owner turns on auto-merge.
+7. PR-6: review gate and auto-merge. After the merge, `review-gate` joins the live ruleset, and the owner turns on auto-merge (D-67).
 8. Gate of phase 0.
 9. The owner installs the engine and Xcode on the Mac, and the engine on the Windows PC (D-28, D-33).
 10. The focused roadmap of phase 1. Its PR ids continue after PR-6.

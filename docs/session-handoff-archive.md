@@ -2,6 +2,40 @@
 
 This file holds the entries that the rotation moves out of `docs/session-handoff.md`, newest first.
 
+## Session 14: 2026-09-27, Claude Code
+
+Author: Claude Code
+Session: author PR-4, round 2. Repository: iron-absolution. Branch: `feat/pr-4-doc-gate-rotation`. PR: #5. Role: author. Base: `6acc6a85798182781a6fc1193c6e37d90dd03020`.
+
+### What this session did, and why
+
+- Review round 1 gave `Changes required` with one finding, P2-1: a session number too large for an int crashed `handoff-rotate` with exit 134.
+- The trigger reproduced, so the finding has full merit. `614847a` makes the parse a contextual fault with exit 1 in both commands.
+- Two regression tests fail on the old parse. `docs/reviews/pr-5-response.md` holds the answer.
+
+### The state of the build
+
+- The effective head is `614847a`. `make` passes on the Mac: 271 tests, a clean format, and 0 findings of ste-check.
+- The remote head is the commit of this entry. The state is pending merge.
+
+### What is in flight
+
+- The checks of the new head, then review round 2 with `make codex-review PR=5` (D-54).
+
+### Traps and gotchas
+
+- Exit test 1 ran on PR #5 itself: the first description had an empty `docs/runbooks/` line, and `doc-gate` went red. The edit made it green, and the build jobs did not run again.
+- The session line writes `` Branch: `<branch>` `` with a colon. The gate looks for that exact form.
+
+### The questions that block progress
+
+- None blocks PR-4. OQ-16 still holds gitar (D-7).
+
+### The next concrete action
+
+- Finish the review loop of PR #5, then give the owner the merge summary.
+- For a fresh session: the session number check of `ste-check` reads a heading number with `int.Parse`, so a number too large for an int stops the check with no context (T-2).
+
 ## Session 13: 2026-09-27, Codex
 
 Author: Codex

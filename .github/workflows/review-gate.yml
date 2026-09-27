@@ -1,0 +1,94 @@
+# The review gate of every PR (T-4, D-35, D-49, D-64 to D-66). The rules live in the
+# `review-gate` command of IronAbsolution.Tools. This file only gathers the inputs.
+#
+# The event is pull_request_target, so GitHub runs this file and the tool from the base branch
+# (D-64). The PR head is data alone: the job fetches it into the object store, and no step
+# checks it out, builds it, or runs it. The tool reads the head through git. A PR thus cannot
+# change the code that judges it. GitHub starts this event only from the file on the default
+# branch, so the PR that adds this file gets no check from it (D-67).
+#
+# The job is the check. Its name is the required check `review-gate`, and its exit code is the
+# result (D-64). The type `edited` stays out, because the doc-gate workflow reads the
+# description (D-56). A label change runs the gate again, for the override label (D-65).
+name: review-gate
+
+on:
+  pull_request_target:
+    types: [opened, reopened, synchronize, labeled, unlabeled]
+
+# The job reads the checkout, the labels, and the timeline of the PR. It writes nothing (D-64).
+permissions:
+  contents: read
+  pull-requests: read
+
+# A newer event of a PR cancels the older run of this workflow for that PR, so the runner
+# serves the newest head and the newest labels.
+concurrency:
+  group: review-gate-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+env:
+  DOTNET_NOLOGO: "true"
+  DOTNET_CLI_TELEMETRY_OPTOUT: "true"
+
+jobs:
+  review-gate:
+    name: review-gate
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PR_NUMBER: ${{ github.event.pull_request.number }}
+      HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+      BASE_REF: ${{ github.event.pull_request.base.ref }}
+    # With no shell, a run step starts `bash -e` with no pipefail. Then a failed `gh api`
+    # before `jq`, or a failed tool before `tee`, passes in silence (T-2). The shell `bash`
+    # starts `bash --noprofile --norc -eo pipefail`.
+    defaults:
+      run:
+        shell: bash
+    steps:
+      # No ref input: on pull_request_target, the default ref is the base branch (D-64). The
+      # full history gives the base branch and the merge base.
+      - name: Check out the base branch with its history
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      # The head commits enter the object store under a remote ref. The working tree stays on
+      # the base branch. The check fails when the store does not hold the head of the event.
+      - name: Fetch the PR head as data
+        run: |
+          git fetch --no-tags origin "+refs/pull/${PR_NUMBER}/head:refs/remotes/pull/${PR_NUMBER}/head"
+          git cat-file -e "${HEAD_SHA}^{commit}"
+          echo "base: $(git rev-parse HEAD)"
+          echo "head: ${HEAD_SHA}"
+
+      - name: Install the .NET SDK of global.json
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          global-json-file: global.json
+
+      # The labels come from the API at run time, not from the event, so a quick second label
+      # change reads the same as the newest event. The timeline gives each labeled event of the
+      # override label, and the tool takes the newest one (D-65).
+      - name: Read the labels and the override label events
+        run: |
+          gh api "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}" --jq '[.labels[].name]' > "$RUNNER_TEMP/label-names.json"
+          gh api --paginate "repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/timeline" \
+            --jq '.[] | select(.event == "labeled" and .label.name == "review-override") | {createdAt: .created_at, actor: .actor.login}' \
+            | jq --slurp '.' > "$RUNNER_TEMP/label-events.json"
+          jq --null-input \
+            --slurpfile names "$RUNNER_TEMP/label-names.json" \
+            --slurpfile events "$RUNNER_TEMP/label-events.json" \
+            '{labels: $names[0], overrideLabelEvents: $events[0]}' > "$RUNNER_TEMP/labels.json"
+          cat "$RUNNER_TEMP/labels.json"
+
+      # The job shell has pipefail, so the exit code of the tool, and not the exit code of
+      # `tee`, ends the step.
+      - name: Apply the rules with the tool of the base branch
+        run: >-
+          dotnet run --project IronAbsolution.Tools/IronAbsolution.Tools.csproj --
+          review-gate --root "$GITHUB_WORKSPACE" --base "origin/${BASE_REF}" --head "$HEAD_SHA"
+          --pr "$PR_NUMBER" --labels "$RUNNER_TEMP/labels.json"
+          | tee -a "$GITHUB_STEP_SUMMARY"

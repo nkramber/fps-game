@@ -42,9 +42,9 @@ Steps 2 to 4 use the targeted reads of `docs/runbooks/session-context.md`. The f
 
 A review ends with one of three verdicts: `Blocked`, `Changes required`, or `Ready for owner merge`. The file `references/review-record.md` gives the condition of each one.
 
-Write one verdict name in the `## Verdict` section, exactly as that file spells it. The `make codex-review` command reads that section, and it fails a section that names two verdicts. PR-6 adds the `review-gate` check, which reads the same section. A line under `## Out of scope` never gives the verdict `Changes required`.
+Write one verdict name in the `## Verdict` section, exactly as that file spells it. The `make codex-review` command reads that section, and it fails a section that names two verdicts. The `review-gate` check reads the same section (D-64). A line under `## Out of scope` never gives the verdict `Changes required`.
 
-An approving record lets the owner merge the PR (D-5). After PR-6, the author can also turn on auto-merge. Approval applies to the recorded revision alone.
+An approving record lets the author turn on auto-merge after the owner confirms the merge, and the owner can also merge the PR (D-5, D-12). Approval applies to the recorded revision alone.
 
 ## A review that `make codex-review` starts
 
@@ -62,7 +62,7 @@ The author session starts the review with `make codex-review PR=<n>` (D-14). Mak
 - The command removes `OPENAI_API_KEY`, `CODEX_API_KEY`, and `CODEX_ACCESS_TOKEN` from each Codex process. The review uses the ChatGPT login (D-14, D-53).
 - The command stops the review after 90 minutes, and the stop is a fault (D-50). The transcripts go to `artifacts/codex-review/` (D-51).
 
-The command refuses a PR with no commit outside the documents set (D-49). Until PR-6, the owner starts Codex by hand for such a PR. The prompt is in `AGENTS.md`, under "Cross-provider review". After PR-6, the owner can add the `review-override` label to a PR with no code instead (D-35).
+The command refuses a PR with no commit outside the documents set (D-49). Such a PR merges through the `review-override` label alone, and only the owner adds the label (D-35, D-66).
 
 ## Rules that hold at every step
 

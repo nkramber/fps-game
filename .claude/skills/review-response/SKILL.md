@@ -61,7 +61,7 @@ Partial merit is common. Correct the part that has merit, and refute the rest in
 ## The response file
 
 The author answers a review in `docs/reviews/pr-<number>-response.md`.
-This file is a convention, not a gate. The `make codex-review` command does not read it, and the `review-gate` check of PR-6 does not read it.
+This file is a convention, not a gate. The `make codex-review` command does not read it, and the `review-gate` check does not read it.
 Write one when the verdict is `Changes required` or `Blocked`. A clean first pass needs none.
 
 The response file states, for each finding:

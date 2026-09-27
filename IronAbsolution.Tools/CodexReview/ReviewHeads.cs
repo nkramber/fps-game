@@ -26,6 +26,29 @@ public static class ReviewHeads
     /// <summary>The shortest hash that a review record can name.</summary>
     public const int ShortestHash = 7;
 
+    /// <summary>
+    /// Tells whether a path is in the documents set (D-49). An entry that ends in a slash holds
+    /// each path under it. Any other entry holds the one file of that name, so `LICENSE/tool.cs`
+    /// is not a document.
+    /// </summary>
+    /// <param name="path">The path from the root, with forward slashes.</param>
+    /// <returns>True when the path is in the documents set.</returns>
+    public static bool IsDocument(string path)
+    {
+        ArgumentNullException.ThrowIfNull(path);
+
+        foreach (string entry in DocumentPaths)
+        {
+            bool inSet = entry.EndsWith('/') ? path.StartsWith(entry, StringComparison.Ordinal) : path == entry;
+            if (inSet)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     /// <summary>Gives the newest commit from the merge base to the head that changes a path outside the documents set (D-49).</summary>
     /// <param name="git">The checkout.</param>
     /// <param name="baseBranch">The base branch of the PR on origin, such as `main`.</param>

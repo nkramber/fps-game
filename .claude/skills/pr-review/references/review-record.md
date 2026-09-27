@@ -9,7 +9,7 @@ For a new record, use `docs/reviews/pr-<number>.md` with the actual GitHub PR nu
 Write provider names only in the review record and in the handoff author field (T-6, D-16).
 Keep those names out of each PR description and each GitHub comment.
 
-The `make codex-review` command reads the review record (D-14). PR-6 adds the `review-gate` check, which reads the same parts. Four parts of the record have a machine reader. Keep their format exact:
+The `make codex-review` command reads the review record (D-14). The `review-gate` check reads the same parts (D-64). Four parts of the record have a machine reader. Keep their format exact:
 
 | Part | Exact form | Rule |
 |---|---|---|
@@ -34,7 +34,7 @@ The review commit holds the review record and the handoff entry, so it is always
 The work head is the newest commit outside the metadata set. The command checks that the work head does not move during a round.
 Record the effective head, not the tip.
 
-A PR with no commit outside the documents set has no effective head, and the command refuses it (D-49). Until PR-6, the owner starts Codex by hand for such a PR, with the prompt of `AGENTS.md`. After PR-6, the owner can add the `review-override` label instead, and no record approves it (D-35).
+A PR with no commit outside the documents set has no effective head, and the command refuses it (D-49). The owner adds the `review-override` label to such a PR, and no record approves it (D-35, D-66).
 
 Use this skeleton. Keep the heading text and the order.
 
@@ -142,7 +142,7 @@ A record that gives `Ready for owner merge` with an open P0 to P2 finding fails 
 
 No findings does not mean no risk. State the material limits without a claim of zero regressions.
 Approval applies only to the recorded revision. A new base or head needs an assessment of the changed scope and evidence.
-An approving record lets the owner merge the PR (D-5). After PR-6, the author can turn on auto-merge.
+An approving record lets the author turn on auto-merge after the owner confirms the merge (D-12). The owner can also merge the PR (D-5).
 
 When the review record goes into the PR, keep the assessed implementation head in that file.
 Check each later documents commit before the final verdict.
@@ -151,18 +151,18 @@ A documents commit cannot hide code, content, configuration, or test changes.
 
 ## The review gate check
 
-PR-6 adds the `review-gate` check. Until then, `make codex-review` reads the record for its exit code, and the owner reads it at the merge. The check applies three rules:
+The `review-gate` workflow runs the tool of the base branch on each push and on each label change (D-64). The tool reads the record at the PR head as data. Without the `review-override` label, the check applies three rules:
 
 1. `docs/reviews/pr-<number>.md` exists for the PR number.
 2. The verdict is `Ready for owner merge`.
 3. The head in the Identity list is the effective head.
 
-After PR-6, the check has two states. Read the color before you start:
+With the label, the check applies the label rules of D-65 in place of these three. The check has two states. Read the color before you start:
 
 | Color | Meaning | What to do |
 |---|---|---|
 | Red | No review record exists, or the record does not approve this head. | Write the record, or read the findings. The author corrects them. |
-| Green | An approved review covers the effective head, or the owner added the `review-override` label. | The owner merges, or auto-merge merges. |
+| Green | An approved review covers the effective head, or the owner label covers a PR with no code. | Auto-merge merges after the owner confirms, or the owner merges. |
 
 Rule 3 fails when the author pushes code after the approval. That result is correct.
 Assess the new diff again, then update the head field and the verdict together.

@@ -29,13 +29,13 @@ Make exits 2 for a failed target, and it prints the exit code of the command as 
 
 The record names the effective head, which skips each documents commit (D-49). A documents commit after an approving round keeps the approval, so no new round is due. A round fails when a commit outside the metadata set arrives during the round, a documents commit included (D-14).
 
-A PR with no commit outside the documents set has no effective head, and the command refuses it (D-49). Until PR-6, the owner starts Codex by hand for that PR, with the prompt of `AGENTS.md` under "Cross-provider review".
+A PR with no commit outside the documents set has no effective head, and the command refuses it (D-49). That PR merges through the `review-override` label alone, and only the owner adds the label (D-35, D-66).
 
 ## Procedure: the three-strike stop
 
 A P0, P1, or P2 finding that is open in three review rounds stops the fix loop with exit 11 (D-14). The `Open at:` line of each finding holds the count. A P3 finding never blocks, and it never counts.
 
-1. When auto-merge is on, run `gh pr merge <n> --disable-auto`. Auto-merge comes with PR-6.
+1. When auto-merge is on, run `gh pr merge <n> --disable-auto`.
 2. Stop the fix loop. Make no more commits for the finding.
 3. Ask the owner with `AskUserQuestion`.
 4. Give the finding, the evidence of the reviewer, the answers of the author, and the options.
@@ -51,17 +51,17 @@ A P0, P1, or P2 finding that is open in three review rounds stops the fix loop w
 5. Ask the owner to confirm the merge with `AskUserQuestion`. Ask it as a question, not as a statement.
 6. Give two options alone: `Yes, squash-merge it` and `No, not yet`.
 7. Stop when the owner picks `No, not yet`. The PR stays open. Do the next step that the owner names.
-8. Until PR-6, run `gh pr merge <n> --squash` after the answer `Yes, squash-merge it`. That answer is the explicit authorization of D-5.
-9. Never add the `--admin` option. The ruleset bypass is for the owner alone (D-60).
-10. After PR-6, run `gh pr merge <n> --auto --squash` after the confirmation.
-11. After PR-6, wait on the checks with the wait command of the skill.
+8. Run `gh pr merge <n> --auto --squash` after the answer `Yes, squash-merge it`. That answer is the explicit authorization of D-5.
+9. When the repository has auto-merge off, run `gh pr merge <n> --squash` instead.
+10. Never add the `--admin` option. The ruleset bypass is for the owner alone (D-60).
+11. Wait on the checks with the wait command of the skill.
 12. Run `gh pr view <n> --json state,mergedAt,mergeCommit`.
 13. When a job ends with a runner infrastructure annotation, run the failed jobs again, then go to step 11.
 14. When the state is `MERGED`, or the owner says `Merged PR #N`, load `merge-prompt.md` and write the prompt.
 
-After PR-6, a PR with the `review-override` label merges the same way, with the owner confirmation (D-35). It needs no review record. Only the owner adds the label.
+A PR with the `review-override` label merges the same way, with the owner confirmation (D-35). It needs no review record. Only the owner adds the label. A commit outside the metadata set after the label needs the label again (D-65).
 
-After PR-5, the ruleset of `main` in `.github/rulesets/main.json` is the machine gate. It requires the checks and resolved conversations, and it permits squash merges alone. When every check is green and the state stays `OPEN`, read `gh pr view <n> --json mergeStateStatus,autoMergeRequest`. An unresolved thread or a stale check blocks the merge.
+The ruleset of `main` in `.github/rulesets/main.json` is the machine gate. It requires the checks, `review-gate` included, and resolved conversations, and it permits squash merges alone (D-61, D-64). When every check is green and the state stays `OPEN`, read `gh pr view <n> --json mergeStateStatus,autoMergeRequest`. An unresolved thread or a stale check blocks the merge.
 
 The gitar pass stays out of this loop until the owner answers OQ-16 (D-7).
 
@@ -74,4 +74,4 @@ Before the owner confirms a merge, write the summary as four questions, each wit
 - **Q: Is CI green?** A: green or not. Name each red check, and the cause when you know it.
 - **Q: What did the Codex review say?** A: the verdict of the record, `Ready for owner merge`, `Blocked`, or `Changes required`, and the effective head that it names.
 
-Put each point that needs the owner as one more question at the end. After PR-6, a PR with the `review-override` label has no review record. Its Codex review answer names the label and the account that added it.
+Put each point that needs the owner as one more question at the end. A PR with the `review-override` label has no review record. Its Codex review answer names the label and the account that added it. The output of `review-gate` gives both (D-65).

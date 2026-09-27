@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.Threading.Tasks;
 
 namespace IronAbsolution.Tools.CodexReview;
@@ -10,6 +11,11 @@ namespace IronAbsolution.Tools.CodexReview;
 /// <param name="Sha">The full hash of the commit.</param>
 /// <param name="Message">The subject and the body, as `git log --format=%B` gives them.</param>
 public sealed record CommitMessage(string Sha, string Message);
+
+/// <summary>The hash and the subject line of one commit.</summary>
+/// <param name="Sha">The full hash of the commit.</param>
+/// <param name="Subject">The first line of the message.</param>
+public sealed record CommitSubject(string Sha, string Subject);
 
 /// <summary>Runs git in one checkout. Every failure carries the command, the exit code, and stderr (T-2).</summary>
 public sealed class GitRepository
@@ -132,6 +138,50 @@ public sealed class GitRepository
         fileNamedFolderPathspecs.AddRange(folderExclusions);
         string? underFileNamedFolder = this.NewestCommitIn(mergeBase, head, fileNamedFolderPathspecs);
         return this.Newer(outside, underFileNamedFolder, mergeBase, head);
+    }
+
+    /// <summary>Gives the committer time of a commit.</summary>
+    /// <param name="sha">The commit.</param>
+    /// <returns>The committer time, with its offset.</returns>
+    /// <exception cref="InvalidOperationException">The commit is not valid, git failed, or git gave a time of another form.</exception>
+    public DateTimeOffset CommitTime(string sha)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(sha);
+
+        string text = this.Run(["show", "--no-patch", "--format=%cI", sha]).Trim();
+        if (!DateTimeOffset.TryParse(text, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTimeOffset time))
+        {
+            throw new InvalidOperationException(
+                $"`git show --no-patch --format=%cI {sha}` in '{this.path}' gave '{text}'. The expected form is a strict ISO 8601 time.");
+        }
+
+        return time;
+    }
+
+    /// <summary>Gives the newest commit up to the head that changes a file, with its subject.</summary>
+    /// <param name="head">The end of the history.</param>
+    /// <param name="filePath">The path from the root, with forward slashes.</param>
+    /// <returns>The commit, or null when no commit up to the head changes the file.</returns>
+    /// <exception cref="InvalidOperationException">The head is not valid, git failed, or git gave a record of another form.</exception>
+    public CommitSubject? NewestCommitThatChanged(string head, string filePath)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(head);
+        ArgumentException.ThrowIfNullOrEmpty(filePath);
+
+        string output = this.Run(["log", "-1", "--format=%H%x00%s", head, "--", filePath]).TrimEnd('\n');
+        if (output.Length == 0)
+        {
+            return null;
+        }
+
+        int separator = output.IndexOf('\0', StringComparison.Ordinal);
+        if (separator < 0)
+        {
+            throw new InvalidOperationException(
+                $"`git log -1 {head} -- {filePath}` in '{this.path}' gave '{output}'. The expected form is the hash, a NUL byte, and the subject.");
+        }
+
+        return new CommitSubject(output[..separator], output[(separator + 1)..]);
     }
 
     /// <summary>Runs git and gives stdout.</summary>

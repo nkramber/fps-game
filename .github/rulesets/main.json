@@ -60,6 +60,10 @@
           {
             "context": "doc-gate",
             "integration_id": 15368
+          },
+          {
+            "context": "review-gate",
+            "integration_id": 15368
           }
         ]
       }

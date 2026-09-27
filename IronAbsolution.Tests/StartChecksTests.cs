@@ -30,7 +30,7 @@ public sealed class StartChecksTests
             { "github-behind", "GitHub gives the PR head" },
             { "changes", "The working tree has changes" },
             { "open-thread", "2 unresolved review thread(s)" },
-            { "documents-only", "The owner starts Codex by hand" },
+            { "documents-only", "merges through the review-override label" },
         };
     }
 
@@ -69,12 +69,13 @@ public sealed class StartChecksTests
     }
 
     [Fact]
-    public void ADocumentsOnlyPullRequestNamesTheRuleAndThePullRequestOfTheLabel()
+    public void ADocumentsOnlyPullRequestNamesTheRuleAndTheLabel()
     {
         string problem = Assert.Single(StartChecks.Problems(Facts(effectiveHead: null)));
 
         Assert.Contains("D-49", problem, StringComparison.Ordinal);
-        Assert.Contains("PR-6", problem, StringComparison.Ordinal);
+        Assert.Contains("merges through the review-override label", problem, StringComparison.Ordinal);
+        Assert.Contains("D-66", problem, StringComparison.Ordinal);
     }
 
     [Fact]
