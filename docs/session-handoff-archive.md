@@ -2,6 +2,42 @@
 
 This file holds the entries that the rotation moves out of `docs/session-handoff.md`, newest first.
 
+## Session 15: 2026-09-27, Codex
+
+Author: Codex
+Session: reviewer PR-5, round 2. Repository: iron-absolution. Branch: `feat/pr-4-doc-gate-rotation`. PR: #5. Role: reviewer. Base: `6acc6a85798182781a6fc1193c6e37d90dd03020`.
+
+### What this session did, and why
+
+- Rechecked the fix for P2-1 and the full PR-4 scope.
+- Ran the review in the `review/pr-5` worktree.
+- Found P2-2: session `2147483647` makes the next session value wrap to `-2147483648`.
+- Updated `docs/reviews/pr-5.md` with the fixed finding, the new finding, and the verdict for effective head `614847a`.
+- Corrected the stale test count in the PR description. Its `doc-gate` check passed again.
+
+### The state of the build
+
+- `make` passes at effective head `614847a`: 271 tests, clean format, and 0 ste-check findings.
+- The hosted build, coverage, `doc-gate`, and `ste-check` checks pass at that head.
+- The review record and this handoff entry are metadata changes on `feat/pr-4-doc-gate-rotation`. They do not move the effective head.
+
+### What is in flight
+
+- P2-2 needs a checked increment and a regression test that proves no file changes on overflow.
+
+### Traps and gotchas
+
+- `int.TryParse` rejects values above `Int32.MaxValue`, but `Int32.MaxValue` itself still overflows when the command adds one.
+- A description edit runs `doc-gate` again. The corrected test count passed that check.
+
+### The questions that block progress
+
+- None blocks this review. OQ-16 still holds the gitar plan under D-7.
+
+### The next concrete action
+
+- Correct P2-2, add its regression test, and start a new review round on the corrected head.
+
 ## Session 14: 2026-09-27, Claude Code
 
 Author: Claude Code

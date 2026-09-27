@@ -1,3 +1,37 @@
+## Session 25: 2026-09-27, Codex
+
+Author: Codex
+Session: reviewer PR-6, round 1. Repository: iron-absolution. Branch: `feat/pr-6-review-gate`. PR: #7. Role: reviewer. Base: `5871f2c870d5eb110eccbadd67c5f633c5619155`.
+
+### What this session did, and why
+
+- Reviewed PR #7 at effective head `7f4cb583772c28e2bdb2a1a32c8f2e921442a88c`.
+- Found that the override label accepts a document commit pushed after the label when its Git committer time is earlier. The temporary reproduction passed the gate.
+- Wrote `docs/reviews/pr-7.md` with verdict `Changes required` and P2-1.
+
+### The state of the build
+
+- `make` passes on the Mac: 363 tests, a clean format, and 0 ste-check findings.
+- All four checks available to PR #7 pass on head `7f4cb58`. GitHub does not run `review-gate` until the workflow reaches `main` (D-67).
+- The remote work head is `7f4cb583772c28e2bdb2a1a32c8f2e921442a88c`. This review record and handoff must publish together.
+
+### What is in flight
+
+- P2-1 needs a freshness check that does not trust a PR-controlled commit time.
+
+### Traps and gotchas
+
+- The override rule reads Git `%cI`. A PR author controls the committer timestamp.
+- This PR does not get a `review-gate` check because the workflow runs from `main` (D-67).
+
+### The questions that block progress
+
+- None. OQ-16 still holds gitar under D-7.
+
+### The next concrete action
+
+- The author corrects P2-1 and adds a regression test for a backdated document commit.
+
 ## Session 24: 2026-09-27, Claude Code
 
 Author: Claude Code
@@ -314,39 +348,3 @@ Session: author PR-4, round 3. Repository: iron-absolution. Branch: `feat/pr-4-d
 
 - Finish the review loop of PR #5, then give the owner the merge summary.
 - For a fresh session: the session number check of `ste-check` reads a heading number with `int.Parse`, so a number too large for an int stops the check with no context (T-2).
-
-## Session 15: 2026-09-27, Codex
-
-Author: Codex
-Session: reviewer PR-5, round 2. Repository: iron-absolution. Branch: `feat/pr-4-doc-gate-rotation`. PR: #5. Role: reviewer. Base: `6acc6a85798182781a6fc1193c6e37d90dd03020`.
-
-### What this session did, and why
-
-- Rechecked the fix for P2-1 and the full PR-4 scope.
-- Ran the review in the `review/pr-5` worktree.
-- Found P2-2: session `2147483647` makes the next session value wrap to `-2147483648`.
-- Updated `docs/reviews/pr-5.md` with the fixed finding, the new finding, and the verdict for effective head `614847a`.
-- Corrected the stale test count in the PR description. Its `doc-gate` check passed again.
-
-### The state of the build
-
-- `make` passes at effective head `614847a`: 271 tests, clean format, and 0 ste-check findings.
-- The hosted build, coverage, `doc-gate`, and `ste-check` checks pass at that head.
-- The review record and this handoff entry are metadata changes on `feat/pr-4-doc-gate-rotation`. They do not move the effective head.
-
-### What is in flight
-
-- P2-2 needs a checked increment and a regression test that proves no file changes on overflow.
-
-### Traps and gotchas
-
-- `int.TryParse` rejects values above `Int32.MaxValue`, but `Int32.MaxValue` itself still overflows when the command adds one.
-- A description edit runs `doc-gate` again. The corrected test count passed that check.
-
-### The questions that block progress
-
-- None blocks this review. OQ-16 still holds the gitar plan under D-7.
-
-### The next concrete action
-
-- Correct P2-2, add its regression test, and start a new review round on the corrected head.
