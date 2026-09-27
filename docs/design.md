@@ -10,7 +10,7 @@ Status: the owner accepts it on the condition of D-27. Written in ASD-STE100 (D-
 - 2026-09-27 third pass: Steam lists a game with the name Emberline. The project name is now Iron Absolution (D-39).
 - 2026-09-27 fourth pass: the owner resolved the divergences of the PR-3 port (D-46 to D-53). D-53 corrects exit test 3 of PR-3. D-55 scopes G-12 to the game.
 - 2026-09-27 fifth pass: the owner resolved the divergences of the PR-4 port (D-56 to D-59).
-- 2026-09-27 sixth pass: PR-7 adds the focused roadmap of phase 1 (D-69 to D-75). The engine install now comes after PR-8, because section 8 put it before its runbook (F-19, D-69).
+- 2026-09-27 sixth pass: PR-7 adds the focused roadmap of phase 1 (D-69 to D-75). The engine install now comes after PR-8, because section 8 put it before its runbook (F-19, D-69). The author session now adds the `review-override` label (D-76, F-20).
 
 ## 1. Thesis
 
@@ -110,6 +110,7 @@ Status legend:
 | F-17 | 2026-09-27 | Unreal cannot build Windows packages on the Mac. Windows builds need the Windows PC of the owner. | D-33 | ⚠ binds phase 1 |
 | F-18 | 2026-09-27 | The time rule of the `review-override` label reads the committer time of the work head. The commit author sets that time, so a backdated commit after the label passes. | Review P2-1 of PR #7, reproduced with a backdated commit | ⚠ accepted risk (D-68). The rule stops an accident, not an attack (F-9). |
 | F-19 | 2026-09-27 | Section 8 put the engine install (step 9) before the setup runbook of phase 1, which guides that install. On that date the Mac had no engine, no Xcode app, and no Git LFS. | Section 8, the work of phase 1, `xcode-select -p` and `git lfs version` on the Mac | ✅ doc. The install comes after PR-8 (D-69). |
+| F-20 | 2026-09-27 | D-76 lets the author session add the `review-override` label. The messages of `review-gate` and `make codex-review`, their test, and the description of the live label still say that the owner adds it. | `ReviewGateRules.cs`, `StartChecks.cs`, `ReviewGateCommandTests.cs`, and the label on GitHub | ⚠ binds PR-8 (D-77) |
 
 ## 6. Guardrails (the safety contract for every PR)
 
@@ -234,6 +235,7 @@ PR-6 ports the review-gate workflow and the `review-gate` command. The workflow 
 GitHub runs the workflow only from the default branch, so PR-6 gets no `review-gate` check. PR-6 merges under the four checks of D-61. The live ruleset takes `review-gate` after the merge, and the owner turns on auto-merge (D-67). The auto-merge procedure of the role models then applies (D-12).
 
 - Exit tests: 1. A PR with no approving record for its head gets a red review-gate check. 2. A PR with an approving record gets a green check. 3. After the merge, the comparison of the live ruleset with the file on `main` gives an empty diff.
+- Correction of 2026-09-27, PR-7: the author session adds the label, on the standing instruction of the owner (D-76). PR-8 corrects the text of the command (D-77).
 - Correction of 2026-09-27: the exit tests 1 and 2 need the workflow on `main`. The command tests prove both on real commits in PR-6. The first PR after PR-6 proves both on GitHub (D-67).
 - Review focus: the trust boundary of the workflow, the label rules against D-65, and the order of D-67.
 - Gate: exit tests 1 to 3 pass.

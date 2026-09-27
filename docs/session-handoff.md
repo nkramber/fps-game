@@ -7,9 +7,10 @@ Session: author PR-7, round 1. Repository: iron-absolution. Branch: `docs/pr-7-p
 
 - Ran the exit tests of PR-6 on `main` first. Test 1: `make` on a clean worktree of `origin/main` gave 363 tests, a clean format, and 0 findings. Test 2: the comparison with `ref=origin/main` printed "The live ruleset matches the file." with five required checks, `review-gate` included. Auto-merge is on, and the label `review-override` exists.
 - Added `docs/roadmaps/phase-1-engine-proof.md`, the focused roadmap of phase 1, in the form of the-thing-below (D-70).
-- The owner answered seven questions: D-69 to D-75. The Mac had no engine, no Xcode app, and no Git LFS, so step 9 of section 8 was not done. D-69 moves the install after PR-8 (F-19).
+- The owner answered nine questions: D-69 to D-77. The Mac had no engine, no Xcode app, and no Git LFS, so step 9 of section 8 was not done. D-69 moves the install after PR-8 (F-19).
 - Phase 1 has four PRs (D-71): PR-8 toolchain, PR-9 scaffold with the first headless test, PR-10 package, PR-11 first M-9 and the gate record.
 - Updated section 8 and the phase 1 entry of `docs/design.md`, the index of `docs/roadmaps/`, and the design-doc-style skill.
+- The owner told the session to add the `review-override` label each time (D-76). The agent files and the review skills now say so. PR-8 corrects the text of the tools and the live label (D-77, F-20).
 
 ### The state of the build
 
@@ -18,14 +19,15 @@ Session: author PR-7, round 1. Repository: iron-absolution. Branch: `docs/pr-7-p
 
 ### What is in flight
 
-- Exit test 3 of PR-6: the `review-gate` check of the PR head must be red, because no record or label exists.
-- Exit test 4 of PR-6: after the owner adds `review-override`, `review-gate` must turn green (D-65, D-66).
+- Exit test 3 of PR-6 passed: `review-gate` was red on the first head `847ad04`, with "Found: no record".
+- Exit test 4 of PR-6: after the session adds `review-override`, `review-gate` must turn green (D-65, D-66, D-76).
 - `make codex-review` refuses this PR, because it changes documents alone (D-49).
 
 ### Traps and gotchas
 
 - A new phase file defines its PR ids only after `git add`, because ste-check reads tracked files.
 - The phase file heading form `### 7.N PR-#:` is the form that the reference check reads.
+- Add the label only after the last commit outside the metadata set (D-65).
 
 ### The questions that block progress
 
@@ -33,7 +35,7 @@ Session: author PR-7, round 1. Repository: iron-absolution. Branch: `docs/pr-7-p
 
 ### The next concrete action
 
-- Record the results of exit tests 3 and 4, then ask the owner for the merge confirmation.
+- Record the result of exit test 4, then ask the owner for the merge confirmation.
 
 ## Session 28: 2026-09-27, Claude Code
 

@@ -34,7 +34,7 @@ The review commit holds the review record and the handoff entry, so it is always
 The work head is the newest commit outside the metadata set. The command checks that the work head does not move during a round.
 Record the effective head, not the tip.
 
-A PR with no commit outside the documents set has no effective head, and the command refuses it (D-49). The owner adds the `review-override` label to such a PR, and no record approves it (D-35, D-66).
+A PR with no commit outside the documents set has no effective head, and the command refuses it (D-49). The author session adds the `review-override` label to such a PR, and no record approves it (D-35, D-66, D-76).
 
 Use this skeleton. Keep the heading text and the order.
 
@@ -162,7 +162,7 @@ With the label, the check applies the label rules of D-65 in place of these thre
 | Color | Meaning | What to do |
 |---|---|---|
 | Red | No review record exists, or the record does not approve this head. | Write the record, or read the findings. The author corrects them. |
-| Green | An approved review covers the effective head, or the owner label covers a PR with no code. | Auto-merge merges after the owner confirms, or the owner merges. |
+| Green | An approved review covers the effective head, or the `review-override` label covers a PR with no code. | Auto-merge merges after the owner confirms, or the owner merges. |
 
 Rule 3 fails when the author pushes code after the approval. That result is correct.
 Assess the new diff again, then update the head field and the verdict together.

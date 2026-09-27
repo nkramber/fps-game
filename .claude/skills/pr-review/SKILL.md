@@ -62,7 +62,7 @@ The author session starts the review with `make codex-review PR=<n>` (D-14). Mak
 - The command removes `OPENAI_API_KEY`, `CODEX_API_KEY`, and `CODEX_ACCESS_TOKEN` from each Codex process. The review uses the ChatGPT login (D-14, D-53).
 - The command stops the review after 90 minutes, and the stop is a fault (D-50). The transcripts go to `artifacts/codex-review/` (D-51).
 
-The command refuses a PR with no commit outside the documents set (D-49). Such a PR merges through the `review-override` label alone, and only the owner adds the label (D-35, D-66).
+The command refuses a PR with no commit outside the documents set (D-49). Such a PR merges through the `review-override` label alone. The author session adds the label (D-35, D-66, D-76).
 
 ## Rules that hold at every step
 

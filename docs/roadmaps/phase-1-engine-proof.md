@@ -30,6 +30,7 @@ The register in section 5 of `docs/design.md` holds every finding. These rows bi
 | F-14 | 60 fps at 4K output on the M4 with 16 GB is a hard target | PR-11: the first value of M-9 |
 | F-17 | Unreal cannot build Windows packages on the Mac | PR-9 and PR-10: the owner runs the Windows scripts (D-33, D-72) |
 | F-19 | Section 8 of the design doc put the engine install before its runbook | Section 8 below: PR-8 comes before the install (D-69) |
+| F-20 | The text of the review commands says that the owner adds the label | PR-8: the text follows D-76 (D-77) |
 
 ## 7. Roadmap
 
@@ -47,6 +48,7 @@ An exit test is a test or a job that the PR adds and that must pass before the m
 - Recommendation: the command reads the engine folder from one environment variable. No commit holds a machine-specific path (D-9, G-6).
 - A PowerShell script that prints the versions of the Windows toolchain (D-72). The owner runs it and posts the output (D-33).
 - The evidence form of an engine PR (D-31, D-71). It has one line for each log: the Mac build, the Windows build, the tests, the package, and each measurement.
+- A second concern that the owner accepts (D-77): the text of `review-gate`, `make codex-review`, and their test follows D-76. On the instruction of the owner, the session changes the description of the live label (F-20).
 
 **Out of scope.**
 
@@ -60,8 +62,9 @@ An exit test is a test or a job that the PR adds and that must pass before the m
 3. Tests show a failure that names the pin when the engine, Xcode, or Git LFS is absent (T-2).
 4. The owner runs the PowerShell script on the Windows PC and posts its output in the PR.
 5. The `doc-gate` job accepts the PR description with the evidence form.
+6. The tests of `review-gate` and `make codex-review` assert the label text of D-76 (F-20).
 
-**Review focus.** The pins against D-28, the error messages against T-2, and no machine-specific path in a commit (G-6).
+**Review focus.** The pins against D-28, the error messages against T-2, and no machine-specific path in a commit (G-6). The label text against D-76.
 
 **Questions.** None open. D-74 answers OQ-22, the Windows toolchain pin.
 
