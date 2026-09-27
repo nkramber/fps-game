@@ -75,6 +75,8 @@ public static class ReviewGateRules
 
         // The label reads the work head, not the effective head. A documents commit after the
         // label then needs the label again, so the owner sees each change that the label covers (D-65).
+        // The commit author sets the committer time, so a backdated commit passes. The owner
+        // accepts that risk: the rule stops an accident, and one account can add the label again (D-68, F-9).
         string labelTime = labelEvent.CreatedAt.ToString("O", CultureInfo.InvariantCulture);
         if (facts.WorkHead is not null && facts.WorkHead.CommitTime > labelEvent.CreatedAt)
         {

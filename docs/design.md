@@ -107,6 +107,7 @@ Status legend:
 | F-15 | 2026-09-27 | A level of 30 minutes or more multiplies the content cost of phases 6 and 7. | D-37 | ⚠ binds the brief of phase 2 |
 | F-16 | 2026-09-27 | MIT covers the whole repository. An asset with terms that forbid redistribution, or free Meshy output under CC BY, cannot enter it as MIT content. | D-24, Meshy terms | ⚠ binds OQ-12 and phase 5 |
 | F-17 | 2026-09-27 | Unreal cannot build Windows packages on the Mac. Windows builds need the Windows PC of the owner. | D-33 | ⚠ binds phase 1 |
+| F-18 | 2026-09-27 | The time rule of the `review-override` label reads the committer time of the work head. The commit author sets that time, so a backdated commit after the label passes. | Review P2-1 of PR #7, reproduced with a backdated commit | ⚠ accepted risk (D-68). The rule stops an accident, not an attack (F-9). |
 
 ## 6. Guardrails (the safety contract for every PR)
 
@@ -226,7 +227,7 @@ PR-5 ports `.github/rulesets/main.json` and `docs/runbooks/main-ruleset.md` from
 
 #### PR-6: Review gate and auto-merge
 
-PR-6 ports the review-gate workflow and the `review-gate` command. The workflow runs the tool of the base branch, and the tool reads the review record of the PR head as data. The job is the required check, and no mode file exists (D-64). The command honors the `review-override` label that only the owner adds to a PR with no code (D-35, D-65). A PR of documents alone merges through that label alone (D-66). PR-6 adds `review-gate` to the required checks in the file of the ruleset of `main` (D-61, D-64).
+PR-6 ports the review-gate workflow and the `review-gate` command. The workflow runs the tool of the base branch, and the tool reads the review record of the PR head as data. The job is the required check, and no mode file exists (D-64). The command honors the `review-override` label that only the owner adds to a PR with no code (D-35, D-65, D-68). A PR of documents alone merges through that label alone (D-66). PR-6 adds `review-gate` to the required checks in the file of the ruleset of `main` (D-61, D-64).
 
 GitHub runs the workflow only from the default branch, so PR-6 gets no `review-gate` check. PR-6 merges under the four checks of D-61. The live ruleset takes `review-gate` after the merge, and the owner turns on auto-merge (D-67). The auto-merge procedure of the role models then applies (D-12).
 
