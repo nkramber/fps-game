@@ -1,7 +1,7 @@
 ## Session 1: 2026-09-27, Claude Code
 
 Author: Claude Code
-Session: author PR-1, round 1. Repository: fps-game. Branch: `docs/pr-1-foundation`. PR: #PENDING. Role: author. Base: `bfb71cf`.
+Session: author PR-1, round 1. Repository: fps-game. Branch: `docs/pr-1-foundation`. PR: #2. Role: author. Base: `bfb71cf`.
 
 ### What this session did, and why
 
