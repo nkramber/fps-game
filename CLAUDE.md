@@ -56,6 +56,7 @@ The tenets are the constitution. When a tenet conflicts with speed or convenienc
 - Mark a change to an earlier decision in its "Effect" column: `Superseded by D-N`, or `Revised in part by D-N` with the part that changed.
 - Infrastructure follows the role models what-you-carry and the-thing-below (D-12). When the two differ, ask the owner each time (D-13).
 - Only the owner spends money (D-8), changes repository settings, merges (D-5), or turns on gitar (D-7).
+- Only the owner changes the live ruleset of `main`, or a session on an explicit instruction of the owner (D-63).
 - Only the owner edits `LICENSE`, or a session on an explicit instruction of the owner (D-10, D-24).
 
 ## Session handoff
@@ -128,7 +129,7 @@ The C# tools project `IronAbsolution.Tools` holds the commands of the repository
 - A PR squash-merges. The owner merges, or auto-merge merges after PR-6. First give the owner a merge summary in four parts: What, How, CI, and the Codex review. Then get the merge confirmation.
 - Commit subjects use a conventional prefix: `feat`, `fix`, `docs`, `test`, `chore`. The subject ends with `(PR-N)`.
 - One concern per PR (G-7).
-- Never push to `main`, force-push, or bypass a check or a review (D-5).
+- Never push to `main`, force-push, or bypass a check or a review (D-5). Never merge with `gh pr merge --admin`. The ruleset bypass is for the owner alone (D-60).
 - Start each PR from `origin/main`. Leave local work of the owner untouched, and report it (L-7).
 
 ## Cross-provider review
@@ -162,7 +163,7 @@ The Makefile is the entry point (D-41). Run each target from the checkout root.
 - `make hooks`: install the pre-commit hook in this checkout, one time (D-43).
 - `make codex-review PR=<n>`: the cross-provider review of one PR. The exit codes are 0 approve, 10 changes, 11 three-strike stop, 3 refused start, and 1 fault (D-14).
 
-The CI of each PR runs the `ste-check`, `build, test, and format`, and `coverage report` jobs (D-42, D-45). The `doc-gate` workflow runs on each push and on each edit of the description (D-56).
+The CI of each PR runs the `ste-check`, `build, test, and format`, and `coverage report` jobs (D-42, D-45). The `doc-gate` workflow runs on each push and on each edit of the description (D-56). The ruleset of `main` requires these four checks (D-61). `docs/runbooks/main-ruleset.md` gives its steps.
 
 ## PR gate
 
@@ -174,7 +175,7 @@ A PR merges only when every line holds:
 - [ ] The `doc-gate` job is green (D-56, D-57).
 - [ ] The other provider reviewed the PR, and its review record says `Ready for owner merge` for the effective head (T-4, D-14).
 - [ ] The `review-gate` check is green. PR-6 creates it.
-- [ ] No review thread stays open, and the ruleset of `main` holds. PR-5 creates the ruleset.
+- [ ] No review thread stays open, and the ruleset of `main` holds (D-60 to D-62).
 - [ ] The owner confirmed the merge after the merge summary.
 - [ ] `docs/decisions.md` has every new decision, and `docs/questions.md` has every new question.
 - [ ] `docs/design.md` matches intent.

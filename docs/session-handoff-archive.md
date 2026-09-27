@@ -2,6 +2,40 @@
 
 This file holds the entries that the rotation moves out of `docs/session-handoff.md`, newest first.
 
+## Session 9: 2026-09-27, Claude Code
+
+Author: Claude Code
+Session: author PR-3, round 3. Repository: iron-absolution. Branch: `feat/pr-3-codex-review`. PR: #4. Role: author. Base: `e97da5a5238807c29c7a3bcdc5d4184dfb97f1b4`.
+
+### What this session did, and why
+
+- Review round 2 gave `Blocked`: P2-1 stayed open, because no Windows run proved the launch fix.
+- The owner refuted that demand: all development work runs on the Mac (D-55). D-33 has a dated note of the scope.
+- G-12, `CLAUDE.md`, `AGENTS.md`, and the review standard of the pr-review skill now bind Windows to the game alone.
+- `docs/reviews/pr-4-response.md` gives the round 2 answer: no merit, D-55.
+
+### The state of the build
+
+- The effective head stays `2551eb3`, because this round changed documents alone. `make` passes on the Mac: 232 tests, a clean format, and 0 findings of ste-check.
+- This entry commit is the remote head.
+
+### What is in flight
+
+- Review round 3 runs when the checks of this head are green (D-54).
+
+### Traps and gotchas
+
+- P2-1 lists two heads. The effective head of round 3 is `2551eb3` again, so an open P2-1 keeps two heads and no three-strike stop follows.
+- Handoff rotation comes in PR-4. The file holds nine entries now, and the limit is ten.
+
+### The questions that block progress
+
+- None blocks PR-3.
+
+### The next concrete action
+
+- Read the verdict of round 3, then write the merge summary or answer the findings.
+
 ## Session 8: 2026-09-27, Codex
 
 Author: Codex

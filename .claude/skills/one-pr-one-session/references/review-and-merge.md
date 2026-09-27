@@ -52,11 +52,12 @@ A P0, P1, or P2 finding that is open in three review rounds stops the fix loop w
 6. Give two options alone: `Yes, squash-merge it` and `No, not yet`.
 7. Stop when the owner picks `No, not yet`. The PR stays open. Do the next step that the owner names.
 8. Until PR-6, run `gh pr merge <n> --squash` after the answer `Yes, squash-merge it`. That answer is the explicit authorization of D-5.
-9. After PR-6, run `gh pr merge <n> --auto --squash` after the confirmation.
-10. After PR-6, wait on the checks with the wait command of the skill.
-11. Run `gh pr view <n> --json state,mergedAt,mergeCommit`.
-12. When a job ends with a runner infrastructure annotation, run the failed jobs again, then go to step 10.
-13. When the state is `MERGED`, or the owner says `Merged PR #N`, load `merge-prompt.md` and write the prompt.
+9. Never add the `--admin` option. The ruleset bypass is for the owner alone (D-60).
+10. After PR-6, run `gh pr merge <n> --auto --squash` after the confirmation.
+11. After PR-6, wait on the checks with the wait command of the skill.
+12. Run `gh pr view <n> --json state,mergedAt,mergeCommit`.
+13. When a job ends with a runner infrastructure annotation, run the failed jobs again, then go to step 11.
+14. When the state is `MERGED`, or the owner says `Merged PR #N`, load `merge-prompt.md` and write the prompt.
 
 After PR-6, a PR with the `review-override` label merges the same way, with the owner confirmation (D-35). It needs no review record. Only the owner adds the label.
 

@@ -2,7 +2,7 @@
 
 Status: procedure, written 2026-09-27. Written in ASD-STE100 (D-17). The source is the runbook of the same name in the role models (D-12).
 
-A session pays for each byte that it reads and for each model call that it makes. This runbook holds the commands that keep both counts low. Later PRs add the commands of the other tools. PR-3 adds the wait and the review. PR-4 adds the rotation and the local run of the documents gate.
+A session pays for each byte that it reads and for each model call that it makes. This runbook holds the commands that keep both counts low. Later PRs add the commands of the other tools. PR-3 adds the wait and the review. PR-4 adds the rotation and the local run of the documents gate. `docs/runbooks/main-ruleset.md` holds the commands of the ruleset of `main`.
 
 ## Targeted reads
 
