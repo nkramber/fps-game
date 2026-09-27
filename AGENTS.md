@@ -1,8 +1,8 @@
-# fps-game: agent instructions
+# iron-absolution: agent instructions
 
 `CLAUDE.md` and `AGENTS.md` are identical (D-12). Edit both together. Both files follow ASD-STE100 (D-17).
 
-The project is an original, fast first-person shooter with limited resources, in Unreal Engine 5. The goal is one complete, polished level that the player can play again (D-1, D-37). The working title and project name is Emberline (D-26). The repository holds no game code yet.
+The project is an original, fast first-person shooter with limited resources, in Unreal Engine 5. The goal is one complete, polished level that the player can play again (D-1, D-37). The working title is Iron Absolution, and the project name in code is `IronAbsolution` (D-39). The repository holds no game code yet.
 
 ## First action
 
@@ -76,7 +76,7 @@ Each entry has this form (D-20):
 ```
 ## Session N: <UTC date>, <Claude Code|Codex>
 Author: <Claude Code|Codex>
-Session: author PR-N, round K. Repository: fps-game. Branch: `<branch>`. PR: #<n>. Role: author. Base: `<sha>`.
+Session: author PR-N, round K. Repository: iron-absolution. Branch: `<branch>`. PR: #<n>. Role: author. Base: `<sha>`.
 ### What this session did, and why
 ### The state of the build
 ### What is in flight
@@ -95,7 +95,7 @@ After the PR of the session merges, write one prompt that starts the next sessio
 Start PR-<n>: <the one concern>
 
 PR #<x> merged to `main` as <sha>. Read the newest session handoff entry first.
-Repository: fps-game. Branch: `<prefix>/pr-<n>-<slug>`. Base: `<sha>`. Role: author.
+Repository: iron-absolution. Branch: `<prefix>/pr-<n>-<slug>`. Base: `<sha>`. Role: author.
 Load the skills of the task before any change.
 <Each exit test of the merged PR that needs `main`, and the order: run it before the PR work.>
 Open questions for this PR: <each OQ-# with its subject, or `none`>.
@@ -138,7 +138,7 @@ The provider that did not write the PR reviews it (D-6). Codex reviews a PR that
 PR-3 adds `make codex-review PR=<n>` (D-14). Until PR-3 merges, the owner starts Codex by hand in a clean checkout of the PR head, with this prompt:
 
 ```
-Review PR #<n> of nkramber/fps-game as the cross-provider reviewer.
+Review PR #<n> of nkramber/iron-absolution as the cross-provider reviewer.
 Read AGENTS.md, the newest handoff entry, and docs/reviews/readme.md.
 Confirm that the Author field of the handoff names the other provider. If not, stop with the verdict Blocked.
 Review the full diff against the roadmap entry, its exit tests, the tenets, and the registers.

@@ -1,6 +1,6 @@
-# fps-game
+# iron-absolution
 
-Emberline (working title, D-26) is an original, fast first-person shooter with limited resources, planned in Unreal Engine 5.8 for macOS and Windows. The first goal is one complete, polished level that the player can play again (D-1, D-37). Agents and people start at `AGENTS.md`.
+Iron Absolution (working title, D-39) is an original, fast first-person shooter with limited resources, planned in Unreal Engine 5.8 for macOS and Windows. The first goal is one complete, polished level that the player can play again (D-1, D-37). Agents and people start at `AGENTS.md`.
 
 ## Status
 

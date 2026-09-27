@@ -7,6 +7,7 @@ Status: the owner accepts it on the condition of D-27. Written in ASD-STE100 (D-
 - External facts: the session checked each fact in `docs/research/technology-and-art-pipeline.md` on 2026-09-26. The link check ran on 2026-09-27.
 - 2026-09-27 correction pass: the owner set D-12 to D-23. This doc moved to the template of the role models, and GitHub PR #1 closed (D-23).
 - 2026-09-27 second pass: the owner answered the open questions (D-24 to D-38). The license is now MIT (D-24).
+- 2026-09-27 third pass: Steam lists a game with the name Emberline. The project name is now Iron Absolution (D-39).
 
 ## 1. Thesis
 
@@ -26,7 +27,7 @@ The owner decides the product. Approved facts cite a D-# id. Open choices cite a
 | Setting, tone, and art direction | Open (OQ-9). Phase 2 proposes, and the owner picks (D-36). |
 | Platforms and frame budget | macOS 60 fps at 4K output through TSR. Windows 120 fps at 1440p on the owner's PC (D-32). |
 | Input devices | Keyboard and mouse (D-32). Gamepad is open (OQ-21). |
-| Working title and project name | Emberline (D-26) |
+| Working title and project name | Iron Absolution, `IronAbsolution` in code (D-39) |
 
 ## 2. Lessons learned (carry into every PR)
 
@@ -49,7 +50,7 @@ The owner decides the product. Approved facts cite a D-# id. Open choices cite a
 | Tools project (PR-2 onward) | documents, PR data | check results, review records | Medium |
 | CI workflows (PR-2 onward) | the PR head | check runs | High. They gate the merge. |
 | Codex review (PR-3) | the PR diff | `docs/reviews/pr-<n>.md` | High |
-| Unreal project Emberline (phase 1) | source, content, config | builds and packages for macOS and Windows | High |
+| Unreal project `IronAbsolution` (phase 1) | source, content, config | builds and packages for macOS and Windows | High |
 | Content pipeline (phase 5) | DCC exports, generated assets | Unreal assets through LFS | Medium. Each asset needs terms that allow redistribution (D-24). |
 
 ## 4. Cost model (what we pay, what we do not know)
@@ -176,7 +177,7 @@ PR-1 adds the registers, this design doc, the research, the agent files, the han
 
 #### PR-2: Tools project and ste-check
 
-PR-2 creates one C# .NET tools project, Emberline.Tools (D-15, D-26). It ports the ste-check command of the-thing-below and its tests (D-17). It adds a Makefile and a hosted Linux workflow that runs the check and the tests on each PR. Newer pushes cancel older runs.
+PR-2 creates one C# .NET tools project, `IronAbsolution.Tools` (D-15, D-39). It ports the ste-check command of the-thing-below and its tests (D-17). It adds a Makefile and a hosted Linux workflow that runs the check and the tests on each PR. Newer pushes cancel older runs.
 
 - Exit tests: 1. The tests pass on the hosted runner. 2. A PR with a broken rule gets a red check. 3. The docs of PR-1 pass.
 - Gate: exit tests 1 to 3 pass.
@@ -229,8 +230,8 @@ When the owner confirms that gitar works here, one PR ports the gitar-wait scrip
 ### Phase 1: Engine and toolchain proof (gate: a clean clone builds, packages, and runs one headless test on macOS and on Windows, M-1, M-2, and a first M-9 recorded)
 
 - Objective: prove the engine, the toolchain, the source control, and the tests on the Mac and on the Windows PC before any game code.
-- Dependencies: phase 0. The owner answered each engine question: D-24, D-26, and D-28 to D-34. The owner installs Unreal Engine 5.8 and Xcode 26.1.1 on the SSD, and Unreal Engine 5.8 on the Windows PC.
-- Work: a setup runbook for both machines, with the owner actions marked. The minimal C++ project Emberline, with one module and Enhanced Input. An empty test map. LFS attributes. Scripts for the headless automation test and the package on both platforms. The Windows commands that the owner runs (D-33). An evidence template for engine PRs (D-31). Unreal best practices apply (D-34).
+- Dependencies: phase 0. The owner answered each engine question: D-24, D-28 to D-34, and D-39. The owner installs Unreal Engine 5.8 and Xcode 26.1.1 on the SSD, and Unreal Engine 5.8 on the Windows PC.
+- Work: a setup runbook for both machines, with the owner actions marked. The minimal C++ project `IronAbsolution`, with one module and Enhanced Input. An empty test map. LFS attributes. Scripts for the headless automation test and the package on both platforms. The Windows commands that the owner runs (D-33). An evidence template for engine PRs (D-31). Unreal best practices apply (D-34).
 - Exit evidence: a clean clone builds the editor target and a packaged Development build on each platform. The owner posts the Windows logs. Each package starts and stops from the command line. One automation test passes headless, with its log. A fresh clone restores LFS content. M-1 and M-2 have values. A first TSR test at 4K output on the Mac gives a first value of M-9. The project records its World Partition choice with a reason (D-4).
 
 > *In plain English:* Before we build the game, we prove that the engine builds, tests, and packages on the Mac and on Windows.

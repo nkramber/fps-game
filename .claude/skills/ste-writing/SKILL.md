@@ -116,7 +116,7 @@ Source: ASD-STE100 Issue 8 (2021-04-30), Part 1, Writing rules. Issue 9 (2025-01
 
 The rules permit these as written. They are technical names (rule 1.5):
 
-- The working title and project name: Emberline (D-26). The repository: fps-game.
+- The working title: Iron Absolution. The project name in code: IronAbsolution (D-39). The repository: iron-absolution.
 - The role models: what-you-carry, the-thing-below.
 - Tools and platforms: Unreal Engine, Unreal Editor, Blueprint, Enhanced Input, World Partition, Lumen, Nanite, TSR, Temporal Super Resolution, Xcode, macOS, Windows, Apple Silicon, C++, C#, .NET, Python, Git, Git LFS, GitHub, GitHub Actions, Makefile, Meshy, Blender, Houdini, gitar.
 - The two harnesses: Claude Code, Codex.

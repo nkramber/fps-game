@@ -1,6 +1,6 @@
 # Open questions
 
-Status: active register. Owner: the owner of `nkramber/fps-game`. Started 2026-09-26. Written in ASD-STE100 (D-17).
+Status: active register. Owner: the owner of `nkramber/iron-absolution`. Started 2026-09-26. Written in ASD-STE100 (D-17).
 
 This file holds every open question for the owner. Each question has an id (OQ-#). The numbers never change. A resolved question stays in this file with its date and the D-# id that resolved it. Section 9 of `docs/design.md` links here.
 
@@ -33,7 +33,7 @@ Find a question with `grep -n -E '^[0-9]+\. \*\*OQ-(1|18)\.' docs/questions.md`.
    - Option B: delete the work.
    - Option C: send the work as a PR as it is.
    - Recommendation: option A. Later PRs can use parts of it after OQ-1, at the correct phase gate. Option C adds GPL Unreal code and settles owner questions without the owner.
-3. **OQ-3. The working title and the project name.** What is the working title, and what name do the Unreal project and the tools project use? Raised 2026-09-26 (PR-1). Blocks PR-2 and phase 1, because a rename of a module costs much. Resolved 2026-09-27: D-26, Emberline.
+3. **OQ-3. The working title and the project name.** What is the working title, and what name do the Unreal project and the tools project use? Raised 2026-09-26 (PR-1). Blocks PR-2 and phase 1, because a rename of a module costs much. Resolved 2026-09-27: D-26, Emberline. Superseded 2026-09-27 by D-39, Iron Absolution, because Steam lists a game with the name Emberline.
    - Option A: a neutral code name that does not depend on the title, for example `FpsGame`.
    - Option B: a working title now. The local prototype used "Emberline", but the owner did not approve it.
    - Recommendation: option A. The display title can change at any time.
