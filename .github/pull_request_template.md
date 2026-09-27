@@ -9,7 +9,7 @@ Each line holds before the merge, by auto-merge or by the owner (`AGENTS.md`, PR
 - [ ] Tests written and green (T-3). A PR of documents alone needs the ste-check job instead.
 - [ ] No silent failure. Every error carries context (T-2).
 - [ ] The `ste-check` job is green.
-- [ ] The `doc-gate` job is green. PR-4 creates it.
+- [ ] The `doc-gate` job is green (D-56, D-57). No part of this PR waits for a later PR.
 - [ ] The other provider reviewed it, and `docs/reviews/pr-<number>.md` has the verdict `Ready for owner merge` for the effective head (T-4, D-14).
 - [ ] The `review-gate` check is green. PR-6 creates it.
 - [ ] No review thread stays open, and the ruleset of `main` holds. PR-5 creates the ruleset.
@@ -23,7 +23,7 @@ Each line holds before the merge, by auto-merge or by the owner (`AGENTS.md`, PR
 
 ## Documents
 
-One line for each category, in this order (D-22). Start the line with `Changed:`, `Reviewed; no change needed:`, or `Not applicable:`. Then give a reason of five words or more that names the part of the document and the cause.
+One line for each category, in this order (D-22). Start the line with `Changed:`, `Reviewed; no change needed:`, or `Not applicable:`. Then give a reason of five words or more that names the part of the document and the cause. The `doc-gate` job reads this section.
 
 - `docs/design.md`:
 - `docs/decisions.md`:

@@ -5,7 +5,7 @@ description: Bind a session to one PR, and make that PR carry all of its documen
 
 # One PR, one session
 
-A session works on one PR (D-5). The PR carries its code, tests, decisions, questions, design and roadmap state, review record, and handoff entry. No PR exists only to record an earlier PR. PR-4 adds the `doc-gate` job, which checks the parts that a machine can read.
+A session works on one PR (D-5). The PR carries its code, tests, decisions, questions, design and roadmap state, review record, and handoff entry. No PR exists only to record an earlier PR. The `doc-gate` job checks the parts that a machine can read (D-57).
 
 This skill does not copy `AGENTS.md`. The rules and the PR gate stay there. `CLAUDE.md` holds the same text (D-12).
 
@@ -58,7 +58,7 @@ Reject each of these:
 - A handoff entry that describes work that is not in this PR.
 - A design doc, a decision, a roadmap, or a question that disagrees with the PR.
 
-PR-4 adds the `doc-gate` command and job, which run these rules on each push and on each edit of the description. Until then, the author and the reviewer check each line by hand.
+The `doc-gate` command and job run these rules on each push and on each edit of the description (D-56, D-57). The author and the reviewer still check that each reason is true.
 
 ## Status before the merge
 
@@ -88,7 +88,7 @@ Before `make codex-review`, confirm items 1 to 5, 7, and 8. Before the merge, co
 1. The PR holds the code and the regression tests (T-3). A PR of documents alone needs the ste-check job instead.
 2. `docs/decisions.md` and `docs/questions.md` hold each new decision and question.
 3. The design doc and the focused roadmap agree with the PR.
-4. The documents matrix is complete. After PR-4, the `doc-gate` job is green too.
+4. The documents matrix is complete, and the `doc-gate` job is green.
 5. The handoff entry names this branch and the state "pending merge".
 6. The review record approves the effective head (T-4, D-49). After PR-6, the owner label can replace it (D-35).
 7. Each other line of the PR gate in `AGENTS.md` holds.

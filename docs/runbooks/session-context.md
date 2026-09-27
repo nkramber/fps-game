@@ -2,7 +2,7 @@
 
 Status: procedure, written 2026-09-27. Written in ASD-STE100 (D-17). The source is the runbook of the same name in the role models (D-12).
 
-A session pays for each byte that it reads and for each model call that it makes. This runbook holds the commands that keep both counts low. Later PRs add the commands of the other tools. PR-3 adds the wait and the review.
+A session pays for each byte that it reads and for each model call that it makes. This runbook holds the commands that keep both counts low. Later PRs add the commands of the other tools. PR-3 adds the wait and the review. PR-4 adds the rotation and the local run of the documents gate.
 
 ## Targeted reads
 
@@ -65,3 +65,15 @@ make codex-review PR=<number>
 ```
 
 The one-pr-one-session skill gives the next step for each exit code.
+
+At the end of a session, add the handoff entry, then rotate the handoff before the commit (D-58, D-59). The command prints the next session number.
+
+```
+make handoff-rotate
+```
+
+Check the Documents section before the push with a local run of the documents gate (D-57). Write the PR description to a file first. The job in CI runs the same command.
+
+```
+dotnet run --project IronAbsolution.Tools/IronAbsolution.Tools.csproj -- doc-gate --root . --base origin/main --head HEAD --body <file> --title "<title>" --branch <branch>
+```
