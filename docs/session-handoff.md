@@ -13,7 +13,7 @@ Session: author PR-3, round 1. Repository: iron-absolution. Branch: `feat/pr-3-c
 
 ### The state of the build
 
-- The work head is `b0596f5`. `make` passes on the Mac: 226 tests, a clean format, and 0 findings of ste-check.
+- The effective head is `b0596f5`. `make` passes on the Mac: 226 tests, a clean format, and 0 findings of ste-check.
 - This entry commit is the remote head. The CI of PR #4 runs on it.
 
 ### What is in flight
