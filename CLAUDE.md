@@ -135,14 +135,16 @@ The C# tools project `IronAbsolution.Tools` holds the commands of the repository
 
 The provider that did not write the PR reviews it (D-6). Codex reviews a PR that Claude Code wrote, and Claude Code reviews a PR that Codex wrote.
 
-PR-3 adds `make codex-review PR=<n>` (D-14). Until PR-3 merges, the owner starts Codex by hand in a clean checkout of the PR head, with this prompt:
+After each push of a Claude Code PR, the author runs `make codex-review PR=<n>` from a clean checkout of the PR branch (D-14). Load the one-pr-one-session skill for the review loop. The reviewer follows the pr-review skill, and the author answers with the review-response skill (D-46).
+
+The command refuses a PR that changes documents alone (D-49). Until PR-6, the owner starts Codex by hand for that PR, in a clean checkout of the PR head, with this prompt:
 
 ```
 Review PR #<n> of nkramber/iron-absolution as the cross-provider reviewer.
-Read AGENTS.md, the newest handoff entry, and docs/reviews/readme.md.
+Read AGENTS.md, the newest handoff entry, and .claude/skills/pr-review/SKILL.md.
 Confirm that the Author field of the handoff names the other provider. If not, stop with the verdict Blocked.
 Review the full diff against the roadmap entry, its exit tests, the tenets, and the registers.
-Write docs/reviews/pr-<n>.md in the format of docs/reviews/readme.md, for the full head sha.
+Write docs/reviews/pr-<n>.md in the format of the pr-review skill, for the full head sha.
 Commit it with the subject "docs: review record of #<n> (PR-N)", push it, and stop. Do not merge.
 ```
 
@@ -157,6 +159,7 @@ The Makefile is the entry point (D-41). Run each target from the checkout root.
 - `make`: build, test, format, and ste-check. Run it before each push.
 - `make ste-check`: the STE checker, the reference check, the session number check, and the size check (D-17).
 - `make hooks`: install the pre-commit hook in this checkout, one time (D-43).
+- `make codex-review PR=<n>`: the cross-provider review of one PR. The exit codes are 0 approve, 10 changes, 11 three-strike stop, 3 refused start, and 1 fault (D-14).
 
 The CI of each PR runs the `ste-check`, `build, test, and format`, and `coverage report` jobs (D-42, D-45).
 

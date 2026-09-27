@@ -13,6 +13,7 @@ How to read this file:
 - The owner gave D-12 to D-23 in answers to questions on 2026-09-27. The session asked each question with options and a recommended option.
 - The owner answered the open questions on 2026-09-27 in the same way. D-24 to D-38 record these answers.
 - The owner gave D-39 to D-45 on 2026-09-27 in PR-2. D-40 to D-45 resolve the divergences of the role models that the port of PR-2 met (D-13).
+- The owner gave D-46 to D-53 on 2026-09-27 in PR-3. D-46 to D-52 resolve the divergences of the role models that the port of PR-3 met (D-13).
 - For D-15, the owner asked for the best fit, and the session recommended it. The owner then chose it.
 
 How to add a decision:
@@ -69,6 +70,14 @@ Find a row with `grep -n -E '^\| D-(12|14) \|' docs/decisions.md`.
 | D-43 | 2026-09-27 | Pre-commit hook | The repository has the pre-commit hook of the-thing-below. It refuses a commit on `main` or on no branch, and it runs ste-check. `make hooks` installs it. | Resolves a divergence of D-13 in PR-2. what-you-carry has no hook. |
 | D-44 | 2026-09-27 | C# skill | A new csharp-conventions skill covers the C# tools alone. It takes the errors, style, tests, and command rules of the-thing-below, and two rules of what-you-carry: no clever one-liners, and tune only on measurement. | Resolves a divergence of D-13 in PR-2. The determinism and Godot rules of both role models do not transfer (D-12). |
 | D-45 | 2026-09-27 | Test coverage | The test project writes coverage with coverlet, and a CI job writes a coverage report. No threshold applies. | Resolves a divergence of D-13 in PR-2. what-you-carry has no coverage. |
+| D-46 | 2026-09-27 | Review skills | Port the pr-review, review-response, and one-pr-one-session skills of what-you-carry, with their reference files. The parts about gitar stay out (D-7). | Resolves a divergence of D-13 in PR-3. the-thing-below puts the answer of the author into its pr-review skill. |
+| D-47 | 2026-09-27 | Codex CLI install | The `codex-review` target of the Makefile installs the newest Codex CLI with npm. It then gives the command the path of the CLI with `--codex` and the PR number with `--pr`. | Resolves a divergence of D-13 in PR-3. the-thing-below installs the CLI inside the command. A test can give the command a fake CLI. |
+| D-48 | 2026-09-27 | Review worktree | The review runs in a worktree on the local branch `review/pr-<n>`, which starts at the PR branch on origin. The reviewer pushes with `HEAD:<branch>`. The command removes the branch after a review with no fault. | Resolves a divergence of D-13 in PR-3, as in the-thing-below. The hook of D-43 refuses a commit on no branch, so the detached worktree of what-you-carry does not work here. |
+| D-49 | 2026-09-27 | Effective head | The effective head is the newest commit that changes a path outside the documents set: `docs/`, `.claude/skills/`, `CLAUDE.md`, `AGENTS.md`, `README.md`, and `LICENSE`. `make codex-review` refuses a PR with no such commit. Until PR-6, the owner starts Codex by hand for that PR. | Resolves a divergence of D-13 in PR-3, as in what-you-carry. the-thing-below reads the metadata set alone. |
+| D-50 | 2026-09-27 | Review time limit | The command stops the Codex review after 90 minutes. The stop is a fault, and the worktree stays for a read. | Resolves a divergence of D-13 in PR-3, as in the-thing-below. what-you-carry has no limit. |
+| D-51 | 2026-09-27 | Review transcripts | The command writes the transcript, the error log, and the last message of each review under `artifacts/codex-review/`. Git ignores that folder. | Resolves a divergence of D-13 in PR-3, as in the-thing-below. what-you-carry writes them to the temporary folder of the system. |
+| D-52 | 2026-09-27 | Open threads | The command refuses to start while the PR has a review thread that is not resolved. | Resolves a divergence of D-13 in PR-3, as in what-you-carry. the-thing-below reads the threads only in its gitar check. |
+| D-53 | 2026-09-27 | API key | The command removes `OPENAI_API_KEY`, `CODEX_API_KEY`, and `CODEX_ACCESS_TOKEN` from each Codex process, as in what-you-carry. It refuses to start when `codex login status` without those variables does not give the ChatGPT login. | Changes exit test 3 of PR-3, which said that a key in the environment refuses the start. A key in the environment of the shell does not stop a review, and it never reaches Codex. |
 
 ## Engine and technology
 

@@ -2,7 +2,7 @@
 
 Status: procedure, written 2026-09-27. Written in ASD-STE100 (D-17). The source is the runbook of the same name in the role models (D-12).
 
-A session pays for each byte that it reads and for each model call that it makes. This runbook holds the commands that keep both counts low. Later PRs add the commands of the tools, the wait, and the review.
+A session pays for each byte that it reads and for each model call that it makes. This runbook holds the commands that keep both counts low. Later PRs add the commands of the other tools. PR-3 adds the wait and the review.
 
 ## Targeted reads
 
@@ -49,3 +49,19 @@ Check at the end that the remote holds each commit. The status must show no `[ah
 ```
 git push && git fetch origin && git status -sb
 ```
+
+## The wait and the review
+
+Wait for the checks of a PR with one command after each push. Read the result one time.
+
+```
+gh pr checks <number> --watch --interval 60 > /dev/null 2>&1; gh pr checks <number>
+```
+
+Start the cross-provider review of a PR from a clean checkout of its branch (D-14). Run it in the background, and read the line `codex-review: <outcome> (exit <code>)`.
+
+```
+make codex-review PR=<number>
+```
+
+The one-pr-one-session skill gives the next step for each exit code.
