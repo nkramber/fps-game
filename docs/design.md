@@ -8,7 +8,7 @@ Status: the owner accepts it on the condition of D-27. Written in ASD-STE100 (D-
 - 2026-09-27 correction pass: the owner set D-12 to D-23. This doc moved to the template of the role models, and GitHub PR #1 closed (D-23).
 - 2026-09-27 second pass: the owner answered the open questions (D-24 to D-38). The license is now MIT (D-24).
 - 2026-09-27 third pass: Steam lists a game with the name Emberline. The project name is now Iron Absolution (D-39).
-- 2026-09-27 fourth pass: the owner resolved the divergences of the PR-3 port (D-46 to D-53). D-53 corrects exit test 3 of PR-3.
+- 2026-09-27 fourth pass: the owner resolved the divergences of the PR-3 port (D-46 to D-53). D-53 corrects exit test 3 of PR-3. D-55 scopes G-12 to the game.
 
 ## 1. Thesis
 
@@ -133,7 +133,7 @@ The tenets are the constitution. When a tenet conflicts with speed or convenienc
 - **G-9.** No agent edits `LICENSE` without an instruction of the owner (D-10, D-24).
 - **G-10.** Infrastructure follows the role models. When the two differ, ask the owner (D-12, D-13).
 - **G-11.** Unreal best practices govern the engine work, the game code, and the content (D-34).
-- **G-12.** Each change keeps both platforms working and inside their budgets (D-32).
+- **G-12.** Each change keeps both platforms of the game working and inside their budgets (D-32). The development tools run on the Mac alone (D-55).
 
 ## 7. Roadmap
 

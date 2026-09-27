@@ -35,7 +35,7 @@ Apply each relevant row. Record why an area does not apply when its omission can
 | Input and CI boundaries | Size limits, file paths, and validation at each affected external input. CI permissions, secret access, and untrusted content. Actions pinned by commit SHA, and a time limit on each job (D-42). |
 | Credentials and caches | No credentials, account data, generated caches, or machine-specific paths in a commit (G-6, D-9). |
 | Unreal code and content | Unreal best practices and the Epic C++ coding standard (G-11, D-34). C++ holds the rules. Data assets and Blueprint subclasses hold tuning and content (D-29). |
-| Platforms and budgets | macOS and Windows keep working inside the budgets of D-32 (G-12). The owner posts the Windows logs (D-33). An engine PR attaches local logs (D-31). |
+| Platforms and budgets | The game keeps working on macOS and Windows inside the budgets of D-32 (G-12). The development tools and the review run on the Mac alone, and need no Windows evidence (D-55). The owner posts the Windows logs (D-33). An engine PR attaches local logs (D-31). |
 | Binary assets | Git LFS stores each binary asset (D-30). |
 | Originality and licenses | All content is original (G-1, D-2). A third-party asset enters only when its terms allow redistribution (D-24). |
 | Dependencies and cost | A decision justifies each dependency. A performance claim has a measurement before and after the change (T-1). No spend without the owner (D-8). |

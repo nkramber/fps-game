@@ -119,7 +119,7 @@ The C# tools project `IronAbsolution.Tools` holds the commands of the repository
 - Unreal best practices govern each rule and each implementation of the engine work, the game code, and the content (D-34). A tenet or a role-model rule gives way to them in that scope.
 - Follow the Epic C++ coding standard: https://dev.epicgames.com/documentation/unreal-engine/epic-cplusplus-coding-standard-for-unreal-engine.
 - C++ holds the rules. Data assets and Blueprint subclasses hold tuning and content (D-29).
-- Each change keeps macOS and Windows working and inside the budgets of D-32. The owner runs the Windows builds and posts the logs (D-33).
+- Each change keeps the game working on macOS and Windows and inside the budgets of D-32. The owner runs the Windows builds and posts the logs (D-33). The development tools run on the Mac alone (D-55).
 - Game rules and engine technology of the role models do not transfer (D-12).
 
 ## Git rules
