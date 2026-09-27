@@ -1,3 +1,37 @@
+## Session 7: 2026-09-27, Claude Code
+
+Author: Claude Code
+Session: author PR-3, round 2. Repository: iron-absolution. Branch: `feat/pr-3-codex-review`. PR: #4. Role: author. Base: `e97da5a5238807c29c7a3bcdc5d4184dfb97f1b4`.
+
+### What this session did, and why
+
+- The first real `make codex-review PR=4` ran to its end with the exit code 10. Codex pushed the record and its handoff entry as one commit, `8b40ff6`. Exit test 2 holds.
+- P2-1 had full merit: the CLI path of the Makefile does not exist on Windows. `2551eb3` starts `node` with the entry script `bin/codex.js` on each platform.
+- The owner set D-54: the author starts each review round with no question first.
+- The subject of the review commit named PR-4 in place of PR-3. The pr-review skill and the agent files now give an example with both numbers.
+
+### The state of the build
+
+- The effective head is `2551eb3`. `make` passes on the Mac: 232 tests, a clean format, and 0 findings of ste-check.
+- This entry commit is the remote head.
+
+### What is in flight
+
+- The second review round runs when the checks of this head are green (D-54).
+
+### Traps and gotchas
+
+- Commit no file outside the metadata set while a round runs. The round then fails (D-14).
+- A Windows run of the tests is open to the owner (D-33). CI runs on Ubuntu alone.
+
+### The questions that block progress
+
+- None blocks PR-3.
+
+### The next concrete action
+
+- Read the verdict of round 2, then answer it or write the merge summary.
+
 ## Session 6: 2026-09-27, Codex
 
 Author: Codex
