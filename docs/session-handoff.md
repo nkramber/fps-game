@@ -25,7 +25,7 @@ Session: branch `<branch>`, PR #<n> (<open|merged as sha>), role <author|reviewe
 
 ## Session 1: 2026-09-27, Claude Code
 Author: Claude Code
-Session: branch `docs/foundation-roadmap`, PR #PENDING (open), role author, base `bfb71cf`.
+Session: branch `docs/foundation-roadmap`, PR #1 (open), role author, base `bfb71cf`.
 
 ### What this session did, and why
 - Studied both role-model repositories and recorded what to adopt, adapt or decline in [role-model-patterns.md](research/role-model-patterns.md).
@@ -73,7 +73,7 @@ Session: branch `docs/foundation-roadmap`, PR #PENDING (open), role author, base
 
 ```
 Start: P0.2 docs-check CI (link/anchor check, D-/Q- ID checks, handoff format) as one PR.
-Repository: nkramber/fps-game. Base: origin/main at <merge sha of PR #PENDING> (PR #PENDING merged).
+Repository: nkramber/fps-game. Base: origin/main at <merge sha of PR #1> (PR #1 merged).
 Branch to create: chore/p0-docs-check. Role: author. Provider: any (the reviewer must be the other provider).
 First: read the newest entry of docs/session-handoff.md, then AGENTS.md.
 Roadmap: docs/roadmaps/high-level-roadmap.md, work area P0.2; process in docs/workflow.md § CI/CD strategy.
