@@ -1,3 +1,37 @@
+## Session 22: 2026-09-27, Codex
+
+Author: Codex
+Session: reviewer PR-6, round 2. Repository: iron-absolution. Branch: `feat/pr-5-main-ruleset`. PR: #6. Role: reviewer. Base: `f5e9514ebae89c1a5a6a189a8213f2b44f9d1bf5`.
+
+### What this session did, and why
+
+- Re-reviewed PR-5 at effective head `1fe466b`. The review found that the new D-61 test fixes P2-1.
+- Updated `docs/reviews/pr-6.md` with the round-two result and preserved the earlier verdict.
+
+### The state of the build
+
+- `make` passes: 288 tests, clean format, and 0 findings from ste-check.
+- All four hosted checks pass on the PR branch. The effective work head is `1fe466b`.
+- The review record and this handoff entry are in one metadata commit on the PR branch.
+- The live ruleset does not exist yet. The author session must apply it and compare it with the PR file before merge (D-63).
+
+### What is in flight
+
+- The PR awaits the live ruleset comparison and the merge gate.
+
+### Traps and gotchas
+
+- The ruleset test keeps the four checks of D-61 as a subset. Roadmap PR-6 adds `review-gate`.
+- The review approves the effective work head. Later work changes need a new review.
+
+### The questions that block progress
+
+- None. OQ-16 still holds gitar under D-7.
+
+### The next concrete action
+
+- Apply the live ruleset from the PR head and run the comparison in `docs/runbooks/main-ruleset.md` (exit test 2, D-63).
+
 ## Session 21: 2026-09-27, Claude Code
 
 Author: Claude Code
@@ -310,41 +344,3 @@ Session: reviewer PR-5, round 1. Repository: iron-absolution. Branch: `review/pr
 ### The next concrete action
 
 - Correct P2-1, add its regression test, and run the focused command test.
-
-## Session 12: 2026-09-27, Claude Code
-
-Author: Claude Code
-Session: author PR-4, round 1. Repository: iron-absolution. Branch: `feat/pr-4-doc-gate-rotation`. PR: #5. Role: author. Base: `6acc6a85798182781a6fc1193c6e37d90dd03020`.
-
-### What this session did, and why
-
-- Ran the exit tests of PR-3 on a clean `main` first: `make hooks`, then `make`. The result was 232 tests, a clean format, and 0 findings.
-- Ported the `doc-gate` and `handoff-rotate` commands of what-you-carry, with their tests. The owner resolved four divergences as D-56 to D-59.
-- D-56 gives the gate its own workflow, `.github/workflows/doc-gate.yml`, because the `edited` event in `ci.yml` would cancel the build.
-- D-57 takes the full rule set. D-58 sorts an entry out of place back in order. D-59 adds `make handoff-rotate`.
-- Updated the agent files, the PR template, the one-pr-one-session skill, the runbook, and the PR-4 entry of the design doc.
-- This session ran `make handoff-rotate` on this entry. It moved session 2 to the archive, which is exit test 2 on the live files.
-
-### The state of the build
-
-- `make` passes on the Mac. The test count and the checks of the pushed head are in the PR.
-- The remote head is the commit of this entry on `feat/pr-4-doc-gate-rotation`. The state is pending merge.
-
-### What is in flight
-
-- The checks of PR #5, then `make codex-review PR=5` (D-54).
-- Exit test 1 runs on PR #5 itself: the first description leaves one Documents line empty, and the `doc-gate` check must go red.
-
-### Traps and gotchas
-
-- The handoff has no title. Its first line is the newest heading, so a parse that looks for a line end before the heading skips the newest entry.
-- The session line writes `` Branch: `<branch>` `` with a colon. The gate looks for that exact form.
-- The `doc-gate` check reads the description of the PR. Edit the description, not a file, to fix a Documents line.
-
-### The questions that block progress
-
-- None blocks PR-4. OQ-16 still holds gitar (D-7).
-
-### The next concrete action
-
-- Finish the review loop of PR #5, then give the owner the merge summary.
