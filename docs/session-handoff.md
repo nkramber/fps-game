@@ -1,3 +1,37 @@
+## Session 13: 2026-09-27, Codex
+
+Author: Codex
+Session: reviewer PR-5, round 1. Repository: iron-absolution. Branch: `review/pr-5`. PR: #5. Role: reviewer. Base: `6acc6a85798182781a6fc1193c6e37d90dd03020`.
+
+### What this session did, and why
+
+- Reviewed PR #5 against its exit tests, guardrails, decisions, and PR comments.
+- Ran `make`. The build, 269 tests, format, and ste-check passed.
+- Reproduced P2-1: an out-of-range session number crashes `handoff-rotate` with exit 134.
+- Added `docs/reviews/pr-5.md` with the revision-specific review.
+
+### The state of the build
+
+- The reviewed work head is `b5993f4a8eed3353208619a50a1d6448d9434dfd`. All four hosted checks pass at this head.
+- The review record and this handoff entry await one metadata commit and push to `feat/pr-4-doc-gate-rotation`.
+
+### What is in flight
+
+- P2-1 needs a contextual range check and a regression test.
+- The PR needs a new review round after the correction.
+
+### Traps and gotchas
+
+- `HandoffRotateRules.Parse` uses `int.Parse` for a session number. An out-of-range value bypasses the command fault handler.
+
+### The questions that block progress
+
+- OQ-16 still holds the gitar plan under D-7. It does not block this review.
+
+### The next concrete action
+
+- Correct P2-1, add its regression test, and run the focused command test.
+
 ## Session 12: 2026-09-27, Claude Code
 
 Author: Claude Code
@@ -312,42 +346,3 @@ Session: author PR-2, round 2. Repository: iron-absolution. Branch: `feat/pr-2-t
 ### The next concrete action
 
 - The owner starts the repeat Codex review of PR #3.
-
-## Session 3: 2026-09-27, Claude Code
-
-Author: Claude Code
-Session: author PR-2, round 1. Repository: iron-absolution. Branch: `feat/pr-2-tools-ste-check`. PR: #3. Role: author. Base: `d9561582b1fd9cb25086705770a8d6529bdad5a5`.
-
-### What this session did, and why
-
-- Steam lists an upcoming game with the name Emberline. The session screened names, and the owner picked Iron Absolution (D-39). `docs/research/name-screen.md` holds the screen.
-- On the instruction of the owner, the session renamed the GitHub repository to `nkramber/iron-absolution` and the local folder to `iron-absolution`. GitHub redirects the old URL.
-- The session asked the owner about each divergence of the role models (D-13). D-40 to D-45 record the answers: the stack, the Makefile, the CI layout, the hook, the C# skill, and the coverage.
-- The session ported the `ste-check` command of the-thing-below into `IronAbsolution.Tools`, with 94 tests. The port drops AGENTS 2 and DOCS 1.
-- The Codex review of PR-1 changed no phase or gate, so the roadmap acceptance of D-27 holds without its condition.
-
-### The state of the build
-
-- The effective head is `979ba5d`. CI of that commit passed on the hosted runner: `ste-check`, `build, test, and format`, and `coverage report` (exit test 1). This entry commit is the remote head.
-- `make` passes on the Mac: 94 tests, a clean format, and 0 findings of ste-check.
-- Exit test 2: commit `ab988ae` added a semicolon to `README.md`. The `ste-check` job failed with `README.md:37: rule STE 8.1: semicolon`. Commit `d1e0bad` reverted it.
-- Exit test 3: the test `EveryLiveDocumentOfThisRepositoryPassesEveryRule` passes.
-
-### What is in flight
-
-- PR #3 needs the Codex review. Until PR-3 merges, the owner starts Codex by hand with the prompt of `AGENTS.md`.
-
-### Traps and gotchas
-
-- Run `make hooks` one time in each checkout. The hook then runs ste-check on each commit.
-- A folder symlink `fps-game` points to `iron-absolution` on the SSD. Remove it when no tool uses the old path.
-- The path rule knows no Unreal file type yet. Phase 1 adds them to `ReferenceRules.PathExtensions`.
-- The checker reads the ids of this repository alone. A code comment cites no id of a role model.
-
-### The questions that block progress
-
-- None blocks PR-2. OQ-9, OQ-10, and OQ-12 wait for phase 2. OQ-16 waits for gitar. OQ-21 waits for phase 8.
-
-### The next concrete action
-
-- The owner starts the Codex review of PR #3.
