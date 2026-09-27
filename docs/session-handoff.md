@@ -1,3 +1,37 @@
+## Session 16: 2026-09-27, Claude Code
+
+Author: Claude Code
+Session: author PR-4, round 3. Repository: iron-absolution. Branch: `feat/pr-4-doc-gate-rotation`. PR: #5. Role: author. Base: `6acc6a85798182781a6fc1193c6e37d90dd03020`.
+
+### What this session did, and why
+
+- Review round 2 marked P2-1 fixed in `614847a`, and it found P2-2: at Session 2147483647, the next session number wrapped to a negative number, and the command exited 0.
+- The trigger reproduced, so the finding has full merit. `eb76650` makes that number a contextual fault with exit 1 and no file change.
+- One regression test fails with the check off. `docs/reviews/pr-5-response.md` holds the answer under "Round 2".
+
+### The state of the build
+
+- The effective head is `eb76650`. `make` passes on the Mac: 272 tests, a clean format, and 0 findings of ste-check.
+- The remote head is the commit of this entry. The state is pending merge.
+
+### What is in flight
+
+- The checks of the new head, then review round 3 with `make codex-review PR=5` (D-54).
+
+### Traps and gotchas
+
+- Exit test 1 ran on PR #5 itself: the first description had an empty `docs/runbooks/` line, and `doc-gate` went red. The edit made it green, and the build jobs did not run again.
+- The session line writes `` Branch: `<branch>` `` with a colon. The gate looks for that exact form.
+
+### The questions that block progress
+
+- None blocks PR-4. OQ-16 still holds gitar (D-7).
+
+### The next concrete action
+
+- Finish the review loop of PR #5, then give the owner the merge summary.
+- For a fresh session: the session number check of `ste-check` reads a heading number with `int.Parse`, so a number too large for an int stops the check with no context (T-2).
+
 ## Session 15: 2026-09-27, Codex
 
 Author: Codex
@@ -311,38 +345,3 @@ Session: author PR-3, round 2. Repository: iron-absolution. Branch: `feat/pr-3-c
 ### The next concrete action
 
 - Read the verdict of round 2, then answer it or write the merge summary.
-
-## Session 6: 2026-09-27, Codex
-
-Author: Codex
-Session: reviewer PR-3, round 1. Repository: iron-absolution. Branch: `feat/pr-3-codex-review`. PR: #4. Role: reviewer. Base: `e97da5a5238807c29c7a3bcdc5d4184dfb97f1b4`.
-
-### What this session did, and why
-
-- The session reviewed the full PR-3 diff against the roadmap, exit tests, decisions, questions, and review contracts.
-- The provider gate passed. Claude Code authored the change, and Codex reviewed it.
-- The record has finding P2-1. The Make target cannot launch the Windows Codex command shim.
-
-### The state of the build
-
-- The effective head is `b0596f5accb3c1e4d8ad5dc05ed668763c2447ed`.
-- `make` passed on macOS: 226 tests, clean format, and 0 findings of ste-check.
-- All three CI checks passed on the reviewed tip. The remote head is the published metadata commit on `origin/feat/pr-3-codex-review`.
-
-### What is in flight
-
-- P2-1 needs a platform-aware CLI path and launch test on Windows.
-- The real `make codex-review PR=4` run judges the review record after this metadata push.
-
-### Traps and gotchas
-
-- The CI workflow runs on Ubuntu only. It does not test the Windows process launch.
-- OQ-16 still holds the gitar plan. D-7 keeps gitar out of this PR.
-
-### The questions that block progress
-
-- None. The Windows defect has a concrete correction and regression test.
-
-### The next concrete action
-
-- The author answers P2-1, then reruns the Windows process-launch test and the review.

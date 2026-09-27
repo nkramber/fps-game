@@ -2,6 +2,41 @@
 
 This file holds the entries that the rotation moves out of `docs/session-handoff.md`, newest first.
 
+## Session 6: 2026-09-27, Codex
+
+Author: Codex
+Session: reviewer PR-3, round 1. Repository: iron-absolution. Branch: `feat/pr-3-codex-review`. PR: #4. Role: reviewer. Base: `e97da5a5238807c29c7a3bcdc5d4184dfb97f1b4`.
+
+### What this session did, and why
+
+- The session reviewed the full PR-3 diff against the roadmap, exit tests, decisions, questions, and review contracts.
+- The provider gate passed. Claude Code authored the change, and Codex reviewed it.
+- The record has finding P2-1. The Make target cannot launch the Windows Codex command shim.
+
+### The state of the build
+
+- The effective head is `b0596f5accb3c1e4d8ad5dc05ed668763c2447ed`.
+- `make` passed on macOS: 226 tests, clean format, and 0 findings of ste-check.
+- All three CI checks passed on the reviewed tip. The remote head is the published metadata commit on `origin/feat/pr-3-codex-review`.
+
+### What is in flight
+
+- P2-1 needs a platform-aware CLI path and launch test on Windows.
+- The real `make codex-review PR=4` run judges the review record after this metadata push.
+
+### Traps and gotchas
+
+- The CI workflow runs on Ubuntu only. It does not test the Windows process launch.
+- OQ-16 still holds the gitar plan. D-7 keeps gitar out of this PR.
+
+### The questions that block progress
+
+- None. The Windows defect has a concrete correction and regression test.
+
+### The next concrete action
+
+- The author answers P2-1, then reruns the Windows process-launch test and the review.
+
 ## Session 5: 2026-09-27, Claude Code
 
 Author: Claude Code
