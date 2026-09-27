@@ -33,5 +33,3 @@ The tools project needs the .NET SDK of `global.json`. Run `make` to build, test
 ## License
 
 The MIT License covers the whole repository, code and content (D-24). See `LICENSE`. A third-party asset keeps its own terms, and it enters the repository only when those terms allow redistribution.
-
-This line breaks rule 8.1; the ste-check job must fail.
