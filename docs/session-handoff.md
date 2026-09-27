@@ -1,3 +1,37 @@
+## Session 10: 2026-09-27, Codex
+
+Author: Codex
+Session: reviewer PR-3, round 3. Repository: iron-absolution. Branch: `feat/pr-3-codex-review`. PR: #4. Role: reviewer. Base: `e97da5a5238807c29c7a3bcdc5d4184dfb97f1b4`.
+
+### What this session did, and why
+
+- The review checked the launcher correction and its regression tests again.
+- D-55 says the tools and review need no Windows run. P2-1 is fixed in `2551eb3`.
+- The review record now approves effective head `2551eb3`.
+
+### The state of the build
+
+- `make` passed on macOS: 232 tests, clean format, and 0 ste-check findings.
+- All three CI jobs passed at metadata tip `241375c`.
+- This metadata commit is the remote head.
+
+### What is in flight
+
+- The owner reads the review and gives the merge confirmation after the merge summary.
+
+### Traps and gotchas
+
+- Documents commits do not move the effective head (D-49).
+- OQ-16 does not block PR-3. D-7 keeps gitar out.
+
+### The questions that block progress
+
+- None.
+
+### The next concrete action
+
+- Give the owner the merge summary, then wait for the merge decision.
+
 ## Session 9: 2026-09-27, Claude Code
 
 Author: Claude Code

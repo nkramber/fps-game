@@ -13,35 +13,35 @@ Date: 2026-09-27
 
 ## Provider gate
 
-Claude Code authored the substantive change. The newest handoff entry for `feat/pr-3-codex-review` names Claude Code as author. Codex is the other provider and can review this PR under T-4 and D-6.
+Claude Code authored the substantive change. The newest author handoff for `feat/pr-3-codex-review` confirms this. Codex is the other provider and can review this PR under T-4 and D-6.
 
 ## Intended behavior and scope
 
-PR-3 adds the `codex-review` command, its tests, and its review skills. This repeat pass read the prior review and response, the full correction diff, the affected launcher and command paths, the launcher tests, the PR description, the PR-3 exit tests, the relevant decisions and questions, and the review contracts. It checked the provider gate, the Windows CLI launch correction, the process argument and environment paths, and the effective and work heads. Unreal code, content, binary assets, and engine budgets do not apply because the PR changes none of them.
+PR-3 adds the `codex-review` command, its tests, and its review skills. This repeat pass read both earlier records and the author response, checked the change to the launcher and its tests, and reviewed the current documents-only changes. It checked the PR description, exit tests, provider gate, review command contracts, decisions, questions, and affected consumers. D-55 says the tools and review run on macOS and need no Windows run. Unreal code, content, binary assets, and engine budgets do not apply because the PR changes none of them.
 
 ## Findings
 
-### P2-1: Windows launch correction lacks Windows run evidence
+### P2-1: The Codex launcher used a missing Windows shim
 
-Status: open.
+Status: fixed in `2551eb31c274db277159c779a5e98b7bc67e4c51`.
 
 Open at: `b0596f5accb3c1e4d8ad5dc05ed668763c2447ed`, `2551eb31c274db277159c779a5e98b7bc67e4c51`.
 
 File: `Makefile:10`, `IronAbsolution.Tools/CodexReview/CodexLauncher.cs:35-63`, `IronAbsolution.Tests/CodexLauncherTests.cs:29-48`.
 
-Trigger: Run the launcher regression tests and `make codex-review PR=4` on Windows after the correction.
+Trigger: Run `make codex-review PR=4` with the default Windows npm install path.
 
-Expected: The entry script starts through `node`, the multi-line prompt reaches the CLI unchanged, and the review reaches the record judge on Windows (D-32, D-33, D-47).
+Expected: Start the installed CLI entry script through `node` and pass the multi-line prompt unchanged (D-47, T-2).
 
-Actual: The correction uses `npm root --global` and starts `bin/codex.js` through `node`. The new tests cover version output and a multi-line prompt. This review ran them on macOS only. No Windows run log or Windows end-to-end run is present, so the platform-specific regression check remains unverified.
+Actual: The earlier Makefile path named a shim that npm does not create on Windows. Commit `2551eb3` now resolves the package entry script under `npm root --global`, starts it through `node`, and routes each Codex call through that launcher.
 
-Consequence: The review cannot confirm that the corrected process launch works on the required Windows platform.
+Consequence: The old command could not start the review on Windows. D-55 later confirmed that the tools and review need to work on macOS alone, so Windows execution is not a required contract.
 
-Evidence: `make` at `2551eb31c274db277159c779a5e98b7bc67e4c51` passed on macOS with 232 tests, including the launcher tests. `gh pr checks 4` passed `ste-check`, `build, test, and format`, and `coverage report` at metadata tip `5561e3f3f808117234dfc193d9365f33d8241427`; those jobs run on Ubuntu. No Windows evidence was available in this checkout.
+Evidence: `make` on macOS at the effective head passed with 232 tests, including `TheVersionComesFromTheEntryScript`, `AMultiLinePromptReachesTheCliUnchanged`, and `TheMakefileGivesTheEntryScriptOfTheNpmPackage`. These tests exercise the old failure: the fake CLI entry script must run, and its received prompt must preserve all lines. D-55 resolves the prior request for a Windows run.
 
-Correction: Run the focused launcher tests on Windows, then run `make codex-review PR=4` on Windows with a ChatGPT login. Record both results in the PR before the next review.
+Correction: Commit `2551eb3` uses the npm package entry script and the `node` launcher.
 
-Regression check: Require the fake CLI to report its version and receive the multi-line prompt unchanged on Windows. Require the real review command to reach the record judge on Windows.
+Regression check: `make` passes with all 232 tests on macOS. No Windows run is required by D-55.
 
 ## Out of scope
 
@@ -57,20 +57,23 @@ None.
 
 ## Verification
 
-- `make` at `2551eb31c274db277159c779a5e98b7bc67e4c51` on macOS: build passed with 0 warnings and 0 errors; 232 tests passed, 0 failed, and 0 skipped; format passed; ste-check reported 0 findings.
-- `gh pr checks 4`: all three jobs passed at published metadata tip `5561e3f3f808117234dfc193d9365f33d8241427`. The jobs cover the effective head because the later commit changes metadata only.
-- Windows launcher regression and end-to-end review: not run. This checkout has no Windows runner. D-33 assigns the Windows run to the owner, and its result remains required evidence.
-- Real `make codex-review PR=4`: this repeat review is the active run. The command judges this record after the metadata push.
-- Push: the single metadata commit for this review and handoff is verified as the head of `origin/feat/pr-3-codex-review` with `gh pr view`.
+- Effective head: `2551eb31c274db277159c779a5e98b7bc67e4c51`. Commits after it change documents only, so D-49 keeps this effective head.
+- `make` on macOS: build passed with 0 warnings and 0 errors; 232 tests passed, 0 failed, and 0 skipped; format passed; ste-check reported 0 findings.
+- `gh pr checks 4`: `ste-check`, `build, test, and format`, and `coverage report` all passed at published metadata tip `241375c5b9693ca4fdb316afec437ff07fcefb39`. The later commits change documents only.
+- Windows launcher tests and review command: not run. D-55 says the development tools and review need no Windows run.
+- PR comments and review threads: none, verified with `gh pr view 4 --comments` and the GitHub GraphQL thread query.
+- Real `make codex-review PR=4`: this review is the active run. The command judges this record after the metadata push.
+- Push: the metadata commit is the head of `origin/feat/pr-3-codex-review`, verified with `gh pr view`.
 
 ## Open questions and accepted risks
 
-OQ-16 remains open for the gitar plan. D-7 keeps gitar out of this PR. No other open question blocks this review.
+OQ-16 remains open for the gitar plan. D-7 keeps gitar out of this PR. It does not block this review.
 
 ## Earlier verdicts
 
-- Head `b0596f5accb3c1e4d8ad5dc05ed668763c2447ed`: **Changes required.** P2-1 identified the Windows CLI launch failure.
+- Head `b0596f5accb3c1e4d8ad5dc05ed668763c2447ed`: **Changes required.** P2-1 identified the missing Windows CLI shim.
+- Head `2551eb31c274db277159c779a5e98b7bc67e4c51`: **Blocked.** The prior round asked for Windows evidence, which D-55 later made unnecessary for the tools and review.
 
 ## Verdict
 
-**Blocked.** This review cannot close P2-1 until the Windows regression test and end-to-end command run have results. The local tests and all three published CI jobs pass, but none runs on Windows.
+**Ready for owner merge.** P2-1 is fixed by the launcher correction, its regression tests pass, and D-55 resolves the remaining platform evidence request. The required local and hosted checks pass for this effective head.
