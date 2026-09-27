@@ -46,6 +46,20 @@ public sealed class RulesetTests
     }
 
     [Fact]
+    public void TheRulesetRequiresEachCheckOfTheDecision()
+    {
+        // D-61 names these four checks. A check that leaves the file and the workflows together
+        // passes the two binding tests below, so this test holds each name. A later check can
+        // join the ruleset, and PR-6 adds review-gate.
+        string[] decided = ["ste-check", "build, test, and format", "coverage report", "doc-gate"];
+        HashSet<string> required = RequiredChecks().Select(check => check.Context).ToHashSet(StringComparer.Ordinal);
+        foreach (string check in decided)
+        {
+            Assert.True(required.Contains(check), $"The ruleset of main does not require the check '{check}' that D-61 names.");
+        }
+    }
+
+    [Fact]
     public void EachRequiredCheckIsTheNameOfOnePullRequestJob()
     {
         Dictionary<string, List<string>> jobs = PullRequestJobsByCheckName();
