@@ -1,3 +1,38 @@
+## Session 20: 2026-09-27, Codex
+
+Author: Codex
+Session: reviewer PR-5, round 1. Repository: iron-absolution. Branch: `feat/pr-5-main-ruleset`. PR: #6. Role: reviewer. Base: `f5e9514ebae89c1a5a6a189a8213f2b44f9d1bf5`.
+
+### What this session did, and why
+
+- Reviewed the ruleset, its tests, the setup runbook, and the related documents.
+- Found that the tests allow one of the four required checks and its matching job to disappear together.
+- Wrote `docs/reviews/pr-6.md` with verdict `Changes required` for effective head `2d0f013`.
+
+### The state of the build
+
+- `make` passes on the Mac: 287 tests, a clean format, and 0 findings of ste-check.
+- The four hosted checks pass on PR head `2d0f013`.
+- The pushed metadata commit will be the remote head. The PR work head remains `2d0f013`.
+
+### What is in flight
+
+- P2-1 needs a test that fixes the four check names of D-61.
+- The live ruleset does not exist yet. D-63 assigns its setup and comparison to the author session after review approval and before merge.
+
+### Traps and gotchas
+
+- Ruleset tests currently derive their expected checks from the ruleset file and workflows.
+- OQ-16 keeps the gitar pass out of this PR under D-7.
+
+### The questions that block progress
+
+- None. OQ-16 still holds the gitar pass.
+
+### The next concrete action
+
+- The author fixes P2-1, runs its regression check, and starts the next review round.
+
 ## Session 19: 2026-09-27, Claude Code
 
 Author: Claude Code
@@ -311,37 +346,3 @@ Session: author PR-3, merge. Repository: iron-absolution. Branch: `feat/pr-3-cod
 ### The next concrete action
 
 - After the merge, write the transitional prompt of PR-4.
-
-## Session 10: 2026-09-27, Codex
-
-Author: Codex
-Session: reviewer PR-3, round 3. Repository: iron-absolution. Branch: `feat/pr-3-codex-review`. PR: #4. Role: reviewer. Base: `e97da5a5238807c29c7a3bcdc5d4184dfb97f1b4`.
-
-### What this session did, and why
-
-- The review checked the launcher correction and its regression tests again.
-- D-55 says the tools and review need no Windows run. P2-1 is fixed in `2551eb3`.
-- The review record now approves effective head `2551eb3`.
-
-### The state of the build
-
-- `make` passed on macOS: 232 tests, clean format, and 0 ste-check findings.
-- All three CI jobs passed at metadata tip `241375c`.
-- This metadata commit is the remote head.
-
-### What is in flight
-
-- The owner reads the review and gives the merge confirmation after the merge summary.
-
-### Traps and gotchas
-
-- Documents commits do not move the effective head (D-49).
-- OQ-16 does not block PR-3. D-7 keeps gitar out.
-
-### The questions that block progress
-
-- None.
-
-### The next concrete action
-
-- Give the owner the merge summary, then wait for the merge decision.
