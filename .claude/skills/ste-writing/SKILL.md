@@ -116,9 +116,9 @@ Source: ASD-STE100 Issue 8 (2021-04-30), Part 1, Writing rules. Issue 9 (2025-01
 
 The rules permit these as written. They are technical names (rule 1.5):
 
-- The repository: fps-game. The working title is open (OQ-3).
+- The working title and project name: Emberline (D-26). The repository: fps-game.
 - The role models: what-you-carry, the-thing-below.
-- Tools and platforms: Unreal Engine, Unreal Editor, Blueprint, Enhanced Input, World Partition, Lumen, Nanite, Xcode, macOS, Apple Silicon, C++, C#, .NET, Python, Git, Git LFS, GitHub, GitHub Actions, Makefile, Meshy, Blender, Houdini, gitar.
+- Tools and platforms: Unreal Engine, Unreal Editor, Blueprint, Enhanced Input, World Partition, Lumen, Nanite, TSR, Temporal Super Resolution, Xcode, macOS, Windows, Apple Silicon, C++, C#, .NET, Python, Git, Git LFS, GitHub, GitHub Actions, Makefile, Meshy, Blender, Houdini, gitar.
 - The two harnesses: Claude Code, Codex.
 - Process terms: session handoff, decision register, questions register, PR gate, cross-provider review, review record, response file, effective head, transitional prompt, focused roadmap, exit test.
 - Content terms: graybox, kit, trim sheet, texel density, pivot, collision, LOD, vertical slice, provenance.

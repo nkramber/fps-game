@@ -2,7 +2,7 @@
 
 `CLAUDE.md` and `AGENTS.md` are identical (D-12). Edit both together. Both files follow ASD-STE100 (D-17).
 
-The project is an original, fast first-person shooter with limited resources, in Unreal Engine 5. The goal is one complete, replayable level (D-1). The repository holds no game code yet.
+The project is an original, fast first-person shooter with limited resources, in Unreal Engine 5. The goal is one complete, polished level that the player can play again (D-1, D-37). The working title and project name is Emberline (D-26). The repository holds no game code yet.
 
 ## First action
 
@@ -33,9 +33,9 @@ grep -n -E "^[0-9]+\. \*\*OQ-($q)\." docs/questions.md
 The tenets are the constitution. When a tenet conflicts with speed or convenience, the tenet wins. When two tenets conflict, the earlier one in this order wins: T-5, T-2, T-3, T-4, T-1. T-6 is absolute. Section 6.1 of `docs/design.md` holds the same text.
 
 - **T-1. Readable, simple, not wasteful.** Explicit over implicit. A fresh model must understand a function from the function and its helper signatures. Helpers go one level deep. Two concrete cases come before any abstraction. No clever one-liners. Tune only on measurement.
-- **T-2. Zero silent failures.** No swallowed error. An absent value is an error, never a zero. Every error carries its context. Assertions stay on in shipped builds (OQ-20).
+- **T-2. Zero silent failures.** No swallowed error. An absent value is an error, never a zero. Every error carries its context. Asserts follow the Unreal rules (D-34).
 - **T-3. Tests cover everything.** No merge without tests. A bug fix ships with a regression test that fails on the old code.
-- **T-4. Cross-provider review before merge.** The provider that wrote the code does not review it (D-6). The review record in `docs/reviews/` records the findings.
+- **T-4. Cross-provider review before merge.** The provider that wrote the code does not review it (D-6). The review record in `docs/reviews/` records the findings. After PR-6, the owner can skip the review of a PR with no code through the `review-override` label (D-35).
 - **T-5. Document everything.** Continuity is the first duty. Each session adds its entry at the top of `docs/session-handoff.md`. The other documents change when intent, a decision, or a plan changes.
 - **T-6. No attribution.** No code, commit, PR description, or GitHub comment names an agent, harness, or model as the source of work (D-16). Two places are exempt: the author field in `docs/session-handoff.md`, and the files in `docs/reviews/`.
 
@@ -55,7 +55,8 @@ The tenets are the constitution. When a tenet conflicts with speed or convenienc
 - Record each answer in `docs/decisions.md` with the next D-# id and the date. Never renumber.
 - Mark a change to an earlier decision in its "Effect" column: `Superseded by D-N`, or `Revised in part by D-N` with the part that changed.
 - Infrastructure follows the role models what-you-carry and the-thing-below (D-12). When the two differ, ask the owner each time (D-13).
-- Only the owner edits `LICENSE` (D-10), spends money (D-8), changes repository settings, merges (D-5), or turns on gitar (D-7).
+- Only the owner spends money (D-8), changes repository settings, merges (D-5), or turns on gitar (D-7).
+- Only the owner edits `LICENSE`, or a session on an explicit instruction of the owner (D-10, D-24).
 
 ## Session handoff
 
@@ -113,7 +114,13 @@ First action: <the first concrete action>.
 
 ## Code rules
 
-The repository has no code yet. PR-2 adds the C# tools project and its conventions (D-15). The focused roadmap of phase 1 sets the Unreal C++ rules. Game rules and engine technology of the role models do not transfer (D-12).
+The repository has no code yet. PR-2 adds the C# tools project and its conventions (D-15).
+
+- Unreal best practices govern each rule and each implementation of the engine work, the game code, and the content (D-34). A tenet or a role-model rule gives way to them in that scope.
+- Follow the Epic C++ coding standard: https://dev.epicgames.com/documentation/unreal-engine/epic-cplusplus-coding-standard-for-unreal-engine.
+- C++ holds the rules. Data assets and Blueprint subclasses hold tuning and content (D-29).
+- Each change keeps macOS and Windows working and inside the budgets of D-32. The owner runs the Windows builds and posts the logs (D-33).
+- Game rules and engine technology of the role models do not transfer (D-12).
 
 ## Git rules
 

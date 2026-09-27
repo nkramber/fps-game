@@ -1,12 +1,12 @@
 # fps-game
 
-An original, fast first-person shooter with limited resources, planned in Unreal Engine 5. The first goal is one complete, polished, replayable level (D-1). Agents and people start at `AGENTS.md`.
+Emberline (working title, D-26) is an original, fast first-person shooter with limited resources, planned in Unreal Engine 5.8 for macOS and Windows. The first goal is one complete, polished level that the player can play again (D-1, D-37). Agents and people start at `AGENTS.md`.
 
 ## Status
 
 - The repository holds plans and rules only. It has no Unreal project, no game code, and no assets. Nothing is playable.
-- The high-level roadmap is sections 7 and 8 of `docs/design.md`. It waits for the acceptance of the owner (OQ-18).
-- An open license question blocks the first engine phase (OQ-1). The engine version and the platforms are also open (OQ-4, OQ-5).
+- The high-level roadmap is sections 7 and 8 of `docs/design.md`. The owner accepts it on the condition of D-27.
+- The next work is phase 0: the tools, the automatic Codex review, and the gates of the role models.
 
 ## Where to read
 
@@ -32,4 +32,4 @@ No setup exists yet. Phase 1 of the roadmap proves and documents the engine, the
 
 ## License
 
-See `LICENSE`. Its fit with the Unreal Engine EULA is an open question (OQ-1).
+The MIT License covers the whole repository, code and content (D-24). See `LICENSE`. A third-party asset keeps its own terms, and it enters the repository only when those terms allow redistribution.

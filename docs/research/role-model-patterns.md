@@ -86,5 +86,5 @@ Their C# tools do transfer as a port (D-15). The session removes the parts that 
 - **Engine CI.** Neither role model builds a heavy engine in CI. This project needs its own evidence model (OQ-8).
 - **Binary assets.** Neither role model uses binary engine assets at scale. LFS quotas, locks, and map conflicts are new risks (OQ-7).
 - **Provider proof.** Both providers push as one GitHub account, so no machine check proves the provider (F-9).
-- **License.** The role models do not use Unreal Engine. This project has the GPL conflict (OQ-1).
+- **License.** The role models do not use Unreal Engine. This project had a GPL conflict with the Unreal EULA, and it moved to MIT (D-24).
 - **Divergence.** The role models differ in many small ways. Each difference costs an owner question (D-13). On 2026-09-27 the session asked 14 questions, and 8 of them were about differences.

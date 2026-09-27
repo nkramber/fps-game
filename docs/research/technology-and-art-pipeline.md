@@ -5,6 +5,7 @@ Status: research, checked 2026-09-26. The link check ran on 2026-09-27. Written 
 - Purpose: give evidence for the roadmap in `docs/design.md`, and find the choices that the owner must make. This file does not design systems.
 - Labels: **evidence** comes from the machine or from a primary source. A **recommendation** is advice, not a decision. An **assumption** has no check yet. An **unknown** had no answer.
 - The registers hold the settled items (`docs/decisions.md`) and the open items (`docs/questions.md`). Nothing here is a decision.
+- On 2026-09-27 the owner decided most choices of this file: D-24 and D-26 to D-38. Where a recommendation below differs from a decision, the decision wins.
 
 ## 0. Development machine
 
@@ -52,7 +53,7 @@ Result: each engine claim below stays unproven until phase 1 installs the engine
 
 ### Recommendations
 
-These are for the owner to decide (OQ-3 to OQ-8, OQ-20):
+The owner decided these on 2026-09-27 (D-28 to D-34). The owner chose macOS and Windows with higher budgets than this list (D-32):
 
 - Pin Unreal Engine 5.8 at the latest hotfix, with Xcode 26.1.1, on the SSD. Each hotfix gets its own PR with build evidence.
 - Develop and accept on macOS with Apple Silicon, keyboard, and mouse. Start with a budget of 60 fps at 1080p on the M4 with 16 GB. This budget is not a measurement.
@@ -142,7 +143,8 @@ The sources of animation for enemies and first-person arms are a risk with no re
 
 | Risk | Result | Mitigation |
 |---|---|---|
-| GPL-3.0 and the Unreal EULA (OQ-1) | No legal combination and distribution | The owner decides before any Unreal commit |
+| GPL-3.0 and the Unreal EULA | No legal combination and distribution | Closed. The license is MIT (D-24). |
+| 60 fps at 4K output on the base M4 (F-14) | The budget fails, or the art gets thin | TSR from a measured internal resolution (M-9), from phase 1 |
 | 16 GB memory, the minimum of Epic | Slow builds, editor pressure | Small content, M-1 in phase 1, no beta renderer by default |
 | Tahoe not named by Epic, Xcode 16.2 not usable | Toolchain faults | Pin Xcode 26.1.1. Record each fault in phase 1. |
 | No engine on hosted CI (OQ-8) | Late discovery of engine faults | Local evidence in each engine PR, hosted checks for the rest |
@@ -153,4 +155,6 @@ The sources of animation for enemies and first-person arms are a risk with no re
 
 ## 6. The earlier local research
 
-An earlier local commit (`91246cc`) holds a file at this path (OQ-2). Its engine, Xcode, Meshy, and license-term facts agree with this check. But it wrote owner choices as decisions: the engine pin, the Meshy choice, the code split, and the light method. It missed the GPL conflict and the small internal disk. It also described C++ code that no review saw. This file replaces it on this branch, and it keeps those choices as recommendations and questions.
+An earlier local commit (`91246cc`) held a file at this path. The owner discarded it on 2026-09-27 (D-25).
+
+Its engine, Xcode, Meshy, and license-term facts agree with this check. But it wrote owner choices as decisions: the engine pin, the Meshy choice, the code split, and the light method. It missed the GPL conflict and the small internal disk. It also described C++ code that no review saw. This file replaced it, and it kept those choices as recommendations and questions for the owner.
