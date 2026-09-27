@@ -1,3 +1,40 @@
+## Session 29: 2026-09-27, Claude Code
+
+Author: Claude Code
+Session: author PR-7, round 1. Repository: iron-absolution. Branch: `docs/pr-7-phase-1-roadmap`. PR: #8. Role: author. Base: `6e879a3d1f73295c5c8565369abac65e50e31178`.
+
+### What this session did, and why
+
+- Ran the exit tests of PR-6 on `main` first. Test 1: `make` on a clean worktree of `origin/main` gave 363 tests, a clean format, and 0 findings. Test 2: the comparison with `ref=origin/main` printed "The live ruleset matches the file." with five required checks, `review-gate` included. Auto-merge is on, and the label `review-override` exists.
+- Added `docs/roadmaps/phase-1-engine-proof.md`, the focused roadmap of phase 1, in the form of the-thing-below (D-70).
+- The owner answered seven questions: D-69 to D-75. The Mac had no engine, no Xcode app, and no Git LFS, so step 9 of section 8 was not done. D-69 moves the install after PR-8 (F-19).
+- Phase 1 has four PRs (D-71): PR-8 toolchain, PR-9 scaffold with the first headless test, PR-10 package, PR-11 first M-9 and the gate record.
+- Updated section 8 and the phase 1 entry of `docs/design.md`, the index of `docs/roadmaps/`, and the design-doc-style skill.
+
+### The state of the build
+
+- `make` passes on the Mac: 363 tests, a clean format, and 0 findings of ste-check.
+- The remote head is the commit of this entry. The state is pending merge.
+
+### What is in flight
+
+- Exit test 3 of PR-6: the `review-gate` check of the PR head must be red, because no record or label exists.
+- Exit test 4 of PR-6: after the owner adds `review-override`, `review-gate` must turn green (D-65, D-66).
+- `make codex-review` refuses this PR, because it changes documents alone (D-49).
+
+### Traps and gotchas
+
+- A new phase file defines its PR ids only after `git add`, because ste-check reads tracked files.
+- The phase file heading form `### 7.N PR-#:` is the form that the reference check reads.
+
+### The questions that block progress
+
+- None. OQ-22 and OQ-23 are resolved (D-74, D-75). OQ-16 still holds gitar (D-7).
+
+### The next concrete action
+
+- Record the results of exit tests 3 and 4, then ask the owner for the merge confirmation.
+
 ## Session 28: 2026-09-27, Claude Code
 
 Author: Claude Code
@@ -314,40 +351,3 @@ Session: reviewer PR-5, round 1. Repository: iron-absolution. Branch: `feat/pr-5
 ### The next concrete action
 
 - The author fixes P2-1, runs its regression check, and starts the next review round.
-
-## Session 19: 2026-09-27, Claude Code
-
-Author: Claude Code
-Session: author PR-5, round 1. Repository: iron-absolution. Branch: `feat/pr-5-main-ruleset`. PR: #6. Role: author. Base: `f5e9514ebae89c1a5a6a189a8213f2b44f9d1bf5`.
-
-### What this session did, and why
-
-- The exit tests of PR-4 on a clean checkout of `main` passed: 272 tests, a clean format, and 0 findings. `make handoff-rotate` moved no entry and changed no file.
-- PR-5 ports `.github/rulesets/main.json`, `RulesetTests`, and `docs/runbooks/main-ruleset.md` from what-you-carry.
-- The owner answered four divergences of D-13: D-60 (admin bypass through a PR merge), D-61 (four required checks, a test in both directions), D-62 (the ruleset alone), and D-63 (the session applies the live ruleset before the merge).
-- The agent files, the PR template, and the merge procedure now forbid `gh pr merge --admin` (D-60).
-
-### The state of the build
-
-- `make` passes on the Mac: 287 tests, a clean format, and 0 findings of ste-check.
-- The remote head is the commit of this entry. The state is pending merge.
-- No live ruleset exists yet. `main` has no branch protection.
-
-### What is in flight
-
-- The review round 1 of `make codex-review PR=6`.
-- After an approval and green checks, the session applies the live ruleset from the PR head and runs the comparison of `docs/runbooks/main-ruleset.md` (exit test 2).
-
-### Traps and gotchas
-
-- The ruleset requires the four checks by name. A renamed or removed job blocks every merge until the live ruleset changes.
-- A required check that no workflow of `main` has yet can block the PR that adds it. PR-6 must plan the order of `review-gate`.
-
-### The questions that block progress
-
-- None. OQ-16 still holds gitar (D-7).
-
-### The next concrete action
-
-- Run `make codex-review PR=6` after the checks are green.
-- For a fresh session: the session number check of `ste-check` reads a heading number with `int.Parse`, so a number too large for an int stops the check with no context (T-2).

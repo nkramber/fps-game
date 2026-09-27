@@ -16,6 +16,7 @@ How to read this file:
 - The owner gave D-46 to D-55 on 2026-09-27 in PR-3. D-46 to D-52 resolve the divergences of the role models that the port of PR-3 met (D-13).
 - The owner gave D-56 to D-59 on 2026-09-27 in PR-4. They resolve the divergences of the role models that the port of PR-4 met (D-13).
 - The owner gave D-60 to D-63 on 2026-09-27 in PR-5, and D-64 to D-68 on 2026-09-27 in PR-6.
+- The owner gave D-69 to D-75 on 2026-09-27 in PR-7, the focused roadmap of phase 1.
 - For D-15, the owner asked for the best fit, and the session recommended it. The owner then chose it.
 
 How to add a decision:
@@ -42,6 +43,8 @@ Find a row with `grep -n -E '^\| D-(12|14) \|' docs/decisions.md`.
 | D-37 | 2026-09-27 | Level scope | The first clear takes 30 minutes or more, in a fuller level with more spaces and roster variety. Replay-value features are not a primary goal. "Replayable" in D-1 means that the player can start the level again and play it again. | Resolves OQ-11. Revises in part D-1. |
 | D-11 | 2026-09-26 | Roadmap order | The high-level roadmap comes first. The owner reviews and accepts it. Focused roadmaps for its phases come after that. | OQ-18 holds the acceptance. `docs/roadmaps/readme.md` gives the rule for focused roadmaps. |
 | D-39 | 2026-09-27 | Name | The working title is Iron Absolution. The Unreal project, its primary C++ module, and the tools project use the name `IronAbsolution`. The repository is `nkramber/iron-absolution`, and the local checkout folder is `iron-absolution`. | Supersedes D-26. The owner picked the name from a screen of candidates (`docs/research/name-screen.md`). The session renamed the GitHub repository and the local folder on the instruction of the owner. GitHub redirects the old URL. |
+| D-69 | 2026-09-27 | Engine install order | The owner installs the engine, Xcode, and Git LFS after PR-8, from its setup runbook. The focused roadmap of phase 1 comes before the install. | The owner gave this answer in PR-7. Records F-19. Revises in part the order of section 8 of `docs/design.md`. The pins of D-28 stand. |
+| D-71 | 2026-09-27 | Phase 1 split | Phase 1 has four PRs: PR-8 the engine toolchain and the evidence form, PR-9 the project scaffold with its first headless test, PR-10 the packaged build, and PR-11 the first M-9 and the gate record. | The owner gave this answer in PR-7. The owner put the first automation test in the scaffold PR, and the evidence form of D-31 in PR-8. |
 
 ## Process, review, and tools
 
@@ -95,6 +98,7 @@ Find a row with `grep -n -E '^\| D-(12|14) \|' docs/decisions.md`.
 | D-66 | 2026-09-27 | Documents-only PR | A PR with no effective head merges through the `review-override` label alone. The review path of `review-gate` fails for such a PR, also with an approving review record, and the failure names the label. | Resolves a divergence of D-13 in PR-6, as in what-you-carry. the-thing-below lets a record approve the newest commit outside the metadata set. Revises in part D-49, the hand-started Codex review of such a PR only. |
 | D-67 | 2026-09-27 | Review gate order | PR-6 merges under the four checks of D-61. After the merge, the author session of PR-6 updates the live ruleset from the file on `main`, on the explicit instruction of the owner, and compares the two. The first PR after PR-6 proves the exit tests of PR-6. The owner turns on auto-merge in the repository settings. | The owner gave this answer in PR-6. GitHub runs a workflow of `pull_request_target` only from the default branch, so PR-6 gets no `review-gate` check. A required check that never reports blocks the merge. Applies D-63. |
 | D-68 | 2026-09-27 | Label time trust | The time rule of D-65 keeps the committer time of the work head. The owner accepts that a backdated commit after the label passes the rule. The rule stops an accident, not an attack, because one account can also add the label again (F-9). | The owner gave this answer in PR-6 to review finding P2-1 of PR #7. Records F-18. The rest of D-65 stands. |
+| D-70 | 2026-09-27 | Phase file form | A phase file follows the phase files of the-thing-below: the sections 1, 5, 7, 8, and 9, and numbered entries with bold fields. An owner step and a measurement get an entry with no PR id. | Resolves a divergence of D-13 in PR-7. what-you-carry numbers its sections 1 to 6, and gives each entry a status line, a check clause, and a gate line. Applies D-19. |
 
 ## Engine and technology
 
@@ -104,6 +108,9 @@ Find a row with `grep -n -E '^\| D-(12|14) \|' docs/decisions.md`.
 | D-29 | 2026-09-27 | C++ and Blueprint | C++ holds the rules: movement, weapons, damage, resources, AI decisions, and save. Data assets and Blueprint subclasses hold tuning, content, and one-off level scripts. | Resolves OQ-6. |
 | D-30 | 2026-09-27 | Binary assets | Git LFS on GitHub stores the binary assets, on the free quota. Think again near 5 GiB. One person edits one map at a time. | Resolves OQ-7. The scaffold PR of phase 1 adds the LFS attributes. |
 | D-34 | 2026-09-27 | Unreal practice | Unreal best practices govern each rule and each implementation of the engine work, the game code, and the content. A tenet or a role-model rule gives way to them in that scope. Asserts follow the Unreal rules: `check`, `verify`, and `ensure` by purpose, with `USE_CHECKS_IN_SHIPPING` at 0. | Resolves OQ-20. Revises the assert clause of tenet T-2. D-12 still governs the infrastructure. |
+| D-72 | 2026-09-27 | Windows scripts | The Windows commands of D-33 are PowerShell scripts in the repository. Each script matches a Makefile target of the Mac. The runbook gives one line for each script. | The owner gave this answer in PR-7. Applies D-33. The scripts need no Windows run of the tools project (D-55). |
+| D-74 | 2026-09-27 | Windows toolchain | Pin the Visual Studio version and the MSVC toolset that the Windows requirements page of Epic gives for Unreal Engine 5.8. PR-8 reads that page and records the date. | Resolves OQ-22. Applies D-28 to the Windows PC. |
+| D-75 | 2026-09-27 | First M-9 scene | PR-11 builds a small original room of basic shapes, with a set count of lights and meshes. The first M-9 run uses that room. | Resolves OQ-23. The room is original content under the license of D-24. Each later run of M-9 can use it again. |
 
 ## Content, assets, and the repository
 
@@ -114,3 +121,4 @@ Find a row with `grep -n -E '^\| D-(12|14) \|' docs/decisions.md`.
 | D-10 | 2026-09-26 | License | No agent edits `LICENSE`. Only the owner changes it. | Revised in part by D-24 on 2026-09-27: the owner told the session to replace `LICENSE` with the MIT License in PR-1. The rule stands for each later change. |
 | D-24 | 2026-09-27 | License | The MIT License covers the whole repository, code and content. The session replaces `LICENSE` in PR-1 on the instruction of the owner. | Resolves OQ-1. Revises in part D-10. A third-party asset keeps its own terms, and it enters the repository only when those terms allow redistribution. Epic content keeps the terms of Epic. |
 | D-38 | 2026-09-27 | Audio sources | Audio comes from original work, from free licenses that allow redistribution (for example CC0), or from AI generation with terms that give ownership and allow redistribution. Each file has a provenance record. | Resolves OQ-13. |
+| D-73 | 2026-09-27 | Project folder | The Unreal project lives in the `Game/` folder of the repository. The tools solution stays at the root. | The owner gave this answer in PR-7. PR-9 creates the folder. The generated project files and the cache folders of Unreal stay apart from the tools project. |
