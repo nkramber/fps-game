@@ -76,17 +76,24 @@ public sealed class WritingRules
             return;
         }
 
+        // A table, a heading, and a fenced block carry no prose (the `ste-writing` skill). Each
+        // one also ends the paragraph before it, with no empty line between them. The review
+        // of PR #3 found two paragraphs that an end at an empty line alone joined.
         if (trimmed.StartsWith("```", StringComparison.Ordinal))
         {
+            EndParagraph(number);
             inCodeBlock = !inCodeBlock;
             return;
         }
 
-        // A table, a heading, and a fenced block carry no prose (the `ste-writing` skill).
-        if (inCodeBlock
-            || trimmed.StartsWith('|')
-            || trimmed.StartsWith('#'))
+        if (inCodeBlock)
         {
+            return;
+        }
+
+        if (trimmed.StartsWith('|') || trimmed.StartsWith('#'))
+        {
+            EndParagraph(number);
             return;
         }
 
@@ -109,8 +116,9 @@ public sealed class WritingRules
 
         if (ListItem.IsMatch(line))
         {
-            // A list item is one unit, and it is not part of the paragraph count.
-            FlushHeldLines();
+            // A list item is one unit, and it is not part of the paragraph count. The item also
+            // ends the paragraph before it, so prose after the list starts a new count.
+            EndParagraph(number);
             bool numbered = NumberedItem.IsMatch(line);
             int limit = numbered ? NumberedItemWordLimit : SentenceWordLimit;
             string rule = numbered ? "STE 5.1" : "STE 6.3";

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using IronAbsolution.Tools.SteCheck;
 using Xunit;
@@ -138,5 +139,53 @@ public sealed class SteCheckWritingRuleTests
         IReadOnlyList<Finding> findings = WritingRules.Check("fixture.md", document);
 
         Assert.Empty(findings);
+    }
+
+    /// <summary>
+    /// The regression test of finding P2-1 of the review of PR #3. A Markdown block ends the
+    /// paragraph before it, with no empty line between them. The old rule ended a paragraph at
+    /// an empty line alone, so six sentences, a block, and one more sentence gave a false
+    /// STE 6.6 finding.
+    /// </summary>
+    [Theory]
+    [InlineData("## A heading")]
+    [InlineData("- A bullet item.")]
+    [InlineData("1. A numbered item.")]
+    [InlineData("| A cell | A cell |")]
+    [InlineData("```")]
+    public void ABlockEndsTheParagraphBeforeIt(string block)
+    {
+        List<string> document =
+        [
+            "The tool reads a file. The tool reads a line. The tool reads a word.",
+            "The tool counts the words. The tool prints a finding. The tool adds the finding.",
+            block,
+        ];
+        if (block == "```")
+        {
+            document.Add("```");
+        }
+
+        document.Add("The tool gives the count.");
+
+        IReadOnlyList<Finding> findings = WritingRules.Check("fixture.md", document);
+
+        Assert.DoesNotContain(findings, found => found.Rule == "STE 6.6");
+    }
+
+    [Fact]
+    public void SevenSentencesWithNoBlockBetweenThemStayOneParagraph()
+    {
+        IReadOnlyList<string> document =
+        [
+            "The tool reads a file. The tool reads a line. The tool reads a word.",
+            "The tool counts the words. The tool prints a finding. The tool adds the finding.",
+            "The tool gives the count.",
+        ];
+
+        IReadOnlyList<Finding> findings = WritingRules.Check("fixture.md", document);
+
+        Finding found = Assert.Single(findings, found => found.Rule == "STE 6.6");
+        Assert.Contains("7 sentences", found.Detail, StringComparison.Ordinal);
     }
 }
