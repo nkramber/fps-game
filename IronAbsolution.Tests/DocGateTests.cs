@@ -80,6 +80,23 @@ public sealed class DocGateTests
     }
 
     [Fact]
+    public void TheEvidenceSectionOfTheTemplateDoesNotChangeTheResult()
+    {
+        // Exit test 5 of PR-8: the evidence form of D-80 sits in the description, and the gate reads the Documents section alone.
+        string template = File.ReadAllText(RepositoryRoot.PathTo(".github/pull_request_template.md"));
+        int start = template.IndexOf("## Evidence", StringComparison.Ordinal);
+        int end = template.IndexOf(DocGateRules.SectionHeading, StringComparison.Ordinal);
+        Assert.True(start >= 0 && start < end, "The template has the Evidence section before the Documents section.");
+        string evidence = template[start..end].Replace(":\n", ": Attached: the log is in a PR comment.\n", StringComparison.Ordinal);
+
+        DocGateResult before = DocGateRules.Evaluate(Facts($"{evidence}\n{Body()}", CodeAndDocs));
+        DocGateResult after = DocGateRules.Evaluate(Facts($"{Body()}\n{evidence}", CodeAndDocs));
+
+        Assert.True(before.Passes, string.Join("\n", before.Problems));
+        Assert.True(after.Passes, string.Join("\n", after.Problems));
+    }
+
+    [Fact]
     public void AMissingHandoffFails()
     {
         string[] paths = CodeAndDocs.Where(path => path != DocGateRules.HandoffPath).ToArray();

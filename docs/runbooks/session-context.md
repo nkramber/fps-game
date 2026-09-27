@@ -85,3 +85,11 @@ labels=$(mktemp "${TMPDIR:-/tmp}/review-gate-labels.XXXXXX")
 printf '{ "labels": [], "overrideLabelEvents": [] }\n' > "$labels"
 dotnet run --project IronAbsolution.Tools/IronAbsolution.Tools.csproj -- review-gate --root . --base origin/main --head "$(git rev-parse HEAD)" --pr <number> --labels "$labels"
 ```
+
+## The toolchain of the engine
+
+Check the pins of the Mac before each engine PR (D-28). The command reads the engine folder from `IRON_ABSOLUTION_ENGINE_DIR` (D-79). `docs/runbooks/engine-setup.md` gives the install and the Windows script.
+
+```
+make toolchain-check
+```

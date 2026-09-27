@@ -26,7 +26,7 @@ public static class ReviewGateRules
     /// <summary>The name of the job and of the required check (D-64).</summary>
     public const string CheckName = "review-gate";
 
-    /// <summary>The label that only the owner adds to a PR with no code (D-35).</summary>
+    /// <summary>The label that the author session adds to a PR with no code (D-35, D-76).</summary>
     public const string OverrideLabel = "review-override";
 
     /// <summary>Applies the rules of the gate to the facts of one PR.</summary>
@@ -106,7 +106,7 @@ public static class ReviewGateRules
             return Fail(
                 $"the review record '{recordPath}' is on the PR head (T-4)",
                 $"the record on the head {facts.Head}",
-                "no record. Run `make codex-review`, or the owner adds the label for a PR with no code");
+                "no record. Run `make codex-review`, or the author session adds the label for a PR with no code (D-76)");
         }
 
         ReviewRecord? record = ReviewRecord.TryParse(facts.ReviewRecordText, out string parseError);
@@ -131,7 +131,7 @@ public static class ReviewGateRules
             return Fail(
                 "the review record names the effective head (D-49, D-66)",
                 "one commit outside the documents set",
-                $"no such commit. Every changed path is a document, so a review has nothing to approve. The owner adds the label '{OverrideLabel}' to such a PR");
+                $"no such commit. Every changed path is a document, so a review has nothing to approve. The author session adds the label '{OverrideLabel}' to such a PR after the last commit outside the metadata set (D-76)");
         }
 
         if (!ReviewHeads.HeadMatches(record.RecordedHead, facts.EffectiveHead))

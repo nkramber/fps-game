@@ -17,6 +17,7 @@ How to read this file:
 - The owner gave D-56 to D-59 on 2026-09-27 in PR-4. They resolve the divergences of the role models that the port of PR-4 met (D-13).
 - The owner gave D-60 to D-63 on 2026-09-27 in PR-5, and D-64 to D-68 on 2026-09-27 in PR-6.
 - The owner gave D-69 to D-77 on 2026-09-27 in PR-7, the focused roadmap of phase 1.
+- The owner gave D-78 to D-82 on 2026-09-27 in PR-8, the engine toolchain.
 - For D-15, the owner asked for the best fit, and the session recommended it. The owner then chose it.
 
 How to add a decision:
@@ -43,8 +44,9 @@ Find a row with `grep -n -E '^\| D-(12|14) \|' docs/decisions.md`.
 | D-37 | 2026-09-27 | Level scope | The first clear takes 30 minutes or more, in a fuller level with more spaces and roster variety. Replay-value features are not a primary goal. "Replayable" in D-1 means that the player can start the level again and play it again. | Resolves OQ-11. Revises in part D-1. |
 | D-11 | 2026-09-26 | Roadmap order | The high-level roadmap comes first. The owner reviews and accepts it. Focused roadmaps for its phases come after that. | OQ-18 holds the acceptance. `docs/roadmaps/readme.md` gives the rule for focused roadmaps. |
 | D-39 | 2026-09-27 | Name | The working title is Iron Absolution. The Unreal project, its primary C++ module, and the tools project use the name `IronAbsolution`. The repository is `nkramber/iron-absolution`, and the local checkout folder is `iron-absolution`. | Supersedes D-26. The owner picked the name from a screen of candidates (`docs/research/name-screen.md`). The session renamed the GitHub repository and the local folder on the instruction of the owner. GitHub redirects the old URL. |
-| D-69 | 2026-09-27 | Engine install order | The owner installs the engine, Xcode, and Git LFS after PR-8, from its setup runbook. The focused roadmap of phase 1 comes before the install. | The owner gave this answer in PR-7. Records F-19. Revises in part the order of section 8 of `docs/design.md`. The pins of D-28 stand. |
+| D-69 | 2026-09-27 | Engine install order | The owner installs the engine, Xcode, and Git LFS after PR-8, from its setup runbook. The focused roadmap of phase 1 comes before the install. | Revised in part by D-78 on 2026-09-27: the install comes during PR-8, before its merge. The rest stands. The owner gave this answer in PR-7. Records F-19. Revises in part the order of section 8 of `docs/design.md`. The pins of D-28 stand. |
 | D-71 | 2026-09-27 | Phase 1 split | Phase 1 has four PRs: PR-8 the engine toolchain and the evidence form, PR-9 the project scaffold with its first headless test, PR-10 the packaged build, and PR-11 the first M-9 and the gate record. | The owner gave this answer in PR-7. The owner put the first automation test in the scaffold PR, and the evidence form of D-31 in PR-8. |
+| D-78 | 2026-09-27 | Install in PR-8 | The owner installs the engine, Xcode, and Git LFS during PR-8, from the runbook on the PR branch. Exit test 1 of PR-8 runs on the Mac before the merge. | The owner gave this answer in PR-8. Revises in part D-69: the part "after PR-8". An error of the runbook gets its correction in PR-8. |
 
 ## Process, review, and tools
 
@@ -101,6 +103,8 @@ Find a row with `grep -n -E '^\| D-(12|14) \|' docs/decisions.md`.
 | D-70 | 2026-09-27 | Phase file form | A phase file follows the phase files of the-thing-below: the sections 1, 5, 7, 8, and 9, and numbered entries with bold fields. An owner step and a measurement get an entry with no PR id. | Resolves a divergence of D-13 in PR-7. what-you-carry numbers its sections 1 to 6, and gives each entry a status line, a check clause, and a gate line. Applies D-19. |
 | D-76 | 2026-09-27 | Label by the session | The author session adds the `review-override` label to each PR that changes documents alone. It adds the label after the last commit outside the metadata set. The owner does not add it. | The owner gave this answer in PR-7, as a standing instruction. Revises in part D-35: the part "Only the owner adds the label". D-65 and D-66 stand. The risk of F-9 stays. |
 | D-77 | 2026-09-27 | Stale label text | PR-8 also corrects the text that says the owner adds the label: the messages of `review-gate` and `make codex-review`, their test, and the description of the live label. | The owner gave this answer in PR-7. Records F-20. The owner accepts a second concern in PR-8 (G-7). |
+| D-80 | 2026-09-27 | Evidence form | The PR template holds the evidence form of D-31 as the `## Evidence` section, with one line for each log. A PR with no engine work marks each line `Not applicable`. | The owner gave this answer in PR-8. The `doc-gate` job reads the Documents section alone, so the form does not change its result. |
+| D-82 | 2026-09-27 | Live label text | The author session of PR-8 changes the description of the live `review-override` label to the text of D-76. | The owner gave this explicit instruction in PR-8 (D-63, D-77). Records the change of F-20. |
 
 ## Engine and technology
 
@@ -113,6 +117,8 @@ Find a row with `grep -n -E '^\| D-(12|14) \|' docs/decisions.md`.
 | D-72 | 2026-09-27 | Windows scripts | The Windows commands of D-33 are PowerShell scripts in the repository. Each script matches a Makefile target of the Mac. The runbook gives one line for each script. | The owner gave this answer in PR-7. Applies D-33. The scripts need no Windows run of the tools project (D-55). |
 | D-74 | 2026-09-27 | Windows toolchain | Pin the Visual Studio version and the MSVC toolset that the Windows requirements page of Epic gives for Unreal Engine 5.8. PR-8 reads that page and records the date. | Resolves OQ-22. Applies D-28 to the Windows PC. |
 | D-75 | 2026-09-27 | First M-9 scene | PR-11 builds a small original room of basic shapes, with a set count of lights and meshes. The first M-9 run uses that room. | Resolves OQ-23. The room is original content under the license of D-24. Each later run of M-9 can use it again. |
+| D-79 | 2026-09-27 | Engine folder variable | The environment variable `IRON_ABSOLUTION_ENGINE_DIR` names the engine folder, the folder that holds `Engine`. Each tool and each script of the engine reads it. | The owner gave this answer in PR-8. Applies D-9: no commit holds the path. |
+| D-81 | 2026-09-27 | Engine volume | A case-insensitive APFS volume, `IronAbsolution`, on the project SSD holds the engine, its cache, Xcode 26.1.1, and the checkout of the engine work. The first volume of the SSD does not change. | The owner gave this answer in PR-8. Records F-21. Applies the SSD of D-28 and F-4. |
 
 ## Content, assets, and the repository
 

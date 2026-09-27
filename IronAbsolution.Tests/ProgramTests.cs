@@ -26,6 +26,7 @@ public sealed class ProgramTests
         Assert.Contains("doc-gate: ready", errors.ToString(), StringComparison.Ordinal);
         Assert.Contains("handoff-rotate: ready", errors.ToString(), StringComparison.Ordinal);
         Assert.Contains("review-gate: ready", errors.ToString(), StringComparison.Ordinal);
+        Assert.Contains("toolchain-check: ready", errors.ToString(), StringComparison.Ordinal);
         Assert.Contains("The planned commands: none.", errors.ToString(), StringComparison.Ordinal);
         Assert.Empty(output.ToString());
     }
