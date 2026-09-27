@@ -20,8 +20,9 @@ Session: author PR-7, round 1. Repository: iron-absolution. Branch: `docs/pr-7-p
 ### What is in flight
 
 - Exit test 3 of PR-6 passed: `review-gate` was red on the first head `847ad04`, with "Found: no record".
-- Exit test 4 of PR-6: after the session adds `review-override`, `review-gate` must turn green (D-65, D-66, D-76).
+- Exit test 4 of PR-6 passed: after the session added `review-override` at 19:42 UTC, `review-gate` turned green on `47e8203`. It read 15 changed paths, each in the documents set (D-65, D-66, D-76).
 - `make codex-review` refuses this PR, because it changes documents alone (D-49).
+- The five required checks are green. The owner confirms the squash merge.
 
 ### Traps and gotchas
 
@@ -35,7 +36,7 @@ Session: author PR-7, round 1. Repository: iron-absolution. Branch: `docs/pr-7-p
 
 ### The next concrete action
 
-- Record the result of exit test 4, then ask the owner for the merge confirmation.
+- After the merge, write the transitional prompt of PR-8. PR-8 has two concerns: the engine toolchain and the label text of D-77.
 
 ## Session 28: 2026-09-27, Claude Code
 
