@@ -10,8 +10,8 @@ Each line holds before the merge, by auto-merge or by the owner (`AGENTS.md`, PR
 - [ ] No silent failure. Every error carries context (T-2).
 - [ ] The `ste-check` job is green.
 - [ ] The `doc-gate` job is green (D-56, D-57). No part of this PR waits for a later PR.
-- [ ] The other provider reviewed it, and `docs/reviews/pr-<number>.md` has the verdict `Ready for owner merge` for the effective head (T-4, D-14).
-- [ ] The `review-gate` check is green. PR-6 creates it.
+- [ ] The other provider reviewed it, and `docs/reviews/pr-<number>.md` has the verdict `Ready for owner merge` for the effective head (T-4, D-14). On a PR with no code, the owner label `review-override` can replace the record (D-35, D-66).
+- [ ] The `review-gate` check is green (D-64).
 - [ ] No review thread stays open, and the ruleset of `main` holds (D-60 to D-62).
 - [ ] The owner confirmed the merge after the merge summary: What, How, CI, and Codex review.
 - [ ] `docs/decisions.md` has every new decision.

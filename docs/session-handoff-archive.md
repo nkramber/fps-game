@@ -2,6 +2,178 @@
 
 This file holds the entries that the rotation moves out of `docs/session-handoff.md`, newest first.
 
+## Session 18: 2026-09-27, Claude Code
+
+Author: Claude Code
+Session: author PR-4, merge. Repository: iron-absolution. Branch: `feat/pr-4-doc-gate-rotation`. PR: #5. Role: author. Base: `6acc6a85798182781a6fc1193c6e37d90dd03020`.
+
+### What this session did, and why
+
+- Review round 3 approved the effective head `eb76650` with the verdict `Ready for owner merge`. `make codex-review` gave the exit code 0.
+- The three rounds used the exit codes 10, 10, and 0. P2-1 is fixed in `614847a`, and P2-2 is fixed in `eb76650`.
+- PR-4 added the `doc-gate` and `handoff-rotate` commands, the `doc-gate` workflow, and `make handoff-rotate` (D-56 to D-59).
+
+### The state of the build
+
+- The effective head is `eb76650`. `make` passes on the Mac: 272 tests, a clean format, and 0 findings of ste-check.
+- The remote head is the commit of this entry. The state is pending merge.
+
+### What is in flight
+
+- The owner confirms the squash merge of PR #5.
+
+### Traps and gotchas
+
+- The session end now runs `make handoff-rotate` after the new entry, before the commit.
+- The session line writes `` Branch: `<branch>` `` with a colon. The `doc-gate` job looks for that exact form.
+
+### The questions that block progress
+
+- None blocks PR-4. OQ-16 still holds gitar (D-7).
+
+### The next concrete action
+
+- After the merge, write the transitional prompt of PR-5.
+- For a fresh session: the session number check of `ste-check` reads a heading number with `int.Parse`, so a number too large for an int stops the check with no context (T-2).
+
+## Session 17: 2026-09-27, Codex
+
+Author: Codex
+Session: reviewer PR-5, round 3. Repository: iron-absolution. Branch: `feat/pr-4-doc-gate-rotation`. PR: #5. Role: reviewer. Base: `6acc6a85798182781a6fc1193c6e37d90dd03020`.
+
+### What this session did, and why
+
+- Rechecked P2-2 at the new effective head, `eb76650`.
+- The fix rejects Session `2147483647` before either file write, with a contextual fault.
+- Updated `docs/reviews/pr-5.md`. Both earlier findings now pass their regression checks.
+- `make` passed with 272 tests. All four hosted checks passed.
+
+### The state of the build
+
+- The effective head is `eb76650`. The current remote tip before this metadata commit was `b964463`.
+- The review record and this handoff entry form one metadata commit. The state is pending merge.
+
+### What is in flight
+
+- The owner reads the merge summary and confirms the merge of PR #5.
+
+### Traps and gotchas
+
+- A heading at `2147483647` parses as an int, but the next session value does not fit.
+- The current branch tip has review and handoff metadata after the effective head.
+
+### The questions that block progress
+
+- None blocks this PR. OQ-16 still holds the gitar plan under D-7.
+
+### The next concrete action
+
+- Give the owner the merge summary for PR #5.
+
+## Session 16: 2026-09-27, Claude Code
+
+Author: Claude Code
+Session: author PR-4, round 3. Repository: iron-absolution. Branch: `feat/pr-4-doc-gate-rotation`. PR: #5. Role: author. Base: `6acc6a85798182781a6fc1193c6e37d90dd03020`.
+
+### What this session did, and why
+
+- Review round 2 marked P2-1 fixed in `614847a`, and it found P2-2: at Session 2147483647, the next session number wrapped to a negative number, and the command exited 0.
+- The trigger reproduced, so the finding has full merit. `eb76650` makes that number a contextual fault with exit 1 and no file change.
+- One regression test fails with the check off. `docs/reviews/pr-5-response.md` holds the answer under "Round 2".
+
+### The state of the build
+
+- The effective head is `eb76650`. `make` passes on the Mac: 272 tests, a clean format, and 0 findings of ste-check.
+- The remote head is the commit of this entry. The state is pending merge.
+
+### What is in flight
+
+- The checks of the new head, then review round 3 with `make codex-review PR=5` (D-54).
+
+### Traps and gotchas
+
+- Exit test 1 ran on PR #5 itself: the first description had an empty `docs/runbooks/` line, and `doc-gate` went red. The edit made it green, and the build jobs did not run again.
+- The session line writes `` Branch: `<branch>` `` with a colon. The gate looks for that exact form.
+
+### The questions that block progress
+
+- None blocks PR-4. OQ-16 still holds gitar (D-7).
+
+### The next concrete action
+
+- Finish the review loop of PR #5, then give the owner the merge summary.
+- For a fresh session: the session number check of `ste-check` reads a heading number with `int.Parse`, so a number too large for an int stops the check with no context (T-2).
+
+## Session 15: 2026-09-27, Codex
+
+Author: Codex
+Session: reviewer PR-5, round 2. Repository: iron-absolution. Branch: `feat/pr-4-doc-gate-rotation`. PR: #5. Role: reviewer. Base: `6acc6a85798182781a6fc1193c6e37d90dd03020`.
+
+### What this session did, and why
+
+- Rechecked the fix for P2-1 and the full PR-4 scope.
+- Ran the review in the `review/pr-5` worktree.
+- Found P2-2: session `2147483647` makes the next session value wrap to `-2147483648`.
+- Updated `docs/reviews/pr-5.md` with the fixed finding, the new finding, and the verdict for effective head `614847a`.
+- Corrected the stale test count in the PR description. Its `doc-gate` check passed again.
+
+### The state of the build
+
+- `make` passes at effective head `614847a`: 271 tests, clean format, and 0 ste-check findings.
+- The hosted build, coverage, `doc-gate`, and `ste-check` checks pass at that head.
+- The review record and this handoff entry are metadata changes on `feat/pr-4-doc-gate-rotation`. They do not move the effective head.
+
+### What is in flight
+
+- P2-2 needs a checked increment and a regression test that proves no file changes on overflow.
+
+### Traps and gotchas
+
+- `int.TryParse` rejects values above `Int32.MaxValue`, but `Int32.MaxValue` itself still overflows when the command adds one.
+- A description edit runs `doc-gate` again. The corrected test count passed that check.
+
+### The questions that block progress
+
+- None blocks this review. OQ-16 still holds the gitar plan under D-7.
+
+### The next concrete action
+
+- Correct P2-2, add its regression test, and start a new review round on the corrected head.
+
+## Session 14: 2026-09-27, Claude Code
+
+Author: Claude Code
+Session: author PR-4, round 2. Repository: iron-absolution. Branch: `feat/pr-4-doc-gate-rotation`. PR: #5. Role: author. Base: `6acc6a85798182781a6fc1193c6e37d90dd03020`.
+
+### What this session did, and why
+
+- Review round 1 gave `Changes required` with one finding, P2-1: a session number too large for an int crashed `handoff-rotate` with exit 134.
+- The trigger reproduced, so the finding has full merit. `614847a` makes the parse a contextual fault with exit 1 in both commands.
+- Two regression tests fail on the old parse. `docs/reviews/pr-5-response.md` holds the answer.
+
+### The state of the build
+
+- The effective head is `614847a`. `make` passes on the Mac: 271 tests, a clean format, and 0 findings of ste-check.
+- The remote head is the commit of this entry. The state is pending merge.
+
+### What is in flight
+
+- The checks of the new head, then review round 2 with `make codex-review PR=5` (D-54).
+
+### Traps and gotchas
+
+- Exit test 1 ran on PR #5 itself: the first description had an empty `docs/runbooks/` line, and `doc-gate` went red. The edit made it green, and the build jobs did not run again.
+- The session line writes `` Branch: `<branch>` `` with a colon. The gate looks for that exact form.
+
+### The questions that block progress
+
+- None blocks PR-4. OQ-16 still holds gitar (D-7).
+
+### The next concrete action
+
+- Finish the review loop of PR #5, then give the owner the merge summary.
+- For a fresh session: the session number check of `ste-check` reads a heading number with `int.Parse`, so a number too large for an int stops the check with no context (T-2).
+
 ## Session 13: 2026-09-27, Codex
 
 Author: Codex

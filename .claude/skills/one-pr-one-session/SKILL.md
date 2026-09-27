@@ -90,7 +90,7 @@ Before `make codex-review`, confirm items 1 to 5, 7, and 8. Before the merge, co
 3. The design doc and the focused roadmap agree with the PR.
 4. The documents matrix is complete, and the `doc-gate` job is green.
 5. The handoff entry names this branch and the state "pending merge".
-6. The review record approves the effective head (T-4, D-49). After PR-6, the owner label can replace it (D-35).
+6. The review record approves the effective head, and `review-gate` is green (T-4, D-49, D-64). On a PR with no code, the owner label replaces the record (D-35, D-66).
 7. Each other line of the PR gate in `AGENTS.md` holds.
 8. No required work waits for a second PR.
 
@@ -98,4 +98,4 @@ At the hand-over and at the merge, run the session end gate of `.claude/skills/p
 
 `This session is bound to PR #N and is complete. End this session. Start a new clean session before beginning another PR.`
 
-When the bound PR merges, load `references/merge-prompt.md`. The session reads the state `MERGED` from `gh pr view`, or the owner says `Merged PR #N`. Write the one transitional prompt of that file, and do no other work. That message is the one exception to step 2 of the start gate. Do not offer to start the next PR. The owner can bring findings on the same PR back to this session.
+When the bound PR merges, by auto-merge or by a squash merge, load `references/merge-prompt.md`. The session reads the state `MERGED` from `gh pr view`, or the owner says `Merged PR #N`. Write the one transitional prompt of that file, and do no other work. That message is the one exception to step 2 of the start gate. Do not offer to start the next PR. The owner can bring findings on the same PR back to this session.

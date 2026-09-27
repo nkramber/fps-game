@@ -1,3 +1,180 @@
+## Session 28: 2026-09-27, Claude Code
+
+Author: Claude Code
+Session: author PR-6, merge. Repository: iron-absolution. Branch: `feat/pr-6-review-gate`. PR: #7. Role: author. Base: `5871f2c870d5eb110eccbadd67c5f633c5619155`.
+
+### What this session did, and why
+
+- Review round 2 approved the effective head `2338304` with the verdict `Ready for owner merge`. The two rounds used the exit codes 10 and 0.
+- P2-1 has the status `accepted risk, D-68.` No finding stays open.
+
+### The state of the build
+
+- The effective head is `2338304`. `make` passes on the Mac: 363 tests, a clean format, and 0 findings of ste-check.
+- The four checks of the head are green. PR #7 gets no `review-gate` check, because GitHub runs that workflow only from `main` (D-67).
+- The remote head is the commit of this entry. The state is pending merge.
+
+### What is in flight
+
+- The owner confirms the squash merge of PR #7. Auto-merge is off, so the session runs `gh pr merge 7 --squash` after the confirmation.
+
+### Traps and gotchas
+
+- The live ruleset requires four checks until the owner instructs the change of D-67.
+- The label `review-override` does not exist yet, and auto-merge is off. Both are owner steps of `docs/runbooks/main-ruleset.md`.
+
+### The questions that block progress
+
+- None. OQ-16 still holds gitar (D-7).
+
+### The next concrete action
+
+- After the merge, on the explicit instruction of the owner, apply the ruleset file of `main` to the live ruleset, and run the comparison (D-67). Then write the transitional prompt of PR-7.
+
+## Session 27: 2026-09-27, Codex
+
+Author: Codex
+Session: reviewer PR-6, round 2. Repository: iron-absolution. Branch: `feat/pr-6-review-gate`. PR: #7. Role: reviewer. Base: `5871f2c870d5eb110eccbadd67c5f633c5619155`.
+
+### What this session did, and why
+
+- Rechecked P2-1 against the author response and D-68. The owner accepts the backdated commit risk.
+- Verified that commit `2338304` changes no behavior. It adds the risk rationale to the rule comment and records the owner decision.
+- Updated `docs/reviews/pr-7.md`. P2-1 now records the accepted risk, and the round 1 verdict stays in the history.
+
+### The state of the build
+
+- The effective head is `2338304d6a448277f96270caaf90ee7213df6106`.
+- `make` passes on the Mac: 363 tests, a clean format, and 0 findings of ste-check.
+- The focused review-gate command tests pass: 17 tests. All four available hosted checks pass.
+- The remote head is the commit of this entry. The state is ready for owner merge.
+
+### What is in flight
+
+- The owner reads the merge summary and confirms the merge of PR #7.
+
+### Traps and gotchas
+
+- PR #7 has no `review-gate` check. D-67 defers its GitHub proof to the first PR after this one reaches `main`.
+- Run filtered MTP tests with `dotnet test --solution IronAbsolution.slnx --no-build --filter-class <type>`. Put the filter option before no extra `--` separator.
+
+### The questions that block progress
+
+- None blocks this review. OQ-16 still holds gitar under D-7.
+
+### The next concrete action
+
+- Give the owner the merge summary for PR #7. Wait for the owner's merge confirmation.
+- After the merge, apply the ruleset file of `main` only on the explicit instruction of the owner, then run the comparison (D-67).
+
+## Session 26: 2026-09-27, Claude Code
+
+Author: Claude Code
+Session: author PR-6, round 2. Repository: iron-absolution. Branch: `feat/pr-6-review-gate`. PR: #7. Role: author. Base: `5871f2c870d5eb110eccbadd67c5f633c5619155`.
+
+### What this session did, and why
+
+- Round 1 gave `Changes required` with one finding, P2-1 (exit 10). A backdated commit after the `review-override` label passes the time rule, because the rule reads the committer time.
+- The trigger reproduces. The owner accepted the risk (D-68, F-18): one account can add the label again anyway (F-9).
+- The rule cites D-68, and `docs/reviews/pr-7-response.md` gives the evidence. No behavior changed.
+- The first `doc-gate` run failed on the words "update ... after the merge" in the description. The reworded description passes.
+
+### The state of the build
+
+- `make` passes on the Mac: 363 tests, a clean format, and 0 findings of ste-check.
+- The remote head is the commit of this entry. The state is pending review round 2.
+- The live ruleset still requires four checks (D-67).
+
+### What is in flight
+
+- Round 2 of `make codex-review PR=7`.
+
+### Traps and gotchas
+
+- The deferral rule of `doc-gate` reads the PR description and this entry. Its regular expressions match a document verb close to the words that name the time of the merge.
+- The label `review-override` does not exist yet, and auto-merge is off. Both are owner steps of `docs/runbooks/main-ruleset.md`.
+
+### The questions that block progress
+
+- None. OQ-16 still holds gitar (D-7).
+
+### The next concrete action
+
+- After the approval, ask the owner to confirm the merge. Auto-merge is off, so merge with `gh pr merge 7 --squash`.
+- After the merge, on the explicit instruction of the owner, apply the ruleset file of `main` to the live ruleset, and run the comparison (D-67).
+
+## Session 25: 2026-09-27, Codex
+
+Author: Codex
+Session: reviewer PR-6, round 1. Repository: iron-absolution. Branch: `feat/pr-6-review-gate`. PR: #7. Role: reviewer. Base: `5871f2c870d5eb110eccbadd67c5f633c5619155`.
+
+### What this session did, and why
+
+- Reviewed PR #7 at effective head `7f4cb583772c28e2bdb2a1a32c8f2e921442a88c`.
+- Found that the override label accepts a document commit pushed after the label when its Git committer time is earlier. The temporary reproduction passed the gate.
+- Wrote `docs/reviews/pr-7.md` with verdict `Changes required` and P2-1.
+
+### The state of the build
+
+- `make` passes on the Mac: 363 tests, a clean format, and 0 ste-check findings.
+- All four checks available to PR #7 pass on head `7f4cb58`. GitHub does not run `review-gate` until the workflow reaches `main` (D-67).
+- The remote work head is `7f4cb583772c28e2bdb2a1a32c8f2e921442a88c`. This review record and handoff must publish together.
+
+### What is in flight
+
+- P2-1 needs a freshness check that does not trust a PR-controlled commit time.
+
+### Traps and gotchas
+
+- The override rule reads Git `%cI`. A PR author controls the committer timestamp.
+- This PR does not get a `review-gate` check because the workflow runs from `main` (D-67).
+
+### The questions that block progress
+
+- None. OQ-16 still holds gitar under D-7.
+
+### The next concrete action
+
+- The author corrects P2-1 and adds a regression test for a backdated document commit.
+
+## Session 24: 2026-09-27, Claude Code
+
+Author: Claude Code
+Session: author PR-6, round 1. Repository: iron-absolution. Branch: `feat/pr-6-review-gate`. PR: #7. Role: author. Base: `5871f2c870d5eb110eccbadd67c5f633c5619155`.
+
+### What this session did, and why
+
+- The exit tests of PR-5 passed on `main` first: `make` gave 288 tests, a clean format, and 0 findings. The comparison of the live ruleset gave an empty diff.
+- The owner answered four divergences of the port (D-64 to D-67). The job is the check, with no mode file. The label rules of what-you-carry apply. A PR of documents alone merges through the label alone. The live ruleset takes `review-gate` after the merge.
+- The `review-gate` command reads the record at the PR head through git, and the label facts from a JSON file. It reuses `ReviewRecord`, `ReviewHeads`, and `GitRepository`.
+- The workflow runs on `pull_request_target` from the base, with read rights alone, and fetches the head as data. The job shell has pipefail (T-2).
+- The ruleset file requires `review-gate`. The agent files, the skills, the runbooks, and the design doc now describe the live gate and auto-merge.
+
+### The state of the build
+
+- `make` passes on the Mac: 363 tests, a clean format, and 0 findings of ste-check.
+- The remote head is the commit of this entry. The state is pending review.
+- The live ruleset still requires four checks. PR #7 gets no `review-gate` check, because GitHub runs that workflow only from `main` (D-67).
+
+### What is in flight
+
+- Round 1 of `make codex-review PR=7`.
+
+### Traps and gotchas
+
+- A run step with no shell starts `bash -e` with no pipefail. The review-gate job sets `shell: bash` for each step.
+- The label `review-override` does not exist yet, and auto-merge is off. Both are owner steps of `docs/runbooks/main-ruleset.md`.
+- The fixture commits all have the time 2026-09-27T10:00:00Z. The label tests put the label one hour before or after it.
+
+### The questions that block progress
+
+- None. OQ-16 still holds gitar (D-7).
+
+### The next concrete action
+
+- After the approval, ask the owner to confirm the merge. Auto-merge is off, so merge with `gh pr merge 7 --squash`.
+- After the merge, on the explicit instruction of the owner, update the live ruleset from `main`, and run the comparison (D-67).
+
 ## Session 23: 2026-09-27, Claude Code
 
 Author: Claude Code
@@ -173,176 +350,4 @@ Session: author PR-5, round 1. Repository: iron-absolution. Branch: `feat/pr-5-m
 ### The next concrete action
 
 - Run `make codex-review PR=6` after the checks are green.
-- For a fresh session: the session number check of `ste-check` reads a heading number with `int.Parse`, so a number too large for an int stops the check with no context (T-2).
-
-## Session 18: 2026-09-27, Claude Code
-
-Author: Claude Code
-Session: author PR-4, merge. Repository: iron-absolution. Branch: `feat/pr-4-doc-gate-rotation`. PR: #5. Role: author. Base: `6acc6a85798182781a6fc1193c6e37d90dd03020`.
-
-### What this session did, and why
-
-- Review round 3 approved the effective head `eb76650` with the verdict `Ready for owner merge`. `make codex-review` gave the exit code 0.
-- The three rounds used the exit codes 10, 10, and 0. P2-1 is fixed in `614847a`, and P2-2 is fixed in `eb76650`.
-- PR-4 added the `doc-gate` and `handoff-rotate` commands, the `doc-gate` workflow, and `make handoff-rotate` (D-56 to D-59).
-
-### The state of the build
-
-- The effective head is `eb76650`. `make` passes on the Mac: 272 tests, a clean format, and 0 findings of ste-check.
-- The remote head is the commit of this entry. The state is pending merge.
-
-### What is in flight
-
-- The owner confirms the squash merge of PR #5.
-
-### Traps and gotchas
-
-- The session end now runs `make handoff-rotate` after the new entry, before the commit.
-- The session line writes `` Branch: `<branch>` `` with a colon. The `doc-gate` job looks for that exact form.
-
-### The questions that block progress
-
-- None blocks PR-4. OQ-16 still holds gitar (D-7).
-
-### The next concrete action
-
-- After the merge, write the transitional prompt of PR-5.
-- For a fresh session: the session number check of `ste-check` reads a heading number with `int.Parse`, so a number too large for an int stops the check with no context (T-2).
-
-## Session 17: 2026-09-27, Codex
-
-Author: Codex
-Session: reviewer PR-5, round 3. Repository: iron-absolution. Branch: `feat/pr-4-doc-gate-rotation`. PR: #5. Role: reviewer. Base: `6acc6a85798182781a6fc1193c6e37d90dd03020`.
-
-### What this session did, and why
-
-- Rechecked P2-2 at the new effective head, `eb76650`.
-- The fix rejects Session `2147483647` before either file write, with a contextual fault.
-- Updated `docs/reviews/pr-5.md`. Both earlier findings now pass their regression checks.
-- `make` passed with 272 tests. All four hosted checks passed.
-
-### The state of the build
-
-- The effective head is `eb76650`. The current remote tip before this metadata commit was `b964463`.
-- The review record and this handoff entry form one metadata commit. The state is pending merge.
-
-### What is in flight
-
-- The owner reads the merge summary and confirms the merge of PR #5.
-
-### Traps and gotchas
-
-- A heading at `2147483647` parses as an int, but the next session value does not fit.
-- The current branch tip has review and handoff metadata after the effective head.
-
-### The questions that block progress
-
-- None blocks this PR. OQ-16 still holds the gitar plan under D-7.
-
-### The next concrete action
-
-- Give the owner the merge summary for PR #5.
-
-## Session 16: 2026-09-27, Claude Code
-
-Author: Claude Code
-Session: author PR-4, round 3. Repository: iron-absolution. Branch: `feat/pr-4-doc-gate-rotation`. PR: #5. Role: author. Base: `6acc6a85798182781a6fc1193c6e37d90dd03020`.
-
-### What this session did, and why
-
-- Review round 2 marked P2-1 fixed in `614847a`, and it found P2-2: at Session 2147483647, the next session number wrapped to a negative number, and the command exited 0.
-- The trigger reproduced, so the finding has full merit. `eb76650` makes that number a contextual fault with exit 1 and no file change.
-- One regression test fails with the check off. `docs/reviews/pr-5-response.md` holds the answer under "Round 2".
-
-### The state of the build
-
-- The effective head is `eb76650`. `make` passes on the Mac: 272 tests, a clean format, and 0 findings of ste-check.
-- The remote head is the commit of this entry. The state is pending merge.
-
-### What is in flight
-
-- The checks of the new head, then review round 3 with `make codex-review PR=5` (D-54).
-
-### Traps and gotchas
-
-- Exit test 1 ran on PR #5 itself: the first description had an empty `docs/runbooks/` line, and `doc-gate` went red. The edit made it green, and the build jobs did not run again.
-- The session line writes `` Branch: `<branch>` `` with a colon. The gate looks for that exact form.
-
-### The questions that block progress
-
-- None blocks PR-4. OQ-16 still holds gitar (D-7).
-
-### The next concrete action
-
-- Finish the review loop of PR #5, then give the owner the merge summary.
-- For a fresh session: the session number check of `ste-check` reads a heading number with `int.Parse`, so a number too large for an int stops the check with no context (T-2).
-
-## Session 15: 2026-09-27, Codex
-
-Author: Codex
-Session: reviewer PR-5, round 2. Repository: iron-absolution. Branch: `feat/pr-4-doc-gate-rotation`. PR: #5. Role: reviewer. Base: `6acc6a85798182781a6fc1193c6e37d90dd03020`.
-
-### What this session did, and why
-
-- Rechecked the fix for P2-1 and the full PR-4 scope.
-- Ran the review in the `review/pr-5` worktree.
-- Found P2-2: session `2147483647` makes the next session value wrap to `-2147483648`.
-- Updated `docs/reviews/pr-5.md` with the fixed finding, the new finding, and the verdict for effective head `614847a`.
-- Corrected the stale test count in the PR description. Its `doc-gate` check passed again.
-
-### The state of the build
-
-- `make` passes at effective head `614847a`: 271 tests, clean format, and 0 ste-check findings.
-- The hosted build, coverage, `doc-gate`, and `ste-check` checks pass at that head.
-- The review record and this handoff entry are metadata changes on `feat/pr-4-doc-gate-rotation`. They do not move the effective head.
-
-### What is in flight
-
-- P2-2 needs a checked increment and a regression test that proves no file changes on overflow.
-
-### Traps and gotchas
-
-- `int.TryParse` rejects values above `Int32.MaxValue`, but `Int32.MaxValue` itself still overflows when the command adds one.
-- A description edit runs `doc-gate` again. The corrected test count passed that check.
-
-### The questions that block progress
-
-- None blocks this review. OQ-16 still holds the gitar plan under D-7.
-
-### The next concrete action
-
-- Correct P2-2, add its regression test, and start a new review round on the corrected head.
-
-## Session 14: 2026-09-27, Claude Code
-
-Author: Claude Code
-Session: author PR-4, round 2. Repository: iron-absolution. Branch: `feat/pr-4-doc-gate-rotation`. PR: #5. Role: author. Base: `6acc6a85798182781a6fc1193c6e37d90dd03020`.
-
-### What this session did, and why
-
-- Review round 1 gave `Changes required` with one finding, P2-1: a session number too large for an int crashed `handoff-rotate` with exit 134.
-- The trigger reproduced, so the finding has full merit. `614847a` makes the parse a contextual fault with exit 1 in both commands.
-- Two regression tests fail on the old parse. `docs/reviews/pr-5-response.md` holds the answer.
-
-### The state of the build
-
-- The effective head is `614847a`. `make` passes on the Mac: 271 tests, a clean format, and 0 findings of ste-check.
-- The remote head is the commit of this entry. The state is pending merge.
-
-### What is in flight
-
-- The checks of the new head, then review round 2 with `make codex-review PR=5` (D-54).
-
-### Traps and gotchas
-
-- Exit test 1 ran on PR #5 itself: the first description had an empty `docs/runbooks/` line, and `doc-gate` went red. The edit made it green, and the build jobs did not run again.
-- The session line writes `` Branch: `<branch>` `` with a colon. The gate looks for that exact form.
-
-### The questions that block progress
-
-- None blocks PR-4. OQ-16 still holds gitar (D-7).
-
-### The next concrete action
-
-- Finish the review loop of PR #5, then give the owner the merge summary.
 - For a fresh session: the session number check of `ste-check` reads a heading number with `int.Parse`, so a number too large for an int stops the check with no context (T-2).

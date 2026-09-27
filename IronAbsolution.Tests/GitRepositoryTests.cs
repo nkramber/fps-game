@@ -49,4 +49,35 @@ public sealed class GitRepositoryTests
 
         Assert.Null(new GitRepository(repo.Root).NewestCommitOutside(root, documents, ["docs/"]));
     }
+
+    [Fact]
+    public void TheCommitTimeIsTheCommitterTimeOfTheCommit()
+    {
+        using TemporaryGitRepository repo = new TemporaryGitRepository();
+        string root = repo.Commit("chore: root", ("README.md", "root"));
+
+        Assert.Equal(new DateTimeOffset(2026, 9, 27, 10, 0, 0, TimeSpan.Zero), new GitRepository(repo.Root).CommitTime(root));
+    }
+
+    [Fact]
+    public void TheNewestCommitThatChangedAFileGivesItsSubject()
+    {
+        using TemporaryGitRepository repo = new TemporaryGitRepository();
+        repo.Commit("docs: review record of #4 (PR-3)", ("docs/reviews/pr-4.md", "round one"));
+        string second = repo.Commit("docs: review record of #4 (PR-3), round two\n\nThe body.", ("docs/reviews/pr-4.md", "round two"));
+        repo.Commit("feat: a later change", ("README.md", "later"));
+
+        CommitSubject? commit = new GitRepository(repo.Root).NewestCommitThatChanged("HEAD", "docs/reviews/pr-4.md");
+
+        Assert.Equal(new CommitSubject(second, "docs: review record of #4 (PR-3), round two"), commit);
+    }
+
+    [Fact]
+    public void AFileThatNoCommitChangedGivesNoCommit()
+    {
+        using TemporaryGitRepository repo = new TemporaryGitRepository();
+        repo.Commit("chore: root", ("README.md", "root"));
+
+        Assert.Null(new GitRepository(repo.Root).NewestCommitThatChanged("HEAD", "docs/reviews/pr-4.md"));
+    }
 }

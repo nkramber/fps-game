@@ -39,7 +39,8 @@ ste-check:
 # Run it after you add the handoff entry, and before the commit. The command also puts an
 # entry that sits under an older one back in its place, and it names that entry. It prints the
 # next session number. The doc-gate command has no target. The doc-gate workflow runs it on
-# each PR (D-56).
+# each PR (D-56). The review-gate command has no target either. The review-gate workflow runs
+# it from the base branch (D-64).
 handoff-rotate:
 	dotnet run --project $(TOOLS_PROJECT) -- handoff-rotate --root .
 

@@ -75,6 +75,25 @@ public sealed class ReviewHeadsTests
         Assert.Equal(matches, ReviewHeads.HeadMatches(recorded, "1111111111111111111111111111111111111111"));
     }
 
+    [Theory]
+    [InlineData("docs/design.md", true)]
+    [InlineData("docs/reviews/pr-7.md", true)]
+    [InlineData(".claude/skills/pr-review/SKILL.md", true)]
+    [InlineData("CLAUDE.md", true)]
+    [InlineData("AGENTS.md", true)]
+    [InlineData("README.md", true)]
+    [InlineData("LICENSE", true)]
+    [InlineData("LICENSE/tool.cs", false)]
+    [InlineData("README.md.cs", false)]
+    [InlineData(".claude/settings.json", false)]
+    [InlineData("docs", false)]
+    [InlineData("tools/docs/a.cs", false)]
+    [InlineData(".github/workflows/review-gate.yml", false)]
+    public void ThePathTestReadsTheDocumentsSet(string path, bool isDocument)
+    {
+        Assert.Equal(isDocument, ReviewHeads.IsDocument(path));
+    }
+
     /// <summary>A root commit on main, then one code commit on the PR branch. Gives the code commit.</summary>
     private static string StartBranch(TemporaryGitRepository repo)
     {

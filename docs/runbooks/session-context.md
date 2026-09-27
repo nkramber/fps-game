@@ -77,3 +77,11 @@ Check the Documents section before the push with a local run of the documents ga
 ```
 dotnet run --project IronAbsolution.Tools/IronAbsolution.Tools.csproj -- doc-gate --root . --base origin/main --head HEAD --body <file> --title "<title>" --branch <branch>
 ```
+
+Read the result of the review gate before the merge summary with a local run (D-64). Write the labels file first, in the form that the workflow writes. The job in CI runs the same command from the tool of `main`.
+
+```
+labels=$(mktemp "${TMPDIR:-/tmp}/review-gate-labels.XXXXXX")
+printf '{ "labels": [], "overrideLabelEvents": [] }\n' > "$labels"
+dotnet run --project IronAbsolution.Tools/IronAbsolution.Tools.csproj -- review-gate --root . --base origin/main --head "$(git rev-parse HEAD)" --pr <number> --labels "$labels"
+```

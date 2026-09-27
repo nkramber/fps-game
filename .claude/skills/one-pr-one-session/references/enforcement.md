@@ -23,14 +23,14 @@ Read this table when a question asks who catches a break of a rule. A row that n
 | A review round starts only when each start condition holds, with no unresolved review thread and an effective head | Machine, when the author runs the command | `make codex-review` refuses with exit 3 (D-14, D-49, D-52) |
 | A review round pushes a record of the effective head, and no commit outside the metadata set | Machine | `make codex-review` fails the round with exit 1 (D-14, D-49) |
 | A review round stops after 90 minutes | Machine | `make codex-review` fails the round with exit 1 (D-50) |
-| A PR with no code merges without a review record only through the owner label | Machine after PR-6 | `review-gate` and the `review-override` label (D-35). Before PR-6, the owner starts Codex by hand (D-49) |
+| A PR with no code merges without a review record only through the owner label | Machine for the paths and the time of the label, owner for the label | `review-gate` reads the `review-override` label and the changed paths (D-35, D-65, D-66). No machine proves that the owner added the label (F-9) |
 | A P0 to P2 finding open in three rounds stops the fix loop, and the owner decides | Machine for the stop, owner for the answer | `make codex-review` exits 11 from the `Open at:` lines (D-14) |
 | A PR merges only with every required check green, every review thread resolved, and a squash merge | Machine after PR-5 | The ruleset of `main` in `.github/rulesets/main.json` (D-61). `RulesetTests` binds each required check to one job |
 | No session uses the admin bypass of the ruleset | Agent and owner | The bypass is for the owner alone, and no session merge passes `--admin` (D-5, D-60) |
-| A merge needs an approving record of the effective head | Machine after PR-6, owner before | `review-gate` (PR-6). Until then, the owner reads the record (D-5) |
+| A merge needs an approving record of the effective head, or the owner label | Machine | The required `review-gate` check, from the tool of the base branch (D-64, D-67) |
 | No review round uses API pricing | Machine | `make codex-review` removes the API credential variables and uses the ChatGPT login (D-14, D-53) |
 | The owner confirms each merge after the merge summary: What, How, CI, and Codex review | Agent and owner | `references/review-and-merge.md` asks with `AskUserQuestion`. No machine reads the summary or the confirmation |
-| The owner merges until PR-6, and auto-merge can merge after it | Owner, then machine | D-5, and the auto-merge of PR-6 (D-12) |
+| Auto-merge starts only after the owner confirms the merge | Agent and owner, then machine | The session turns on auto-merge after the confirmation (D-5, D-12). The ruleset then holds the merge until each required check is green |
 | No commit or PR carries an attribution line | Machine for the trailers and the generation lines, agent and owner for the text | `.claude/settings.json` sets the attribution to empty text (T-6, D-16). `doc-gate` refuses a co-author trailer, a generation line, or a robot line in the title, the description, or a commit (D-57) |
 | A reason is true and specific | Agent and owner | The author writes it, and the cross-provider review checks it |
 | The design doc, the registers, and the roadmap agree with the PR | Agent | The author, then the cross-provider review |

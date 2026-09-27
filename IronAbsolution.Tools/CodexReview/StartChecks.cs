@@ -87,7 +87,7 @@ public static class StartChecks
 
         if (facts.EffectiveHead is null)
         {
-            problems.Add($"No commit of PR #{facts.PullRequestNumber} changes a path outside the documents set, so the review has nothing to approve (D-49). The owner starts Codex by hand for such a PR until PR-6 adds the review-override label (D-35).");
+            problems.Add($"No commit of PR #{facts.PullRequestNumber} changes a path outside the documents set, so the review has nothing to approve (D-49). Such a PR merges through the review-override label, and only the owner adds it (D-35, D-66).");
         }
 
         AddCheckoutProblems(facts, problems);

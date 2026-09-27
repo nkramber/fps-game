@@ -12,7 +12,7 @@ Always commit the review record and the session handoff entry, then push them to
 | Work that answers a review | `docs/reviews/pr-<number>-response.md`, each corrected file, and `docs/session-handoff.md` | The author |
 
 Make one commit that holds the record and its handoff entry. Never leave either file uncommitted or unpushed.
-A push is the only way for a reader of the PR head to see the record. The `make codex-review` command reads the branch on origin, and so does the `review-gate` check of PR-6.
+A push is the only way for a reader of the PR head to see the record. The `make codex-review` command reads the branch on origin, and so does the `review-gate` check (D-64).
 A review is complete only when the remote holds the record. The session end gate below proves it.
 
 An uncommitted review record has three effects:

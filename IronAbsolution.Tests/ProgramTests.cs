@@ -25,6 +25,8 @@ public sealed class ProgramTests
         Assert.Contains("codex-review: ready", errors.ToString(), StringComparison.Ordinal);
         Assert.Contains("doc-gate: ready", errors.ToString(), StringComparison.Ordinal);
         Assert.Contains("handoff-rotate: ready", errors.ToString(), StringComparison.Ordinal);
+        Assert.Contains("review-gate: ready", errors.ToString(), StringComparison.Ordinal);
+        Assert.Contains("The planned commands: none.", errors.ToString(), StringComparison.Ordinal);
         Assert.Empty(output.ToString());
     }
 
@@ -40,17 +42,18 @@ public sealed class ProgramTests
         Assert.Contains("unknown command 'no-such-command'", errors.ToString(), StringComparison.Ordinal);
     }
 
-    [Theory]
-    [InlineData("review-gate", "PR-6")]
-    public void APlannedCommandIsAFaultThatNamesThePullRequest(string command, string pullRequest)
+    [Fact]
+    public void TheReviewGateCommandRunsAndIsNoLongerPlanned()
     {
         using StringWriter output = new StringWriter();
         using StringWriter errors = new StringWriter();
 
-        int exitCode = Program.Run([command], output, errors);
+        // PR-6 wrote the command. With no option, the command itself names the fault.
+        int exitCode = Program.Run(["review-gate"], output, errors);
 
         Assert.Equal(Program.FaultExitCode, exitCode);
-        Assert.Contains($"{pullRequest} adds it", errors.ToString(), StringComparison.Ordinal);
+        Assert.DoesNotContain("review-gate", Program.PlannedCommands.Keys);
+        Assert.Contains("review-gate needs each of --base, --head, --pr, --labels", errors.ToString(), StringComparison.Ordinal);
     }
 
     [Fact]

@@ -6,9 +6,9 @@ A session ends at the hand-over point (D-5). The next PR starts in a new clean s
 
 The bound PR merges in one of three ways:
 
-- The session runs the squash merge after the owner confirms it (D-5).
+- GitHub auto-merge merges it. The session turns on auto-merge after the owner confirms the merge (D-12).
+- The session runs the squash merge after the owner confirms it, when the repository has auto-merge off (D-5).
 - The owner merges it and says `Merged PR #x`.
-- After PR-6, GitHub auto-merge merges it.
 
 The session reads the state `MERGED` from `gh pr view`. The session then writes one transitional prompt, and it does no other work. The owner asks for no prompt.
 
