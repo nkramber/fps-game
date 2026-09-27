@@ -1,0 +1,20 @@
+<Project>
+
+  <!-- Every project of the solution takes these settings (D-15, D-40). -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarningLevel>9999</WarningLevel>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <!-- Assertions stay on in every configuration (T-2). -->
+    <DefineConstants>$(DefineConstants);CONTRACTS_FULL</DefineConstants>
+    <!-- No JSON read of a tool uses reflection. The switch goes into the runtimeconfig.json of each program. -->
+    <JsonSerializerIsReflectionEnabledByDefault>false</JsonSerializerIsReflectionEnabledByDefault>
+  </PropertyGroup>
+
+</Project>

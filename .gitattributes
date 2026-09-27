@@ -1,0 +1,3 @@
+# One line ending on every platform. The STE checker, the byte rule of AGENTS 1, and diffs
+# depend on it (D-40). Phase 1 adds the Git LFS rules of the binary assets (D-30).
+* text=auto eol=lf

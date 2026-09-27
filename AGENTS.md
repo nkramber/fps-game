@@ -114,7 +114,7 @@ First action: <the first concrete action>.
 
 ## Code rules
 
-The repository has no code yet. PR-2 adds the C# tools project and its conventions (D-15).
+The C# tools project `IronAbsolution.Tools` holds the commands of the repository gates (D-15). Load `.claude/skills/csharp-conventions/SKILL.md` before you write or review C# (D-44).
 
 - Unreal best practices govern each rule and each implementation of the engine work, the game code, and the content (D-34). A tenet or a role-model rule gives way to them in that scope.
 - Follow the Epic C++ coding standard: https://dev.epicgames.com/documentation/unreal-engine/epic-cplusplus-coding-standard-for-unreal-engine.
@@ -152,7 +152,13 @@ Gitar is a documented plan only (D-7). Add no gitar step, wait, script, template
 
 ## Build and test commands
 
-No build, test, or check command exists yet. PR-2 adds the tools project, the Makefile, and `ste-check`. Until then, check each document by hand against the ste-writing skill, and check each link and id.
+The Makefile is the entry point (D-41). Run each target from the checkout root.
+
+- `make`: build, test, format, and ste-check. Run it before each push.
+- `make ste-check`: the STE checker, the reference check, the session number check, and the size check (D-17).
+- `make hooks`: install the pre-commit hook in this checkout, one time (D-43).
+
+The CI of each PR runs the `ste-check`, `build, test, and format`, and `coverage report` jobs (D-42, D-45).
 
 ## PR gate
 
@@ -160,7 +166,7 @@ A PR merges only when every line holds:
 
 - [ ] Tests written and green (T-3). A PR of documents alone needs the ste-check job instead.
 - [ ] No silent failure. Every error carries context (T-2).
-- [ ] The `ste-check` job is green. PR-2 creates it.
+- [ ] The `ste-check` job is green.
 - [ ] The `doc-gate` job is green. PR-4 creates it.
 - [ ] The other provider reviewed the PR, and its review record says `Ready for owner merge` for the effective head (T-4, D-14).
 - [ ] The `review-gate` check is green. PR-6 creates it.

@@ -8,7 +8,7 @@ Each line holds before the merge, by auto-merge or by the owner (`AGENTS.md`, PR
 
 - [ ] Tests written and green (T-3). A PR of documents alone needs the ste-check job instead.
 - [ ] No silent failure. Every error carries context (T-2).
-- [ ] The `ste-check` job is green. PR-2 creates it.
+- [ ] The `ste-check` job is green.
 - [ ] The `doc-gate` job is green. PR-4 creates it.
 - [ ] The other provider reviewed it, and `docs/reviews/pr-<number>.md` has the verdict `Ready for owner merge` for the effective head (T-4, D-14).
 - [ ] The `review-gate` check is green. PR-6 creates it.

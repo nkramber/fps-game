@@ -179,6 +179,8 @@ PR-1 adds the registers, this design doc, the research, the agent files, the han
 
 PR-2 creates one C# .NET tools project, `IronAbsolution.Tools` (D-15, D-39). It ports the ste-check command of the-thing-below and its tests (D-17). It adds a Makefile and a hosted Linux workflow that runs the check and the tests on each PR. Newer pushes cancel older runs.
 
+D-40 to D-45 set the stack, the Makefile, the CI layout, the pre-commit hook, the C# skill, and the coverage report. The port drops two rules of the-thing-below. AGENTS 2 reads a test filter that this repository does not have. DOCS 1 reads a review gate that PR-6 adds.
+
 - Exit tests: 1. The tests pass on the hosted runner. 2. A PR with a broken rule gets a red check. 3. The docs of PR-1 pass.
 - Gate: exit tests 1 to 3 pass.
 

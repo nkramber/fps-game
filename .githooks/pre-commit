@@ -1,0 +1,27 @@
+#!/bin/sh
+# The pre-commit hook of the repository. `make hooks` sets the hook path (D-43).
+#
+# It refuses a commit on `main`, and it runs the STE checker over the tracked files of
+# the checkout (D-5, D-17). A finding stops the commit.
+
+set -e
+
+# `symbolic-ref` reads the branch of a checkout that holds no commit yet.
+branch=$(git symbolic-ref --quiet --short HEAD || echo "")
+if [ -z "$branch" ]; then
+    echo "pre-commit: this checkout has no branch. Make a branch, then commit again (D-5)." >&2
+    exit 1
+fi
+
+if [ "$branch" = "main" ]; then
+    echo "pre-commit: this checkout is on main. Every change starts on a branch (D-5, D-23)." >&2
+    echo "pre-commit: make a branch named <prefix>/pr-<n>-<slug>, then commit again." >&2
+    exit 1
+fi
+
+# The command reads every live document that git tracks, a staged new file included, and
+# it takes no file list. It holds the four dated record paths itself (D-17).
+if ! dotnet run --project IronAbsolution.Tools/IronAbsolution.Tools.csproj -- ste-check --root .; then
+    echo "pre-commit: the STE checker found a fault. Correct it, then commit again (D-17)." >&2
+    exit 1
+fi
