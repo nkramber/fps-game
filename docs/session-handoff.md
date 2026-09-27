@@ -1,3 +1,37 @@
+## Session 18: 2026-09-27, Claude Code
+
+Author: Claude Code
+Session: author PR-4, merge. Repository: iron-absolution. Branch: `feat/pr-4-doc-gate-rotation`. PR: #5. Role: author. Base: `6acc6a85798182781a6fc1193c6e37d90dd03020`.
+
+### What this session did, and why
+
+- Review round 3 approved the effective head `eb76650` with the verdict `Ready for owner merge`. `make codex-review` gave the exit code 0.
+- The three rounds used the exit codes 10, 10, and 0. P2-1 is fixed in `614847a`, and P2-2 is fixed in `eb76650`.
+- PR-4 added the `doc-gate` and `handoff-rotate` commands, the `doc-gate` workflow, and `make handoff-rotate` (D-56 to D-59).
+
+### The state of the build
+
+- The effective head is `eb76650`. `make` passes on the Mac: 272 tests, a clean format, and 0 findings of ste-check.
+- The remote head is the commit of this entry. The state is pending merge.
+
+### What is in flight
+
+- The owner confirms the squash merge of PR #5.
+
+### Traps and gotchas
+
+- The session end now runs `make handoff-rotate` after the new entry, before the commit.
+- The session line writes `` Branch: `<branch>` `` with a colon. The `doc-gate` job looks for that exact form.
+
+### The questions that block progress
+
+- None blocks PR-4. OQ-16 still holds gitar (D-7).
+
+### The next concrete action
+
+- After the merge, write the transitional prompt of PR-5.
+- For a fresh session: the session number check of `ste-check` reads a heading number with `int.Parse`, so a number too large for an int stops the check with no context (T-2).
+
 ## Session 17: 2026-09-27, Codex
 
 Author: Codex
@@ -308,40 +342,3 @@ Session: author PR-3, round 3. Repository: iron-absolution. Branch: `feat/pr-3-c
 ### The next concrete action
 
 - Read the verdict of round 3, then write the merge summary or answer the findings.
-
-## Session 8: 2026-09-27, Codex
-
-Author: Codex
-Session: reviewer PR-3, round 2. Repository: iron-absolution. Branch: `feat/pr-3-codex-review`. PR: #4. Role: reviewer. Base: `e97da5a5238807c29c7a3bcdc5d4184dfb97f1b4`.
-
-### What this session did, and why
-
-- The review checked the correction to P2-1 at effective head `2551eb3`.
-- The correction starts the npm entry script through `node`. The local regression tests pass.
-- P2-1 stays open because no Windows test log or end-to-end run is present (D-33).
-- The review record gives the verdict `Blocked` until the Windows evidence arrives.
-
-### The state of the build
-
-- The effective head is `2551eb31c274db277159c779a5e98b7bc67e4c51`.
-- `make` passes on macOS with 232 tests, clean format, and 0 ste-check findings.
-- All three CI jobs pass at metadata tip `5561e3f3f808117234dfc193d9365f33d8241427`.
-- This metadata commit publishes the review record and this entry.
-
-### What is in flight
-
-- The owner must run the launcher tests and the real review command on Windows.
-- PR #4 needs another Codex review after the Windows evidence arrives.
-
-### Traps and gotchas
-
-- CI runs on Ubuntu. It does not prove the Windows process launch.
-- Do not move the work head during a review round (D-14).
-
-### The questions that block progress
-
-- None. OQ-16 remains open but does not affect this review (D-7).
-
-### The next concrete action
-
-- The owner posts the Windows test and command results. Then start a new review round.

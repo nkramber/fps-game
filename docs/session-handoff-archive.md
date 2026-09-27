@@ -2,6 +2,43 @@
 
 This file holds the entries that the rotation moves out of `docs/session-handoff.md`, newest first.
 
+## Session 8: 2026-09-27, Codex
+
+Author: Codex
+Session: reviewer PR-3, round 2. Repository: iron-absolution. Branch: `feat/pr-3-codex-review`. PR: #4. Role: reviewer. Base: `e97da5a5238807c29c7a3bcdc5d4184dfb97f1b4`.
+
+### What this session did, and why
+
+- The review checked the correction to P2-1 at effective head `2551eb3`.
+- The correction starts the npm entry script through `node`. The local regression tests pass.
+- P2-1 stays open because no Windows test log or end-to-end run is present (D-33).
+- The review record gives the verdict `Blocked` until the Windows evidence arrives.
+
+### The state of the build
+
+- The effective head is `2551eb31c274db277159c779a5e98b7bc67e4c51`.
+- `make` passes on macOS with 232 tests, clean format, and 0 ste-check findings.
+- All three CI jobs pass at metadata tip `5561e3f3f808117234dfc193d9365f33d8241427`.
+- This metadata commit publishes the review record and this entry.
+
+### What is in flight
+
+- The owner must run the launcher tests and the real review command on Windows.
+- PR #4 needs another Codex review after the Windows evidence arrives.
+
+### Traps and gotchas
+
+- CI runs on Ubuntu. It does not prove the Windows process launch.
+- Do not move the work head during a review round (D-14).
+
+### The questions that block progress
+
+- None. OQ-16 remains open but does not affect this review (D-7).
+
+### The next concrete action
+
+- The owner posts the Windows test and command results. Then start a new review round.
+
 ## Session 7: 2026-09-27, Claude Code
 
 Author: Claude Code
