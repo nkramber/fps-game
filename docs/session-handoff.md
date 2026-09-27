@@ -1,3 +1,39 @@
+## Session 23: 2026-09-27, Claude Code
+
+Author: Claude Code
+Session: author PR-5, merge. Repository: iron-absolution. Branch: `feat/pr-5-main-ruleset`. PR: #6. Role: author. Base: `f5e9514ebae89c1a5a6a189a8213f2b44f9d1bf5`.
+
+### What this session did, and why
+
+- Review round 2 approved the effective head `1fe466b` with the verdict `Ready for owner merge`. The two rounds used the exit codes 10 and 0.
+- On the instruction of the owner, the session created the live ruleset of `main` from the file of the PR head (D-63). The ruleset id is 24080063, with the enforcement `active`.
+- Exit test 2 passed: the comparison of `docs/runbooks/main-ruleset.md` gave an empty diff. PR #6 then read `CLEAN` and `MERGEABLE` under the live ruleset.
+
+### The state of the build
+
+- The effective head is `1fe466b`. `make` passes on the Mac: 288 tests, a clean format, and 0 findings of ste-check.
+- The remote head is the commit of this entry. The state is pending merge.
+- The live ruleset of `main` requires `ste-check`, `build, test, and format`, `coverage report`, and `doc-gate` (D-61).
+
+### What is in flight
+
+- The owner confirms the squash merge of PR #6. PR-5 merges under its own ruleset.
+
+### Traps and gotchas
+
+- A renamed or removed required job blocks every merge until the live ruleset changes. The runbook gives the order.
+- PR-6 must plan when `review-gate` joins the live ruleset, because a required check that never reports blocks the merge.
+- No session merges with `gh pr merge --admin` (D-60).
+
+### The questions that block progress
+
+- None. OQ-16 still holds gitar (D-7).
+
+### The next concrete action
+
+- After the merge, write the transitional prompt of PR-6.
+- For a fresh session: the session number check of `ste-check` reads a heading number with `int.Parse`, so a number too large for an int stops the check with no context (T-2).
+
 ## Session 22: 2026-09-27, Codex
 
 Author: Codex
@@ -310,37 +346,3 @@ Session: author PR-4, round 2. Repository: iron-absolution. Branch: `feat/pr-4-d
 
 - Finish the review loop of PR #5, then give the owner the merge summary.
 - For a fresh session: the session number check of `ste-check` reads a heading number with `int.Parse`, so a number too large for an int stops the check with no context (T-2).
-
-## Session 13: 2026-09-27, Codex
-
-Author: Codex
-Session: reviewer PR-5, round 1. Repository: iron-absolution. Branch: `review/pr-5`. PR: #5. Role: reviewer. Base: `6acc6a85798182781a6fc1193c6e37d90dd03020`.
-
-### What this session did, and why
-
-- Reviewed PR #5 against its exit tests, guardrails, decisions, and PR comments.
-- Ran `make`. The build, 269 tests, format, and ste-check passed.
-- Reproduced P2-1: an out-of-range session number crashes `handoff-rotate` with exit 134.
-- Added `docs/reviews/pr-5.md` with the revision-specific review.
-
-### The state of the build
-
-- The reviewed work head is `b5993f4a8eed3353208619a50a1d6448d9434dfd`. All four hosted checks pass at this head.
-- The review record and this handoff entry await one metadata commit and push to `feat/pr-4-doc-gate-rotation`.
-
-### What is in flight
-
-- P2-1 needs a contextual range check and a regression test.
-- The PR needs a new review round after the correction.
-
-### Traps and gotchas
-
-- `HandoffRotateRules.Parse` uses `int.Parse` for a session number. An out-of-range value bypasses the command fault handler.
-
-### The questions that block progress
-
-- OQ-16 still holds the gitar plan under D-7. It does not block this review.
-
-### The next concrete action
-
-- Correct P2-1, add its regression test, and run the focused command test.

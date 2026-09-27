@@ -2,6 +2,40 @@
 
 This file holds the entries that the rotation moves out of `docs/session-handoff.md`, newest first.
 
+## Session 13: 2026-09-27, Codex
+
+Author: Codex
+Session: reviewer PR-5, round 1. Repository: iron-absolution. Branch: `review/pr-5`. PR: #5. Role: reviewer. Base: `6acc6a85798182781a6fc1193c6e37d90dd03020`.
+
+### What this session did, and why
+
+- Reviewed PR #5 against its exit tests, guardrails, decisions, and PR comments.
+- Ran `make`. The build, 269 tests, format, and ste-check passed.
+- Reproduced P2-1: an out-of-range session number crashes `handoff-rotate` with exit 134.
+- Added `docs/reviews/pr-5.md` with the revision-specific review.
+
+### The state of the build
+
+- The reviewed work head is `b5993f4a8eed3353208619a50a1d6448d9434dfd`. All four hosted checks pass at this head.
+- The review record and this handoff entry await one metadata commit and push to `feat/pr-4-doc-gate-rotation`.
+
+### What is in flight
+
+- P2-1 needs a contextual range check and a regression test.
+- The PR needs a new review round after the correction.
+
+### Traps and gotchas
+
+- `HandoffRotateRules.Parse` uses `int.Parse` for a session number. An out-of-range value bypasses the command fault handler.
+
+### The questions that block progress
+
+- OQ-16 still holds the gitar plan under D-7. It does not block this review.
+
+### The next concrete action
+
+- Correct P2-1, add its regression test, and run the focused command test.
+
 ## Session 12: 2026-09-27, Claude Code
 
 Author: Claude Code
