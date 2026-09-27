@@ -100,3 +100,12 @@ Find a question with `grep -n -E '^[0-9]+\. \*\*OQ-(1|18)\.' docs/questions.md`.
     - Option A: add gamepad support before the release candidate, with aim assist and dead zones.
     - Option B: keyboard and mouse only for the first level.
     - Recommendation: decide before phase 8. Set up Enhanced Input in phase 3 so that a gamepad is a small addition.
+22. **OQ-22. The Windows toolchain pin.** Which Visual Studio version and which MSVC toolset does the Windows PC use with Unreal Engine 5.8? Raised 2026-09-27 (PR-7). Blocks PR-8. Resolved 2026-09-27: D-74.
+    - Option A: pin the versions that the Windows requirements page of Epic gives for 5.8. PR-8 checks that page with a date.
+    - Option B: record the versions that the Windows PC has now, and pin them.
+    - Recommendation: option A. The Mac pin follows the page of Epic in the same way (D-28).
+23. **OQ-23. The scene of the first M-9 run.** Which scene gives the first value of M-9 on the Mac? Raised 2026-09-27 (PR-7). Blocks PR-11. Resolved 2026-09-27: D-75.
+    - Option A: the empty test map of PR-9. The value shows the fixed cost of the frame alone.
+    - Option B: a sample scene of Epic on the Mac, outside the repository. Its terms keep it out of the repository (D-24).
+    - Option C: a small original room of basic shapes in PR-11, with a set count of lights and meshes.
+    - Recommendation: option C. The room is original, the repository holds it, and each later run can use it again.

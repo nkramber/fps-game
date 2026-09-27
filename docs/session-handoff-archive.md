@@ -2,6 +2,43 @@
 
 This file holds the entries that the rotation moves out of `docs/session-handoff.md`, newest first.
 
+## Session 19: 2026-09-27, Claude Code
+
+Author: Claude Code
+Session: author PR-5, round 1. Repository: iron-absolution. Branch: `feat/pr-5-main-ruleset`. PR: #6. Role: author. Base: `f5e9514ebae89c1a5a6a189a8213f2b44f9d1bf5`.
+
+### What this session did, and why
+
+- The exit tests of PR-4 on a clean checkout of `main` passed: 272 tests, a clean format, and 0 findings. `make handoff-rotate` moved no entry and changed no file.
+- PR-5 ports `.github/rulesets/main.json`, `RulesetTests`, and `docs/runbooks/main-ruleset.md` from what-you-carry.
+- The owner answered four divergences of D-13: D-60 (admin bypass through a PR merge), D-61 (four required checks, a test in both directions), D-62 (the ruleset alone), and D-63 (the session applies the live ruleset before the merge).
+- The agent files, the PR template, and the merge procedure now forbid `gh pr merge --admin` (D-60).
+
+### The state of the build
+
+- `make` passes on the Mac: 287 tests, a clean format, and 0 findings of ste-check.
+- The remote head is the commit of this entry. The state is pending merge.
+- No live ruleset exists yet. `main` has no branch protection.
+
+### What is in flight
+
+- The review round 1 of `make codex-review PR=6`.
+- After an approval and green checks, the session applies the live ruleset from the PR head and runs the comparison of `docs/runbooks/main-ruleset.md` (exit test 2).
+
+### Traps and gotchas
+
+- The ruleset requires the four checks by name. A renamed or removed job blocks every merge until the live ruleset changes.
+- A required check that no workflow of `main` has yet can block the PR that adds it. PR-6 must plan the order of `review-gate`.
+
+### The questions that block progress
+
+- None. OQ-16 still holds gitar (D-7).
+
+### The next concrete action
+
+- Run `make codex-review PR=6` after the checks are green.
+- For a fresh session: the session number check of `ste-check` reads a heading number with `int.Parse`, so a number too large for an int stops the check with no context (T-2).
+
 ## Session 18: 2026-09-27, Claude Code
 
 Author: Claude Code

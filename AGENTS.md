@@ -138,7 +138,7 @@ The provider that did not write the PR reviews it (D-6). Codex reviews a PR that
 
 After each push of a Claude Code PR, the author runs `make codex-review PR=<n>` from a clean checkout of the PR branch (D-14). Load the one-pr-one-session skill for the review loop. The reviewer follows the pr-review skill, and the author answers with the review-response skill (D-46).
 
-The command refuses a PR that changes documents alone (D-49). Such a PR merges through the `review-override` label, and only the owner adds that label (D-35, D-66). The `review-gate` check then reads the label in place of a review record (D-65).
+The command refuses a PR that changes documents alone (D-49). Such a PR merges through the `review-override` label. The author session adds that label on the standing instruction of the owner (D-35, D-66, D-76). The `review-gate` check then reads the label in place of a review record (D-65).
 
 ## Automated review pass
 
@@ -164,7 +164,7 @@ A PR merges only when every line holds:
 - [ ] No silent failure. Every error carries context (T-2).
 - [ ] The `ste-check` job is green.
 - [ ] The `doc-gate` job is green (D-56, D-57).
-- [ ] The other provider reviewed the PR, and its review record says `Ready for owner merge` for the effective head (T-4, D-14). On a PR with no code, the owner label can replace the record (D-35, D-66).
+- [ ] The other provider reviewed the PR, and its review record says `Ready for owner merge` for the effective head (T-4, D-14). On a PR with no code, the `review-override` label can replace the record (D-35, D-66, D-76).
 - [ ] The `review-gate` check is green (D-64).
 - [ ] No review thread stays open, and the ruleset of `main` holds (D-60 to D-62).
 - [ ] The owner confirmed the merge after the merge summary.

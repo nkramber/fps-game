@@ -90,7 +90,7 @@ Before `make codex-review`, confirm items 1 to 5, 7, and 8. Before the merge, co
 3. The design doc and the focused roadmap agree with the PR.
 4. The documents matrix is complete, and the `doc-gate` job is green.
 5. The handoff entry names this branch and the state "pending merge".
-6. The review record approves the effective head, and `review-gate` is green (T-4, D-49, D-64). On a PR with no code, the owner label replaces the record (D-35, D-66).
+6. The review record approves the effective head, and `review-gate` is green (T-4, D-49, D-64). On a PR with no code, the `review-override` label replaces the record (D-35, D-66, D-76).
 7. Each other line of the PR gate in `AGENTS.md` holds.
 8. No required work waits for a second PR.
 

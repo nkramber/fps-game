@@ -62,3 +62,11 @@ Each PR entry lists:
 - its review focus.
 - the questions it needs answered before it starts.
 - the area roadmap file that it cites, when one exists.
+
+A phase file follows the phase files of the-thing-below (D-70):
+
+- Each entry of section 7 has a numbered heading, for example `### 7.2 PR-9: the project scaffold`. The reference check reads the PR id from that heading.
+- The fields are bold labels: **Scope.**, **Out of scope.**, **Exit tests.**, **Review focus.**, **Questions.**, and **State.** The **State.** field holds a status mark of the legend.
+- An owner step and a measurement get an entry with no PR id.
+- The last entry of section 7 is the gate of the phase, with one numbered line for each condition.
+- Section 8 gives the order inside the phase. Section 9 gives a table of the questions of the phase.

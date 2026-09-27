@@ -29,7 +29,7 @@ Make exits 2 for a failed target, and it prints the exit code of the command as 
 
 The record names the effective head, which skips each documents commit (D-49). A documents commit after an approving round keeps the approval, so no new round is due. A round fails when a commit outside the metadata set arrives during the round, a documents commit included (D-14).
 
-A PR with no commit outside the documents set has no effective head, and the command refuses it (D-49). That PR merges through the `review-override` label alone, and only the owner adds the label (D-35, D-66).
+A PR with no commit outside the documents set has no effective head, and the command refuses it (D-49). That PR merges through the `review-override` label alone. The author session adds the label after the last commit outside the metadata set (D-35, D-66, D-76).
 
 ## Procedure: the three-strike stop
 
@@ -59,7 +59,7 @@ A P0, P1, or P2 finding that is open in three review rounds stops the fix loop w
 13. When a job ends with a runner infrastructure annotation, run the failed jobs again, then go to step 11.
 14. When the state is `MERGED`, or the owner says `Merged PR #N`, load `merge-prompt.md` and write the prompt.
 
-A PR with the `review-override` label merges the same way, with the owner confirmation (D-35). It needs no review record. Only the owner adds the label. A commit outside the metadata set after the label needs the label again (D-65).
+A PR with the `review-override` label merges the same way, with the owner confirmation (D-35). It needs no review record. The author session adds the label on the standing instruction of the owner (D-76). A commit outside the metadata set after the label needs the label again (D-65).
 
 The ruleset of `main` in `.github/rulesets/main.json` is the machine gate. It requires the checks, `review-gate` included, and resolved conversations, and it permits squash merges alone (D-61, D-64). When every check is green and the state stays `OPEN`, read `gh pr view <n> --json mergeStateStatus,autoMergeRequest`. An unresolved thread or a stale check blocks the merge.
 

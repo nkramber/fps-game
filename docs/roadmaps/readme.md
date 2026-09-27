@@ -13,7 +13,7 @@ This folder expands the roadmap of `docs/design.md`. It never replaces it. The g
 
 ## When a focused roadmap starts
 
-No focused roadmap exists yet. A focused roadmap starts only after the owner accepts the high-level roadmap (D-11, OQ-18). Phase 0 has no phase file, because section 7 of `docs/design.md` holds its PR entries.
+A focused roadmap starts only after the owner accepts the high-level roadmap (D-11, OQ-18). Phase 0 has no phase file, because section 7 of `docs/design.md` holds its PR entries. PR-7 adds the first phase file, for phase 1.
 
 Write a phase file just before its phase starts. Do not write one more than one phase ahead, because such a plan goes stale. A new phase file is one docs PR.
 
@@ -35,7 +35,7 @@ Add an area file only when one area spans more than one phase. Two links carry a
 
 | File | Phase | Gate |
 |---|---|---|
-| none yet | | |
+| `docs/roadmaps/phase-1-engine-proof.md` | Phase 1: engine and toolchain proof | A clean clone builds, packages, and runs one headless test on macOS and on Windows. M-1, M-2, and a first M-9 have values. |
 
 Name a phase file `phase-<n>-<slug>.md`, for example phase-1-engine-proof.md. Name an area file area-<slug>.md.
 
@@ -49,4 +49,4 @@ Name a phase file `phase-<n>-<slug>.md`, for example phase-1-engine-proof.md. Na
 
 Each file here keeps the status header and the sections 1, 5, 7, 8, and 9 of the design doc template. The design-doc-style skill holds that template. Load it before you write or edit a file here.
 
-A PR entry in a phase file uses a global PR-# id that continues section 8 of `docs/design.md`. Each entry gives the scope, what is out of scope, the exit tests, the review focus, the questions, and the area file that it cites.
+A PR entry in a phase file uses a global PR-# id that continues section 8 of `docs/design.md`. Each entry gives the scope, what is out of scope, the exit tests, the review focus, the questions, and the area file that it cites. A phase file follows the phase files of the-thing-below (D-70).
