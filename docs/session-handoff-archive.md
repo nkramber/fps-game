@@ -2,6 +2,39 @@
 
 This file holds the entries that the rotation moves out of `docs/session-handoff.md`, newest first.
 
+## Session 11: 2026-09-27, Claude Code
+
+Author: Claude Code
+Session: author PR-3, merge. Repository: iron-absolution. Branch: `feat/pr-3-codex-review`. PR: #4. Role: author. Base: `e97da5a5238807c29c7a3bcdc5d4184dfb97f1b4`.
+
+### What this session did, and why
+
+- Review round 3 approved the effective head `2551eb3` with the verdict `Ready for owner merge`. `make codex-review` gave the exit code 0.
+- The three rounds used the exit codes 10, 10, and 0. The command pushed and judged each record, then removed the worktree and the branch.
+- The session moved session 1 to `docs/session-handoff-archive.md` by hand, to keep ten entries. PR-4 adds the rotation command.
+
+### The state of the build
+
+- The effective head is `2551eb3`. `make` passes on the Mac: 232 tests, a clean format, and 0 findings of ste-check.
+- This entry commit is the remote head. The state is pending merge.
+
+### What is in flight
+
+- The owner confirms the squash merge of PR #4.
+
+### Traps and gotchas
+
+- Each review round adds a Codex entry. Rotate by hand until PR-4 merges.
+- The first line of `docs/session-handoff.md` is the newest entry. The file has no title.
+
+### The questions that block progress
+
+- None blocks PR-3. OQ-16 still holds gitar (D-7).
+
+### The next concrete action
+
+- After the merge, write the transitional prompt of PR-4.
+
 ## Session 10: 2026-09-27, Codex
 
 Author: Codex
