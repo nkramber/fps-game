@@ -22,7 +22,7 @@ Session: author PR-6, round 2. Repository: iron-absolution. Branch: `feat/pr-6-r
 
 ### Traps and gotchas
 
-- The deferral rule of `doc-gate` reads the PR description too. Do not write "update" near "after the merge" there.
+- The deferral rule of `doc-gate` reads the PR description and this entry. Its regular expressions match a document verb close to the words that name the time of the merge.
 - The label `review-override` does not exist yet, and auto-merge is off. Both are owner steps of `docs/runbooks/main-ruleset.md`.
 
 ### The questions that block progress
