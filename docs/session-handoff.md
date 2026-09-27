@@ -1,3 +1,247 @@
+## Session 11: 2026-09-27, Claude Code
+
+Author: Claude Code
+Session: author PR-3, merge. Repository: iron-absolution. Branch: `feat/pr-3-codex-review`. PR: #4. Role: author. Base: `e97da5a5238807c29c7a3bcdc5d4184dfb97f1b4`.
+
+### What this session did, and why
+
+- Review round 3 approved the effective head `2551eb3` with the verdict `Ready for owner merge`. `make codex-review` gave the exit code 0.
+- The three rounds used the exit codes 10, 10, and 0. The command pushed and judged each record, then removed the worktree and the branch.
+- The session moved session 1 to `docs/session-handoff-archive.md` by hand, to keep ten entries. PR-4 adds the rotation command.
+
+### The state of the build
+
+- The effective head is `2551eb3`. `make` passes on the Mac: 232 tests, a clean format, and 0 findings of ste-check.
+- This entry commit is the remote head. The state is pending merge.
+
+### What is in flight
+
+- The owner confirms the squash merge of PR #4.
+
+### Traps and gotchas
+
+- Each review round adds a Codex entry. Rotate by hand until PR-4 merges.
+- The first line of `docs/session-handoff.md` is the newest entry. The file has no title.
+
+### The questions that block progress
+
+- None blocks PR-3. OQ-16 still holds gitar (D-7).
+
+### The next concrete action
+
+- After the merge, write the transitional prompt of PR-4.
+
+## Session 10: 2026-09-27, Codex
+
+Author: Codex
+Session: reviewer PR-3, round 3. Repository: iron-absolution. Branch: `feat/pr-3-codex-review`. PR: #4. Role: reviewer. Base: `e97da5a5238807c29c7a3bcdc5d4184dfb97f1b4`.
+
+### What this session did, and why
+
+- The review checked the launcher correction and its regression tests again.
+- D-55 says the tools and review need no Windows run. P2-1 is fixed in `2551eb3`.
+- The review record now approves effective head `2551eb3`.
+
+### The state of the build
+
+- `make` passed on macOS: 232 tests, clean format, and 0 ste-check findings.
+- All three CI jobs passed at metadata tip `241375c`.
+- This metadata commit is the remote head.
+
+### What is in flight
+
+- The owner reads the review and gives the merge confirmation after the merge summary.
+
+### Traps and gotchas
+
+- Documents commits do not move the effective head (D-49).
+- OQ-16 does not block PR-3. D-7 keeps gitar out.
+
+### The questions that block progress
+
+- None.
+
+### The next concrete action
+
+- Give the owner the merge summary, then wait for the merge decision.
+
+## Session 9: 2026-09-27, Claude Code
+
+Author: Claude Code
+Session: author PR-3, round 3. Repository: iron-absolution. Branch: `feat/pr-3-codex-review`. PR: #4. Role: author. Base: `e97da5a5238807c29c7a3bcdc5d4184dfb97f1b4`.
+
+### What this session did, and why
+
+- Review round 2 gave `Blocked`: P2-1 stayed open, because no Windows run proved the launch fix.
+- The owner refuted that demand: all development work runs on the Mac (D-55). D-33 has a dated note of the scope.
+- G-12, `CLAUDE.md`, `AGENTS.md`, and the review standard of the pr-review skill now bind Windows to the game alone.
+- `docs/reviews/pr-4-response.md` gives the round 2 answer: no merit, D-55.
+
+### The state of the build
+
+- The effective head stays `2551eb3`, because this round changed documents alone. `make` passes on the Mac: 232 tests, a clean format, and 0 findings of ste-check.
+- This entry commit is the remote head.
+
+### What is in flight
+
+- Review round 3 runs when the checks of this head are green (D-54).
+
+### Traps and gotchas
+
+- P2-1 lists two heads. The effective head of round 3 is `2551eb3` again, so an open P2-1 keeps two heads and no three-strike stop follows.
+- Handoff rotation comes in PR-4. The file holds nine entries now, and the limit is ten.
+
+### The questions that block progress
+
+- None blocks PR-3.
+
+### The next concrete action
+
+- Read the verdict of round 3, then write the merge summary or answer the findings.
+
+## Session 8: 2026-09-27, Codex
+
+Author: Codex
+Session: reviewer PR-3, round 2. Repository: iron-absolution. Branch: `feat/pr-3-codex-review`. PR: #4. Role: reviewer. Base: `e97da5a5238807c29c7a3bcdc5d4184dfb97f1b4`.
+
+### What this session did, and why
+
+- The review checked the correction to P2-1 at effective head `2551eb3`.
+- The correction starts the npm entry script through `node`. The local regression tests pass.
+- P2-1 stays open because no Windows test log or end-to-end run is present (D-33).
+- The review record gives the verdict `Blocked` until the Windows evidence arrives.
+
+### The state of the build
+
+- The effective head is `2551eb31c274db277159c779a5e98b7bc67e4c51`.
+- `make` passes on macOS with 232 tests, clean format, and 0 ste-check findings.
+- All three CI jobs pass at metadata tip `5561e3f3f808117234dfc193d9365f33d8241427`.
+- This metadata commit publishes the review record and this entry.
+
+### What is in flight
+
+- The owner must run the launcher tests and the real review command on Windows.
+- PR #4 needs another Codex review after the Windows evidence arrives.
+
+### Traps and gotchas
+
+- CI runs on Ubuntu. It does not prove the Windows process launch.
+- Do not move the work head during a review round (D-14).
+
+### The questions that block progress
+
+- None. OQ-16 remains open but does not affect this review (D-7).
+
+### The next concrete action
+
+- The owner posts the Windows test and command results. Then start a new review round.
+
+## Session 7: 2026-09-27, Claude Code
+
+Author: Claude Code
+Session: author PR-3, round 2. Repository: iron-absolution. Branch: `feat/pr-3-codex-review`. PR: #4. Role: author. Base: `e97da5a5238807c29c7a3bcdc5d4184dfb97f1b4`.
+
+### What this session did, and why
+
+- The first real `make codex-review PR=4` ran to its end with the exit code 10. Codex pushed the record and its handoff entry as one commit, `8b40ff6`. Exit test 2 holds.
+- P2-1 had full merit: the CLI path of the Makefile does not exist on Windows. `2551eb3` starts `node` with the entry script `bin/codex.js` on each platform.
+- The owner set D-54: the author starts each review round with no question first.
+- The subject of the review commit named PR-4 in place of PR-3. The pr-review skill and the agent files now give an example with both numbers.
+
+### The state of the build
+
+- The effective head is `2551eb3`. `make` passes on the Mac: 232 tests, a clean format, and 0 findings of ste-check.
+- This entry commit is the remote head.
+
+### What is in flight
+
+- The second review round runs when the checks of this head are green (D-54).
+
+### Traps and gotchas
+
+- Commit no file outside the metadata set while a round runs. The round then fails (D-14).
+- A Windows run of the tests is open to the owner (D-33). CI runs on Ubuntu alone.
+
+### The questions that block progress
+
+- None blocks PR-3.
+
+### The next concrete action
+
+- Read the verdict of round 2, then answer it or write the merge summary.
+
+## Session 6: 2026-09-27, Codex
+
+Author: Codex
+Session: reviewer PR-3, round 1. Repository: iron-absolution. Branch: `feat/pr-3-codex-review`. PR: #4. Role: reviewer. Base: `e97da5a5238807c29c7a3bcdc5d4184dfb97f1b4`.
+
+### What this session did, and why
+
+- The session reviewed the full PR-3 diff against the roadmap, exit tests, decisions, questions, and review contracts.
+- The provider gate passed. Claude Code authored the change, and Codex reviewed it.
+- The record has finding P2-1. The Make target cannot launch the Windows Codex command shim.
+
+### The state of the build
+
+- The effective head is `b0596f5accb3c1e4d8ad5dc05ed668763c2447ed`.
+- `make` passed on macOS: 226 tests, clean format, and 0 findings of ste-check.
+- All three CI checks passed on the reviewed tip. The remote head is the published metadata commit on `origin/feat/pr-3-codex-review`.
+
+### What is in flight
+
+- P2-1 needs a platform-aware CLI path and launch test on Windows.
+- The real `make codex-review PR=4` run judges the review record after this metadata push.
+
+### Traps and gotchas
+
+- The CI workflow runs on Ubuntu only. It does not test the Windows process launch.
+- OQ-16 still holds the gitar plan. D-7 keeps gitar out of this PR.
+
+### The questions that block progress
+
+- None. The Windows defect has a concrete correction and regression test.
+
+### The next concrete action
+
+- The author answers P2-1, then reruns the Windows process-launch test and the review.
+
+## Session 5: 2026-09-27, Claude Code
+
+Author: Claude Code
+Session: author PR-3, round 1. Repository: iron-absolution. Branch: `feat/pr-3-codex-review`. PR: #4. Role: author. Base: `e97da5a5238807c29c7a3bcdc5d4184dfb97f1b4`.
+
+### What this session did, and why
+
+- The exit tests of PR-2 passed on `main`: `make hooks`, then `make` gave 100 tests, a clean format, and 0 findings.
+- The session ported the `codex-review` command of what-you-carry into `IronAbsolution.Tools/CodexReview/` (D-14). The gitar start check stays out (D-7).
+- A subagent of the session ported the pr-review, review-response, and one-pr-one-session skills (D-46). The session read and corrected the three SKILL.md files and the merge steps.
+- The owner answered eight divergences and one conflict: D-46 to D-53. D-53 corrects exit test 3 of PR-3.
+- The merge steps now give the two options of the owner: `Yes, squash-merge it` and `No, not yet`.
+
+### The state of the build
+
+- The effective head is `b0596f5`. `make` passes on the Mac: 226 tests, a clean format, and 0 findings of ste-check.
+- This entry commit is the remote head. The CI of PR #4 runs on it.
+
+### What is in flight
+
+- Exit test 2 needs a real run of `make codex-review PR=4`. It installs the newest Codex CLI with npm and uses the ChatGPT login of the owner.
+
+### Traps and gotchas
+
+- `make ste-check` reads tracked files alone. Run `git add` on a new document before the check.
+- The pre-commit hook refuses a commit on no branch, so the review worktree takes the branch `review/pr-<n>` (D-48).
+- The PR-1 and PR-2 entries of `docs/design.md` have no done mark. The PR-3 entry has one, as the one-pr-one-session skill asks.
+- The records of PR #2 and PR #3 use the old finding form `- Status:`. The new parser refuses that form, and those records stay as history.
+
+### The questions that block progress
+
+- None blocks PR-3.
+
+### The next concrete action
+
+- The owner confirms the first run of `make codex-review PR=4`. The session then answers the verdict with the review-response skill.
+
 ## Session 4: 2026-09-27, Claude Code
 
 Author: Claude Code
@@ -102,42 +346,3 @@ Session: reviewer PR-1, round 2. Repository: fps-game. Branch: `docs/pr-1-founda
 ### The next concrete action
 
 - The owner can review the four-part merge summary and decide whether to merge.
-
-## Session 1: 2026-09-27, Claude Code
-
-Author: Claude Code
-Session: author PR-1, round 1. Repository: fps-game. Branch: `docs/pr-1-foundation`. PR: #2. Role: author. Base: `bfb71cf`.
-
-### What this session did, and why
-
-- Studied the two role models, and re-checked the engine, Meshy, pipeline, and level research against primary sources (`docs/research/`).
-- Wrote the registers, the design doc with the high-level roadmap (sections 7 and 8), the agent files, the PR template, the review format, and a session runbook.
-- The owner made the role models paramount for all infrastructure (D-12), with a question for each divergence (D-13, D-14 to D-23). PR-1 moved to new commits, and GitHub PR #1 closed (D-23).
-- The owner then answered the open questions (D-24 to D-38): MIT license, Emberline, Unreal Engine 5.8, macOS and Windows budgets, and a level of 30 minutes or more. Replay value is not a primary goal. Unreal best practices govern engine work.
-- On the instruction of the owner, the session replaced `LICENSE` with MIT (D-24). It also discarded the local prototype: it reset the local `main` to `origin/main` and deleted the prototype files (D-25).
-
-### The state of the build
-
-- `origin/main` is `bfb71cf`. No CI, ruleset, or Unreal project exists. The repository setting for auto-merge is off.
-- The ste-check binary of the-thing-below, run by hand on a scratch copy, gives no finding that applies here. PR-2 ports the checker.
-
-### What is in flight
-
-- PR-1 needs a new Codex review, because the owner stopped the earlier one before this round. The prompt is in `AGENTS.md`. Then the owner merges.
-
-### Traps and gotchas
-
-- The ste-check of the-thing-below needs stubs of two of its skills, and its rules AGENTS 2 and DOCS 1 do not apply here. Run it on a scratch copy only.
-- Xcode 16.2 cannot build Unreal Engine 5.8. It needs Xcode 26.1.1, never 26.4 or later (D-28).
-- Unreal cannot build Windows packages on the Mac. The owner runs the Windows builds (D-33).
-- 60 fps at 4K output on the base M4 is a hard target (F-14). Measure M-9 early.
-- A harness reminder asks for co-author lines. T-6 wins (D-16).
-
-### The questions that block progress
-
-- None blocks PR-2. OQ-9, OQ-10, and OQ-12 wait for phase 2. OQ-16 waits for gitar. OQ-21 waits for phase 8.
-
-### The next concrete action
-
-- The owner starts the Codex review of PR-1 and merges it after a clean verdict.
-- After the merge, write the transitional prompt for PR-2: the Emberline.Tools project and ste-check.

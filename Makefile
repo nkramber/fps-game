@@ -3,7 +3,13 @@
 SOLUTION := IronAbsolution.slnx
 TOOLS_PROJECT := IronAbsolution.Tools/IronAbsolution.Tools.csproj
 
-.PHONY: verify where hooks build test format ste-check clean
+# The entry script of the Codex CLI of the cross-provider review. The codex-review target
+# installs the newest release first, and the command starts the script with `node` (D-47).
+# `npm root` gives the global package folder on macOS and on Windows. The `bin/codex` link of
+# macOS is absent on Windows, where npm writes a `codex.cmd` shim.
+CODEX ?= $(shell npm root --global)/@openai/codex/bin/codex.js
+
+.PHONY: verify where hooks build test format ste-check codex-review clean
 
 ## verify: every check that this machine can run.
 verify: build test format ste-check
@@ -27,6 +33,18 @@ format:
 # project itself, as the pre-commit hook does, so the target runs alone too.
 ste-check:
 	dotnet run --project $(TOOLS_PROJECT) -- ste-check --root .
+
+## codex-review: the cross-provider review of one PR through the Codex CLI (D-14, D-47).
+#
+# `PR=<n>` names the GitHub number of the PR. The target installs the newest CLI with npm, then
+# the command checks the start conditions, runs the review in a worktree, and reads the verdict
+# from the review record on origin. The command gives 0 for an approval, 10 for changes, 11 for
+# the three-strike stop, 3 for a refused start, and 1 for a fault. Make gives 2 for each code
+# other than 0, so read the line `codex-review: <outcome> (exit <code>)` of the output.
+codex-review:
+	@test -n "$(PR)" || { echo "codex-review: set PR=<number>, such as make codex-review PR=4 (T-2)." >&2; exit 1; }
+	npm install --global @openai/codex@latest
+	dotnet run --project $(TOOLS_PROJECT) -- codex-review --root . --pr $(PR) --codex "$(CODEX)"
 
 ## where: the branch, the tree, and the PR state.
 where:

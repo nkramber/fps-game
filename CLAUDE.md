@@ -119,7 +119,7 @@ The C# tools project `IronAbsolution.Tools` holds the commands of the repository
 - Unreal best practices govern each rule and each implementation of the engine work, the game code, and the content (D-34). A tenet or a role-model rule gives way to them in that scope.
 - Follow the Epic C++ coding standard: https://dev.epicgames.com/documentation/unreal-engine/epic-cplusplus-coding-standard-for-unreal-engine.
 - C++ holds the rules. Data assets and Blueprint subclasses hold tuning and content (D-29).
-- Each change keeps macOS and Windows working and inside the budgets of D-32. The owner runs the Windows builds and posts the logs (D-33).
+- Each change keeps the game working on macOS and Windows and inside the budgets of D-32. The owner runs the Windows builds and posts the logs (D-33). The development tools run on the Mac alone (D-55).
 - Game rules and engine technology of the role models do not transfer (D-12).
 
 ## Git rules
@@ -135,15 +135,17 @@ The C# tools project `IronAbsolution.Tools` holds the commands of the repository
 
 The provider that did not write the PR reviews it (D-6). Codex reviews a PR that Claude Code wrote, and Claude Code reviews a PR that Codex wrote.
 
-PR-3 adds `make codex-review PR=<n>` (D-14). Until PR-3 merges, the owner starts Codex by hand in a clean checkout of the PR head, with this prompt:
+After each push of a Claude Code PR, the author runs `make codex-review PR=<n>` from a clean checkout of the PR branch (D-14). Load the one-pr-one-session skill for the review loop. The reviewer follows the pr-review skill, and the author answers with the review-response skill (D-46).
+
+The command refuses a PR that changes documents alone (D-49). Until PR-6, the owner starts Codex by hand for that PR, in a clean checkout of the PR head, with this prompt:
 
 ```
 Review PR #<n> of nkramber/iron-absolution as the cross-provider reviewer.
-Read AGENTS.md, the newest handoff entry, and docs/reviews/readme.md.
+Read AGENTS.md, the newest handoff entry, and .claude/skills/pr-review/SKILL.md.
 Confirm that the Author field of the handoff names the other provider. If not, stop with the verdict Blocked.
 Review the full diff against the roadmap entry, its exit tests, the tenets, and the registers.
-Write docs/reviews/pr-<n>.md in the format of docs/reviews/readme.md, for the full head sha.
-Commit it with the subject "docs: review record of #<n> (PR-N)", push it, and stop. Do not merge.
+Write docs/reviews/pr-<n>.md in the format of the pr-review skill, for the full head sha.
+Commit it with the subject "docs: review record of #<n> (PR-<roadmap id>)", push it, and stop. Do not merge.
 ```
 
 ## Automated review pass
@@ -157,6 +159,7 @@ The Makefile is the entry point (D-41). Run each target from the checkout root.
 - `make`: build, test, format, and ste-check. Run it before each push.
 - `make ste-check`: the STE checker, the reference check, the session number check, and the size check (D-17).
 - `make hooks`: install the pre-commit hook in this checkout, one time (D-43).
+- `make codex-review PR=<n>`: the cross-provider review of one PR. The exit codes are 0 approve, 10 changes, 11 three-strike stop, 3 refused start, and 1 fault (D-14).
 
 The CI of each PR runs the `ste-check`, `build, test, and format`, and `coverage report` jobs (D-42, D-45).
 

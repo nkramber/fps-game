@@ -152,6 +152,11 @@ Process terms:
 | Documents section | the part of the PR description with one line for each document category (D-22) | doc checklist |
 | focused roadmap | one file under `docs/roadmaps/` with PR entries and exit tests | low-level plan |
 | exit test | one numbered check of a roadmap entry | acceptance test, when the text means this |
+| documents set | the paths that do not move the effective head: `docs/`, `.claude/skills/`, and the root documents (D-49) | skip set, docs paths |
+| metadata set | `docs/reviews/` and the two handoff files (D-14) | bookkeeping files |
+| metadata commit | a commit that changes the metadata set alone | review commit, when the text means this |
+| work head | the newest commit that changes a path outside the metadata set (D-14) | code head |
+| three-strike stop | the stop of the fix loop when a P0 to P2 finding is open in three rounds (D-14) | strike out, three strikes |
 
 ## The checker
 

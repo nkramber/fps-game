@@ -8,6 +8,7 @@ Status: the owner accepts it on the condition of D-27. Written in ASD-STE100 (D-
 - 2026-09-27 correction pass: the owner set D-12 to D-23. This doc moved to the template of the role models, and GitHub PR #1 closed (D-23).
 - 2026-09-27 second pass: the owner answered the open questions (D-24 to D-38). The license is now MIT (D-24).
 - 2026-09-27 third pass: Steam lists a game with the name Emberline. The project name is now Iron Absolution (D-39).
+- 2026-09-27 fourth pass: the owner resolved the divergences of the PR-3 port (D-46 to D-53). D-53 corrects exit test 3 of PR-3. D-55 scopes G-12 to the game.
 
 ## 1. Thesis
 
@@ -132,7 +133,7 @@ The tenets are the constitution. When a tenet conflicts with speed or convenienc
 - **G-9.** No agent edits `LICENSE` without an instruction of the owner (D-10, D-24).
 - **G-10.** Infrastructure follows the role models. When the two differ, ask the owner (D-12, D-13).
 - **G-11.** Unreal best practices govern the engine work, the game code, and the content (D-34).
-- **G-12.** Each change keeps both platforms working and inside their budgets (D-32).
+- **G-12.** Each change keeps both platforms of the game working and inside their budgets (D-32). The development tools run on the Mac alone (D-55).
 
 ## 7. Roadmap
 
@@ -188,11 +189,13 @@ D-40 to D-45 set the stack, the Makefile, the CI layout, the pre-commit hook, th
 
 #### PR-3: Automatic Codex review
 
-PR-3 ports `make codex-review PR=<n>` from what-you-carry (D-14). It ports the pr-review, review-response, and one-pr-one-session skills and the review record format. The gitar start check stays out until OQ-16 (D-7).
+PR-3 ports `make codex-review PR=<n>` from what-you-carry (D-14). It ports the pr-review, review-response, and one-pr-one-session skills and the review record format (D-46). The gitar start check stays out until OQ-16 (D-7). D-47 to D-53 resolve the divergences of the port. They set the install of the CLI, the worktree branch, the effective head, and the time limit. They also set the transcripts, the thread check, and the API key.
 
-- Exit tests: 1. The command tests pass. 2. A real run on a PR pushes a review record and a handoff entry as one commit. 3. A run with an API key in the environment refuses to start.
+- Exit tests: 1. The command tests pass. 2. A real run on a PR pushes a review record and a handoff entry as one commit. 3. A run with an API-key login alone refuses to start with the exit code 3, and a key in the environment never reaches Codex (D-53).
+- Correction of 2026-09-27: exit test 3 said "A run with an API key in the environment refuses to start." The owner chose the behavior of what-you-carry instead (D-53).
 - Review focus: the provider gate, the exit codes, and the three-strike stop.
 - Gate: exit tests 1 to 3 pass.
+- Status: ✅ done in PR #4.
 
 > *In plain English:* After each push, the author runs one command. Codex then reviews the PR and writes its verdict into the repository.
 
