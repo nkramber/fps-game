@@ -1,3 +1,36 @@
+## Session 43: 2026-09-28, Codex
+
+Author: Codex
+Session: reviewer PR-13, round 1. Repository: iron-absolution. Branch: `feat/pr-13-windows-dev-tools`. PR: #13. Role: reviewer. Base: `2509d791d1769c7602fc802eb78158fd0c28dff6`.
+
+### What this session did, and why
+
+- Reviewed PR #13 at effective head `989a50592a924761358d775ed94a5f43918e1bd5` under D-14.
+- The provider gate passed. No blocking defect was found.
+- Added the review record and this entry as one metadata commit for `origin/feat/pr-13-windows-dev-tools`.
+
+### The state of the build
+
+- `run.ps1 verify` passed on Windows: build, 540 tests, no skips, format, and ste-check with 0 findings.
+- The remote head will be the metadata commit of this entry. The review gate must rerun after the push.
+
+### What is in flight
+
+- The owner reads the review, confirms the merge, then merges PR-13.
+
+### Traps and gotchas
+
+- The first `review-gate` run failed because the review record was absent. The other four required checks passed.
+- PR-14 removes the remaining Mac engine commands and paths (D-94, D-97).
+
+### The questions that block progress
+
+- None. OQ-16 still holds the gitar pass (D-7).
+
+### The next concrete action
+
+- After the merge, write the transitional prompt for PR-14: the engine commands on Windows alone, and the removal of each Mac part.
+
 ## Session 42: 2026-09-28, Claude Code
 
 Author: Claude Code
@@ -312,37 +345,3 @@ Session: author PR-8, merge. Repository: iron-absolution. Branch: `feat/pr-8-eng
 ### The next concrete action
 
 - After the merge, write the transitional prompt of PR-9. Work from the clone on the `IronAbsolution` volume (D-81). Set the cache path at the first editor start (D-83).
-
-## Session 33: 2026-09-27, Codex
-
-Author: Codex
-Session: reviewer PR-8, round 2. Repository: iron-absolution. Branch: `feat/pr-8-engine-toolchain`. PR: #9. Role: reviewer. Base: `2133abdbd714b3ba2dddf916adc1aef2b693a120`.
-
-### What this session did, and why
-
-- Reviewed the author response and the changes since the first review.
-- Verified both findings as fixed in `bc930a9`. The script tests cover malformed and absent engine version files. The PR-9 exit tests use unique numbers 1 to 11.
-- Updated `docs/reviews/pr-9.md` for effective head `bc930a946d214c805ac5eefc77a31d4599fc5625`.
-
-### The state of the build
-
-- `make` passed with portable PowerShell: 405 tests, no skips, clean format, and 0 findings of ste-check.
-- The remote head is the metadata commit of this entry. PR #9 is pending merge. The fresh `review-gate` result needs verification.
-
-### What is in flight
-
-- Read `gh pr checks 9` after the metadata push. Confirm that `review-gate` passes for this record.
-- The owner confirms the squash merge after the merge summary.
-
-### Traps and gotchas
-
-- The owner posted the Windows pin results in the PR comment. The Windows run remains owner-reported evidence.
-- The cache-path exit test belongs to PR-9 (D-83). OQ-16 keeps gitar outside this review (D-7).
-
-### The questions that block progress
-
-- None. OQ-16 still holds gitar (D-7).
-
-### The next concrete action
-
-- Verify the published checks, then give the owner the merge summary if all required checks pass.
