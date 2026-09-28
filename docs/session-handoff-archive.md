@@ -2,6 +2,41 @@
 
 This file holds the entries that the rotation moves out of `docs/session-handoff.md`, newest first.
 
+## Session 20: 2026-09-27, Codex
+
+Author: Codex
+Session: reviewer PR-5, round 1. Repository: iron-absolution. Branch: `feat/pr-5-main-ruleset`. PR: #6. Role: reviewer. Base: `f5e9514ebae89c1a5a6a189a8213f2b44f9d1bf5`.
+
+### What this session did, and why
+
+- Reviewed the ruleset, its tests, the setup runbook, and the related documents.
+- Found that the tests allow one of the four required checks and its matching job to disappear together.
+- Wrote `docs/reviews/pr-6.md` with verdict `Changes required` for effective head `2d0f013`.
+
+### The state of the build
+
+- `make` passes on the Mac: 287 tests, a clean format, and 0 findings of ste-check.
+- The four hosted checks pass on PR head `2d0f013`.
+- The pushed metadata commit will be the remote head. The PR work head remains `2d0f013`.
+
+### What is in flight
+
+- P2-1 needs a test that fixes the four check names of D-61.
+- The live ruleset does not exist yet. D-63 assigns its setup and comparison to the author session after review approval and before merge.
+
+### Traps and gotchas
+
+- Ruleset tests currently derive their expected checks from the ruleset file and workflows.
+- OQ-16 keeps the gitar pass out of this PR under D-7.
+
+### The questions that block progress
+
+- None. OQ-16 still holds the gitar pass.
+
+### The next concrete action
+
+- The author fixes P2-1, runs its regression check, and starts the next review round.
+
 ## Session 19: 2026-09-27, Claude Code
 
 Author: Claude Code

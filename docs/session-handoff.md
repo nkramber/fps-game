@@ -1,3 +1,41 @@
+## Session 30: 2026-09-27, Claude Code
+
+Author: Claude Code
+Session: author PR-8, round 1. Repository: iron-absolution. Branch: `feat/pr-8-engine-toolchain`. PR: #9. Role: author. Base: `2133abdbd714b3ba2dddf916adc1aef2b693a120`.
+
+### What this session did, and why
+
+- Added `toolchain-check` for the Mac (`make toolchain-check`) and `scripts/toolchain-check.ps1` for the Windows PC (D-28, D-72, D-74). Each line names the pin, the expected value, and the found value (T-2).
+- Added `docs/runbooks/engine-setup.md` and the `## Evidence` section of the PR template (D-80).
+- The label text of `review-gate`, `make codex-review`, their tests, and the template follows D-76. The session changed the live label on the instruction of the owner (D-77, D-82).
+- The owner answered six questions: D-78 to D-83. The owner installed during PR-8 (D-78). The SSD is case-sensitive, so a new volume `IronAbsolution` holds the engine, Xcode, the cache, and a clone (F-21, D-81).
+- Exit test 1 passed on the Mac: 3 of 3 pins. Exit test 4 passed on the Windows PC: 5 of 5 pins. The Windows run first failed a good toolset, because the script read the folder name (F-22). The script now reads `cl.exe`.
+
+### The state of the build
+
+- `make` passes on the Mac: 398 tests, a clean format, and 0 findings of ste-check.
+- The remote head is the commit of this entry. The state is pending merge.
+
+### What is in flight
+
+- The Codex review of PR #9 runs after the push (D-14).
+- The owner confirms the squash merge after the merge summary.
+
+### Traps and gotchas
+
+- The launcher picker lists `5.8.0`, and it installs the newest hotfix. It also upgrades the hotfix without a question (D-28).
+- On an external volume, `xip` can leave `Xcode.app` in a folder with a UUID name.
+- VS 2026 18.6 and later default to MSVC 14.51. Unreal 5.8 prefers 14.50 and bans a `cl.exe` before 14.50.35723 (`Windows_SDK.json` of the engine).
+- The Zen cache goes to the internal disk until the owner sets the editor setting in PR-9 (D-83).
+
+### The questions that block progress
+
+- None. OQ-16 still holds gitar (D-7).
+
+### The next concrete action
+
+- After the merge, write the transitional prompt of PR-9. Work from the clone `/Volumes/IronAbsolution/iron-absolution` (D-81). The first action of PR-9 is exit test 8 setup: the cache path at the first editor start (D-83).
+
 ## Session 29: 2026-09-27, Claude Code
 
 Author: Claude Code
@@ -319,38 +357,3 @@ Session: author PR-5, round 2. Repository: iron-absolution. Branch: `feat/pr-5-m
 
 - Run `make codex-review PR=6` after the checks are green.
 - For a fresh session: the session number check of `ste-check` reads a heading number with `int.Parse`, so a number too large for an int stops the check with no context (T-2).
-
-## Session 20: 2026-09-27, Codex
-
-Author: Codex
-Session: reviewer PR-5, round 1. Repository: iron-absolution. Branch: `feat/pr-5-main-ruleset`. PR: #6. Role: reviewer. Base: `f5e9514ebae89c1a5a6a189a8213f2b44f9d1bf5`.
-
-### What this session did, and why
-
-- Reviewed the ruleset, its tests, the setup runbook, and the related documents.
-- Found that the tests allow one of the four required checks and its matching job to disappear together.
-- Wrote `docs/reviews/pr-6.md` with verdict `Changes required` for effective head `2d0f013`.
-
-### The state of the build
-
-- `make` passes on the Mac: 287 tests, a clean format, and 0 findings of ste-check.
-- The four hosted checks pass on PR head `2d0f013`.
-- The pushed metadata commit will be the remote head. The PR work head remains `2d0f013`.
-
-### What is in flight
-
-- P2-1 needs a test that fixes the four check names of D-61.
-- The live ruleset does not exist yet. D-63 assigns its setup and comparison to the author session after review approval and before merge.
-
-### Traps and gotchas
-
-- Ruleset tests currently derive their expected checks from the ruleset file and workflows.
-- OQ-16 keeps the gitar pass out of this PR under D-7.
-
-### The questions that block progress
-
-- None. OQ-16 still holds the gitar pass.
-
-### The next concrete action
-
-- The author fixes P2-1, runs its regression check, and starts the next review round.

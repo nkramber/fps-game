@@ -34,6 +34,7 @@ The register in section 5 of `docs/design.md` holds every finding. These rows bi
 | F-19 | Section 8 of the design doc put the engine install before its runbook | Section 8 below: the install comes during PR-8, from its runbook (D-69, D-78) |
 | F-20 | The text of the review commands says that the owner adds the label | PR-8: the text follows D-76 (D-77, D-82) |
 | F-21 | The project SSD is case-sensitive, and Unreal Engine does not start from it | PR-8: the runbook adds a case-insensitive volume (D-81) |
+| F-22 | The name of an MSVC folder does not give the version of its compiler | PR-8: the Windows check reads `cl.exe` (D-74) |
 
 ## 7. Roadmap
 
@@ -96,7 +97,7 @@ Owner, during PR-8 (D-78). No PR.
 
 **Questions.** None.
 
-**State.** 🔧 planned. On 2026-09-27 the Mac had no engine, no Xcode app, and no Git LFS (F-3).
+**State.** ✅ done on 2026-09-27 on both machines. `make toolchain-check` passed on the Mac, and the script passed on the Windows PC (D-78). Before the install, the Mac had no engine, no Xcode app, and no Git LFS (F-3).
 
 > *In plain English:* The owner installs the engine and its tools on both computers. The steps come from the runbook, so the install proves that the runbook is correct.
 

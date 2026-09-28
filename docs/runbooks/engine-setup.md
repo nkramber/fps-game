@@ -189,4 +189,5 @@ The owner runs each step on the Windows PC and posts the output in the PR (D-33)
 
 - On an external volume, `xip` can leave `Xcode.app` in a temporary folder with a UUID name. Find the app with `find`, and do not expect `Xcode.app` in the current folder.
 - `xcodebuild` fails with "requires Xcode" when the active folder is the Command Line Tools. Select the app with `xcode-select -s`.
+- The name of an MSVC toolset folder does not change after a servicing update. The folder 14.50.35717 can hold `cl.exe` 14.50.35739. The check reads `cl.exe`, as UnrealBuildTool does (F-22).
 - A program from the Dock or the Finder does not read `~/.zshrc`. The check and the Makefile targets run from the shell, so they read the variable.
