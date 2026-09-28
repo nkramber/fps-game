@@ -1,3 +1,34 @@
+## Session 34: 2026-09-27, Claude Code
+
+Author: Claude Code
+Session: author PR-8, merge. Repository: iron-absolution. Branch: `feat/pr-8-engine-toolchain`. PR: #9. Role: author. Base: `2133abdbd714b3ba2dddf916adc1aef2b693a120`.
+
+### What this session did, and why
+
+- Round 2 of the review gave `Ready for owner merge` for the effective head `bc930a946d214c805ac5eefc77a31d4599fc5625`, with no open finding.
+- The five required checks are green on `743e61d`, `review-gate` included. No review thread is open.
+
+### The state of the build
+
+- `make` passes on the Mac: 405 tests, with 7 skipped where PowerShell is absent. CI ran 405 of 405 with none skipped.
+- The remote head is the commit of this entry. The state is pending merge.
+
+### What is in flight
+
+- The owner confirms the squash merge after the merge summary. Then auto-merge runs (D-67).
+
+### Traps and gotchas
+
+- This entry is a metadata commit, so the approval of `bc930a9` stands (D-14).
+
+### The questions that block progress
+
+- None. OQ-16 still holds gitar (D-7).
+
+### The next concrete action
+
+- After the merge, write the transitional prompt of PR-9. Work from the clone on the `IronAbsolution` volume (D-81). Set the cache path at the first editor start (D-83).
+
 ## Session 33: 2026-09-27, Codex
 
 Author: Codex
@@ -319,41 +350,3 @@ Session: reviewer PR-6, round 1. Repository: iron-absolution. Branch: `feat/pr-6
 ### The next concrete action
 
 - The author corrects P2-1 and adds a regression test for a backdated document commit.
-
-## Session 24: 2026-09-27, Claude Code
-
-Author: Claude Code
-Session: author PR-6, round 1. Repository: iron-absolution. Branch: `feat/pr-6-review-gate`. PR: #7. Role: author. Base: `5871f2c870d5eb110eccbadd67c5f633c5619155`.
-
-### What this session did, and why
-
-- The exit tests of PR-5 passed on `main` first: `make` gave 288 tests, a clean format, and 0 findings. The comparison of the live ruleset gave an empty diff.
-- The owner answered four divergences of the port (D-64 to D-67). The job is the check, with no mode file. The label rules of what-you-carry apply. A PR of documents alone merges through the label alone. The live ruleset takes `review-gate` after the merge.
-- The `review-gate` command reads the record at the PR head through git, and the label facts from a JSON file. It reuses `ReviewRecord`, `ReviewHeads`, and `GitRepository`.
-- The workflow runs on `pull_request_target` from the base, with read rights alone, and fetches the head as data. The job shell has pipefail (T-2).
-- The ruleset file requires `review-gate`. The agent files, the skills, the runbooks, and the design doc now describe the live gate and auto-merge.
-
-### The state of the build
-
-- `make` passes on the Mac: 363 tests, a clean format, and 0 findings of ste-check.
-- The remote head is the commit of this entry. The state is pending review.
-- The live ruleset still requires four checks. PR #7 gets no `review-gate` check, because GitHub runs that workflow only from `main` (D-67).
-
-### What is in flight
-
-- Round 1 of `make codex-review PR=7`.
-
-### Traps and gotchas
-
-- A run step with no shell starts `bash -e` with no pipefail. The review-gate job sets `shell: bash` for each step.
-- The label `review-override` does not exist yet, and auto-merge is off. Both are owner steps of `docs/runbooks/main-ruleset.md`.
-- The fixture commits all have the time 2026-09-27T10:00:00Z. The label tests put the label one hour before or after it.
-
-### The questions that block progress
-
-- None. OQ-16 still holds gitar (D-7).
-
-### The next concrete action
-
-- After the approval, ask the owner to confirm the merge. Auto-merge is off, so merge with `gh pr merge 7 --squash`.
-- After the merge, on the explicit instruction of the owner, update the live ruleset from `main`, and run the comparison (D-67).
