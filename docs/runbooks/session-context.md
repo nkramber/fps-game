@@ -113,3 +113,14 @@ make editor-test
 - `make editor-test` writes the log of the editor to `Game/Saved/Logs/editor-test.log`, and the test report to `Game/Saved/Automation/editor-test/index.json`.
 - The evidence form of the PR takes both logs (D-31, D-80).
 - The Windows PC runs `scripts/editor-build.ps1` and `scripts/editor-test.ps1` (D-72).
+
+Make the packaged Development build, then start the package for its timed run (D-89).
+
+```
+make package-build
+make package-run
+```
+
+- `make package-build` puts the app in `Game/Saved/Packages/Mac`, and it writes its output to `Game/Saved/Logs/package-build.log`.
+- `make package-run` runs the test map for 10 seconds, and it writes the stdout of the package to `Game/Saved/Logs/package-run.log`.
+- The Windows PC runs `scripts/package-build.ps1` and `scripts/package-run.ps1` (D-72).

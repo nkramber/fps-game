@@ -155,6 +155,10 @@ Owner, during PR-8 (D-78). No PR.
 - A Makefile target that makes a packaged Development build on the Mac. A PowerShell script that does the same on the Windows PC (D-33, D-72).
 - A start command for each package. The package loads the test map, stops after a set time, and writes a success line in its log.
 - The start command fails with the log path when the log has no success line (T-2).
+- The set time of the run is 10 seconds after the map loads, and the start command stops a package after 5 minutes (D-89). A game subsystem reads the option of the run, and two automation tests cover it.
+- The automation test of PR-9 compiles in the game target. It read a field of the editor alone (F-25).
+- The `-package` step of the Mac build, so the app holds its libraries (F-26). The Mac start command reads the log from stdout, because the App Sandbox stops `-abslog` (F-27).
+- The bundle id of the Mac app (D-90).
 
 **Out of scope.**
 
@@ -170,9 +174,9 @@ Owner, during PR-8 (D-78). No PR.
 
 **Review focus.** The package settings against Unreal best practice (D-34), the pass rule of the start command, and the Windows script (D-72).
 
-**Questions.** None open. The session asks each new question when this PR starts.
+**Questions.** None open. The owner answered the questions of the PR in D-89 and D-90.
 
-**State.** 🔧 planned.
+**State.** ✅ done in PR #11.
 
 > *In plain English:* The empty game becomes a program that runs outside the editor on both computers. A script starts it, stops it, and checks its log.
 

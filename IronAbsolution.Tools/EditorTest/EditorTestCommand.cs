@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using IronAbsolution.Tools.CodexReview;
 using IronAbsolution.Tools.ToolchainCheck;
 
@@ -124,7 +123,7 @@ public static class EditorTestCommand
         }
 
         EditorTestFacts facts = new EditorTestFacts(run, limit, ReadFile(Path.Combine(reportFolder, ReportFile)), ReadFile(logPath));
-        return Report(EditorTestRules.Evaluate(facts), output, errors);
+        return CheckReport.Write(Name, EditorTestRules.Evaluate(facts), output, errors);
     }
 
     /// <summary>Gives each argument of the headless run of the editor.</summary>
@@ -148,34 +147,6 @@ public static class EditorTestCommand
             "-stdout",
             "-FullStdOutLogOutput",
         ];
-    }
-
-    /// <summary>Writes one line for each check and the total.</summary>
-    /// <param name="results">The result of each check.</param>
-    /// <param name="output">The writer that takes each line of a check that passes, and the total when each check passes.</param>
-    /// <param name="errors">The writer that takes each line of a check that fails, and the total when a check fails.</param>
-    /// <returns>0 when each check passes, or 1.</returns>
-    public static int Report(IReadOnlyList<CheckResult> results, TextWriter output, TextWriter errors)
-    {
-        ArgumentNullException.ThrowIfNull(results);
-        ArgumentNullException.ThrowIfNull(output);
-        ArgumentNullException.ThrowIfNull(errors);
-
-        foreach (CheckResult result in results)
-        {
-            TextWriter writer = result.Holds ? output : errors;
-            writer.WriteLine($"{Name}: {result.Line()}");
-        }
-
-        int failed = results.Count(result => !result.Holds);
-        if (failed == 0)
-        {
-            output.WriteLine($"{Name}: pass. Each of the {results.Count} checks passes.");
-            return 0;
-        }
-
-        errors.WriteLine($"{Name}: fail. {failed} of the {results.Count} checks fail.");
-        return Program.FaultExitCode;
     }
 
     private static string UnderFolder(string folder, string relativePath)
