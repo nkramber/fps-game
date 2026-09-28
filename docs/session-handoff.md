@@ -1,3 +1,36 @@
+## Session 51: 2026-09-28, Claude Code
+
+Author: Claude Code
+Session: author PR-11, round 1 close. Repository: iron-absolution. Branch: `docs/pr-11-gate-record`. PR: #15. Role: author. Base: `95546e35317aea9fff1f56a2ec2e9c549eceff84`.
+
+### What this session did, and why
+
+- Round 1 of `run.ps1 codex-review -PR 15` gave the exit code 0. The record says `Ready for owner merge` for the effective head `720ded3`, with no finding.
+- The reviewer ran `EditorConfigTests` at the base `95546e3`, and it failed on the Makefile section. So the test is a true regression test.
+- This entry closes the author loop before the merge summary.
+
+### The state of the build
+
+- The effective head stays `720ded3`, because the later commits change `docs/` alone (D-49).
+- The remote head is the commit of this entry on `docs/pr-11-gate-record`, pending merge.
+
+### What is in flight
+
+- The owner confirmation of the merge of #15, then auto-merge after the checks.
+
+### Traps and gotchas
+
+- The review record calls the "M-8 evidence" comment an owner comment. The session posted it through the account of the owner. The values in it are the output of the session.
+- F-28 stays open. The hosted stub test can fail one time. Run the failed job again before a change.
+
+### The questions that block progress
+
+- None. OQ-16 still holds the gitar pass (D-7).
+
+### The next concrete action
+
+- After the merge, write the transitional prompt of the next PR from section 8 of `docs/design.md`. The gate of phase 1 passes, so the next item is in phase 2 or F-28.
+
 ## Session 50: 2026-09-28, Codex
 
 Author: Codex
@@ -322,39 +355,3 @@ Session: author PR-13, round 1. Repository: iron-absolution. Branch: `feat/pr-13
 ### The next concrete action
 
 - After the merge, write the transitional prompt of PR-14: the engine commands on Windows alone, and the removal of each Mac part (D-97).
-
-## Session 41: 2026-09-28, Claude Code
-
-Author: Claude Code
-Session: author PR-12, round 1. Repository: iron-absolution. Branch: `docs/pr-12-windows-only-plan`. PR: #12. Role: author. Base: `7f87dbc5b0313eddae55140b027bb7e72aed58ad`.
-
-### What this session did, and why
-
-- Recorded the three answers of PR-10 as D-91 to D-93: Windows alone, the sessions on the Windows PC, and PR-12 before PR-11.
-- Listed each Mac part, then asked the owner. The answers are D-94 to D-100: three PRs, M-9 retired, the window confirmation, the Mac removal, M-1 on Windows, the PowerShell entry, and the Windows paths.
-- Marked D-55, D-75, D-81, D-83, D-85, D-87, and D-90 as superseded, and D-14, D-28, D-32, D-33, D-41, D-71, and D-72 as revised in part. Each live citation names the new decision.
-- The phase 1 file has PR-12 to PR-14, the new PR-11, the gate for Windows alone, and the new order. The PR-14 entry holds the inventory of Mac parts.
-- The design doc, G-12, the agent files, the `pr-review` skill, and two runbooks follow D-91 and D-92.
-
-### The state of the build
-
-- `make ste-check` gives 0 findings on the Mac. The PR changes documents alone.
-- The remote head is the commit of this entry. The state is pending merge.
-
-### What is in flight
-
-- The author session adds the `review-override` label (D-35, D-76). Then the owner confirms the squash merge after the merge summary.
-
-### Traps and gotchas
-
-- The reference check flags each line that cites a superseded decision and does not name its successor (REF 3). Each line that PR-13 or PR-14 keeps with a citation of D-55, D-75, or D-81 to D-90 must name the successor.
-- The Makefile stays for the Mac engine targets until PR-14 (section 7.6 of the phase file). PR-13 removes only the development targets.
-- Ask the owner before each command that opens a game window (D-96).
-
-### The questions that block progress
-
-- None. OQ-16 still holds gitar (D-7).
-
-### The next concrete action
-
-- After the merge, write the transitional prompt of PR-13. The session of PR-13 runs on the Windows PC (D-92). Its first action is the owner install of the development tools there.
