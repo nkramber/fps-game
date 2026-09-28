@@ -1,0 +1,6 @@
+# The editor settings of the Unreal project. The Epic coding standard indents with tabs (D-34).
+# The file at the root of the repository gives the character set and the line ending.
+
+[*.{cs,h,cpp}]
+indent_style = tab
+indent_size = 4

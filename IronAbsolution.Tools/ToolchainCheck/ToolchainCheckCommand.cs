@@ -7,7 +7,8 @@ namespace IronAbsolution.Tools.ToolchainCheck;
 
 /// <summary>
 /// The `toolchain-check` command of the Mac (D-15, D-55). It reads the Xcode version, the
-/// engine version, and the Git LFS version, and it fails on each pin that does not hold (D-28).
+/// engine version, the Git LFS version, and the state of the Metal Toolchain, and it fails on
+/// each pin that does not hold (D-28, D-87).
 /// Each line names the pin, the expected value, and the found value (T-2). `make
 /// toolchain-check` runs it. The Windows PC runs `scripts/toolchain-check.ps1` instead (D-72).
 /// </summary>

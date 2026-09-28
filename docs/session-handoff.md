@@ -1,3 +1,106 @@
+## Session 37: 2026-09-28, Claude Code
+
+Author: Claude Code
+Session: author PR-9, merge. Repository: iron-absolution. Branch: `feat/pr-9-project-scaffold`. PR: #10. Role: author. Base: `830bf40cd47f8f707d060a894017c29bff446566`.
+
+### What this session did, and why
+
+- Round 1 of the review gave `Ready for owner merge` for the effective head `124e1ae1e449af46cceaadc475a17f3510b9b669`, with no finding.
+- The record notes a blank line at the end of `Game/Config/DefaultInput.ini`, from the template of Epic. No check reads it, so the file stays.
+
+### The state of the build
+
+- `make` passes on the Mac: 494 tests, a clean format, and 0 findings. CI ran the PowerShell tests.
+- The remote head is the commit of this entry. The state is pending merge.
+
+### What is in flight
+
+- The owner confirms the squash merge after the merge summary. Then auto-merge runs (D-67).
+
+### Traps and gotchas
+
+- This entry is a metadata commit, so the approval of `124e1ae` stands (D-14).
+
+### The questions that block progress
+
+- None. OQ-16 still holds gitar (D-7).
+
+### The next concrete action
+
+- After the merge, write the transitional prompt of PR-10, the packaged build. Work from the clone on the `IronAbsolution` volume (D-81).
+
+## Session 36: 2026-09-28, Codex
+
+Author: Codex
+Session: reviewer PR-9, round 1. Repository: iron-absolution. Branch: `feat/pr-9-project-scaffold`. PR: #10. Role: reviewer. Base: `830bf40cd47f8f707d060a894017c29bff446566`.
+
+### What this session did, and why
+
+- Reviewed the full PR-9 diff and its contracts. No finding holds at effective head `124e1ae1e449af46cceaadc475a17f3510b9b669`.
+- Added the review record for PR #10. The provider gate passes under T-4 and D-6.
+
+### The state of the build
+
+- `make` passed: 474 tests passed, 20 PowerShell tests skipped because `pwsh` is not installed, formatting passed, and ste-check reported 0 findings.
+- CI passed build, test, and format; coverage; doc-gate; and ste-check on remote head `f3f015537d8c0e5da54b765dbdcae23fd599f236`. The review-gate check failed because the review record did not exist yet.
+- The Mac and Windows build and test results are in the owner comments. The Windows run is owner-reported.
+- The PR state is pending merge. The metadata commit must reach `origin/feat/pr-9-project-scaffold`.
+
+### What is in flight
+
+- The review-gate check must run after the metadata commit.
+
+### Traps and gotchas
+
+- The local Mac cannot run the PowerShell tests. CI ran the full test set.
+- `git diff --check` reports one extra blank line at EOF in `Game/Config/DefaultInput.ini`.
+
+### The questions that block progress
+
+- None. OQ-16 still holds the gitar pass under D-7.
+
+### The next concrete action
+
+- Read the review-gate result after the metadata push. If it passes, prepare the four-part merge summary for the owner.
+
+## Session 35: 2026-09-28, Claude Code
+
+Author: Claude Code
+Session: author PR-9, round 1. Repository: iron-absolution. Branch: `feat/pr-9-project-scaffold`. PR: #10. Role: author. Base: `830bf40cd47f8f707d060a894017c29bff446566`.
+
+### What this session did, and why
+
+- Added the Unreal project in `Game/` from the Blank C++ template of 5.8.3: one module, the Game and Editor targets, and the test `IronAbsolution.Project.Settings` (D-73).
+- The owner made the empty map `L_Test` with no World Partition (D-84). Git LFS stores it (D-86).
+- Added `make editor-build`, `make editor-test`, and two PowerShell scripts (D-72). A pass needs the exit code 0, a report with passed tests alone, and the success line.
+- The owner answered D-84 to D-88. F-23: Zen starts before Editor Preferences, so the owner wrote the cache path first (D-85). F-24: the check passed with no Metal Toolchain, so the check has a fourth pin (D-87). D-88 turns off the Android File Server, which wrote a token.
+- Mac evidence: a fresh clone builds in 35.5 s (M-2) and restores the map from LFS. The test passes headless. A test that failed on purpose gave the exit code 3, and the session removed it. M-1 is 6.42 GB. The internal disk holds the Zen programs alone.
+
+### The state of the build
+
+- `make` passes: 494 tests, a clean format, and 0 findings. The script tests ran under a portable pwsh 7.5.3 in the scratchpad.
+- The remote head is the commit of this entry. The state is pending merge.
+
+### What is in flight
+
+- Windows evidence: the owner ran both scripts in a fresh clone at `C:\dev\iron-absolution`. The build took 45.3 s (M-2), and each check of the test passed. The PR comments hold both logs.
+- The review of `make codex-review PR=10` is next.
+
+### Traps and gotchas
+
+- A shell of the harness does not read `~/.zshrc`. Export `IRON_ABSOLUTION_ENGINE_DIR` in each engine command.
+- The old clone on `/Volumes/SSD-1TB` has the same name. Run `pwd` first.
+- The report `index.json` starts with a UTF-8 byte order mark.
+- `GetGameDefaultMap` gives the package name, with no object name.
+
+### The questions that block progress
+
+- None. OQ-16 still holds gitar (D-7).
+
+### The next concrete action
+
+- Read the verdict of the review, and answer each finding with the review-response skill.
+
 ## Session 34: 2026-09-27, Claude Code
 
 Author: Claude Code
@@ -244,109 +347,3 @@ Session: author PR-6, merge. Repository: iron-absolution. Branch: `feat/pr-6-rev
 ### The next concrete action
 
 - After the merge, on the explicit instruction of the owner, apply the ruleset file of `main` to the live ruleset, and run the comparison (D-67). Then write the transitional prompt of PR-7.
-
-## Session 27: 2026-09-27, Codex
-
-Author: Codex
-Session: reviewer PR-6, round 2. Repository: iron-absolution. Branch: `feat/pr-6-review-gate`. PR: #7. Role: reviewer. Base: `5871f2c870d5eb110eccbadd67c5f633c5619155`.
-
-### What this session did, and why
-
-- Rechecked P2-1 against the author response and D-68. The owner accepts the backdated commit risk.
-- Verified that commit `2338304` changes no behavior. It adds the risk rationale to the rule comment and records the owner decision.
-- Updated `docs/reviews/pr-7.md`. P2-1 now records the accepted risk, and the round 1 verdict stays in the history.
-
-### The state of the build
-
-- The effective head is `2338304d6a448277f96270caaf90ee7213df6106`.
-- `make` passes on the Mac: 363 tests, a clean format, and 0 findings of ste-check.
-- The focused review-gate command tests pass: 17 tests. All four available hosted checks pass.
-- The remote head is the commit of this entry. The state is ready for owner merge.
-
-### What is in flight
-
-- The owner reads the merge summary and confirms the merge of PR #7.
-
-### Traps and gotchas
-
-- PR #7 has no `review-gate` check. D-67 defers its GitHub proof to the first PR after this one reaches `main`.
-- Run filtered MTP tests with `dotnet test --solution IronAbsolution.slnx --no-build --filter-class <type>`. Put the filter option before no extra `--` separator.
-
-### The questions that block progress
-
-- None blocks this review. OQ-16 still holds gitar under D-7.
-
-### The next concrete action
-
-- Give the owner the merge summary for PR #7. Wait for the owner's merge confirmation.
-- After the merge, apply the ruleset file of `main` only on the explicit instruction of the owner, then run the comparison (D-67).
-
-## Session 26: 2026-09-27, Claude Code
-
-Author: Claude Code
-Session: author PR-6, round 2. Repository: iron-absolution. Branch: `feat/pr-6-review-gate`. PR: #7. Role: author. Base: `5871f2c870d5eb110eccbadd67c5f633c5619155`.
-
-### What this session did, and why
-
-- Round 1 gave `Changes required` with one finding, P2-1 (exit 10). A backdated commit after the `review-override` label passes the time rule, because the rule reads the committer time.
-- The trigger reproduces. The owner accepted the risk (D-68, F-18): one account can add the label again anyway (F-9).
-- The rule cites D-68, and `docs/reviews/pr-7-response.md` gives the evidence. No behavior changed.
-- The first `doc-gate` run failed on the words "update ... after the merge" in the description. The reworded description passes.
-
-### The state of the build
-
-- `make` passes on the Mac: 363 tests, a clean format, and 0 findings of ste-check.
-- The remote head is the commit of this entry. The state is pending review round 2.
-- The live ruleset still requires four checks (D-67).
-
-### What is in flight
-
-- Round 2 of `make codex-review PR=7`.
-
-### Traps and gotchas
-
-- The deferral rule of `doc-gate` reads the PR description and this entry. Its regular expressions match a document verb close to the words that name the time of the merge.
-- The label `review-override` does not exist yet, and auto-merge is off. Both are owner steps of `docs/runbooks/main-ruleset.md`.
-
-### The questions that block progress
-
-- None. OQ-16 still holds gitar (D-7).
-
-### The next concrete action
-
-- After the approval, ask the owner to confirm the merge. Auto-merge is off, so merge with `gh pr merge 7 --squash`.
-- After the merge, on the explicit instruction of the owner, apply the ruleset file of `main` to the live ruleset, and run the comparison (D-67).
-
-## Session 25: 2026-09-27, Codex
-
-Author: Codex
-Session: reviewer PR-6, round 1. Repository: iron-absolution. Branch: `feat/pr-6-review-gate`. PR: #7. Role: reviewer. Base: `5871f2c870d5eb110eccbadd67c5f633c5619155`.
-
-### What this session did, and why
-
-- Reviewed PR #7 at effective head `7f4cb583772c28e2bdb2a1a32c8f2e921442a88c`.
-- Found that the override label accepts a document commit pushed after the label when its Git committer time is earlier. The temporary reproduction passed the gate.
-- Wrote `docs/reviews/pr-7.md` with verdict `Changes required` and P2-1.
-
-### The state of the build
-
-- `make` passes on the Mac: 363 tests, a clean format, and 0 ste-check findings.
-- All four checks available to PR #7 pass on head `7f4cb58`. GitHub does not run `review-gate` until the workflow reaches `main` (D-67).
-- The remote work head is `7f4cb583772c28e2bdb2a1a32c8f2e921442a88c`. This review record and handoff must publish together.
-
-### What is in flight
-
-- P2-1 needs a freshness check that does not trust a PR-controlled commit time.
-
-### Traps and gotchas
-
-- The override rule reads Git `%cI`. A PR author controls the committer timestamp.
-- This PR does not get a `review-gate` check because the workflow runs from `main` (D-67).
-
-### The questions that block progress
-
-- None. OQ-16 still holds gitar under D-7.
-
-### The next concrete action
-
-- The author corrects P2-1 and adds a regression test for a backdated document commit.

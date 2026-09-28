@@ -2,6 +2,112 @@
 
 This file holds the entries that the rotation moves out of `docs/session-handoff.md`, newest first.
 
+## Session 27: 2026-09-27, Codex
+
+Author: Codex
+Session: reviewer PR-6, round 2. Repository: iron-absolution. Branch: `feat/pr-6-review-gate`. PR: #7. Role: reviewer. Base: `5871f2c870d5eb110eccbadd67c5f633c5619155`.
+
+### What this session did, and why
+
+- Rechecked P2-1 against the author response and D-68. The owner accepts the backdated commit risk.
+- Verified that commit `2338304` changes no behavior. It adds the risk rationale to the rule comment and records the owner decision.
+- Updated `docs/reviews/pr-7.md`. P2-1 now records the accepted risk, and the round 1 verdict stays in the history.
+
+### The state of the build
+
+- The effective head is `2338304d6a448277f96270caaf90ee7213df6106`.
+- `make` passes on the Mac: 363 tests, a clean format, and 0 findings of ste-check.
+- The focused review-gate command tests pass: 17 tests. All four available hosted checks pass.
+- The remote head is the commit of this entry. The state is ready for owner merge.
+
+### What is in flight
+
+- The owner reads the merge summary and confirms the merge of PR #7.
+
+### Traps and gotchas
+
+- PR #7 has no `review-gate` check. D-67 defers its GitHub proof to the first PR after this one reaches `main`.
+- Run filtered MTP tests with `dotnet test --solution IronAbsolution.slnx --no-build --filter-class <type>`. Put the filter option before no extra `--` separator.
+
+### The questions that block progress
+
+- None blocks this review. OQ-16 still holds gitar under D-7.
+
+### The next concrete action
+
+- Give the owner the merge summary for PR #7. Wait for the owner's merge confirmation.
+- After the merge, apply the ruleset file of `main` only on the explicit instruction of the owner, then run the comparison (D-67).
+
+## Session 26: 2026-09-27, Claude Code
+
+Author: Claude Code
+Session: author PR-6, round 2. Repository: iron-absolution. Branch: `feat/pr-6-review-gate`. PR: #7. Role: author. Base: `5871f2c870d5eb110eccbadd67c5f633c5619155`.
+
+### What this session did, and why
+
+- Round 1 gave `Changes required` with one finding, P2-1 (exit 10). A backdated commit after the `review-override` label passes the time rule, because the rule reads the committer time.
+- The trigger reproduces. The owner accepted the risk (D-68, F-18): one account can add the label again anyway (F-9).
+- The rule cites D-68, and `docs/reviews/pr-7-response.md` gives the evidence. No behavior changed.
+- The first `doc-gate` run failed on the words "update ... after the merge" in the description. The reworded description passes.
+
+### The state of the build
+
+- `make` passes on the Mac: 363 tests, a clean format, and 0 findings of ste-check.
+- The remote head is the commit of this entry. The state is pending review round 2.
+- The live ruleset still requires four checks (D-67).
+
+### What is in flight
+
+- Round 2 of `make codex-review PR=7`.
+
+### Traps and gotchas
+
+- The deferral rule of `doc-gate` reads the PR description and this entry. Its regular expressions match a document verb close to the words that name the time of the merge.
+- The label `review-override` does not exist yet, and auto-merge is off. Both are owner steps of `docs/runbooks/main-ruleset.md`.
+
+### The questions that block progress
+
+- None. OQ-16 still holds gitar (D-7).
+
+### The next concrete action
+
+- After the approval, ask the owner to confirm the merge. Auto-merge is off, so merge with `gh pr merge 7 --squash`.
+- After the merge, on the explicit instruction of the owner, apply the ruleset file of `main` to the live ruleset, and run the comparison (D-67).
+
+## Session 25: 2026-09-27, Codex
+
+Author: Codex
+Session: reviewer PR-6, round 1. Repository: iron-absolution. Branch: `feat/pr-6-review-gate`. PR: #7. Role: reviewer. Base: `5871f2c870d5eb110eccbadd67c5f633c5619155`.
+
+### What this session did, and why
+
+- Reviewed PR #7 at effective head `7f4cb583772c28e2bdb2a1a32c8f2e921442a88c`.
+- Found that the override label accepts a document commit pushed after the label when its Git committer time is earlier. The temporary reproduction passed the gate.
+- Wrote `docs/reviews/pr-7.md` with verdict `Changes required` and P2-1.
+
+### The state of the build
+
+- `make` passes on the Mac: 363 tests, a clean format, and 0 ste-check findings.
+- All four checks available to PR #7 pass on head `7f4cb58`. GitHub does not run `review-gate` until the workflow reaches `main` (D-67).
+- The remote work head is `7f4cb583772c28e2bdb2a1a32c8f2e921442a88c`. This review record and handoff must publish together.
+
+### What is in flight
+
+- P2-1 needs a freshness check that does not trust a PR-controlled commit time.
+
+### Traps and gotchas
+
+- The override rule reads Git `%cI`. A PR author controls the committer timestamp.
+- This PR does not get a `review-gate` check because the workflow runs from `main` (D-67).
+
+### The questions that block progress
+
+- None. OQ-16 still holds gitar under D-7.
+
+### The next concrete action
+
+- The author corrects P2-1 and adds a regression test for a backdated document commit.
+
 ## Session 24: 2026-09-27, Claude Code
 
 Author: Claude Code

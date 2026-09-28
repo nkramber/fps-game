@@ -18,6 +18,7 @@ How to read this file:
 - The owner gave D-60 to D-63 on 2026-09-27 in PR-5, and D-64 to D-68 on 2026-09-27 in PR-6.
 - The owner gave D-69 to D-77 on 2026-09-27 in PR-7, the focused roadmap of phase 1.
 - The owner gave D-78 to D-83 on 2026-09-27 in PR-8, the engine toolchain.
+- The owner gave D-84 to D-88 on 2026-09-27 and 2026-09-28 in PR-9, the project scaffold.
 - For D-15, the owner asked for the best fit, and the session recommended it. The owner then chose it.
 
 How to add a decision:
@@ -119,7 +120,11 @@ Find a row with `grep -n -E '^\| D-(12|14) \|' docs/decisions.md`.
 | D-75 | 2026-09-27 | First M-9 scene | PR-11 builds a small original room of basic shapes, with a set count of lights and meshes. The first M-9 run uses that room. | Resolves OQ-23. The room is original content under the license of D-24. Each later run of M-9 can use it again. |
 | D-79 | 2026-09-27 | Engine folder variable | The environment variable `IRON_ABSOLUTION_ENGINE_DIR` names the engine folder, the folder that holds `Engine`. Each tool and each script of the engine reads it. | The owner gave this answer in PR-8. Applies D-9: no commit holds the path. |
 | D-81 | 2026-09-27 | Engine volume | A case-insensitive APFS volume, `IronAbsolution`, on the project SSD holds the engine, its cache, Xcode 26.1.1, and the checkout of the engine work. The first volume of the SSD does not change. | The owner gave this answer in PR-8. Records F-21. Applies the SSD of D-28 and F-4. |
-| D-83 | 2026-09-27 | Engine cache path | On the Mac, the editor setting "Global Local DDC Path" puts the engine cache on the `IronAbsolution` volume. The owner sets it at the first start of the editor in PR-9. | The owner gave this answer in PR-8. The engine reads the setting for its Zen cache (`BaseEngine.ini` of 5.8.3). Applies F-4 and D-9: no commit holds the path. PR-9 checks the internal disk. |
+| D-83 | 2026-09-27 | Engine cache path | On the Mac, the editor setting "Global Local DDC Path" puts the engine cache on the `IronAbsolution` volume. The owner sets it at the first start of the editor in PR-9. | The owner gave this answer in PR-8. The engine reads the setting for its Zen cache (`BaseEngine.ini` of 5.8.3). Applies F-4 and D-9: no commit holds the path. PR-9 checks the internal disk. Revised in part by D-85 on 2026-09-27: the owner writes the setting before the first start, not at it. |
+| D-84 | 2026-09-27 | Test map form | The test map of PR-9 does not use World Partition. It is a plain level that loads whole, in one map file. | The owner gave this answer in PR-9, after a comparison of the merits and the costs. Applies D-4 and G-2. A later change to World Partition needs a measurement first. |
+| D-85 | 2026-09-27 | Cache path before the first start | Before the first start of the editor, the owner writes the cache path into the stored settings file of the editor with one command. At the first start, the owner confirms that Editor Preferences shows that path. | The owner gave this answer in PR-9, after F-23. Revised in part: the time of the step of D-83. The setting and the path of D-83 stand. |
+| D-87 | 2026-09-28 | Metal Toolchain pin | `make toolchain-check` has a fourth pin on the Mac: Xcode shows the Metal Toolchain as installed. PR-9 adds the pin and its tests. | The owner gave this answer in PR-9, after F-24. Applies D-28. Adds one item to the scope of PR-9. |
+| D-88 | 2026-09-28 | Android File Server | The project file turns off the Android File Server plugin. No commit holds its settings or its security token. | The owner gave this answer in PR-9. The editor of 5.8.3 wrote the settings of the plugin, with a random token, into `DefaultEngine.ini` at the first start. Applies D-9 and D-32: Android is not a target. |
 
 ## Content, assets, and the repository
 
@@ -131,3 +136,4 @@ Find a row with `grep -n -E '^\| D-(12|14) \|' docs/decisions.md`.
 | D-24 | 2026-09-27 | License | The MIT License covers the whole repository, code and content. The session replaces `LICENSE` in PR-1 on the instruction of the owner. | Resolves OQ-1. Revises in part D-10. A third-party asset keeps its own terms, and it enters the repository only when those terms allow redistribution. Epic content keeps the terms of Epic. |
 | D-38 | 2026-09-27 | Audio sources | Audio comes from original work, from free licenses that allow redistribution (for example CC0), or from AI generation with terms that give ownership and allow redistribution. Each file has a provenance record. | Resolves OQ-13. |
 | D-73 | 2026-09-27 | Project folder | The Unreal project lives in the `Game/` folder of the repository. The tools solution stays at the root. | The owner gave this answer in PR-7. PR-9 creates the folder. The generated project files and the cache folders of Unreal stay apart from the tools project. |
+| D-86 | 2026-09-27 | LFS file types | Git LFS stores the Unreal package types, the Unreal bulk data types, and the common source formats of meshes, images, and sounds. PR-9 adds one rule for each type, and a hosted test reads each rule. | The owner gave this answer in PR-9. Applies D-30. A new binary type needs a new rule and its test. |

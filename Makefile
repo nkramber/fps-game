@@ -2,6 +2,8 @@
 
 SOLUTION := IronAbsolution.slnx
 TOOLS_PROJECT := IronAbsolution.Tools/IronAbsolution.Tools.csproj
+# The Unreal project lives in its own folder, apart from the tools solution (D-73).
+UPROJECT := Game/IronAbsolution.uproject
 
 # The entry script of the Codex CLI of the cross-provider review. The codex-review target
 # installs the newest release first, and the command starts the script with `node` (D-47).
@@ -9,7 +11,7 @@ TOOLS_PROJECT := IronAbsolution.Tools/IronAbsolution.Tools.csproj
 # macOS is absent on Windows, where npm writes a `codex.cmd` shim.
 CODEX ?= $(shell npm root --global)/@openai/codex/bin/codex.js
 
-.PHONY: verify where hooks build test format ste-check handoff-rotate codex-review toolchain-check clean
+.PHONY: verify where hooks build test format ste-check handoff-rotate codex-review toolchain-check editor-build editor-test clean
 
 ## verify: every check that this machine can run.
 verify: build test format ste-check
@@ -56,7 +58,7 @@ codex-review:
 	npm install --global @openai/codex@latest
 	dotnet run --project $(TOOLS_PROJECT) -- codex-review --root . --pr $(PR) --codex "$(CODEX)"
 
-## toolchain-check: the pins of the Mac toolchain: Xcode, the engine, and Git LFS (D-28, D-79).
+## toolchain-check: the pins of the Mac toolchain: Xcode, the engine, Git LFS, and Metal (D-28, D-79, D-87).
 #
 # The command reads the engine folder from IRON_ABSOLUTION_ENGINE_DIR, so no commit holds a
 # path of one machine (D-9). It prints one line for each pin, with the expected value and the
@@ -65,6 +67,25 @@ codex-review:
 # The Windows PC runs `scripts/toolchain-check.ps1` instead (D-72).
 toolchain-check:
 	dotnet run --project $(TOOLS_PROJECT) -- toolchain-check
+
+## editor-build: build the editor target of the Unreal project on the Mac (D-41, D-73).
+#
+# The engine folder comes from IRON_ABSOLUTION_ENGINE_DIR (D-79). The build tool writes its log
+# to Game/Saved/Logs/editor-build.log, and the evidence form of the PR takes that log (D-31).
+# Build.sh of the engine gives 0 for the result "up to date", and so does this target. The
+# Windows PC runs `scripts/editor-build.ps1` instead (D-72).
+editor-build:
+	@test -n "$$IRON_ABSOLUTION_ENGINE_DIR" || { echo "editor-build: set IRON_ABSOLUTION_ENGINE_DIR to the folder that holds Engine (D-79)." >&2; exit 1; }
+	"$$IRON_ABSOLUTION_ENGINE_DIR/Engine/Build/BatchFiles/Mac/Build.sh" IronAbsolutionEditor Mac Development -Project="$(CURDIR)/$(UPROJECT)" -WaitMutex -Log="$(CURDIR)/Game/Saved/Logs/editor-build.log"
+
+## editor-test: run each automation test of the project headless on the Mac (D-71).
+#
+# The command starts the editor with no window, and a pass needs three facts: the exit code 0,
+# a test report with no failed test, and the success line of the log. An exit code of 0 alone
+# is not a pass. Run the `editor-build` target first. The Windows PC runs
+# `scripts/editor-test.ps1` instead (D-72).
+editor-test:
+	dotnet run --project $(TOOLS_PROJECT) -- editor-test --root .
 
 ## where: the branch, the tree, and the PR state.
 where:

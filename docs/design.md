@@ -69,8 +69,8 @@ What we pay:
 
 What we do not know, and the measurement that answers it:
 
-- M-1: Peak memory of the Unreal Editor on the 16 GB Mac. Phase 1.
-- M-2: Time of a clean build of the editor target and of a packaged build, on both platforms. Phase 1.
+- M-1: Peak memory of the Unreal Editor on the 16 GB Mac. Phase 1. First value on 2026-09-28 in PR-9: a peak memory footprint of 6.42 GB, with the empty test map open (`/usr/bin/time -l`).
+- M-2: Time of a clean build of the editor target and of a packaged build, on both platforms. Phase 1. First values of the editor target from a fresh clone, on 2026-09-28 in PR-9: 35.5 seconds on the Mac, and 45.3 seconds on Windows.
 - M-3: Frame time in the test gym on both platforms, against the budgets of D-32. Phase 3.
 - M-4: Frame time in the combat sandbox at the maximum enemy count. Phase 4.
 - M-5: Frame time and memory of the vertical-slice room. Phase 5.
@@ -97,7 +97,7 @@ Status legend:
 | F-3 | 2026-09-26 | Xcode 16.2 is on the Mac. Unreal Engine 5.8 needs Xcode 26.0 or later. Xcode 26.4 does not work with it. | Epic macOS requirements, Apple Xcode table | ⚠ binds phase 1 |
 | F-4 | 2026-09-26 | The internal disk has 45 GB free. The project SSD has 923 GB free. | `df -h` | ⚠ binds phase 1 |
 | F-5 | 2026-09-26 | The Mac has 16 GB of memory. Epic gives 16 GB as the minimum and 32 GB as the recommendation. | Epic macOS requirements | ⚠ binds M-1 |
-| F-6 | 2026-09-26 | The Epic input overview page calls Enhanced Input experimental. The Enhanced Input page says it is on by default. | Two Epic pages for 5.8 | 🔧 phase 1 checks it in the editor |
+| F-6 | 2026-09-26 | The Epic input overview page calls Enhanced Input experimental. The Enhanced Input page says it is on by default. | Two Epic pages for 5.8 | ✅ PR #10: on 2026-09-28 the Plugins window of the editor showed Enhanced Input 1.0 on, with no Beta or Experimental label. The automation test reads the Enhanced Input classes |
 | F-7 | 2026-09-26 | The Meshy plugin has Windows builds for Unreal Engine 5.4 to 5.7 only. Its bridge needs Meshy Pro. | Meshy integration page | ⚠ binds OQ-12 |
 | F-8 | 2026-09-26 | Hosted runners have no Unreal Engine. | Role-model CI, GitHub runners | ✅ doc. Engine PRs attach local logs (D-31). |
 | F-9 | 2026-09-26 | Both providers push as one GitHub account. No machine check can prove which provider wrote a review. | The-thing-below merge runbook | ⚠ accepted risk. Binds PR-3 and PR-6. |
@@ -114,6 +114,8 @@ Status legend:
 | F-20 | 2026-09-27 | D-76 lets the author session add the `review-override` label. The messages of `review-gate` and `make codex-review`, their test, and the description of the live label still say that the owner adds it. | `ReviewGateRules.cs`, `StartChecks.cs`, `ReviewGateCommandTests.cs`, and the label on GitHub | ✅ done in PR-8 (D-77, D-82) |
 | F-21 | 2026-09-27 | The project SSD is case-sensitive APFS. Unreal Engine does not start from a case-sensitive file system on macOS. | `diskutil info /Volumes/SSD-1TB`, [Epic forum](https://forums.unrealengine.com/t/help-epic-games-launcher-unreal-engine-does-not-support-running-from-case-sensitive-file-systems/2021754) | ✅ doc. A case-insensitive volume on the SSD holds the engine (D-81). |
 | F-22 | 2026-09-27 | The first Windows check read the name of each MSVC toolset folder. UnrealBuildTool reads the product version of `cl.exe`, and a servicing update keeps the folder name. The check failed a good toolset: the folder 14.50.35717 held `cl.exe` 14.50.35739. | The run of the owner in PR-8, `MicrosoftPlatformSDK.cs` of 5.8.3 | ✅ done in PR-8. The check reads `cl.exe` (D-74). |
+| F-23 | 2026-09-27 | The editor starts its Zen cache server during its own startup, before Editor Preferences can open. The default data folder of Zen is on the internal disk. So a cache path that the owner sets at the first start comes too late for the shaders of that start. The UI name of the setting in 5.8.3 is "Local DDC Path". The editor stores it in the key-value file of the user, and Zen reads it from there. | `ZenServerInterface.cpp` and `EditorSettings.cpp` of 5.8.3, and the section `[Zen.AutoLaunch]` of `BaseEngine.ini` | ✅ PR #10: the owner writes the setting before the first start (D-85). The log of the editor shows the path on the volume |
+| F-24 | 2026-09-28 | `make toolchain-check` passed on the Mac, and the first start of the editor then stopped with "cannot execute tool 'metal' due to missing Metal Toolchain". Xcode 26 downloads the Metal Toolchain apart from the app, and the check did not read it. `xcodebuild -showComponent MetalToolchain` gave `Status: uninstalled`. | The dialog of the editor, and the output of `xcodebuild` | ✅ PR #10: the check has a Metal Toolchain pin (D-87) |
 
 ## 6. Guardrails (the safety contract for every PR)
 

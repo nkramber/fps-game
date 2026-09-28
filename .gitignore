@@ -1,4 +1,5 @@
-# Unreal Engine generated files
+# The generated folders and the cache folders of Unreal Engine (D-9). Each pattern matches at
+# any depth, so it holds `Game/` and each plugin of it. `GameFilesTests` reads these rules.
 Binaries/
 DerivedDataCache/
 Intermediate/

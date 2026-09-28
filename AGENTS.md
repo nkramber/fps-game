@@ -2,7 +2,7 @@
 
 `CLAUDE.md` and `AGENTS.md` are identical (D-12). Edit both together. Both files follow ASD-STE100 (D-17).
 
-The project is an original, fast first-person shooter with limited resources, in Unreal Engine 5. The goal is one complete, polished level that the player can play again (D-1, D-37). The working title is Iron Absolution, and the project name in code is `IronAbsolution` (D-39). The repository holds no game code yet.
+The project is an original, fast first-person shooter with limited resources, in Unreal Engine 5. The goal is one complete, polished level that the player can play again (D-1, D-37). The working title is Iron Absolution, and the project name in code is `IronAbsolution` (D-39). The Unreal project is in the `Game/` folder (D-73). It holds one C++ module, one automation test, and an empty test map.
 
 ## First action
 
@@ -153,7 +153,9 @@ The Makefile is the entry point (D-41). Run each target from the checkout root.
 - `make handoff-rotate`: move each handoff entry after the tenth to the archive, and print the next session number (D-58, D-59).
 - `make hooks`: install the pre-commit hook in this checkout, one time (D-43).
 - `make codex-review PR=<n>`: the cross-provider review of one PR. The exit codes are 0 approve, 10 changes, 11 three-strike stop, 3 refused start, and 1 fault (D-14).
-- `make toolchain-check`: the pins of the Mac toolchain: Xcode, the engine, and Git LFS (D-28, D-79). `docs/runbooks/engine-setup.md` gives the install.
+- `make toolchain-check`: the pins of the Mac toolchain: Xcode, the engine, Git LFS, and the Metal Toolchain (D-28, D-79, D-87). `docs/runbooks/engine-setup.md` gives the install.
+- `make editor-build`: build the editor target of the Unreal project on the Mac. `scripts/editor-build.ps1` does the same on the Windows PC (D-72).
+- `make editor-test`: run each automation test headless on the Mac. A pass needs the exit code 0, a test report, and the success line of the log. `scripts/editor-test.ps1` does the same on the Windows PC.
 
 The CI of each PR runs the `ste-check`, `build, test, and format`, and `coverage report` jobs (D-42, D-45). The `doc-gate` workflow runs on each push and on each edit of the description (D-56). The `review-gate` workflow runs from the base branch on each push and on each label change (D-64). The ruleset of `main` requires these five checks (D-61, D-64). `docs/runbooks/main-ruleset.md` gives its steps.
 

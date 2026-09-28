@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json;
 
 namespace IronAbsolution.Tools.ToolchainCheck;
@@ -36,14 +37,20 @@ public static class ToolchainRules
     /// <summary>The text before the version in the output of `git lfs version`.</summary>
     public const string GitLfsPrefix = "git-lfs/";
 
+    /// <summary>The text before the state in the output of `xcodebuild -showComponent MetalToolchain`.</summary>
+    public const string ComponentStatusPrefix = "Status: ";
+
+    /// <summary>The state of an installed component of Xcode.</summary>
+    public const string InstalledStatus = "installed";
+
     /// <summary>Applies each pin to the facts.</summary>
     /// <param name="facts">The facts of the Mac.</param>
-    /// <returns>One result for Xcode, one for the engine, and one for Git LFS, in that order.</returns>
+    /// <returns>One result for Xcode, one for the engine, one for Git LFS, and one for the Metal Toolchain, in that order.</returns>
     public static IReadOnlyList<PinResult> Evaluate(ToolchainFacts facts)
     {
         ArgumentNullException.ThrowIfNull(facts);
 
-        return [CheckXcode(facts.Xcode), CheckEngine(facts.Engine), CheckGitLfs(facts.GitLfs)];
+        return [CheckXcode(facts.Xcode), CheckEngine(facts.Engine), CheckGitLfs(facts.GitLfs), CheckMetalToolchain(facts.MetalToolchain)];
     }
 
     /// <summary>Xcode holds when `xcodebuild -version` names the one pinned version (D-28).</summary>
@@ -126,6 +133,33 @@ public static class ToolchainRules
         int end = line.IndexOf(' ', StringComparison.Ordinal);
         string version = end < 0 ? line[GitLfsPrefix.Length..] : line[GitLfsPrefix.Length..end];
         return new PinResult(tool, true, expected, version, string.Empty);
+    }
+
+    /// <summary>
+    /// The Metal Toolchain holds when Xcode names the component as installed (D-87). Xcode 26
+    /// downloads the component apart from the app, and the editor compiles no shader without it (F-24).
+    /// </summary>
+    private static PinResult CheckMetalToolchain(ToolOutput metal)
+    {
+        const string tool = "Metal Toolchain";
+        const string expected = "installed (D-87)";
+        const string advice = "Run `xcodebuild -downloadComponent MetalToolchain`.";
+        if (metal.Text is null)
+        {
+            return new PinResult(tool, false, expected, $"no state. `{metal.Source}` failed: {metal.Absence}", advice);
+        }
+
+        string? statusLine = metal.Text.Split('\n')
+            .Select(line => line.Trim())
+            .FirstOrDefault(line => line.StartsWith(ComponentStatusPrefix, StringComparison.Ordinal));
+        if (statusLine is null)
+        {
+            return new PinResult(tool, false, expected, $"no line '{ComponentStatusPrefix}<state>' in the output of `{metal.Source}`", string.Empty);
+        }
+
+        string status = statusLine[ComponentStatusPrefix.Length..];
+        bool holds = string.Equals(status, InstalledStatus, StringComparison.Ordinal);
+        return new PinResult(tool, holds, expected, status, holds ? string.Empty : advice);
     }
 
     private static string XcodeReason(ToolVersion version)

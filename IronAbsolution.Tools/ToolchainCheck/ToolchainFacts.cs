@@ -40,20 +40,22 @@ public sealed record ToolOutput(string Source, string? Text, string? Absence)
 /// <param name="Xcode">The output of `xcodebuild -version`.</param>
 /// <param name="Engine">The text of the version file of the engine.</param>
 /// <param name="GitLfs">The output of `git lfs version`.</param>
-public sealed record ToolchainFacts(ToolOutput Xcode, ToolOutput Engine, ToolOutput GitLfs)
+/// <param name="MetalToolchain">The output of `xcodebuild -showComponent MetalToolchain`.</param>
+public sealed record ToolchainFacts(ToolOutput Xcode, ToolOutput Engine, ToolOutput GitLfs, ToolOutput MetalToolchain)
 {
-    /// <summary>Runs the two version commands and reads the version file of the engine.</summary>
+    /// <summary>Runs the three commands of the tools and reads the version file of the engine.</summary>
     /// <param name="engineFolder">The value of the engine variable, or null when it is not set (D-79).</param>
     /// <param name="xcodebuild">The `xcodebuild` program, as a name on the command path or a full path.</param>
     /// <param name="git">The `git` program, as a name on the command path or a full path.</param>
-    /// <param name="workingDirectory">The folder in which the two commands run.</param>
+    /// <param name="workingDirectory">The folder in which the three commands run.</param>
     /// <returns>The facts. A command that did not start or failed gives an absent output, not an exception.</returns>
     public static ToolchainFacts Gather(string? engineFolder, string xcodebuild, string git, string workingDirectory)
     {
         return new ToolchainFacts(
             RunTool(xcodebuild, ["-version"], workingDirectory),
             ReadBuildVersion(engineFolder),
-            RunTool(git, ["lfs", "version"], workingDirectory));
+            RunTool(git, ["lfs", "version"], workingDirectory),
+            RunTool(xcodebuild, ["-showComponent", "MetalToolchain"], workingDirectory));
     }
 
     private static ToolOutput RunTool(string fileName, IReadOnlyList<string> args, string workingDirectory)

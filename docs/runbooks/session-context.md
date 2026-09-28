@@ -93,3 +93,23 @@ Check the pins of the Mac before each engine PR (D-28). The command reads the en
 ```
 make toolchain-check
 ```
+
+A shell of the harness does not read `~/.zshrc`, so it does not get the engine variable. Put the export in front of each engine command of the session.
+
+```
+export IRON_ABSOLUTION_ENGINE_DIR="/Volumes/IronAbsolution/Epic Games/UE_5.8"
+```
+
+## The Unreal project
+
+Work on the engine from the clone on the `IronAbsolution` volume (D-81). Build the editor target, then run the automation tests headless.
+
+```
+make editor-build
+make editor-test
+```
+
+- `make editor-build` writes the log of the build tool to `Game/Saved/Logs/editor-build.log`.
+- `make editor-test` writes the log of the editor to `Game/Saved/Logs/editor-test.log`, and the test report to `Game/Saved/Automation/editor-test/index.json`.
+- The evidence form of the PR takes both logs (D-31, D-80).
+- The Windows PC runs `scripts/editor-build.ps1` and `scripts/editor-test.ps1` (D-72).

@@ -23,6 +23,7 @@ The evidence of the pins, read on 2026-09-27:
 | MSVC | none | a 14.50 toolset with a `cl.exe` of 14.50.35723 or later, installed | D-74 |
 | Windows SDK | none | 10.0.22621.0 or later | D-74 |
 | Git LFS | any version | any version | D-30 |
+| Metal Toolchain | installed | none | D-87 |
 | Engine folder | `IRON_ABSOLUTION_ENGINE_DIR` | `IRON_ABSOLUTION_ENGINE_DIR` | D-79 |
 
 The variable names the folder that holds the `Engine` folder. No commit holds that path (D-9).
@@ -80,6 +81,13 @@ The project SSD is case-sensitive APFS, and Unreal Engine does not start from it
    ```
 
 5. Make sure that the last command prints `Xcode 26.1.1` and `Build version 17B100`.
+6. Make sure that Xcode shows the Metal Toolchain as installed. The editor compiles no shader without it (F-24).
+
+   ```
+   xcodebuild -showComponent MetalToolchain
+   ```
+
+7. Make sure that the output has the line `Status: installed`.
 
 CAUTION: Do not accept an update to Xcode 26.4 or later. Unreal Engine 5.8 does not work with it (F-3).
 
@@ -118,17 +126,32 @@ CAUTION: The launcher installs each new hotfix without a question. Each hotfix u
    make toolchain-check
    ```
 
-3. Make sure that the last line says `each of the 3 pins holds`.
+3. Make sure that the last line says `each of the 4 pins holds`.
 
 ### The engine cache
 
-The engine keeps its cache in a Zen server. By default, the Zen data goes to the user folder on the internal disk. The internal disk has too little space for it (F-4). The engine reads a path for this cache from the editor setting "Global Local DDC Path" (D-83). The file `BaseEngine.ini` of 5.8.3 names that setting in its section `[Zen.AutoLaunch]`.
+The engine keeps its cache in a Zen server. By default, the Zen data goes to the user folder on the internal disk. The internal disk has too little space for it (F-4). The editor setting "Local DDC Path" moves the cache (D-83). The file `BaseEngine.ini` of 5.8.3 names that setting in its section `[Zen.AutoLaunch]`, and Zen uses the `Zen` folder in that path.
 
-1. **Owner.** At the first start of the editor in PR-9, open Edit, then Editor Preferences, then General, then Global.
-2. **Owner.** Set "Global Local DDC Path" to `/Volumes/IronAbsolution/DerivedDataCache`.
-3. **Owner.** Close the editor, and start it again.
+The editor starts Zen during its own startup, before Editor Preferences can open (F-23). So the owner writes the setting before the first start of the editor (D-85). The editor keeps the setting in the file `KeyValueStore.ini` of the user.
 
-Exit test 8 of PR-9 checks that the internal disk holds no cache data.
+1. **Owner.** Before the first start of the editor, make the cache folder.
+
+   ```
+   mkdir -p /Volumes/IronAbsolution/DerivedDataCache
+   ```
+
+2. **Owner.** Write the setting into the file of the editor. The command writes no second copy of the section.
+
+   ```
+   store="$HOME/Library/Application Support/Epic/Epic Games/KeyValueStore.ini"
+   mkdir -p "$(dirname "$store")"
+   grep -q '^\[GlobalDataCachePath\]' "$store" 2>/dev/null || printf '\n[GlobalDataCachePath]\nUE-LocalDataCachePath=/Volumes/IronAbsolution/DerivedDataCache\n' >> "$store"
+   grep -A1 GlobalDataCachePath "$store"
+   ```
+
+3. Make sure that the last command prints the path of step 1.
+
+At the first start, the owner makes sure that Editor Preferences shows the path. "The first start of the editor" below gives that step.
 
 ### The checkout of the engine work
 
@@ -141,6 +164,31 @@ The Unreal project of PR-9 builds from a case-insensitive volume too (D-81).
    cd /Volumes/IronAbsolution/iron-absolution
    make hooks
    ```
+
+### The first start of the editor
+
+The first start compiles the shaders of the engine, so it takes a long time. Do the steps of "The engine cache" first (D-85).
+
+1. **Owner.** Build the editor target from the root of the checkout.
+
+   ```
+   make editor-build
+   ```
+
+2. **Owner.** Start the editor with the project.
+
+   ```
+   "$IRON_ABSOLUTION_ENGINE_DIR/Engine/Binaries/Mac/UnrealEditor.app/Contents/MacOS/UnrealEditor" "$PWD/Game/IronAbsolution.uproject"
+   ```
+
+3. **Owner.** Open Edit, then Editor Preferences, then General, then Global. Make sure that "Local DDC Path" shows `/Volumes/IronAbsolution/DerivedDataCache`.
+4. **Owner.** Open Edit, then Plugins, and find Enhanced Input. Make sure that the plugin is on, and note its label (F-6).
+5. **Owner.** Close the editor.
+
+Exit test 8 of PR-9 checks that the internal disk holds no cache data. These folders are on the internal disk:
+
+- `~/Library/Application Support/Epic/Zen`: the default data folder of Zen. It stays empty when the setting holds.
+- `~/.epic/UnrealBuildAccelerator`: the store of the build accelerator. A build with no remote agent writes almost nothing to it.
 
 ## The Windows PC
 
@@ -185,9 +233,50 @@ The owner runs each step on the Windows PC and posts the output in the PR (D-33)
 
 3. **Owner.** Post the full output in the PR (D-33).
 
+### The checkout
+
+The build output of Unreal has deep folders, and a long root path can pass the path limit of 260 characters of Windows. So the checkout goes to a short path. The owner uses `C:\dev\iron-absolution`.
+
+1. **Owner.** In PowerShell, clone the repository to a short path.
+
+   ```
+   git clone https://github.com/nkramber/iron-absolution.git C:\dev\iron-absolution
+   cd C:\dev\iron-absolution
+   ```
+
+2. **Owner.** For the work of a PR, get its branch and the LFS files of that branch.
+
+   ```
+   git fetch origin
+   git switch <branch>
+   git lfs pull
+   ```
+
+### The project build and the tests
+
+Each script matches a Makefile target of the Mac (D-72). Each script reads `IRON_ABSOLUTION_ENGINE_DIR` and finds the checkout from its own folder.
+
+1. **Owner.** In PowerShell, build the editor target from the root of the checkout.
+
+   ```
+   powershell -NoProfile -ExecutionPolicy Bypass -File scripts\editor-build.ps1
+   ```
+
+2. **Owner.** Run each automation test headless.
+
+   ```
+   powershell -NoProfile -ExecutionPolicy Bypass -File scripts\editor-test.ps1
+   ```
+
+3. **Owner.** Post the output of each script in the PR (D-33). Attach `Game\Saved\Logs\editor-build.log` and `Game\Saved\Logs\editor-test.log`.
+
+The test script gives the exit code 1 when a check fails. A pass needs the exit code 0 of the editor, a test report with no failed test, and the success line of the log.
+
 ## Traps
 
 - On an external volume, `xip` can leave `Xcode.app` in a temporary folder with a UUID name. Find the app with `find`, and do not expect `Xcode.app` in the current folder.
 - `xcodebuild` fails with "requires Xcode" when the active folder is the Command Line Tools. Select the app with `xcode-select -s`.
 - The name of an MSVC toolset folder does not change after a servicing update. The folder 14.50.35717 can hold `cl.exe` 14.50.35739. The check reads `cl.exe`, as UnrealBuildTool does (F-22).
 - A program from the Dock or the Finder does not read `~/.zshrc`. The check and the Makefile targets run from the shell, so they read the variable.
+- The first clone on `/Volumes/SSD-1TB` has the same folder name. The editor does not find the project there, so run `pwd` before each engine command.
+- `Build.sh` of the engine gives 0 for the result "up to date" of the build tool, so `make editor-build` gives 0 when no file changed.
