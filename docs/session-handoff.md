@@ -1,3 +1,37 @@
+## Session 40: 2026-09-28, Claude Code
+
+Author: Claude Code
+Session: author PR-10, merge. Repository: iron-absolution. Branch: `feat/pr-10-packaged-build`. PR: #11. Role: author. Base: `b46321ed8a4909c36e7c305a0e07af859c7320bb`.
+
+### What this session did, and why
+
+- Round 1 of the review gave `Ready for owner merge` for the effective head `5d268b707becefc0101fd9814faa9ec51d12d335`, with no finding.
+- Each check of the PR passed after the review record, `review-gate` included.
+
+### The state of the build
+
+- `make` passes on the Mac: 527 tests, a clean format, and 0 findings.
+- The remote head is the commit of this entry. The state is pending merge.
+
+### What is in flight
+
+- The owner confirms the squash merge after the merge summary. Then auto-merge runs (D-67).
+
+### Traps and gotchas
+
+- This entry is a metadata commit, so the approval of `5d268b7` stands (D-14).
+
+### The questions that block progress
+
+- None. OQ-16 still holds gitar (D-7).
+
+### The next concrete action
+
+- After the merge, the next PR is PR-12, and it comes before PR-11. On 2026-09-28 the owner gave two answers that no D-# id holds yet:
+  1. "We will ONLY support Windows, not Mac." This supersedes the macOS part of D-32.
+  2. The engine work moves to the Windows PC, and the sessions run there. This reverses D-55 and revises D-33 in part.
+- PR-12 records both answers as decisions, and it plans the change first. The Mac pins, the Mac targets, and the Mac M-9 of PR-11 change.
+
 ## Session 39: 2026-09-28, Codex
 
 Author: Codex
@@ -309,41 +343,3 @@ Session: reviewer PR-8, round 1. Repository: iron-absolution. Branch: `feat/pr-8
 ### The next concrete action
 
 - The author corrects the findings, adds regression evidence, and requests the next review round.
-
-## Session 30: 2026-09-27, Claude Code
-
-Author: Claude Code
-Session: author PR-8, round 1. Repository: iron-absolution. Branch: `feat/pr-8-engine-toolchain`. PR: #9. Role: author. Base: `2133abdbd714b3ba2dddf916adc1aef2b693a120`.
-
-### What this session did, and why
-
-- Added `toolchain-check` for the Mac (`make toolchain-check`) and `scripts/toolchain-check.ps1` for the Windows PC (D-28, D-72, D-74). Each line names the pin, the expected value, and the found value (T-2).
-- Added `docs/runbooks/engine-setup.md` and the `## Evidence` section of the PR template (D-80).
-- The label text of `review-gate`, `make codex-review`, their tests, and the template follows D-76. The session changed the live label on the instruction of the owner (D-77, D-82).
-- The owner answered six questions: D-78 to D-83. The owner installed during PR-8 (D-78). The SSD is case-sensitive, so a new volume `IronAbsolution` holds the engine, Xcode, the cache, and a clone (F-21, D-81).
-- Exit test 1 passed on the Mac: 3 of 3 pins. Exit test 4 passed on the Windows PC: 5 of 5 pins. The Windows run first failed a good toolset, because the script read the folder name (F-22). The script now reads `cl.exe`.
-
-### The state of the build
-
-- `make` passes on the Mac: 398 tests, a clean format, and 0 findings of ste-check.
-- The remote head is the commit of this entry. The state is pending merge.
-
-### What is in flight
-
-- The Codex review of PR #9 runs after the push (D-14).
-- The owner confirms the squash merge after the merge summary.
-
-### Traps and gotchas
-
-- The launcher picker lists `5.8.0`, and it installs the newest hotfix. It also upgrades the hotfix without a question (D-28).
-- On an external volume, `xip` can leave `Xcode.app` in a folder with a UUID name.
-- VS 2026 18.6 and later default to MSVC 14.51. Unreal 5.8 prefers 14.50 and bans a `cl.exe` before 14.50.35723 (`Windows_SDK.json` of the engine).
-- The Zen cache goes to the internal disk until the owner sets the editor setting in PR-9 (D-83).
-
-### The questions that block progress
-
-- None. OQ-16 still holds gitar (D-7).
-
-### The next concrete action
-
-- After the merge, write the transitional prompt of PR-9. Work from the clone `/Volumes/IronAbsolution/iron-absolution` (D-81). The first action of PR-9 is exit test 8 setup: the cache path at the first editor start (D-83).
