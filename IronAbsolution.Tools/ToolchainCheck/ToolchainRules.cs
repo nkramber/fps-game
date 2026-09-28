@@ -6,7 +6,7 @@ using System.Text.Json;
 namespace IronAbsolution.Tools.ToolchainCheck;
 
 /// <summary>The result of one pin: the tool, the expected value, the found value, and the next step on a failure.</summary>
-/// <param name="Tool">The name of the tool, such as `Xcode`.</param>
+/// <param name="Tool">The name of the tool, such as `Visual Studio`.</param>
 /// <param name="Holds">True when the found value meets the pin.</param>
 /// <param name="Expected">The pin, with the decision that sets it.</param>
 /// <param name="Found">The value on this machine, or the reason that no value exists (T-2).</param>
@@ -14,7 +14,7 @@ namespace IronAbsolution.Tools.ToolchainCheck;
 public sealed record PinResult(string Tool, bool Holds, string Expected, string Found, string Advice)
 {
     /// <summary>Gives the one report line of the pin.</summary>
-    /// <returns>The line, such as `Xcode: pass. Expected 26.1.1 (D-28), found 26.1.1.`</returns>
+    /// <returns>The line, such as `Unreal Engine: pass. Expected 5.8.3 (D-28), found 5.8.3.`</returns>
     public string Line()
     {
         string state = this.Holds ? "pass" : "fail";
@@ -25,64 +25,165 @@ public sealed record PinResult(string Tool, bool Holds, string Expected, string 
     }
 }
 
+/// <summary>The newest install of Visual Studio with the C++ tools, as vswhere gives it.</summary>
+/// <param name="DisplayName">The name of the product, such as `Visual Studio Community 2026`.</param>
+/// <param name="InstallationVersion">The full version of the install, such as `18.0.11205.157`.</param>
+/// <param name="InstallationPath">The folder of the install.</param>
+public sealed record VisualStudioInstance(string DisplayName, string InstallationVersion, string InstallationPath);
+
 /// <summary>
-/// The rules of the toolchain check (D-28, D-30). The facts go in, and one result for each pin
-/// comes out. The rules do no I/O.
+/// The rules of the toolchain check (D-28, D-30, D-74). The facts go in, and one result for each
+/// pin comes out. The rules do no I/O.
 /// </summary>
 public static class ToolchainRules
 {
-    /// <summary>The text before the version on the first line of `xcodebuild -version`.</summary>
-    public const string XcodePrefix = "Xcode ";
-
     /// <summary>The text before the version in the output of `git lfs version`.</summary>
     public const string GitLfsPrefix = "git-lfs/";
 
-    /// <summary>The text before the state in the output of `xcodebuild -showComponent MetalToolchain`.</summary>
-    public const string ComponentStatusPrefix = "Status: ";
-
-    /// <summary>The state of an installed component of Xcode.</summary>
-    public const string InstalledStatus = "installed";
+    /// <summary>The next step when the MSVC toolset of the pin is absent (D-74).</summary>
+    public const string MsvcAdvice = "Add the component \"MSVC Build Tools v14.50 for x64/x86\" in the Visual Studio Installer, then update Visual Studio.";
 
     /// <summary>Applies each pin to the facts.</summary>
-    /// <param name="facts">The facts of the Mac.</param>
-    /// <returns>One result for Xcode, one for the engine, one for Git LFS, and one for the Metal Toolchain, in that order.</returns>
+    /// <param name="facts">The facts of the Windows PC.</param>
+    /// <returns>One result for Visual Studio, MSVC, the Windows SDK, the engine, and Git LFS, in that order.</returns>
     public static IReadOnlyList<PinResult> Evaluate(ToolchainFacts facts)
     {
         ArgumentNullException.ThrowIfNull(facts);
 
-        return [CheckXcode(facts.Xcode), CheckEngine(facts.Engine), CheckGitLfs(facts.GitLfs), CheckMetalToolchain(facts.MetalToolchain)];
+        return
+        [
+            CheckVisualStudio(facts.VisualStudio),
+            CheckMsvc(facts.Msvc),
+            CheckWindowsSdk(facts.WindowsSdk),
+            CheckEngine(facts.Engine),
+            CheckGitLfs(facts.GitLfs),
+        ];
     }
 
-    /// <summary>Xcode holds when `xcodebuild -version` names the one pinned version (D-28).</summary>
-    private static PinResult CheckXcode(ToolOutput xcode)
+    /// <summary>Reads the first install in the JSON output of vswhere.</summary>
+    /// <param name="visualStudio">The output of vswhere.</param>
+    /// <returns>The install.</returns>
+    /// <exception cref="InvalidOperationException">
+    /// vswhere gave no output, no install, or an install with no text in a field. The message
+    /// names the command and the field (T-2).
+    /// </exception>
+    public static VisualStudioInstance ReadVisualStudio(ToolOutput visualStudio)
     {
-        const string tool = "Xcode";
-        string expected = $"{ToolchainPins.Xcode} (D-28)";
-        if (xcode.Text is null)
+        ArgumentNullException.ThrowIfNull(visualStudio);
+
+        if (visualStudio.Text is null)
         {
-            return new PinResult(
-                tool,
-                false,
-                expected,
-                $"no Xcode app. `{xcode.Source}` failed: {xcode.Absence}",
-                "Select the Xcode app with `sudo xcode-select -s <path of Xcode-26.1.1.app>`.");
+            throw new InvalidOperationException(visualStudio.Absence ?? $"`{visualStudio.Source}` gave no text");
         }
 
-        string firstLine = xcode.Text.Split('\n')[0].Trim();
-        ToolVersion? version = firstLine.StartsWith(XcodePrefix, StringComparison.Ordinal)
-            ? ToolVersion.TryParse(firstLine[XcodePrefix.Length..])
-            : null;
-        if (version is null)
+        try
         {
-            return new PinResult(tool, false, expected, $"the line '{firstLine}' from `{xcode.Source}`, with no '{XcodePrefix}<version>' form", string.Empty);
+            using JsonDocument document = JsonDocument.Parse(visualStudio.Text);
+            JsonElement root = document.RootElement;
+            if (root.ValueKind != JsonValueKind.Array)
+            {
+                throw new InvalidOperationException($"the output of `{visualStudio.Source}` is not a JSON array");
+            }
+
+            if (root.GetArrayLength() == 0)
+            {
+                throw new InvalidOperationException($"`{visualStudio.Source}` gave no install with the C++ tools");
+            }
+
+            JsonElement first = root[0];
+            return new VisualStudioInstance(
+                RequiredText(first, "displayName", visualStudio.Source),
+                RequiredText(first, "installationVersion", visualStudio.Source),
+                RequiredText(first, "installationPath", visualStudio.Source));
+        }
+        catch (JsonException fault)
+        {
+            throw new InvalidOperationException($"the output of `{visualStudio.Source}` is not JSON: {fault.Message}", fault);
+        }
+    }
+
+    /// <summary>Visual Studio holds when the newest install with the C++ tools is Visual Studio 2026 (D-74).</summary>
+    private static PinResult CheckVisualStudio(ToolOutput visualStudio)
+    {
+        const string tool = "Visual Studio";
+        string expected = $"Visual Studio 2026, major version {ToolchainPins.VisualStudioMajor} (D-74)";
+        VisualStudioInstance instance;
+        try
+        {
+            instance = ReadVisualStudio(visualStudio);
+        }
+        catch (InvalidOperationException fault)
+        {
+            return new PinResult(tool, false, expected, fault.Message, "Install Visual Studio 2026 from docs/runbooks/engine-setup.md.");
         }
 
-        if (version == ToolchainPins.Xcode)
+        string found = $"{instance.DisplayName} {instance.InstallationVersion}";
+        if (!Version.TryParse(instance.InstallationVersion, out Version? version))
         {
-            return new PinResult(tool, true, expected, version.ToString(), string.Empty);
+            return new PinResult(tool, false, expected, $"the version '{instance.InstallationVersion}' from `{visualStudio.Source}`, with no version form", string.Empty);
         }
 
-        return new PinResult(tool, false, expected, version.ToString(), XcodeReason(version));
+        return new PinResult(tool, version.Major == ToolchainPins.VisualStudioMajor, expected, found, string.Empty);
+    }
+
+    /// <summary>
+    /// MSVC holds when one installed toolset has a cl.exe of the family 14.50 that the build tool
+    /// does not ban (D-74). The default toolset can be of another family.
+    /// </summary>
+    private static PinResult CheckMsvc(FolderListing<MsvcToolset> msvc)
+    {
+        const string tool = "MSVC";
+        string expected = $"an installed MSVC toolset with a cl.exe from {ToolchainPins.MsvcMinimum} to before {ToolchainPins.MsvcNextFamily} (D-74)";
+        if (msvc.Items is null)
+        {
+            return new PinResult(tool, false, expected, $"{msvc.Absence}", MsvcAdvice);
+        }
+
+        string installed = $"installed toolsets: {string.Join(", ", msvc.Items.Select(toolset => toolset.Describe()))}";
+        Version? best = msvc.Items
+            .Select(toolset => toolset.Compiler)
+            .OfType<Version>()
+            .Where(compiler => compiler >= ToolchainPins.MsvcMinimum && compiler < ToolchainPins.MsvcNextFamily)
+            .Max();
+        if (best is null)
+        {
+            return new PinResult(tool, false, expected, installed, MsvcAdvice);
+        }
+
+        return new PinResult(tool, true, expected, $"cl.exe {best}, {installed}", string.Empty);
+    }
+
+    /// <summary>The Windows SDK holds when the newest SDK folder is the minimum of Epic or later (D-74).</summary>
+    private static PinResult CheckWindowsSdk(FolderListing<string> windowsSdk)
+    {
+        const string tool = "Windows SDK";
+        string expected = $"{ToolchainPins.WindowsSdkMinimum} or later (the minimum of Epic, D-74)";
+        const string advice = "Add a Windows 11 SDK in the Visual Studio Installer.";
+        if (windowsSdk.Items is null)
+        {
+            return new PinResult(tool, false, expected, $"{windowsSdk.Absence}", advice);
+        }
+
+        // Each SDK folder has a name of four numbers, such as `10.0.22621.0`. The folder can hold
+        // other names, such as `wdf`, which name no SDK.
+        List<Version> versions = [];
+        foreach (string name in windowsSdk.Items)
+        {
+            if (Version.TryParse(name, out Version? version) && version.Revision >= 0)
+            {
+                versions.Add(version);
+            }
+        }
+
+        if (versions.Count == 0)
+        {
+            return new PinResult(tool, false, expected, $"no version folder in '{windowsSdk.Source}'", advice);
+        }
+
+        versions.Sort();
+        Version newest = versions[^1];
+        bool holds = newest >= ToolchainPins.WindowsSdkMinimum;
+        return new PinResult(tool, holds, expected, $"{newest}. Installed: {string.Join(", ", versions)}", holds ? string.Empty : advice);
     }
 
     /// <summary>The engine holds when the version file names the pinned hotfix (D-28).</summary>
@@ -95,7 +196,7 @@ public static class ToolchainRules
             return new PinResult(tool, false, expected, $"no engine: {engine.Absence}", string.Empty);
         }
 
-        ToolVersion version;
+        Version version;
         try
         {
             version = ReadEngineVersion(engine.Text, engine.Source);
@@ -121,7 +222,7 @@ public static class ToolchainRules
         const string expected = "an install of any version (D-30)";
         if (gitLfs.Text is null)
         {
-            return new PinResult(tool, false, expected, $"no Git LFS. `{gitLfs.Source}` failed: {gitLfs.Absence}", "Install it with `brew install git-lfs`, then run `git lfs install`.");
+            return new PinResult(tool, false, expected, $"no Git LFS. `{gitLfs.Source}` failed: {gitLfs.Absence}", "Install Git for Windows with Git LFS, then run `git lfs install`.");
         }
 
         string line = gitLfs.Text.Trim();
@@ -135,57 +236,15 @@ public static class ToolchainRules
         return new PinResult(tool, true, expected, version, string.Empty);
     }
 
-    /// <summary>
-    /// The Metal Toolchain holds when Xcode names the component as installed (D-87). Xcode 26
-    /// downloads the component apart from the app, and the editor compiles no shader without it (F-24).
-    /// </summary>
-    private static PinResult CheckMetalToolchain(ToolOutput metal)
-    {
-        const string tool = "Metal Toolchain";
-        const string expected = "installed (D-87)";
-        const string advice = "Run `xcodebuild -downloadComponent MetalToolchain`.";
-        if (metal.Text is null)
-        {
-            return new PinResult(tool, false, expected, $"no state. `{metal.Source}` failed: {metal.Absence}", advice);
-        }
-
-        string? statusLine = metal.Text.Split('\n')
-            .Select(line => line.Trim())
-            .FirstOrDefault(line => line.StartsWith(ComponentStatusPrefix, StringComparison.Ordinal));
-        if (statusLine is null)
-        {
-            return new PinResult(tool, false, expected, $"no line '{ComponentStatusPrefix}<state>' in the output of `{metal.Source}`", string.Empty);
-        }
-
-        string status = statusLine[ComponentStatusPrefix.Length..];
-        bool holds = string.Equals(status, InstalledStatus, StringComparison.Ordinal);
-        return new PinResult(tool, holds, expected, status, holds ? string.Empty : advice);
-    }
-
-    private static string XcodeReason(ToolVersion version)
-    {
-        if (version.CompareTo(ToolchainPins.XcodeFirstRefused) >= 0)
-        {
-            return $"Xcode {ToolchainPins.XcodeFirstRefused} and later do not work with Unreal Engine 5.8 (F-3).";
-        }
-
-        if (version.CompareTo(ToolchainPins.XcodeMinimum) < 0)
-        {
-            return $"Unreal Engine 5.8 needs Xcode {ToolchainPins.XcodeMinimum} or later (F-3).";
-        }
-
-        return $"D-28 pins one Xcode version, {ToolchainPins.Xcode}.";
-    }
-
     /// <summary>Reads the three version numbers of the engine version file.</summary>
     /// <exception cref="InvalidOperationException">The file is not JSON, or it has no whole number in a field. The message names the file and the field.</exception>
-    private static ToolVersion ReadEngineVersion(string text, string source)
+    private static Version ReadEngineVersion(string text, string source)
     {
         try
         {
             using JsonDocument document = JsonDocument.Parse(text);
             JsonElement root = document.RootElement;
-            return new ToolVersion(
+            return new Version(
                 RequiredNumber(root, "MajorVersion", source),
                 RequiredNumber(root, "MinorVersion", source),
                 RequiredNumber(root, "PatchVersion", source));
@@ -207,5 +266,18 @@ public static class ToolchainRules
         }
 
         return number;
+    }
+
+    private static string RequiredText(JsonElement install, string field, string source)
+    {
+        if (install.ValueKind != JsonValueKind.Object
+            || !install.TryGetProperty(field, out JsonElement value)
+            || value.ValueKind != JsonValueKind.String
+            || string.IsNullOrEmpty(value.GetString()))
+        {
+            throw new InvalidOperationException($"the output of `{source}` has no text in the field '{field}'");
+        }
+
+        return value.GetString()!;
     }
 }

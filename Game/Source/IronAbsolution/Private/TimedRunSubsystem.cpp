@@ -12,8 +12,8 @@ DEFINE_LOG_CATEGORY_STATIC(LogTimedRun, Log, All);
 
 namespace IronAbsolution::TimedRun
 {
-	// The exit code of a run that did not start. The generic platform code of 5.8.3 ignores it on
-	// the Mac, so there the absent success line alone fails the start command.
+	// The exit code of a run that did not start. The start command also fails on the absent
+	// success line, so the exit code is not the one proof of a fault.
 	constexpr uint8 FaultExitCode = 1;
 
 	// A value longer than this cannot be in the valid range, and Atoi does not read it safely.

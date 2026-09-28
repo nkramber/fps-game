@@ -8,8 +8,7 @@ namespace IronAbsolution.Tests;
 
 /// <summary>
 /// The I/O of the headless test command with a stub editor at the path of the editor, under a
-/// temporary engine folder (D-71, D-79). That path differs between Windows and the Mac, so each
-/// test reads <see cref="EditorTestCommand.EditorProgram"/> (D-102). The stub reads the report
+/// temporary engine folder (D-71, D-79, D-102). The stub reads the report
 /// folder from its arguments, as the editor does, and it writes the report with the UTF-8 byte
 /// order mark of the editor of 5.8.3. <see cref="StubProgram"/> writes a stub that runs on each
 /// platform (D-103).

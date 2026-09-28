@@ -9,9 +9,7 @@ namespace IronAbsolution.Tools.EditorTest;
 /// <summary>
 /// The `editor-test` command (D-71, D-92). It starts the editor with no window, runs each
 /// automation test of the project, and applies the pass rule of <see cref="EditorTestRules"/>.
-/// The editor program differs between Windows and the Mac, so <see cref="EditorProgram"/> reads
-/// the platform (D-102). `make editor-test` runs it on the Mac, and `scripts/editor-test.ps1`
-/// does the same work on the Windows PC (D-72).
+/// `run.ps1 editor-test` runs it on the Windows PC (D-99).
 /// </summary>
 public static class EditorTestCommand
 {
@@ -22,12 +20,10 @@ public static class EditorTestCommand
     public const string ProjectFile = "Game/IronAbsolution.uproject";
 
     /// <summary>
-    /// Gets the editor program of this platform, under the engine folder (D-79, D-102). Windows
-    /// has one program file, and the Mac has an application bundle.
+    /// The editor program of the console subsystem, under the engine folder (D-79, D-102). Its
+    /// stdout is the log of the run.
     /// </summary>
-    public static string EditorProgram { get; } = OperatingSystem.IsWindows()
-        ? "Engine/Binaries/Win64/UnrealEditor-Cmd.exe"
-        : "Engine/Binaries/Mac/UnrealEditor.app/Contents/MacOS/UnrealEditor";
+    public const string EditorProgram = "Engine/Binaries/Win64/UnrealEditor-Cmd.exe";
 
     /// <summary>The folder of the test report, under the root. The ignore rules hold `Saved/` (D-9).</summary>
     public const string ReportFolder = "Game/Saved/Automation/editor-test";

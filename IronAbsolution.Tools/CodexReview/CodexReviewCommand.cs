@@ -132,9 +132,17 @@ public static class CodexReviewCommand
                 continue;
             }
 
-            // macOS gives the temporary folder under `/var`, and git gives it under `/private/var`.
-            string listed = line[Prefix.Length..].TrimEnd(Path.DirectorySeparatorChar);
-            if (listed == full || listed == "/private" + full)
+            string path = line[Prefix.Length..];
+            if (path.Length == 0)
+            {
+                continue;
+            }
+
+            // Git on Windows gives each path with forward slashes, such as `C:/Users/...`, and
+            // Windows reads two paths that differ in case as one path (D-106).
+            string listed = Path.GetFullPath(path).TrimEnd(Path.DirectorySeparatorChar);
+            StringComparison comparison = OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+            if (string.Equals(listed, full, comparison))
             {
                 return true;
             }

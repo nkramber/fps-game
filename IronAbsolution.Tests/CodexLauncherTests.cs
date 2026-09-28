@@ -7,8 +7,8 @@ using Xunit;
 namespace IronAbsolution.Tests;
 
 /// <summary>
-/// The launch of the Codex CLI through `node` and its entry script, the same path on macOS and
-/// on Windows (D-47, PR #4 review P2-1). Each test runs a fake `codex.js`.
+/// The launch of the Codex CLI through `node` and its entry script (D-47, PR #4 review P2-1).
+/// Each test runs a fake `codex.js`.
 /// </summary>
 public sealed class CodexLauncherTests : IDisposable
 {
@@ -78,8 +78,8 @@ public sealed class CodexLauncherTests : IDisposable
     [Fact]
     public void TheEntryScriptGivesTheEntryScriptOfTheNpmPackage()
     {
-        // P2-1: `<npm prefix>/bin/codex` exists on macOS alone. `npm root` gives the package
-        // folder on each platform. The entry script holds the path now (D-99).
+        // P2-1: npm writes a `codex.cmd` shim on Windows and no `<npm prefix>/bin/codex` link.
+        // `npm root` gives the package folder. The entry script holds the path now (D-99).
         string entry = File.ReadAllText(RepositoryRoot.PathTo("run.ps1"));
 
         Assert.Contains("npm root --global", entry, StringComparison.Ordinal);

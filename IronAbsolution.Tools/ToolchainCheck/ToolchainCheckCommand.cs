@@ -6,18 +6,18 @@ using System.Linq;
 namespace IronAbsolution.Tools.ToolchainCheck;
 
 /// <summary>
-/// The `toolchain-check` command of the Mac (D-15, D-55). It reads the Xcode version, the
-/// engine version, the Git LFS version, and the state of the Metal Toolchain, and it fails on
-/// each pin that does not hold (D-28, D-87).
-/// Each line names the pin, the expected value, and the found value (T-2). `make
-/// toolchain-check` runs it. The Windows PC runs `scripts/toolchain-check.ps1` instead (D-72).
+/// The `toolchain-check` command of the Windows PC (D-15, D-74). It reads the Visual Studio
+/// version, the MSVC toolsets, the Windows SDK, the engine version, and the Git LFS version, and
+/// it fails on each pin that does not hold (D-28, D-30).
+/// Each line names the pin, the expected value, and the found value (T-2). `run.ps1
+/// toolchain-check` runs it (D-99).
 /// </summary>
 public static class ToolchainCheckCommand
 {
     /// <summary>The name of the command on the command line.</summary>
     public const string Name = "toolchain-check";
 
-    /// <summary>Reads the toolchain of this Mac and reports each pin.</summary>
+    /// <summary>Reads the toolchain of this Windows PC and reports each pin.</summary>
     /// <param name="args">The arguments after the command name. The command takes none.</param>
     /// <param name="output">The writer that takes each line of a pin that holds.</param>
     /// <param name="errors">The writer that takes each line of a pin that fails.</param>
@@ -33,8 +33,13 @@ public static class ToolchainCheckCommand
             return Program.FaultExitCode;
         }
 
-        string? engineFolder = Environment.GetEnvironmentVariable(ToolchainPins.EngineVariable);
-        ToolchainFacts facts = ToolchainFacts.Gather(engineFolder, "xcodebuild", "git", Directory.GetCurrentDirectory());
+        // The Windows version is information for the evidence form, not a pin (D-31).
+        output.WriteLine($"{Name}: Windows: {Environment.OSVersion.Version} (information, not a pin).");
+        ToolchainFacts facts = ToolchainFacts.Gather(
+            Environment.GetEnvironmentVariable(ToolchainPins.EngineVariable),
+            Environment.GetEnvironmentVariable(ToolchainPins.ProgramFilesX86Variable),
+            "git",
+            Directory.GetCurrentDirectory());
         return Report(ToolchainRules.Evaluate(facts), output, errors);
     }
 
