@@ -163,6 +163,11 @@ public sealed class ToolchainCheckCommandTests : IDisposable
         Assert.Contains("$VisualStudioMajorPin = 18", script, StringComparison.Ordinal);
         Assert.Contains("$MsvcMinimum = [version]'14.50.35723'", script, StringComparison.Ordinal);
         Assert.Contains("$MsvcNextFamily = [version]'14.51.0'", script, StringComparison.Ordinal);
+
+        // The ban reads the product version of cl.exe, not the folder name, as UnrealBuildTool does. The folder
+        // 14.50.35717 can hold a serviced cl.exe of 14.50.35723 or later.
+        Assert.Contains("bin\\Hostx64\\x64\\cl.exe", script, StringComparison.Ordinal);
+        Assert.Contains("$info.ProductMajorPart, $info.ProductMinorPart, $info.ProductBuildPart", script, StringComparison.Ordinal);
         Assert.Contains("$WindowsSdkMinimum = [version]'10.0.22621.0'", script, StringComparison.Ordinal);
         Assert.Contains("read on 2026-09-27 (D-74)", script, StringComparison.Ordinal);
     }

@@ -9,10 +9,12 @@
 # Unreal Engine 5.8, read on 2026-09-27 (D-74):
 # https://dev.epicgames.com/documentation/unreal-engine/setting-up-visual-studio-development-environment-for-cplusplus-projects-in-unreal-engine
 # The MSVC range comes from Engine/Config/Windows/Windows_SDK.json of 5.8.3. UnrealBuildTool
-# prefers 14.50.35717 to 14.50.99999 and bans 14.50.0 to 14.50.35722, so the first good build
-# is 14.50.35723. The default toolset of Visual Studio can be newer, such as 14.51. The build
-# tool still takes the preferred toolset when it is installed, so the check reads each
-# installed toolset, not the default.
+# prefers the family 14.50.35717 to 14.50.99999 and bans 14.50.0 to 14.50.35722. The family is
+# the name of the toolset folder. The ban reads the product version of cl.exe in that folder,
+# because a servicing update changes cl.exe and keeps the folder name (MicrosoftPlatformSDK.cs,
+# IsValidToolChainDirMSVC). So the check reads cl.exe too, as UnrealBuildTool does. The default
+# toolset of Visual Studio can be newer, such as 14.51. The build tool takes a preferred
+# toolset first, so the check reads each installed toolset, not the default.
 # The engine pin and the variable match IronAbsolution.Tools/ToolchainCheck/ToolchainPins.cs (D-28, D-79).
 
 Set-StrictMode -Version Latest
@@ -49,7 +51,7 @@ Write-Output "toolchain-check: Windows: $os (information, not a pin)."
 
 # Visual Studio and MSVC (D-74). vswhere ships with the Visual Studio Installer.
 $vsExpected = "Visual Studio 2026, major version $VisualStudioMajorPin (D-74)"
-$msvcExpected = "an installed MSVC toolset from $MsvcMinimum to before $MsvcNextFamily (D-74)"
+$msvcExpected = "an installed MSVC toolset with a cl.exe from $MsvcMinimum to before $MsvcNextFamily (D-74)"
 $vswhere = Join-Path ${env:ProgramFiles(x86)} 'Microsoft Visual Studio\Installer\vswhere.exe'
 if (-not (Test-Path -LiteralPath $vswhere)) {
     Write-Pin 'Visual Studio' $false $vsExpected "no file '$vswhere'" 'Install Visual Studio 2026 from docs/runbooks/engine-setup.md.'
@@ -67,18 +69,28 @@ else {
         Write-Pin 'Visual Studio' ($vsVersion.Major -eq $VisualStudioMajorPin) $vsExpected "$($instance.displayName) $($instance.installationVersion)"
 
         $toolsetFolder = Join-Path $instance.installationPath 'VC\Tools\MSVC'
+        # Each toolset: the folder name, and the product version of its x64 cl.exe.
         $toolsets = @()
         if (Test-Path -LiteralPath $toolsetFolder) {
-            $toolsets = @(Get-ChildItem -LiteralPath $toolsetFolder -Directory | ForEach-Object { $_.Name } | Where-Object { $_ -match '^\d+\.\d+\.\d+$' } | ForEach-Object { [version]$_ } | Sort-Object)
+            foreach ($folder in @(Get-ChildItem -LiteralPath $toolsetFolder -Directory | Sort-Object Name)) {
+                $compiler = Join-Path $folder.FullName 'bin\Hostx64\x64\cl.exe'
+                if (-not (Test-Path -LiteralPath $compiler)) {
+                    $toolsets += [pscustomobject]@{ Folder = $folder.Name; Version = $null; Text = "$($folder.Name) (no x64 cl.exe)" }
+                    continue
+                }
+                $info = (Get-Item -LiteralPath $compiler).VersionInfo
+                $version = [version]::new($info.ProductMajorPart, $info.ProductMinorPart, $info.ProductBuildPart)
+                $toolsets += [pscustomobject]@{ Folder = $folder.Name; Version = $version; Text = "$($folder.Name) (cl.exe $version)" }
+            }
         }
         if ($toolsets.Count -eq 0) {
             Write-Pin 'MSVC' $false $msvcExpected "no toolset in '$toolsetFolder'" 'Add the component "MSVC Build Tools v14.50 for x64/x86".'
         }
         else {
-            $good = @($toolsets | Where-Object { $_ -ge $MsvcMinimum -and $_ -lt $MsvcNextFamily })
-            $found = "installed toolsets: $($toolsets -join ', ')"
+            $good = @($toolsets | Where-Object { $null -ne $_.Version -and $_.Version -ge $MsvcMinimum -and $_.Version -lt $MsvcNextFamily })
+            $found = "installed toolsets: $(($toolsets | ForEach-Object { $_.Text }) -join ', ')"
             if ($good.Count -gt 0) {
-                Write-Pin 'MSVC' $true $msvcExpected "$($good[-1]), $found"
+                Write-Pin 'MSVC' $true $msvcExpected "cl.exe $($good[-1].Version), $found"
             }
             else {
                 Write-Pin 'MSVC' $false $msvcExpected $found 'Add the component "MSVC Build Tools v14.50 for x64/x86", then update Visual Studio.'

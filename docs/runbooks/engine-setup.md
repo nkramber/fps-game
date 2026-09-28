@@ -9,7 +9,7 @@ The evidence of the pins, read on 2026-09-27:
 - Unreal Engine 5.8.3 is the newest hotfix of 5.8 ([Epic forum](https://forums.unrealengine.com/t/5-8-3-hotfix-released/2833315)).
 - The macOS page of Epic for 5.8 gives Xcode 26.0 as the minimum and 26.1.1 as the recommendation. It says "Xcode 26.4 is not compatible with Unreal Engine" ([Epic](https://dev.epicgames.com/documentation/unreal-engine/macos-development-requirements-for-unreal-engine)).
 - The Visual Studio page of Epic for 5.8 gives Visual Studio 2026 18.0 or later for general work. Visual Studio 2022 17.14 or later is the other choice. The page gives MSVC 14.38 as the minimum and 14.50 as the recommendation. It gives the Windows SDK 10.0.22621.0 as the minimum and 10.0.26100 or later as the recommendation ([Epic](https://dev.epicgames.com/documentation/unreal-engine/setting-up-visual-studio-development-environment-for-cplusplus-projects-in-unreal-engine)).
-- The file `Engine/Config/Windows/Windows_SDK.json` of the engine 5.8.3 gives the MSVC range that UnrealBuildTool prefers: 14.50.35717 to 14.50.99999. It bans 14.50.0 to 14.50.35722. It suggests the component `Microsoft.VisualStudio.Component.VC.14.50.18.0.x86.x64` and its ATL component.
+- The file `Engine/Config/Windows/Windows_SDK.json` of the engine 5.8.3 gives the MSVC range that UnrealBuildTool prefers: 14.50.35717 to 14.50.99999. It bans 14.50.0 to 14.50.35722. The range reads the name of the toolset folder, and the ban reads the product version of `cl.exe` in that folder. A servicing update of `cl.exe` keeps the folder name. It suggests the component `Microsoft.VisualStudio.Component.VC.14.50.18.0.x86.x64` and its ATL component.
 - MSVC 14.51 is the "Latest" toolset from Visual Studio 2026 18.6 on ([Microsoft](https://devblogs.microsoft.com/cppblog/msvc-version-1451-available/)). The engine does not prefer it, so the Windows PC needs 14.50 next to it.
 - Unreal Engine does not start from a case-sensitive file system on macOS (F-21, [Epic forum](https://forums.unrealengine.com/t/help-epic-games-launcher-unreal-engine-does-not-support-running-from-case-sensitive-file-systems/2021754)).
 
@@ -20,7 +20,7 @@ The evidence of the pins, read on 2026-09-27:
 | Unreal Engine | 5.8.3 | 5.8.3 | D-28 |
 | Xcode | 26.1.1, never 26.4 or later | none | D-28 |
 | Visual Studio | none | Visual Studio 2026, major version 18 | D-74 |
-| MSVC | none | 14.50.35723 or a later 14.50 build, installed | D-74 |
+| MSVC | none | a 14.50 toolset with a `cl.exe` of 14.50.35723 or later, installed | D-74 |
 | Windows SDK | none | 10.0.22621.0 or later | D-74 |
 | Git LFS | any version | any version | D-30 |
 | Engine folder | `IRON_ABSOLUTION_ENGINE_DIR` | `IRON_ABSOLUTION_ENGINE_DIR` | D-79 |
