@@ -1,3 +1,39 @@
+## Session 45: 2026-09-28, Codex
+
+Author: Codex
+Session: reviewer PR-14, round 1. Repository: iron-absolution. Branch: `feat/pr-14-windows-engine-commands`. PR: #14. Role: reviewer. Base: `0351bbba52a4fddd91b559ad7ace9f1bb020b2f0`.
+
+### What this session did, and why
+
+- The review read the PR-14 diff, its focused roadmap, the owner decisions, the PR comment, and the hosted checks.
+- The provider gate passed. The review found no defect in scope.
+- Local verification awaits the owner's confirmation under D-96. The review record gives the blocked verdict until that check completes.
+
+### The state of the build
+
+- The owner reported that `run.ps1 verify` passed with 538 tests, no skips, format, and ste-check.
+- The owner provided Windows evidence for the engine exit tests. The hosted build, test, and format, coverage, doc-gate, and ste-check jobs passed.
+- The remote head before this metadata push was `aed74bb2c76d0840a555772b86f82696d175c59f`. The work head is `f6f1d35f122e7769f2733ba69cd6395459a8cafc`.
+- The review record, this entry, and the rotated archive entry are pending push as one metadata commit.
+
+### What is in flight
+
+- The owner must confirm local verification under D-96. Then update the review record and rerun the review gate.
+
+### Traps and gotchas
+
+- `review/pr-14` has no upstream. Compare `git rev-parse HEAD` with the head from `gh pr view` after the push.
+- `package-run` opens a game window. D-96 requires the owner's confirmation before that command.
+
+### The questions that block progress
+
+- The local build and test checks await the owner's confirmation under D-96.
+- OQ-16 still holds the gitar pass (D-7).
+
+### The next concrete action
+
+- Wait for the owner's answer about local verification. If confirmed, run `run.ps1 verify`, update the review record, and check `review-gate` again.
+
 ## Session 44: 2026-09-28, Claude Code
 
 Author: Claude Code
@@ -316,41 +352,3 @@ Session: reviewer PR-9, round 1. Repository: iron-absolution. Branch: `feat/pr-9
 ### The next concrete action
 
 - Read the review-gate result after the metadata push. If it passes, prepare the four-part merge summary for the owner.
-
-## Session 35: 2026-09-28, Claude Code
-
-Author: Claude Code
-Session: author PR-9, round 1. Repository: iron-absolution. Branch: `feat/pr-9-project-scaffold`. PR: #10. Role: author. Base: `830bf40cd47f8f707d060a894017c29bff446566`.
-
-### What this session did, and why
-
-- Added the Unreal project in `Game/` from the Blank C++ template of 5.8.3: one module, the Game and Editor targets, and the test `IronAbsolution.Project.Settings` (D-73).
-- The owner made the empty map `L_Test` with no World Partition (D-84). Git LFS stores it (D-86).
-- Added `make editor-build`, `make editor-test`, and two PowerShell scripts (D-72). A pass needs the exit code 0, a report with passed tests alone, and the success line.
-- The owner answered D-84 to D-88. F-23: Zen starts before Editor Preferences, so the owner wrote the cache path first (D-85). F-24: the check passed with no Metal Toolchain, so the check has a fourth pin (D-87). D-88 turns off the Android File Server, which wrote a token.
-- Mac evidence: a fresh clone builds in 35.5 s (M-2) and restores the map from LFS. The test passes headless. A test that failed on purpose gave the exit code 3, and the session removed it. M-1 is 6.42 GB. The internal disk holds the Zen programs alone.
-
-### The state of the build
-
-- `make` passes: 494 tests, a clean format, and 0 findings. The script tests ran under a portable pwsh 7.5.3 in the scratchpad.
-- The remote head is the commit of this entry. The state is pending merge.
-
-### What is in flight
-
-- Windows evidence: the owner ran both scripts in a fresh clone at `C:\dev\iron-absolution`. The build took 45.3 s (M-2), and each check of the test passed. The PR comments hold both logs.
-- The review of `make codex-review PR=10` is next.
-
-### Traps and gotchas
-
-- A shell of the harness does not read `~/.zshrc`. Export `IRON_ABSOLUTION_ENGINE_DIR` in each engine command.
-- The old clone on `/Volumes/SSD-1TB` has the same name. Run `pwd` first.
-- The report `index.json` starts with a UTF-8 byte order mark.
-- `GetGameDefaultMap` gives the package name, with no object name.
-
-### The questions that block progress
-
-- None. OQ-16 still holds gitar (D-7).
-
-### The next concrete action
-
-- Read the verdict of the review, and answer each finding with the review-response skill.
