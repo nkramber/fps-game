@@ -55,8 +55,8 @@ bool FIronAbsolutionTimedRunOptionTest::RunTest(const FString& Parameters)
 	return !HasAnyErrors();
 }
 
-// The success line of the timed run. `PackageRunRules.cs` and `scripts/package-run.ps1` look for
-// this exact text, and a hosted test compares their copy with the format of this line.
+// The success line of the timed run. `PackageRunRules.cs` looks for this exact text, and a hosted
+// test compares its copy with the format of this line.
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(
 	FIronAbsolutionTimedRunSuccessLineTest,
 	"IronAbsolution.TimedRun.SuccessLine",

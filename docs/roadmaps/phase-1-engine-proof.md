@@ -10,6 +10,8 @@ Correction of 2026-09-27, PR-8: the owner installs the engine during PR-8 (D-78)
 
 Correction of 2026-09-28, PR-12: the game ships on Windows alone (D-91), and the sessions run on the Windows PC (D-92). PR-12 to PR-14 come before PR-11 (D-93, D-94). M-9 goes out of scope (D-95). The entries of PR-8 to PR-10 keep their Mac text as history.
 
+Correction of 2026-09-28, PR-14: the engine commands run from `run.ps1` on the Windows PC, and PR-14 removed each Mac part (D-97). The owner gave D-104 to D-106 at the start of PR-14.
+
 Labels: each claim of a plan is evidence (with a link), a recommendation, an assumption, or an unknown.
 
 ## 1. Thesis
@@ -28,19 +30,19 @@ The register in section 5 of `docs/design.md` holds every finding. These rows bi
 
 | # | Finding | Binds |
 |---|---|---|
-| F-3 | Xcode 16.2 is on the Mac, and Unreal Engine 5.8 needs Xcode 26.0 to 26.3 | PR-8: the toolchain check refuses each other Xcode version (D-28). PR-14 removes the Xcode pin (D-97) |
+| F-3 | Xcode 16.2 is on the Mac, and Unreal Engine 5.8 needs Xcode 26.0 to 26.3 | PR-8: the toolchain check refuses each other Xcode version (D-28). PR #14 removed the Xcode pin (D-97) |
 | F-4 | The internal disk has 45 GB free | PR-8: the runbook puts the engine and its cache on the project SSD (D-28). The Windows PC keeps the default cache place (D-100) |
-| F-5 | The Mac has 16 GB of memory, the minimum of Epic | PR-9: the first value of M-1. PR-14: a first value on the Windows PC (D-98) |
+| F-5 | The Mac has 16 GB of memory, the minimum of Epic | PR-9: the first value of M-1. PR #14: 3.53 GB on the Windows PC (D-98) |
 | F-6 | Two Epic pages disagree on the state of Enhanced Input | PR-9: the editor shows the state of the plugin. Done in PR #10: Enhanced Input 1.0 is on, with no Beta or Experimental label |
 | F-8 | Hosted runners have no Unreal Engine | Each engine PR attaches local logs (D-31) |
 | F-14 | 60 fps at 4K output on the M4 with 16 GB is a hard target | Out of scope since 2026-09-28 (D-95) |
 | F-17 | Unreal cannot build Windows packages on the Mac | PR-9 and PR-10: the owner runs the Windows scripts (D-33, D-72). Out of scope since 2026-09-28 (D-91) |
 | F-19 | Section 8 of the design doc put the engine install before its runbook | Section 8 below: the install comes during PR-8, from its runbook (D-69, D-78) |
 | F-20 | The text of the review commands says that the owner adds the label | PR-8: the text follows D-76 (D-77, D-82) |
-| F-21 | The project SSD is case-sensitive, and Unreal Engine does not start from it | PR-8: the runbook adds a case-insensitive volume (D-81). PR-14 removes it (D-97) |
+| F-21 | The project SSD is case-sensitive, and Unreal Engine does not start from it | PR-8: the runbook adds a case-insensitive volume (D-81). PR #14 removed it (D-97) |
 | F-22 | The name of an MSVC folder does not give the version of its compiler | PR-8: the Windows check reads `cl.exe` (D-74) |
-| F-23 | The editor starts its cache server before Editor Preferences can open | PR-9: the owner writes the cache path before the first start (D-85). PR-14 removes it (D-97) |
-| F-24 | The toolchain check passed with no Metal Toolchain | PR-9: the check has a Metal Toolchain pin (D-87). PR-14 removes it (D-97) |
+| F-23 | The editor starts its cache server before Editor Preferences can open | PR-9: the owner writes the cache path before the first start (D-85). PR #14 removed it (D-97) |
+| F-24 | The toolchain check passed with no Metal Toolchain | PR-9: the check has a Metal Toolchain pin (D-87). PR #14 removed it (D-97) |
 
 ## 7. Roadmap
 
@@ -258,6 +260,9 @@ Owner, during PR-8 (D-78). No PR.
 - The engine cache stays in the default place of the engine (D-100). The runbook says so.
 - A first value of M-1 on the Windows PC, with the test map open (D-98).
 - The removal of each Mac part (D-97). The inventory below lists the files.
+- The C# commands are the one copy of each engine command, and `scripts/` goes (D-104). The Linux section of `DefaultEngine.ini` goes too (D-105).
+- The worktree check of `codex-review` reads the paths of git on Windows (D-106).
+- The evidence form of the PR template names the targets of the entry.
 
 **The inventory of Mac parts.** PR-12 read each tracked file on 2026-09-28. These files hold a Mac part:
 
@@ -289,9 +294,9 @@ Owner, during PR-8 (D-78). No PR.
 
 **Review focus.** The Windows commands against Unreal best practice (D-34). The pass rules of the test command and the start command. The removal against the inventory above.
 
-**Questions.** None open. The session asks each new question at its start.
+**Questions.** None open. The owner answered three questions in PR-14: D-104 to D-106.
 
-**State.** 🔧 planned.
+**State.** ✅ done in PR #14. On 2026-09-28, a fresh clone on the Windows PC passed each exit test from the entry. The editor target built in 41.6 seconds, and 3 automation tests passed headless. The package built in 101.25 seconds, and its timed run found the success line. M-1 is 3.53 GB. The PR comment "Windows evidence" holds the output.
 
 > *In plain English:* The engine commands run on the Windows PC alone, and the Mac parts go. After this change, one command builds, tests, and runs the game there.
 

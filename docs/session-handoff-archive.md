@@ -2,6 +2,37 @@
 
 This file holds the entries that the rotation moves out of `docs/session-handoff.md`, newest first.
 
+## Session 34: 2026-09-27, Claude Code
+
+Author: Claude Code
+Session: author PR-8, merge. Repository: iron-absolution. Branch: `feat/pr-8-engine-toolchain`. PR: #9. Role: author. Base: `2133abdbd714b3ba2dddf916adc1aef2b693a120`.
+
+### What this session did, and why
+
+- Round 2 of the review gave `Ready for owner merge` for the effective head `bc930a946d214c805ac5eefc77a31d4599fc5625`, with no open finding.
+- The five required checks are green on `743e61d`, `review-gate` included. No review thread is open.
+
+### The state of the build
+
+- `make` passes on the Mac: 405 tests, with 7 skipped where PowerShell is absent. CI ran 405 of 405 with none skipped.
+- The remote head is the commit of this entry. The state is pending merge.
+
+### What is in flight
+
+- The owner confirms the squash merge after the merge summary. Then auto-merge runs (D-67).
+
+### Traps and gotchas
+
+- This entry is a metadata commit, so the approval of `bc930a9` stands (D-14).
+
+### The questions that block progress
+
+- None. OQ-16 still holds gitar (D-7).
+
+### The next concrete action
+
+- After the merge, write the transitional prompt of PR-9. Work from the clone on the `IronAbsolution` volume (D-81). Set the cache path at the first editor start (D-83).
+
 ## Session 33: 2026-09-27, Codex
 
 Author: Codex

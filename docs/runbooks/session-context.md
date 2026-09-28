@@ -17,7 +17,7 @@ Only the owner installs a program on the Windows PC. A session that finds one of
 | Step | Command | Used by |
 |---|---|---|
 | The .NET SDK of `global.json` | `winget install Microsoft.DotNet.SDK.10` | Each target of the tools project |
-| PowerShell 7 (D-101) | `winget install Microsoft.PowerShell` | `run.ps1`, each script of `scripts/`, and each script test |
+| PowerShell 7 (D-101) | `winget install Microsoft.PowerShell` | `run.ps1` and each test of it |
 | Node.js with npm | `winget install OpenJS.NodeJS.LTS` | The Codex CLI of `codex-review` (D-47) |
 | Git for Windows with Git LFS | `winget install Git.Git` | Each git command, and the binary content (D-30) |
 | The GitHub CLI, then `gh auth login` | `winget install GitHub.cli` | `where`, the check wait, and each PR command |
@@ -115,39 +115,33 @@ dotnet run --project IronAbsolution.Tools/IronAbsolution.Tools.csproj -- review-
 
 ## The toolchain of the engine
 
-Check the pins of the Mac before each engine PR (D-28). The command reads the engine folder from `IRON_ABSOLUTION_ENGINE_DIR` (D-79). `docs/runbooks/engine-setup.md` gives the install and the Windows script.
+Check the pins of the Windows PC before each engine PR (D-28, D-74). The command reads the engine folder from `IRON_ABSOLUTION_ENGINE_DIR` (D-79). `docs/runbooks/engine-setup.md` gives the install.
 
 ```
-make toolchain-check
+.\run.ps1 toolchain-check
 ```
 
-A shell of the harness does not read `~/.zshrc`, so it does not get the engine variable. Put the export in front of each engine command of the session.
-
-```
-export IRON_ABSOLUTION_ENGINE_DIR="/Volumes/IronAbsolution/Epic Games/UE_5.8"
-```
+The variable is a variable of the user, so a shell of the harness gets it. A shell that was open before the owner set it does not.
 
 ## The Unreal project
 
-Work on the engine from the clone on the `IronAbsolution` volume (D-81). Correction of 2026-09-28: the engine work moves to the Windows PC (D-92), and PR-14 removes the volume (D-97). Build the editor target, then run the automation tests headless.
+Build the editor target, then run the automation tests headless. Neither command opens a window.
 
 ```
-make editor-build
-make editor-test
+.\run.ps1 editor-build
+.\run.ps1 editor-test
 ```
 
-- `make editor-build` writes the log of the build tool to `Game/Saved/Logs/editor-build.log`.
-- `make editor-test` writes the log of the editor to `Game/Saved/Logs/editor-test.log`, and the test report to `Game/Saved/Automation/editor-test/index.json`.
+- `editor-build` writes the log of the build tool to `Game/Saved/Logs/editor-build.log`.
+- `editor-test` writes the log of the editor to `Game/Saved/Logs/editor-test.log`, and the test report to `Game/Saved/Automation/editor-test/index.json`.
 - The evidence form of the PR takes both logs (D-31, D-80).
-- The Windows PC runs `scripts/editor-build.ps1` and `scripts/editor-test.ps1` (D-72).
 
-Make the packaged Development build, then start the package for its timed run (D-89).
+Make the packaged Development build, then start the package for its timed run (D-89). The package opens a game window, so ask the owner before `package-run`, and wait for the confirmation (D-96).
 
 ```
-make package-build
-make package-run
+.\run.ps1 package-build
+.\run.ps1 package-run
 ```
 
-- `make package-build` puts the app in `Game/Saved/Packages/Mac`, and it writes its output to `Game/Saved/Logs/package-build.log`.
-- `make package-run` runs the test map for 10 seconds, and it writes the stdout of the package to `Game/Saved/Logs/package-run.log`.
-- The Windows PC runs `scripts/package-build.ps1` and `scripts/package-run.ps1` (D-72).
+- `package-build` puts the package in `Game/Saved/Packages/Windows`, and it writes its output to `Game/Saved/Logs/package-build.log`.
+- `package-run` runs the test map for 10 seconds. The game writes its log to `Game/Saved/Logs/package-run.log`.
