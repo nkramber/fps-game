@@ -2,6 +2,41 @@
 
 This file holds the entries that the rotation moves out of `docs/session-handoff.md`, newest first.
 
+## Session 21: 2026-09-27, Claude Code
+
+Author: Claude Code
+Session: author PR-5, round 2. Repository: iron-absolution. Branch: `feat/pr-5-main-ruleset`. PR: #6. Role: author. Base: `f5e9514ebae89c1a5a6a189a8213f2b44f9d1bf5`.
+
+### What this session did, and why
+
+- Review round 1 gave `Changes required` with the exit code 10. P2-1: no test held the four checks of D-61, so a check could leave the file and its workflow together.
+- The trigger reproduced. `1fe466b` adds `TheRulesetRequiresEachCheckOfTheDecision`, which holds the four names as a subset. `docs/reviews/pr-6-response.md` records the answer.
+
+### The state of the build
+
+- The effective head is `1fe466b`. `make` passes on the Mac: 288 tests, a clean format, and 0 findings of ste-check.
+- The remote head is the commit of this entry. The state is pending merge.
+- No live ruleset exists yet. `main` has no branch protection.
+
+### What is in flight
+
+- The review round 2 of `make codex-review PR=6`.
+- After an approval and green checks, the session applies the live ruleset from the PR head and runs the comparison of `docs/runbooks/main-ruleset.md` (exit test 2, D-63).
+
+### Traps and gotchas
+
+- The ruleset requires the four checks by name. A renamed or removed job blocks every merge until the live ruleset changes.
+- A required check that no workflow of `main` has yet can block the PR that adds it. PR-6 must plan the order of `review-gate`.
+
+### The questions that block progress
+
+- None. OQ-16 still holds gitar (D-7).
+
+### The next concrete action
+
+- Run `make codex-review PR=6` after the checks are green.
+- For a fresh session: the session number check of `ste-check` reads a heading number with `int.Parse`, so a number too large for an int stops the check with no context (T-2).
+
 ## Session 20: 2026-09-27, Codex
 
 Author: Codex
