@@ -2,6 +2,41 @@
 
 This file holds the entries that the rotation moves out of `docs/session-handoff.md`, newest first.
 
+## Session 39: 2026-09-28, Codex
+
+Author: Codex
+Session: review PR-10, round 1. Repository: iron-absolution. Branch: `feat/pr-10-packaged-build`. PR: #11. Role: reviewer. Base: `b46321ed8a4909c36e7c305a0e07af859c7320bb`.
+
+### What this session did, and why
+
+- Reviewed PR #11 at effective head `5d268b707becefc0101fd9814faa9ec51d12d335` under D-14.
+- The provider gate passed. The review found no blocking defect.
+- Added `docs/reviews/pr-11.md` and this entry in one metadata commit for `origin/feat/pr-10-packaged-build`.
+
+### The state of the build
+
+- The CI build, test, and format, coverage, STE, and document gate checks passed. The review gate failed before the review record existed.
+- Local `make` passed. It skipped 28 PowerShell tests because `pwsh` was absent. CI ran those tests.
+- The owner posted Mac and Windows package logs and run results in PR #11.
+- The remote work head before the metadata commit was `2cf6a526ae61d5d5608d9fa59aa224de4e2f2f2c`.
+
+### What is in flight
+
+- The metadata commit must pass the review gate at the effective head.
+
+### Traps and gotchas
+
+- The tools project does not install PowerShell. CI runs the PowerShell script tests.
+- The Unreal Engine build and package need the owner machine and engine cache.
+
+### The questions that block progress
+
+- None. OQ-16 still holds gitar (D-7).
+
+### The next concrete action
+
+- The author gives the owner the merge summary after all required checks pass.
+
 ## Session 38: 2026-09-28, Claude Code
 
 Author: Claude Code

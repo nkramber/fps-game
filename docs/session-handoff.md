@@ -1,3 +1,43 @@
+## Session 49: 2026-09-28, Claude Code
+
+Author: Claude Code
+Session: author PR-11, round 1. Repository: iron-absolution. Branch: `docs/pr-11-gate-record`. PR: #15. Role: author. Base: `95546e35317aea9fff1f56a2ec2e9c549eceff84`.
+
+### What this session did, and why
+
+- The `ci` run 36495084063 of `main` at `95546e3` passed. So exit test 6 of PR-14 holds after the merge.
+- `run.ps1 verify` passed on the Windows PC before the work.
+- The owner gave D-108: a session measures M-8 with `git lfs ls-files --all --json` in a fresh clone. M-8 is 8,404 bytes in one LFS object, the test map.
+- The owner gave D-109: headless evidence proves line 5 of the gate, and no editor window opens.
+- Section 7.9 of the phase file names the evidence of each line of the gate. The gate of phase 1 passes.
+- The search for line 11 found two leftovers of PR-14 (F-29). The owner chose to fix them in this PR (D-110). `.editorconfig` loses its Makefile section, and the comment of `PowerShellScript.cs` names `run.ps1`.
+- `EditorConfigTests` failed on the old `.editorconfig` with the name Makefile, and it passes after the fix.
+
+### The state of the build
+
+- `run.ps1 verify` passed: 539 tests and 0 STE findings.
+- The remote head is the commit of this entry on `docs/pr-11-gate-record`, pending merge.
+- The PR changes code, so it needs the Codex review. The `review-override` label does not apply (D-110).
+
+### What is in flight
+
+- Round 1 of `run.ps1 codex-review -PR 15`.
+
+### Traps and gotchas
+
+- M-8 does not count an LFS object that only a deleted branch held. GitHub counts it in the quota (D-108).
+- The billing API of GitHub needs the `user` scope, and the token of `gh` does not have it.
+- F-28 stays open. The hosted stub test can fail one time. Run the failed job again before a change.
+
+### The questions that block progress
+
+- None. OQ-16 still holds the gitar pass (D-7).
+
+### The next concrete action
+
+- Answer the Codex review of #15. After approval, give the owner the merge summary.
+- After the merge, the next PR comes from section 8 of `docs/design.md`: the gate of phase 2, or F-28.
+
 ## Session 48: 2026-09-28, Claude Code
 
 Author: Claude Code
@@ -315,38 +355,3 @@ Session: author PR-10, merge. Repository: iron-absolution. Branch: `feat/pr-10-p
   1. "We will ONLY support Windows, not Mac." This supersedes the macOS part of D-32.
   2. The engine work moves to the Windows PC, and the sessions run there. This reverses D-55 and revises D-33 in part.
 - PR-12 records both answers as decisions, and it plans the change first. The Mac pins, the Mac targets, and the Mac M-9 of PR-11 change.
-
-## Session 39: 2026-09-28, Codex
-
-Author: Codex
-Session: review PR-10, round 1. Repository: iron-absolution. Branch: `feat/pr-10-packaged-build`. PR: #11. Role: reviewer. Base: `b46321ed8a4909c36e7c305a0e07af859c7320bb`.
-
-### What this session did, and why
-
-- Reviewed PR #11 at effective head `5d268b707becefc0101fd9814faa9ec51d12d335` under D-14.
-- The provider gate passed. The review found no blocking defect.
-- Added `docs/reviews/pr-11.md` and this entry in one metadata commit for `origin/feat/pr-10-packaged-build`.
-
-### The state of the build
-
-- The CI build, test, and format, coverage, STE, and document gate checks passed. The review gate failed before the review record existed.
-- Local `make` passed. It skipped 28 PowerShell tests because `pwsh` was absent. CI ran those tests.
-- The owner posted Mac and Windows package logs and run results in PR #11.
-- The remote work head before the metadata commit was `2cf6a526ae61d5d5608d9fa59aa224de4e2f2f2c`.
-
-### What is in flight
-
-- The metadata commit must pass the review gate at the effective head.
-
-### Traps and gotchas
-
-- The tools project does not install PowerShell. CI runs the PowerShell script tests.
-- The Unreal Engine build and package need the owner machine and engine cache.
-
-### The questions that block progress
-
-- None. OQ-16 still holds gitar (D-7).
-
-### The next concrete action
-
-- The author gives the owner the merge summary after all required checks pass.
