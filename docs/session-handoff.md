@@ -18,8 +18,8 @@ Session: author PR-9, round 1. Repository: iron-absolution. Branch: `feat/pr-9-p
 
 ### What is in flight
 
-- The owner runs `scripts/editor-build.ps1` and `scripts/editor-test.ps1` on the Windows PC and posts both logs (exit tests 2 and 4, M-2).
-- Then the session records the Windows M-2 value and runs `make codex-review PR=10`.
+- Windows evidence: the owner ran both scripts in a fresh clone at `C:\dev\iron-absolution`. The build took 45.3 s (M-2), and each check of the test passed. The PR comments hold both logs.
+- The review of `make codex-review PR=10` is next.
 
 ### Traps and gotchas
 
@@ -34,7 +34,7 @@ Session: author PR-9, round 1. Repository: iron-absolution. Branch: `feat/pr-9-p
 
 ### The next concrete action
 
-- Read the Windows logs of the owner, then record the Windows M-2 value, and start the review.
+- Read the verdict of the review, and answer each finding with the review-response skill.
 
 ## Session 34: 2026-09-27, Claude Code
 

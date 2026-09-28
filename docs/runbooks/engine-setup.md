@@ -233,6 +233,25 @@ The owner runs each step on the Windows PC and posts the output in the PR (D-33)
 
 3. **Owner.** Post the full output in the PR (D-33).
 
+### The checkout
+
+The build output of Unreal has deep folders, and a long root path can pass the path limit of 260 characters of Windows. So the checkout goes to a short path. The owner uses `C:\dev\iron-absolution`.
+
+1. **Owner.** In PowerShell, clone the repository to a short path.
+
+   ```
+   git clone https://github.com/nkramber/iron-absolution.git C:\dev\iron-absolution
+   cd C:\dev\iron-absolution
+   ```
+
+2. **Owner.** For the work of a PR, get its branch and the LFS files of that branch.
+
+   ```
+   git fetch origin
+   git switch <branch>
+   git lfs pull
+   ```
+
 ### The project build and the tests
 
 Each script matches a Makefile target of the Mac (D-72). Each script reads `IRON_ABSOLUTION_ENGINE_DIR` and finds the checkout from its own folder.
