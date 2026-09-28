@@ -25,12 +25,10 @@ Each line holds before the merge, by auto-merge or by the owner (`AGENTS.md`, PR
 
 One line for each log of an engine PR (D-31, D-80). Start the line with `Attached:`, and name the place of the log: a PR comment or a file. A PR with no engine work writes `Not applicable:` and a reason on each line. The engine PR of each log is in `docs/roadmaps/phase-1-engine-proof.md`.
 
-- Mac toolchain, `make toolchain-check`:
-- Windows toolchain, `scripts/toolchain-check.ps1`:
-- Mac build:
-- Windows build:
-- Tests:
-- Package:
+- Toolchain, `run.ps1 toolchain-check`:
+- Editor build, `run.ps1 editor-build`:
+- Tests, `run.ps1 editor-test`:
+- Package, `run.ps1 package-build` and `run.ps1 package-run`:
 - Measurements:
 
 ## Documents

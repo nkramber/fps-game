@@ -28,6 +28,9 @@ public sealed class GameFilesTests
         "wav", "ogg", "mp3", "flac",
     ];
 
+    /// <summary>The tokens of a setting of another platform, with their case. A Windows setting holds none of them.</summary>
+    private static readonly string[] OtherPlatformTokens = ["Xcode", "BundleIdentifier", "SF_METAL", "SF_VULKAN"];
+
     public static TheoryData<string> LfsTypeData => new TheoryData<string>(LfsTypes);
 
     [Theory]
@@ -81,18 +84,17 @@ public sealed class GameFilesTests
     }
 
     [Theory]
-    [InlineData("Game/Binaries/Mac/UnrealEditor-IronAbsolution.dylib")]
-    [InlineData("Game/Intermediate/Build/Mac/UnrealEditor/Inc/IronAbsolution/UHT/Timestamp")]
+    [InlineData("Game/Binaries/Win64/UnrealEditor-IronAbsolution.dll")]
+    [InlineData("Game/Intermediate/Build/Win64/UnrealEditor/Inc/IronAbsolution/UHT/Timestamp")]
     [InlineData("Game/Saved/Logs/IronAbsolution.log")]
     [InlineData("Game/Saved/Automation/editor-test/index.json")]
-    [InlineData("Game/Saved/Packages/Mac/IronAbsolution.app/Contents/Info.plist")]
-    [InlineData("Game/Saved/StagedBuilds/Mac/IronAbsolution.app/Contents/Info.plist")]
-    [InlineData("Game/Saved/Cooked/Mac/IronAbsolution/Content/Maps/L_Test.umap")]
-    [InlineData("Game/Build/Mac/FileOpenOrder/CookerOpenOrder.log")]
+    [InlineData("Game/Saved/Packages/Windows/IronAbsolution/Binaries/Win64/IronAbsolution.exe")]
+    [InlineData("Game/Saved/StagedBuilds/Windows/IronAbsolution/Binaries/Win64/IronAbsolution.exe")]
+    [InlineData("Game/Saved/Cooked/Windows/IronAbsolution/Content/Maps/L_Test.umap")]
+    [InlineData("Game/Build/Windows/FileOpenOrder/CookerOpenOrder.log")]
     [InlineData("Game/DerivedDataCache/Compressed.ddp")]
-    [InlineData("Game/Plugins/Sample/Binaries/Mac/UnrealEditor-Sample.dylib")]
-    [InlineData("Game/Plugins/Sample/Intermediate/Build/Mac/Sample.o")]
-    [InlineData("Game/IronAbsolution (Mac).xcworkspace/contents.xcworkspacedata")]
+    [InlineData("Game/Plugins/Sample/Binaries/Win64/UnrealEditor-Sample.dll")]
+    [InlineData("Game/Plugins/Sample/Intermediate/Build/Win64/Sample.obj")]
     [InlineData("Game/IronAbsolution.sln")]
     public void GitIgnoresEachGeneratedFolderOfUnreal(string path)
     {
@@ -160,22 +162,27 @@ public sealed class GameFilesTests
         Assert.Equal(["+MapsToCook=(FilePath=\"/Game/Maps/L_Test\")"], maps);
     }
 
-    [Fact]
-    public void TheMacAppHasTheBundleIdOfTheOwner()
+    [Theory]
+    [InlineData("Game/Config/DefaultEngine.ini")]
+    [InlineData("Game/Config/DefaultGame.ini")]
+    [InlineData("Game/Config/DefaultInput.ini")]
+    public void EachConfigFileHoldsTheSettingsOfWindowsAlone(string path)
     {
-        // The default of Epic is the placeholder `com.YourCompany`, and the sandbox container of
-        // the Mac package takes its name from the id (D-90, F-27).
-        string[] lines = File.ReadAllLines(RepositoryRoot.PathTo("Game/Config/DefaultEngine.ini"));
-        int section = Array.IndexOf(lines, "[/Script/MacTargetPlatform.XcodeProjectSettings]");
-        Assert.True(section >= 0, "DefaultEngine.ini has no section of the Xcode project settings.");
+        // The project supports Windows alone (D-91). Exit test 6 of PR-14: no Mac section, no Linux
+        // section, and no setting of Metal, Xcode, or Vulkan (D-97, D-105). The editor writes a
+        // section for each platform when a platform page of Project Settings opens.
+        string[] lines = File.ReadAllLines(RepositoryRoot.PathTo(path));
 
-        List<string> ids = lines
-            .Skip(section + 1)
-            .TakeWhile(line => !line.StartsWith('['))
-            .Where(line => line.StartsWith("BundleIdentifier=", StringComparison.Ordinal))
+        List<string> platformSections = lines
+            .Where(line => line.StartsWith("[/Script/", StringComparison.Ordinal) && line.Contains("TargetPlatform.", StringComparison.Ordinal))
+            .Where(line => !line.StartsWith("[/Script/WindowsTargetPlatform.", StringComparison.Ordinal))
+            .ToList();
+        List<string> otherPlatformLines = lines
+            .Where(line => OtherPlatformTokens.Any(token => line.Contains(token, StringComparison.Ordinal)))
             .ToList();
 
-        Assert.Equal(["BundleIdentifier=com.nkramber.ironabsolution"], ids);
+        Assert.Empty(platformSections);
+        Assert.Empty(otherPlatformLines);
     }
 
     /// <summary>Gives the value of each LFS attribute and of `text` for one path, as git reads them.</summary>

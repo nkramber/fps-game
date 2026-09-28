@@ -6,93 +6,176 @@ using Xunit;
 namespace IronAbsolution.Tests;
 
 /// <summary>
-/// The pins of the Mac toolchain against fixture output (D-28, D-30). Exit test 2 of PR-8:
-/// the rules refuse Xcode 26.4 and later, and each Xcode before 26.0. Exit test 3: a failure
-/// names the pin when Xcode, the engine, or Git LFS is absent (T-2).
+/// The pins of the Windows toolchain against fixture facts (D-28, D-30, D-74). Exit test 5 of
+/// PR-14: a failure names each pin when that pin does not hold (T-2).
 /// </summary>
 public sealed class ToolchainRulesTests
 {
-    private const string XcodePinned = "Xcode 26.1.1\nBuild version 17B100\n";
+    private const string VswhereSource = "vswhere.exe -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -format json";
+    private const string VisualStudio2026 = """[ { "displayName": "Visual Studio Community 2026", "installationVersion": "18.10.12217.157", "installationPath": "C:\\VS" } ]""";
+    private const string MsvcSource = "C:\\VS\\VC\\Tools\\MSVC";
+    private const string SdkSource = "C:\\Program Files (x86)\\Windows Kits\\10\\Include";
     private const string EnginePinned = """{ "MajorVersion": 5, "MinorVersion": 8, "PatchVersion": 3, "Changelist": 0, "BranchName": "++UE5+Release-5.8" }""";
-    private const string GitLfsFound = "git-lfs/3.7.1 (GitHub; darwin arm64; go 1.25.3)\n";
-    private const string MetalInstalled = "Build Version: 17B54\nStatus: installed\n";
-    private const string MetalSource = "xcodebuild -showComponent MetalToolchain";
-    private const string EngineSource = "/Volumes/IronAbsolution/Epic Games/UE_5.8/Engine/Build/Build.version";
+    private const string EngineSource = "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Build\\Build.version";
+    private const string GitLfsFound = "git-lfs/3.7.1 (GitHub; windows amd64; go 1.25.1)\n";
 
     [Fact]
     public void EachPinHoldsOnThePinnedToolchain()
     {
         IReadOnlyList<PinResult> results = ToolchainRules.Evaluate(Facts());
 
-        Assert.Equal(["Xcode", "Unreal Engine", "Git LFS", "Metal Toolchain"], [results[0].Tool, results[1].Tool, results[2].Tool, results[3].Tool]);
+        Assert.Equal(["Visual Studio", "MSVC", "Windows SDK", "Unreal Engine", "Git LFS"], [results[0].Tool, results[1].Tool, results[2].Tool, results[3].Tool, results[4].Tool]);
         Assert.All(results, result => Assert.True(result.Holds, result.Line()));
-        Assert.Equal("Xcode: pass. Expected 26.1.1 (D-28), found 26.1.1.", results[0].Line());
-        Assert.Equal("Unreal Engine: pass. Expected 5.8.3 (D-28), found 5.8.3.", results[1].Line());
-        Assert.Equal("Git LFS: pass. Expected an install of any version (D-30), found 3.7.1.", results[2].Line());
-        Assert.Equal("Metal Toolchain: pass. Expected installed (D-87), found installed.", results[3].Line());
+        Assert.Equal("Visual Studio: pass. Expected Visual Studio 2026, major version 18 (D-74), found Visual Studio Community 2026 18.10.12217.157.", results[0].Line());
+        Assert.Equal("MSVC: pass. Expected an installed MSVC toolset with a cl.exe from 14.50.35723 to before 14.51.0 (D-74), found cl.exe 14.50.35739, installed toolsets: 14.50.35717 (cl.exe 14.50.35739).", results[1].Line());
+        Assert.Equal("Windows SDK: pass. Expected 10.0.22621.0 or later (the minimum of Epic, D-74), found 10.0.26100.0. Installed: 10.0.19041.0, 10.0.26100.0.", results[2].Line());
+        Assert.Equal("Unreal Engine: pass. Expected 5.8.3 (D-28), found 5.8.3.", results[3].Line());
+        Assert.Equal("Git LFS: pass. Expected an install of any version (D-30), found 3.7.1.", results[4].Line());
     }
 
     [Theory]
-    [InlineData("Xcode 26.4", "26.4.0")]
-    [InlineData("Xcode 26.4.1", "26.4.1")]
-    [InlineData("Xcode 26.5", "26.5.0")]
-    [InlineData("Xcode 27.0", "27.0.0")]
-    public void XcodeFromTheFirstRefusedVersionOnFails(string firstLine, string found)
+    [InlineData("17.14.36310.24")]
+    [InlineData("19.0.1.0")]
+    public void VisualStudioOfAnotherMajorVersionFails(string installationVersion)
     {
-        PinResult xcode = XcodeResult($"{firstLine}\nBuild version 17E000\n");
+        string output = $$"""[ { "displayName": "Visual Studio Community", "installationVersion": "{{installationVersion}}", "installationPath": "C:\\VS" } ]""";
 
-        Assert.False(xcode.Holds);
-        Assert.Equal($"Xcode: fail. Expected 26.1.1 (D-28), found {found}. Xcode 26.4.0 and later do not work with Unreal Engine 5.8 (F-3).", xcode.Line());
-    }
+        PinResult visualStudio = ToolchainRules.Evaluate(Facts(visualStudio: ToolOutput.Found(VswhereSource, output)))[0];
 
-    [Theory]
-    [InlineData("Xcode 16.2", "16.2.0")]
-    [InlineData("Xcode 25.9.9", "25.9.9")]
-    public void XcodeBeforeTheMinimumFails(string firstLine, string found)
-    {
-        PinResult xcode = XcodeResult($"{firstLine}\nBuild version 16C5032a\n");
-
-        Assert.False(xcode.Holds);
-        Assert.Equal($"Xcode: fail. Expected 26.1.1 (D-28), found {found}. Unreal Engine 5.8 needs Xcode 26.0.0 or later (F-3).", xcode.Line());
-    }
-
-    [Theory]
-    [InlineData("Xcode 26.0")]
-    [InlineData("Xcode 26.1")]
-    [InlineData("Xcode 26.3")]
-    public void XcodeInsideTheRangeOfEpicFailsWhenItIsNotThePin(string firstLine)
-    {
-        // D-28 pins one version, so a version that Epic accepts still fails.
-        PinResult xcode = XcodeResult($"{firstLine}\nBuild version 17A000\n");
-
-        Assert.False(xcode.Holds);
-        Assert.EndsWith("D-28 pins one Xcode version, 26.1.1.", xcode.Line(), StringComparison.Ordinal);
+        Assert.False(visualStudio.Holds);
+        Assert.Equal($"Visual Studio: fail. Expected Visual Studio 2026, major version 18 (D-74), found Visual Studio Community {installationVersion}.", visualStudio.Line());
     }
 
     [Fact]
-    public void AbsentXcodeFailsAndNamesThePin()
+    public void AbsentVswhereFailsAndNamesThePath()
     {
-        ToolOutput commandLineToolsOnly = ToolOutput.Absent(
-            "xcodebuild -version",
-            "the exit code 1, stderr: xcode-select: error: tool 'xcodebuild' requires Xcode, but active developer directory '/Library/Developer/CommandLineTools' is a command line tools instance");
+        ToolOutput absent = ToolOutput.Absent("C:\\x86\\vswhere.exe", "no file 'C:\\x86\\vswhere.exe'");
 
-        PinResult xcode = ToolchainRules.Evaluate(Facts(xcode: commandLineToolsOnly))[0];
+        PinResult visualStudio = ToolchainRules.Evaluate(Facts(visualStudio: absent))[0];
 
-        Assert.False(xcode.Holds);
-        Assert.StartsWith("Xcode: fail. Expected 26.1.1 (D-28), found no Xcode app. `xcodebuild -version` failed: the exit code 1, stderr: xcode-select: error:", xcode.Line(), StringComparison.Ordinal);
-        Assert.EndsWith("Select the Xcode app with `sudo xcode-select -s <path of Xcode-26.1.1.app>`.", xcode.Line(), StringComparison.Ordinal);
+        Assert.False(visualStudio.Holds);
+        Assert.Equal("Visual Studio: fail. Expected Visual Studio 2026, major version 18 (D-74), found no file 'C:\\x86\\vswhere.exe'. Install Visual Studio 2026 from docs/runbooks/engine-setup.md.", visualStudio.Line());
     }
 
     [Theory]
-    [InlineData("Apple Xcode 26.1.1")]
-    [InlineData("Xcode twenty-six")]
-    [InlineData("")]
-    public void XcodeOutputOfAnotherFormFailsAndQuotesTheLine(string firstLine)
+    [InlineData("[]", "`" + VswhereSource + "` gave no install with the C++ tools")]
+    [InlineData("{}", "the output of `" + VswhereSource + "` is not a JSON array")]
+    [InlineData("not json", "the output of `" + VswhereSource + "` is not JSON")]
+    [InlineData("""[ { "displayName": "VS", "installationPath": "C:\\VS" } ]""", "the output of `" + VswhereSource + "` has no text in the field 'installationVersion'")]
+    [InlineData("""[ { "displayName": "VS", "installationVersion": "18.0", "installationPath": 7 } ]""", "the output of `" + VswhereSource + "` has no text in the field 'installationPath'")]
+    public void VswhereOutputOfAnotherFormFailsAndNamesTheCommandAndTheField(string output, string fault)
     {
-        PinResult xcode = XcodeResult($"{firstLine}\n");
+        PinResult visualStudio = ToolchainRules.Evaluate(Facts(visualStudio: ToolOutput.Found(VswhereSource, output)))[0];
 
-        Assert.False(xcode.Holds);
-        Assert.Contains($"found the line '{firstLine}' from `xcodebuild -version`", xcode.Line(), StringComparison.Ordinal);
+        Assert.False(visualStudio.Holds);
+        Assert.Contains($"found {fault}", visualStudio.Line(), StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void AVersionOfAnotherFormFailsAndQuotesTheVersion()
+    {
+        const string output = """[ { "displayName": "VS", "installationVersion": "eighteen", "installationPath": "C:\\VS" } ]""";
+
+        PinResult visualStudio = ToolchainRules.Evaluate(Facts(visualStudio: ToolOutput.Found(VswhereSource, output)))[0];
+
+        Assert.False(visualStudio.Holds);
+        Assert.Contains($"found the version 'eighteen' from `{VswhereSource}`, with no version form", visualStudio.Line(), StringComparison.Ordinal);
+    }
+
+    [Theory]
+    [InlineData(14, 50, 35722)]
+    [InlineData(14, 50, 0)]
+    [InlineData(14, 44, 35211)]
+    [InlineData(14, 51, 0)]
+    [InlineData(14, 51, 36260)]
+    public void AToolsetOutsideTheRangeOfTheBuildToolFails(int major, int minor, int build)
+    {
+        // Windows_SDK.json of 5.8.3 bans 14.50.0 to 14.50.35722, and the next family is 14.51 (D-74).
+        MsvcToolset toolset = new MsvcToolset("14.50.35717", new Version(major, minor, build));
+
+        PinResult msvc = MsvcResult(toolset);
+
+        Assert.False(msvc.Holds);
+        Assert.Equal(
+            $"MSVC: fail. Expected an installed MSVC toolset with a cl.exe from 14.50.35723 to before 14.51.0 (D-74), found installed toolsets: 14.50.35717 (cl.exe {major}.{minor}.{build}). {ToolchainRules.MsvcAdvice}",
+            msvc.Line());
+    }
+
+    [Fact]
+    public void TheCompilerVersionAndNotTheFolderNameDecidesTheToolset()
+    {
+        // A servicing update changes cl.exe and keeps the folder name, so the folder 14.50.35717 can
+        // hold a cl.exe that the build tool accepts. A folder with a good name and an old cl.exe fails.
+        PinResult serviced = MsvcResult(new MsvcToolset("14.50.35717", new Version(14, 50, 35723)));
+        PinResult oldCompiler = MsvcResult(new MsvcToolset("14.50.35739", new Version(14, 50, 35717)));
+
+        Assert.True(serviced.Holds, serviced.Line());
+        Assert.False(oldCompiler.Holds, oldCompiler.Line());
+    }
+
+    [Fact]
+    public void ANewerDefaultToolsetBesideTheGoodOneStillHolds()
+    {
+        PinResult msvc = MsvcResult(
+            new MsvcToolset("14.50.35717", new Version(14, 50, 35739)),
+            new MsvcToolset("14.51.36231", new Version(14, 51, 36260)));
+
+        Assert.True(msvc.Holds, msvc.Line());
+        Assert.Contains("found cl.exe 14.50.35739, installed toolsets: 14.50.35717 (cl.exe 14.50.35739), 14.51.36231 (cl.exe 14.51.36260)", msvc.Line(), StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void AToolsetWithNoCompilerFailsAndSaysSo()
+    {
+        PinResult msvc = MsvcResult(new MsvcToolset("14.50.35717", null));
+
+        Assert.False(msvc.Holds);
+        Assert.Contains("found installed toolsets: 14.50.35717 (no x64 cl.exe)", msvc.Line(), StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void AnAbsentToolsetFolderFailsWithTheReason()
+    {
+        FolderListing<MsvcToolset> absent = FolderListing<MsvcToolset>.Absent(MsvcSource, $"no folder '{MsvcSource}'");
+
+        PinResult msvc = ToolchainRules.Evaluate(Facts(msvc: absent))[1];
+
+        Assert.False(msvc.Holds);
+        Assert.Equal(
+            $"MSVC: fail. Expected an installed MSVC toolset with a cl.exe from 14.50.35723 to before 14.51.0 (D-74), found no folder '{MsvcSource}'. {ToolchainRules.MsvcAdvice}",
+            msvc.Line());
+    }
+
+    [Fact]
+    public void AnSdkBeforeTheMinimumFailsAndNamesEachInstalledSdk()
+    {
+        PinResult sdk = SdkResult("10.0.19041.0", "10.0.22000.0");
+
+        Assert.False(sdk.Holds);
+        Assert.Equal(
+            "Windows SDK: fail. Expected 10.0.22621.0 or later (the minimum of Epic, D-74), found 10.0.22000.0. Installed: 10.0.19041.0, 10.0.22000.0. Add a Windows 11 SDK in the Visual Studio Installer.",
+            sdk.Line());
+    }
+
+    [Fact]
+    public void AnSdkFolderWithNoVersionFolderFailsAndNamesTheFolder()
+    {
+        // The Include folder can hold names such as `wdf`, and a name of three numbers is no SDK folder.
+        PinResult sdk = SdkResult("wdf", "10.0.22621");
+
+        Assert.False(sdk.Holds);
+        Assert.Contains($"found no version folder in '{SdkSource}'", sdk.Line(), StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void AnAbsentSdkFolderFailsWithTheReason()
+    {
+        FolderListing<string> absent = FolderListing<string>.Absent("$ProgramFiles(x86)", "the variable ProgramFiles(x86) is not set, so this is not a Windows PC");
+
+        PinResult sdk = ToolchainRules.Evaluate(Facts(sdk: absent))[2];
+
+        Assert.False(sdk.Holds);
+        Assert.Contains("found the variable ProgramFiles(x86) is not set, so this is not a Windows PC.", sdk.Line(), StringComparison.Ordinal);
     }
 
     [Fact]
@@ -110,7 +193,7 @@ public sealed class ToolchainRulesTests
     {
         ToolOutput unset = ToolOutput.Absent("$IRON_ABSOLUTION_ENGINE_DIR", "the variable IRON_ABSOLUTION_ENGINE_DIR is not set (D-79)");
 
-        PinResult engine = ToolchainRules.Evaluate(Facts(engine: unset))[1];
+        PinResult engine = ToolchainRules.Evaluate(Facts(engine: unset))[3];
 
         Assert.False(engine.Holds);
         Assert.Equal("Unreal Engine: fail. Expected 5.8.3 (D-28), found no engine: the variable IRON_ABSOLUTION_ENGINE_DIR is not set (D-79).", engine.Line());
@@ -134,67 +217,50 @@ public sealed class ToolchainRulesTests
     {
         ToolOutput absent = ToolOutput.Absent("git lfs version", "the exit code 1, stderr: git: 'lfs' is not a git command. See 'git --help'.");
 
-        PinResult gitLfs = ToolchainRules.Evaluate(Facts(gitLfs: absent))[2];
+        PinResult gitLfs = ToolchainRules.Evaluate(Facts(gitLfs: absent))[4];
 
         Assert.False(gitLfs.Holds);
         Assert.Equal(
-            "Git LFS: fail. Expected an install of any version (D-30), found no Git LFS. `git lfs version` failed: the exit code 1, stderr: git: 'lfs' is not a git command. See 'git --help'. Install it with `brew install git-lfs`, then run `git lfs install`.",
+            "Git LFS: fail. Expected an install of any version (D-30), found no Git LFS. `git lfs version` failed: the exit code 1, stderr: git: 'lfs' is not a git command. See 'git --help'. Install Git for Windows with Git LFS, then run `git lfs install`.",
             gitLfs.Line());
     }
 
     [Fact]
     public void GitLfsOutputOfAnotherFormFails()
     {
-        PinResult gitLfs = ToolchainRules.Evaluate(Facts(gitLfs: ToolOutput.Found("git lfs version", "lfs 3.7.1\n")))[2];
+        PinResult gitLfs = ToolchainRules.Evaluate(Facts(gitLfs: ToolOutput.Found("git lfs version", "lfs 3.7.1\n")))[4];
 
         Assert.False(gitLfs.Holds);
         Assert.Contains("found the line 'lfs 3.7.1' from `git lfs version`", gitLfs.Line(), StringComparison.Ordinal);
     }
 
-    [Fact]
-    public void AnUninstalledMetalToolchainFailsWithTheDownloadCommand()
+    private static PinResult MsvcResult(params MsvcToolset[] toolsets)
     {
-        // F-24: the check passed on a Mac whose editor could compile no shader.
-        PinResult metal = ToolchainRules.Evaluate(Facts(metal: ToolOutput.Found(MetalSource, "Build Version: 17B54\nStatus: uninstalled\n")))[3];
-
-        Assert.False(metal.Holds);
-        Assert.Equal("Metal Toolchain: fail. Expected installed (D-87), found uninstalled. Run `xcodebuild -downloadComponent MetalToolchain`.", metal.Line());
+        return ToolchainRules.Evaluate(Facts(msvc: FolderListing<MsvcToolset>.Found(MsvcSource, toolsets)))[1];
     }
 
-    [Fact]
-    public void AnAbsentMetalAnswerFailsWithTheReason()
+    private static PinResult SdkResult(params string[] folders)
     {
-        PinResult metal = ToolchainRules.Evaluate(Facts(metal: ToolOutput.Absent(MetalSource, "the exit code 70, stderr: xcodebuild: error: unknown component")))[3];
-
-        Assert.False(metal.Holds);
-        Assert.Contains($"found no state. `{MetalSource}` failed: the exit code 70", metal.Line(), StringComparison.Ordinal);
-    }
-
-    [Fact]
-    public void AMetalAnswerWithNoStatusLineFails()
-    {
-        PinResult metal = ToolchainRules.Evaluate(Facts(metal: ToolOutput.Found(MetalSource, "Build Version: 17B54\n")))[3];
-
-        Assert.False(metal.Holds);
-        Assert.Contains($"found no line 'Status: <state>' in the output of `{MetalSource}`", metal.Line(), StringComparison.Ordinal);
-    }
-
-    private static PinResult XcodeResult(string output)
-    {
-        return ToolchainRules.Evaluate(Facts(xcode: ToolOutput.Found("xcodebuild -version", output)))[0];
+        return ToolchainRules.Evaluate(Facts(sdk: FolderListing<string>.Found(SdkSource, folders)))[2];
     }
 
     private static PinResult EngineResult(string text)
     {
-        return ToolchainRules.Evaluate(Facts(engine: ToolOutput.Found(EngineSource, text)))[1];
+        return ToolchainRules.Evaluate(Facts(engine: ToolOutput.Found(EngineSource, text)))[3];
     }
 
-    private static ToolchainFacts Facts(ToolOutput? xcode = null, ToolOutput? engine = null, ToolOutput? gitLfs = null, ToolOutput? metal = null)
+    private static ToolchainFacts Facts(
+        ToolOutput? visualStudio = null,
+        FolderListing<MsvcToolset>? msvc = null,
+        FolderListing<string>? sdk = null,
+        ToolOutput? engine = null,
+        ToolOutput? gitLfs = null)
     {
         return new ToolchainFacts(
-            xcode ?? ToolOutput.Found("xcodebuild -version", XcodePinned),
+            visualStudio ?? ToolOutput.Found(VswhereSource, VisualStudio2026),
+            msvc ?? FolderListing<MsvcToolset>.Found(MsvcSource, [new MsvcToolset("14.50.35717", new Version(14, 50, 35739))]),
+            sdk ?? FolderListing<string>.Found(SdkSource, ["10.0.19041.0", "10.0.26100.0"]),
             engine ?? ToolOutput.Found(EngineSource, EnginePinned),
-            gitLfs ?? ToolOutput.Found("git lfs version", GitLfsFound),
-            metal ?? ToolOutput.Found(MetalSource, MetalInstalled));
+            gitLfs ?? ToolOutput.Found("git lfs version", GitLfsFound));
     }
 }

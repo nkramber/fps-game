@@ -20,7 +20,7 @@ public sealed record EditorTestFacts(FileRunResult Run, TimeSpan Limit, ToolOutp
 /// The pass rule of a headless test run (D-71). A pass needs three facts: the exit code 0, a test
 /// report with at least one passed test and no other test, and the success line in the log. An
 /// exit code of 0 alone is not a pass, because a headless run can end with 0 and run no test.
-/// `scripts/editor-test.ps1` applies the same rule on the Windows PC (D-72).
+/// `run.ps1 editor-test` applies it on the Windows PC (D-99).
 /// </summary>
 public static class EditorTestRules
 {

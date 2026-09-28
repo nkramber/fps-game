@@ -18,8 +18,8 @@ namespace IronAbsolution::Tests
 #endif
 }
 
-// The first automation test of the project (D-71). The headless run of `make editor-test` and of
-// `scripts/editor-test.ps1` runs each test under the `IronAbsolution` name.
+// The first automation test of the project (D-71). The headless run of `run.ps1 editor-test` runs
+// each test under the `IronAbsolution` name.
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(
 	FIronAbsolutionProjectSettingsTest,
 	"IronAbsolution.Project.Settings",

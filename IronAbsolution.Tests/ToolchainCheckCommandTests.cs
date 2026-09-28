@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text.Json;
 using IronAbsolution.Tools;
 using IronAbsolution.Tools.ToolchainCheck;
 using Xunit;
@@ -8,18 +10,23 @@ using Xunit;
 namespace IronAbsolution.Tests;
 
 /// <summary>
-/// The I/O of the toolchain check: the read of the engine version file, an absent program, the
-/// report, and the Windows script that names the same pins (D-28, D-72, D-79).
+/// The I/O of the toolchain check: vswhere, the toolset folders, the SDK folders, the engine
+/// version file, an absent program, and the report (D-28, D-74, D-79). A temporary folder stands
+/// in for `ProgramFiles(x86)`, and <see cref="StubProgram"/> stands in for vswhere (D-103).
 /// </summary>
 public sealed class ToolchainCheckCommandTests : IDisposable
 {
-    private const string AbsentProgram = "/no/such/folder/xcodebuild";
+    private const string AbsentProgram = "/no/such/folder/git";
 
     private readonly string folder = Path.Combine(Path.GetTempPath(), $"toolchain-check-{Guid.NewGuid():N}");
+    private readonly string programFilesX86;
+    private readonly string visualStudio;
 
     public ToolchainCheckCommandTests()
     {
-        Directory.CreateDirectory(this.folder);
+        this.programFilesX86 = Path.Combine(this.folder, "x86");
+        this.visualStudio = Path.Combine(this.folder, "VS");
+        Directory.CreateDirectory(this.programFilesX86);
     }
 
     public void Dispose()
@@ -35,10 +42,10 @@ public sealed class ToolchainCheckCommandTests : IDisposable
         string versionFile = Path.Combine(buildFolder, "Build.version");
         File.WriteAllText(versionFile, """{ "MajorVersion": 5, "MinorVersion": 8, "PatchVersion": 3 }""");
 
-        ToolchainFacts facts = ToolchainFacts.Gather(this.folder, AbsentProgram, AbsentProgram, this.folder);
+        ToolchainFacts facts = ToolchainFacts.Gather(this.folder, this.programFilesX86, AbsentProgram, this.folder);
 
         Assert.Equal(ToolOutput.Found(versionFile, File.ReadAllText(versionFile)), facts.Engine);
-        Assert.True(ToolchainRules.Evaluate(facts)[1].Holds);
+        Assert.True(ToolchainRules.Evaluate(facts)[3].Holds);
     }
 
     [Theory]
@@ -47,7 +54,7 @@ public sealed class ToolchainCheckCommandTests : IDisposable
     [InlineData("   ")]
     public void AnUnsetEngineVariableGivesAnAbsentEngine(string? engineFolder)
     {
-        ToolchainFacts facts = ToolchainFacts.Gather(engineFolder, AbsentProgram, AbsentProgram, this.folder);
+        ToolchainFacts facts = ToolchainFacts.Gather(engineFolder, this.programFilesX86, AbsentProgram, this.folder);
 
         Assert.Null(facts.Engine.Text);
         Assert.Equal("the variable IRON_ABSOLUTION_ENGINE_DIR is not set (D-79)", facts.Engine.Absence);
@@ -56,42 +63,140 @@ public sealed class ToolchainCheckCommandTests : IDisposable
     [Fact]
     public void AnEngineFolderWithNoVersionFileGivesAnAbsentEngineThatNamesThePath()
     {
-        ToolchainFacts facts = ToolchainFacts.Gather(this.folder, AbsentProgram, AbsentProgram, this.folder);
+        ToolchainFacts facts = ToolchainFacts.Gather(this.folder, this.programFilesX86, AbsentProgram, this.folder);
 
         string versionFile = Path.Combine(this.folder, "Engine", "Build", "Build.version");
         Assert.Null(facts.Engine.Text);
         Assert.Equal($"no file '{versionFile}'. IRON_ABSOLUTION_ENGINE_DIR names the folder that holds 'Engine'", facts.Engine.Absence);
     }
 
-    [Fact]
-    public void AProgramThatDoesNotStartGivesAnAbsentOutputWithItsReason()
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    public void AnUnsetProgramFolderFailsEachWindowsPinAndTheOtherPinsStillReport(string? programFilesX86)
     {
-        // Exit test 3 of PR-8 on a real process start: no exception escapes, and the pin fails with the reason (T-2).
-        ToolchainFacts facts = ToolchainFacts.Gather(this.folder, AbsentProgram, AbsentProgram, this.folder);
-
-        Assert.Null(facts.Xcode.Text);
-        Assert.Equal($"{AbsentProgram} -version", facts.Xcode.Source);
-        Assert.Contains($"'{AbsentProgram}' did not start", facts.Xcode.Absence, StringComparison.Ordinal);
-        Assert.Null(facts.GitLfs.Text);
-        Assert.Equal($"{AbsentProgram} lfs version", facts.GitLfs.Source);
-        Assert.Null(facts.MetalToolchain.Text);
-        Assert.Equal($"{AbsentProgram} -showComponent MetalToolchain", facts.MetalToolchain.Source);
-
+        // One absent source never hides the other pins (T-2).
+        ToolchainFacts facts = ToolchainFacts.Gather(this.folder, programFilesX86, AbsentProgram, this.folder);
         IReadOnlyList<PinResult> results = ToolchainRules.Evaluate(facts);
-        Assert.All(results, result => Assert.False(result.Holds));
+
+        Assert.Equal(5, results.Count);
+        Assert.Equal("the variable ProgramFiles(x86) is not set, so this is not a Windows PC", facts.VisualStudio.Absence);
+        Assert.Equal("the variable ProgramFiles(x86) is not set, so this is not a Windows PC", facts.WindowsSdk.Absence);
+        Assert.StartsWith("no Visual Studio with the C++ tools: the variable ProgramFiles(x86) is not set", facts.Msvc.Absence, StringComparison.Ordinal);
+        Assert.False(results[0].Holds);
+        Assert.False(results[1].Holds);
+        Assert.False(results[2].Holds);
     }
 
     [Fact]
-    public void AProgramWithAFaultExitCodeGivesAnAbsentOutputWithItsStderr()
+    public void AnAbsentVswhereGivesAnAbsentVisualStudioThatNamesThePath()
     {
-        // `git -version` stands in for an xcodebuild of the Command Line Tools: it starts, and it gives a fault exit code.
-        ToolchainFacts facts = ToolchainFacts.Gather(this.folder, "git", AbsentProgram, this.folder);
+        ToolchainFacts facts = ToolchainFacts.Gather(this.folder, this.programFilesX86, AbsentProgram, this.folder);
 
-        Assert.Null(facts.Xcode.Text);
-        Assert.Equal("git -version", facts.Xcode.Source);
-        Assert.StartsWith("the exit code 129, stderr: ", facts.Xcode.Absence, StringComparison.Ordinal);
-        Assert.Contains("-version", facts.Xcode.Absence, StringComparison.Ordinal);
+        string vswhere = ToolPaths.UnderFolder(this.programFilesX86, ToolchainPins.VswherePath);
+        Assert.Equal($"no file '{vswhere}'", facts.VisualStudio.Absence);
+        Assert.Equal($"no Visual Studio with the C++ tools: no file '{vswhere}'", facts.Msvc.Absence);
+    }
+
+    [Fact]
+    public void VswhereGetsTheArgumentsOfTheNewestInstallWithTheCppTools()
+    {
+        string arguments = Path.Combine(this.folder, "arguments.txt");
+        new StubProgram().RecordsArgumentsTo(arguments).WritesLine("[]").ExitsWith(this.Vswhere(), 0);
+
+        ToolchainFacts facts = ToolchainFacts.Gather(this.folder, this.programFilesX86, AbsentProgram, this.folder);
+
+        Assert.Equal(
+            ["-latest", "-products", "*", "-requires", "Microsoft.VisualStudio.Component.VC.Tools.x86.x64", "-format", "json"],
+            File.ReadAllLines(arguments));
+        Assert.Equal("[]", facts.VisualStudio.Text?.Trim());
+        Assert.Contains("gave no install with the C++ tools", facts.Msvc.Absence, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void AVswhereWithAFaultExitCodeGivesAnAbsentOutputWithTheCode()
+    {
+        new StubProgram().ExitsWith(this.Vswhere(), 3);
+
+        ToolchainFacts facts = ToolchainFacts.Gather(this.folder, this.programFilesX86, AbsentProgram, this.folder);
+
+        Assert.Null(facts.VisualStudio.Text);
+        Assert.StartsWith("the exit code 3, stderr: ", facts.VisualStudio.Absence, StringComparison.Ordinal);
         Assert.False(ToolchainRules.Evaluate(facts)[0].Holds);
+    }
+
+    [Fact]
+    public void TheGatherReadsEachToolsetFolderOfTheInstallThatVswhereGives()
+    {
+        this.WriteVswhere();
+        string msvc = ToolPaths.UnderFolder(this.visualStudio, ToolchainPins.MsvcFolder);
+        string compiler = ToolPaths.UnderFolder(Path.Combine(msvc, "14.50.35717"), ToolchainPins.CompilerPath);
+        Directory.CreateDirectory(Path.GetDirectoryName(compiler)!);
+        File.WriteAllText(compiler, "not a program");
+        Directory.CreateDirectory(Path.Combine(msvc, "14.51.36231"));
+
+        ToolchainFacts facts = ToolchainFacts.Gather(this.folder, this.programFilesX86, AbsentProgram, this.folder);
+
+        Assert.Equal(msvc, facts.Msvc.Source);
+        IReadOnlyList<MsvcToolset> toolsets = facts.Msvc.Items ?? throw new InvalidOperationException(facts.Msvc.Absence);
+        Assert.Equal(["14.50.35717", "14.51.36231"], [toolsets[0].Folder, toolsets[1].Folder]);
+
+        // A file with no version resource gives the version 0.0.0, so the pin fails with the value.
+        Assert.NotNull(toolsets[0].Compiler);
+        Assert.Null(toolsets[1].Compiler);
+        Assert.False(ToolchainRules.Evaluate(facts)[1].Holds);
+    }
+
+    [Fact]
+    public void AnInstallWithNoToolsetFolderGivesAnAbsentMsvcThatNamesTheFolder()
+    {
+        this.WriteVswhere();
+        string msvc = ToolPaths.UnderFolder(this.visualStudio, ToolchainPins.MsvcFolder);
+
+        ToolchainFacts facts = ToolchainFacts.Gather(this.folder, this.programFilesX86, AbsentProgram, this.folder);
+
+        Assert.Equal($"no folder '{msvc}'", facts.Msvc.Absence);
+
+        Directory.CreateDirectory(msvc);
+        facts = ToolchainFacts.Gather(this.folder, this.programFilesX86, AbsentProgram, this.folder);
+
+        Assert.Equal($"no toolset in '{msvc}'", facts.Msvc.Absence);
+    }
+
+    [Fact]
+    public void TheGatherReadsEachSdkFolderName()
+    {
+        string include = ToolPaths.UnderFolder(this.programFilesX86, ToolchainPins.WindowsSdkFolder);
+        Directory.CreateDirectory(Path.Combine(include, "10.0.22621.0"));
+        Directory.CreateDirectory(Path.Combine(include, "wdf"));
+
+        ToolchainFacts facts = ToolchainFacts.Gather(this.folder, this.programFilesX86, AbsentProgram, this.folder);
+
+        Assert.Equal(include, facts.WindowsSdk.Source);
+        IReadOnlyList<string> names = facts.WindowsSdk.Items ?? throw new InvalidOperationException(facts.WindowsSdk.Absence);
+        Assert.Equal(["10.0.22621.0", "wdf"], names.Order(StringComparer.Ordinal));
+        Assert.True(ToolchainRules.Evaluate(facts)[2].Holds);
+    }
+
+    [Fact]
+    public void AnAbsentSdkFolderGivesAnAbsentSdkThatNamesTheFolder()
+    {
+        string include = ToolPaths.UnderFolder(this.programFilesX86, ToolchainPins.WindowsSdkFolder);
+
+        ToolchainFacts facts = ToolchainFacts.Gather(this.folder, this.programFilesX86, AbsentProgram, this.folder);
+
+        Assert.Equal($"no folder '{include}'", facts.WindowsSdk.Absence);
+    }
+
+    [Fact]
+    public void AGitThatDoesNotStartGivesAnAbsentGitLfsWithItsReason()
+    {
+        ToolchainFacts facts = ToolchainFacts.Gather(this.folder, this.programFilesX86, AbsentProgram, this.folder);
+
+        Assert.Null(facts.GitLfs.Text);
+        Assert.Equal($"{AbsentProgram} lfs version", facts.GitLfs.Source);
+        Assert.Contains($"'{AbsentProgram}' did not start", facts.GitLfs.Absence, StringComparison.Ordinal);
+        Assert.False(ToolchainRules.Evaluate(facts)[4].Holds);
     }
 
     [Fact]
@@ -99,13 +204,13 @@ public sealed class ToolchainCheckCommandTests : IDisposable
     {
         using StringWriter output = new StringWriter();
         using StringWriter errors = new StringWriter();
-        PinResult[] results = [new PinResult("Xcode", true, "26.1.1 (D-28)", "26.1.1", string.Empty)];
+        PinResult[] results = [new PinResult("Unreal Engine", true, "5.8.3 (D-28)", "5.8.3", string.Empty)];
 
         int exitCode = ToolchainCheckCommand.Report(results, output, errors);
 
         Assert.Equal(0, exitCode);
         Assert.Equal(
-            $"toolchain-check: Xcode: pass. Expected 26.1.1 (D-28), found 26.1.1.{Environment.NewLine}toolchain-check: each of the 1 pins holds.{Environment.NewLine}",
+            $"toolchain-check: Unreal Engine: pass. Expected 5.8.3 (D-28), found 5.8.3.{Environment.NewLine}toolchain-check: each of the 1 pins holds.{Environment.NewLine}",
             output.ToString());
         Assert.Empty(errors.ToString());
     }
@@ -117,14 +222,14 @@ public sealed class ToolchainCheckCommandTests : IDisposable
         using StringWriter errors = new StringWriter();
         PinResult[] results =
         [
-            new PinResult("Xcode", true, "26.1.1 (D-28)", "26.1.1", string.Empty),
+            new PinResult("Git LFS", true, "an install of any version (D-30)", "3.7.1", string.Empty),
             new PinResult("Unreal Engine", false, "5.8.3 (D-28)", "5.8.4", "Each hotfix upgrade is its own PR with build evidence (D-28)."),
         ];
 
         int exitCode = ToolchainCheckCommand.Report(results, output, errors);
 
         Assert.Equal(Program.FaultExitCode, exitCode);
-        Assert.Equal($"toolchain-check: Xcode: pass. Expected 26.1.1 (D-28), found 26.1.1.{Environment.NewLine}", output.ToString());
+        Assert.Equal($"toolchain-check: Git LFS: pass. Expected an install of any version (D-30), found 3.7.1.{Environment.NewLine}", output.ToString());
         Assert.Equal(
             $"toolchain-check: Unreal Engine: fail. Expected 5.8.3 (D-28), found 5.8.4. Each hotfix upgrade is its own PR with build evidence (D-28).{Environment.NewLine}toolchain-check: 1 of the 2 pins fail.{Environment.NewLine}",
             errors.ToString());
@@ -143,34 +248,17 @@ public sealed class ToolchainCheckCommandTests : IDisposable
         Assert.Empty(output.ToString());
     }
 
-    [Fact]
-    public void TheWindowsScriptNamesTheSamePinsAsTheMacCommand()
+    private string Vswhere()
     {
-        // D-72: the PowerShell script matches the Makefile target, so both read one pin and one variable.
-        string script = File.ReadAllText(RepositoryRoot.PathTo("scripts/toolchain-check.ps1"));
-
-        Assert.Contains($"$EngineVariable = '{ToolchainPins.EngineVariable}'", script, StringComparison.Ordinal);
-        Assert.Contains($"$EnginePin = '{ToolchainPins.Engine}'", script, StringComparison.Ordinal);
-        Assert.Contains("Join-Path (Join-Path (Join-Path $EngineFolder 'Engine') 'Build') 'Build.version'", script, StringComparison.Ordinal);
-        Assert.Equal(ToolchainPins.BuildVersionPath, "Engine/Build/Build.version");
+        return ToolPaths.UnderFolder(this.programFilesX86, ToolchainPins.VswherePath);
     }
 
-    [Fact]
-    public void TheWindowsScriptPinsTheToolchainOfTheEpicPage()
+    /// <summary>Writes a vswhere stub that gives one install in the temporary folder.</summary>
+    private void WriteVswhere()
     {
-        // D-74: Visual Studio 2026 and the MSVC toolset 14.50, from the Epic page read on 2026-09-27. The first
-        // 14.50 build that Windows_SDK.json of 5.8.3 does not ban is 14.50.35723.
-        string script = File.ReadAllText(RepositoryRoot.PathTo("scripts/toolchain-check.ps1"));
-
-        Assert.Contains("$VisualStudioMajorPin = 18", script, StringComparison.Ordinal);
-        Assert.Contains("$MsvcMinimum = [version]'14.50.35723'", script, StringComparison.Ordinal);
-        Assert.Contains("$MsvcNextFamily = [version]'14.51.0'", script, StringComparison.Ordinal);
-
-        // The ban reads the product version of cl.exe, not the folder name, as UnrealBuildTool does. The folder
-        // 14.50.35717 can hold a serviced cl.exe of 14.50.35723 or later.
-        Assert.Contains("bin\\Hostx64\\x64\\cl.exe", script, StringComparison.Ordinal);
-        Assert.Contains("$info.ProductMajorPart, $info.ProductMinorPart, $info.ProductBuildPart", script, StringComparison.Ordinal);
-        Assert.Contains("$WindowsSdkMinimum = [version]'10.0.22621.0'", script, StringComparison.Ordinal);
-        Assert.Contains("read on 2026-09-27 (D-74)", script, StringComparison.Ordinal);
+        // The build turns off the reflection of System.Text.Json, so the test escapes the path alone.
+        string path = JsonEncodedText.Encode(this.visualStudio).ToString();
+        string install = $$"""[ { "displayName": "Visual Studio Community 2026", "installationVersion": "18.10.12217.157", "installationPath": "{{path}}" } ]""";
+        new StubProgram().WritesLine(install).ExitsWith(this.Vswhere(), 0);
     }
 }

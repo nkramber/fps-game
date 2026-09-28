@@ -17,7 +17,7 @@ public sealed record PackageRunFacts(FileRunResult Run, TimeSpan Limit, ToolOutp
 /// The pass rule of the timed run of a package (D-89). A pass needs two facts: the exit code 0, and
 /// the success line of the timed run in the log. The success line names the test map and the set
 /// time, so a package that loads another map or stops early does not pass. Each failure names the
-/// log (T-2). `scripts/package-run.ps1` applies the same rule on the Windows PC (D-72).
+/// log (T-2). `run.ps1 package-run` applies it on the Windows PC (D-99).
 /// </summary>
 public static class PackageRunRules
 {

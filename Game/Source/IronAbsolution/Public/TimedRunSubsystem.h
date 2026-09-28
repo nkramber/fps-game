@@ -24,7 +24,7 @@ enum class ETimedRunOption : uint8
 /**
  * The timed run of a package (D-89). With -TimedRunSeconds=<n> on the command line, the game waits
  * for the first map to load, runs it for n seconds, writes the success line in its log, and stops.
- * The start command of the package, `make package-run` or `scripts/package-run.ps1`, reads that line.
+ * The start command of the package, `run.ps1 package-run`, reads that line.
  * A value that is not valid writes an error line and stops the game before the map runs (T-2).
  */
 UCLASS()

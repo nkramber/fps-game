@@ -8,9 +8,9 @@ namespace IronAbsolution.Tests;
 
 /// <summary>
 /// The I/O of the start command of the package, with a stub package at the path of the program of
-/// the package under a temporary checkout (D-89). That path differs between Windows and the Mac,
-/// so each test reads <see cref="PackageRunCommand.PackageProgram"/> (D-102).
-/// <see cref="StubProgram"/> writes a stub that runs on each platform (D-103).
+/// the package under a temporary checkout (D-89, D-102). The stub writes its log to the path of
+/// `-abslog`, as the game does. <see cref="StubProgram"/> writes a stub that runs on Windows and
+/// on the hosted Linux runner (D-103).
 /// </summary>
 public sealed class PackageRunCommandTests : IDisposable
 {
@@ -39,7 +39,7 @@ public sealed class PackageRunCommandTests : IDisposable
     public void AStubRunThatWritesTheSuccessLinePasses()
     {
         // Exit test 3 of PR-10: the package starts and stops, and the command finds the success line.
-        this.WritePackage(new StubProgram().WritesLine(SuccessLine), exitCode: 0);
+        this.WritePackage(new StubProgram().WritesToLog(SuccessLine), exitCode: 0);
 
         (int exitCode, string output, string errors) = this.Run(Limit);
 
@@ -55,7 +55,7 @@ public sealed class PackageRunCommandTests : IDisposable
         // Exit test 4 of PR-10. The log of an earlier run must not make a new run pass (T-2).
         Directory.CreateDirectory(Path.GetDirectoryName(this.logPath)!);
         File.WriteAllText(this.logPath, SuccessLine);
-        this.WritePackage(new StubProgram().WritesLine(StartLine), exitCode: 0);
+        this.WritePackage(new StubProgram().WritesToLog(StartLine), exitCode: 0);
 
         (int exitCode, _, string errors) = this.Run(Limit);
 
@@ -67,7 +67,7 @@ public sealed class PackageRunCommandTests : IDisposable
     [Fact]
     public void APackageThatDoesNotStopFailsAtTheLimitAndNamesTheLog()
     {
-        this.WritePackage(new StubProgram().WritesLine(StartLine).WaitsForSeconds(60), exitCode: 0);
+        this.WritePackage(new StubProgram().WritesToLog(StartLine).WaitsForSeconds(60), exitCode: 0);
 
         (int exitCode, _, string errors) = this.Run(TimeSpan.FromSeconds(1));
 
@@ -78,7 +78,7 @@ public sealed class PackageRunCommandTests : IDisposable
     [Fact]
     public void ACrashFailsWithTheExitCodeAndTheLog()
     {
-        this.WritePackage(new StubProgram().WritesLine(SuccessLine), exitCode: 3);
+        this.WritePackage(new StubProgram().WritesToLog(SuccessLine), exitCode: 3);
 
         (int exitCode, _, string errors) = this.Run(Limit);
 
@@ -87,7 +87,7 @@ public sealed class PackageRunCommandTests : IDisposable
     }
 
     [Fact]
-    public void ThePackageGetsTheTimedRunOptionAndTheStdoutLog()
+    public void ThePackageGetsTheTimedRunOptionAndTheLogPath()
     {
         string argumentsFile = Path.Combine(this.folder, "arguments.txt");
         this.WritePackage(new StubProgram().RecordsArgumentsTo(argumentsFile), exitCode: 0);
@@ -95,8 +95,22 @@ public sealed class PackageRunCommandTests : IDisposable
         this.Run(Limit);
 
         Assert.Equal(
-            ["-TimedRunSeconds=10", "-unattended", "-windowed", "-ResX=1280", "-ResY=720", "-stdout", "-FullStdOutLogOutput"],
+            ["-TimedRunSeconds=10", "-unattended", "-windowed", "-ResX=1280", "-ResY=720", $"-abslog={this.logPath}"],
             File.ReadAllLines(argumentsFile));
+    }
+
+    [Fact]
+    public void TheSuccessLineOnStdoutAloneDoesNotPass()
+    {
+        // The log of the run is the file of `-abslog`. The stdout of the package goes to another file.
+        this.WritePackage(new StubProgram().WritesLine(SuccessLine).WritesToLog(StartLine), exitCode: 0);
+
+        (int exitCode, _, string errors) = this.Run(Limit);
+
+        Assert.Equal(Program.FaultExitCode, exitCode);
+        Assert.Contains($"package-run: Success line: fail. The log '{this.logPath}' has no line", errors, StringComparison.Ordinal);
+        string outputLog = ToolPaths.UnderFolder(this.root, PackageRunCommand.OutputLogFile);
+        Assert.Contains(SuccessLine, File.ReadAllText(outputLog), StringComparison.Ordinal);
     }
 
     [Fact]
@@ -106,13 +120,13 @@ public sealed class PackageRunCommandTests : IDisposable
 
         Assert.Equal(Program.FaultExitCode, exitCode);
         string package = ToolPaths.UnderFolder(this.root, PackageRunCommand.PackageProgram);
-        Assert.Equal($"package-run: no file '{package}'. Run `make package-build` first, and --root names the checkout.", errors.Trim());
+        Assert.Equal($"package-run: no file '{package}'. Run `run.ps1 package-build` first, and --root names the checkout.", errors.Trim());
     }
 
     [Fact]
     public void TheCommandLineReadsTheRootOption()
     {
-        this.WritePackage(new StubProgram().WritesLine(SuccessLine), exitCode: 0);
+        this.WritePackage(new StubProgram().WritesToLog(SuccessLine), exitCode: 0);
         using StringWriter output = new StringWriter();
         using StringWriter errors = new StringWriter();
 

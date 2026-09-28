@@ -157,15 +157,30 @@ public sealed class CodexReviewCommandTests
     }
 
     [Fact]
-    public void TheWorktreeListNamesTheFolderUnderPrivateOnMacOs()
+    public void TheWorktreeListNamesTheFolderWithTheForwardSlashesOfGit()
     {
+        // D-106: git on Windows gives `C:/Users/.../iron-absolution-review-pr-4`, and the old check
+        // compared that text with the backslash path, so a second round refused the folder.
         string worktree = Path.Combine(Path.GetTempPath(), "iron-absolution-review-pr-4");
         string full = Path.GetFullPath(worktree).TrimEnd(Path.DirectorySeparatorChar);
-        string list = $"worktree /repo\nHEAD abc\nbranch refs/heads/main\n\nworktree /private{full}\nHEAD def\nbranch refs/heads/review/pr-4\n";
+        string gitForm = full.Replace('\\', '/');
+        string list = $"worktree /repo\nHEAD abc\nbranch refs/heads/main\n\nworktree {gitForm}\nHEAD def\nbranch refs/heads/review/pr-4\n";
 
         Assert.True(CodexReviewCommand.ListsWorktree(list, worktree));
         Assert.True(CodexReviewCommand.ListsWorktree($"worktree {full}\n", worktree));
+        Assert.True(CodexReviewCommand.ListsWorktree($"worktree {gitForm}\r\n", worktree));
         Assert.False(CodexReviewCommand.ListsWorktree("worktree /repo\n", worktree));
+        Assert.False(CodexReviewCommand.ListsWorktree("worktree \n", worktree));
+    }
+
+    [Fact]
+    public void TheWorktreeListReadsTheCaseOfAPathAsWindowsDoes()
+    {
+        string worktree = Path.Combine(Path.GetTempPath(), "iron-absolution-review-pr-4");
+        string upper = Path.GetFullPath(worktree).ToUpperInvariant().Replace('\\', '/');
+
+        // Windows reads two paths that differ in case as one path. Linux does not.
+        Assert.Equal(OperatingSystem.IsWindows(), CodexReviewCommand.ListsWorktree($"worktree {upper}\n", worktree));
     }
 
     [Fact]

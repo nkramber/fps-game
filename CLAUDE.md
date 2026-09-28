@@ -121,7 +121,7 @@ The C# tools project `IronAbsolution.Tools` holds the commands of the repository
 - Follow the Epic C++ coding standard: https://dev.epicgames.com/documentation/unreal-engine/epic-cplusplus-coding-standard-for-unreal-engine.
 - C++ holds the rules. Data assets and Blueprint subclasses hold tuning and content (D-29).
 - Each change keeps the game working on Windows and inside the budget of D-32. The game does not support macOS (D-91).
-- The sessions and the development tools run on the Windows PC (D-92). A session runs the builds and tests, and attaches the logs (D-33). PR-13 and PR-14 move the commands from the Mac (D-94).
+- The sessions and the development tools run on the Windows PC (D-92). A session runs the builds and tests, and attaches the logs (D-33).
 - Ask the owner before you run a build, a test, or a package that opens a game window. Wait for the confirmation (D-96).
 - Game rules and engine technology of the role models do not transfer (D-12).
 
@@ -155,11 +155,11 @@ Gitar is a documented plan only (D-7). Add no gitar step, wait, script, template
 - `run.ps1 handoff-rotate`: move each handoff entry after the tenth to the archive, and print the next session number (D-58, D-59).
 - `run.ps1 hooks`: install the pre-commit hook in this checkout, one time (D-43).
 - `run.ps1 codex-review -PR <n>`: the cross-provider review of one PR. The exit codes are 0 approve, 10 changes, 11 three-strike stop, 3 refused start, and 1 fault (D-14).
-- `make toolchain-check`: the pins of the Mac toolchain: Xcode, the engine, Git LFS, and the Metal Toolchain (D-28, D-79, D-87). `docs/runbooks/engine-setup.md` gives the install. PR-14 moves the check to the Windows pins (D-97).
-- `make editor-build`: build the editor target of the Unreal project on the Mac. `scripts/editor-build.ps1` does the same on the Windows PC (D-72).
-- `make editor-test`: run each automation test headless on the Mac. A pass needs the exit code 0, a test report, and the success line of the log. `scripts/editor-test.ps1` does the same on the Windows PC.
-- `make package-build`: make a packaged Development build of the game on the Mac. `scripts/package-build.ps1` does the same on the Windows PC (D-72).
-- `make package-run`: start the package for a timed run of the test map. A pass needs the exit code 0 and the success line of the log (D-89). `scripts/package-run.ps1` does the same on the Windows PC.
+- `run.ps1 toolchain-check`: the pins of the Windows toolchain: Visual Studio, MSVC, the Windows SDK, the engine, and Git LFS (D-28, D-74, D-79). `docs/runbooks/engine-setup.md` gives the install.
+- `run.ps1 editor-build`: build the editor target of the Unreal project (D-72).
+- `run.ps1 editor-test`: run each automation test headless. A pass needs the exit code 0, a test report, and the success line of the log.
+- `run.ps1 package-build`: make a packaged Development build of the game (D-72).
+- `run.ps1 package-run`: start the package for a timed run of the test map. A pass needs the exit code 0 and the success line of the log (D-89). It opens a game window (D-96).
 
 The CI of each PR runs the `ste-check`, `build, test, and format`, and `coverage report` jobs (D-42, D-45). The `doc-gate` workflow runs on each push and on each edit of the description (D-56). The `review-gate` workflow runs from the base branch on each push and on each label change (D-64). The ruleset of `main` requires these five checks (D-61, D-64). `docs/runbooks/main-ruleset.md` gives its steps.
 

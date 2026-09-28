@@ -7,10 +7,9 @@ using IronAbsolution.Tools.ToolchainCheck;
 namespace IronAbsolution.Tools.PackageRun;
 
 /// <summary>
-/// The `package-run` command of the Mac, the start command of the package (D-89). It starts the
-/// package of `make package-build` with the timed-run option, and applies the pass rule of
-/// <see cref="PackageRunRules"/>. `make package-run` runs it. The Windows PC runs
-/// `scripts/package-run.ps1` instead (D-72).
+/// The `package-run` command, the start command of the Windows package (D-89). It starts the
+/// package of `run.ps1 package-build` with the timed-run option, and applies the pass rule of
+/// <see cref="PackageRunRules"/>. `run.ps1 package-run` runs it (D-99).
 /// </summary>
 public static class PackageRunCommand
 {
@@ -18,15 +17,17 @@ public static class PackageRunCommand
     public const string Name = "package-run";
 
     /// <summary>
-    /// Gets the program of the package of this platform, under the root (D-102). The build of the
-    /// package writes it there. Windows has one program file, and the Mac has an application bundle.
+    /// The program of the package, under the root (D-102). The build of the package writes it
+    /// there. The program under Binaries is the game itself. The program at the top of the package
+    /// only starts it, so its exit code does not prove the run.
     /// </summary>
-    public static string PackageProgram { get; } = OperatingSystem.IsWindows()
-        ? "Game/Saved/Packages/Windows/IronAbsolution/Binaries/Win64/IronAbsolution.exe"
-        : "Game/Saved/Packages/Mac/IronAbsolution.app/Contents/MacOS/IronAbsolution";
+    public const string PackageProgram = "Game/Saved/Packages/Windows/IronAbsolution/Binaries/Win64/IronAbsolution.exe";
 
-    /// <summary>The file that takes the stdout of the package, under the root. The evidence form takes it (D-31).</summary>
+    /// <summary>The log that the package writes through `-abslog`, under the root. The evidence form takes it (D-31).</summary>
     public const string LogFile = "Game/Saved/Logs/package-run.log";
+
+    /// <summary>The file that takes the stdout of the package, under the root.</summary>
+    public const string OutputLogFile = "Game/Saved/Logs/package-run.stdout.log";
 
     /// <summary>The file that takes the stderr of the package, under the root.</summary>
     public const string ErrorLogFile = "Game/Saved/Logs/package-run.stderr.log";
@@ -75,15 +76,16 @@ public static class PackageRunCommand
         string package = ToolPaths.UnderFolder(root, PackageProgram);
         if (!File.Exists(package))
         {
-            errors.WriteLine($"{Name}: no file '{package}'. Run `make package-build` first, and --root names the checkout.");
+            errors.WriteLine($"{Name}: no file '{package}'. Run `run.ps1 package-build` first, and --root names the checkout.");
             return Program.FaultExitCode;
         }
 
         string logPath = ToolPaths.UnderFolder(root, LogFile);
+        string outputLogPath = ToolPaths.UnderFolder(root, OutputLogFile);
         string errorLogPath = ToolPaths.UnderFolder(root, ErrorLogFile);
         try
         {
-            RemoveOldLogs(logPath, errorLogPath);
+            RemoveOldLogs(logPath, outputLogPath, errorLogPath);
         }
         catch (Exception fault) when (fault is IOException or UnauthorizedAccessException)
         {
@@ -95,7 +97,7 @@ public static class PackageRunCommand
         FileRunResult run;
         try
         {
-            run = ExternalProcess.RunToFiles(package, PackageArguments(), root, logPath, errorLogPath, [], limit);
+            run = ExternalProcess.RunToFiles(package, PackageArguments(logPath), root, outputLogPath, errorLogPath, [], limit);
         }
         catch (InvalidOperationException fault)
         {
@@ -108,12 +110,13 @@ public static class PackageRunCommand
     }
 
     /// <summary>Gives each argument of the timed run of the package.</summary>
+    /// <param name="logPath">The full path of the log that the package writes.</param>
     /// <returns>The arguments, in order.</returns>
-    public static IReadOnlyList<string> PackageArguments()
+    public static IReadOnlyList<string> PackageArguments(string logPath)
     {
-        // The Mac package runs in the App Sandbox, so it cannot write a log file outside its
-        // container, and `-abslog` fails with no error (F-27). So the log comes from stdout. A
-        // window keeps the desktop free during the run.
+        // The game is a program of the Windows subsystem, so its stdout is not its log. The game
+        // writes its log to the path of `-abslog`, and the Windows package has no sandbox that
+        // stops that write. A window keeps the desktop free during the run.
         return
         [
             $"-TimedRunSeconds={PackageRunRules.RunSeconds}",
@@ -121,15 +124,14 @@ public static class PackageRunCommand
             "-windowed",
             "-ResX=1280",
             "-ResY=720",
-            "-stdout",
-            "-FullStdOutLogOutput",
+            $"-abslog={logPath}",
         ];
     }
 
     /// <summary>
     /// Removes the logs of the last run, so a run that writes no log cannot pass on an old one (T-2).
     /// </summary>
-    private static void RemoveOldLogs(string logPath, string errorLogPath)
+    private static void RemoveOldLogs(string logPath, string outputLogPath, string errorLogPath)
     {
         // File.Delete fails when the folder is absent, so the folder comes first.
         string? logFolder = Path.GetDirectoryName(logPath);
@@ -140,6 +142,7 @@ public static class PackageRunCommand
 
         Directory.CreateDirectory(logFolder);
         File.Delete(logPath);
+        File.Delete(outputLogPath);
         File.Delete(errorLogPath);
     }
 

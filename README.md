@@ -4,9 +4,9 @@ Iron Absolution (working title, D-39) is an original, fast first-person shooter 
 
 ## Status
 
-- The repository holds plans, rules, and a C# tools project that checks the documents. It has no Unreal project, no game code, and no assets. Nothing is playable.
+- The repository holds plans, rules, a C# tools project, and an empty Unreal project in `Game/` (D-73). The project has one test map and its automation tests. It has no game rules and no assets. Nothing is playable.
 - The high-level roadmap is sections 7 and 8 of `docs/design.md`. The owner accepts it on the condition of D-27.
-- The next work is phase 0: the tools, the automatic Codex review, and the gates of the role models.
+- The current work is phase 1: the proof of the engine and the toolchain on the Windows PC (D-91).
 
 ## Where to read
 
@@ -22,7 +22,9 @@ Iron Absolution (working title, D-39) is an original, fast first-person shooter 
 
 ## Setup
 
-The tools project needs the .NET SDK of `global.json`. Run `run.ps1 verify` to build, test, and check the repository, and run `run.ps1 hooks` one time. Phase 1 of the roadmap proves and documents the engine, the toolchain, and Git LFS.
+The tools project needs the .NET SDK of `global.json`. Run `run.ps1 verify` to build, test, and check the repository, and run `run.ps1 hooks` one time. Run `run.ps1 help` for each target.
+
+The engine work runs on Windows alone (D-91). `docs/runbooks/engine-setup.md` installs the toolchain. `run.ps1 toolchain-check` checks its pins, and `run.ps1 editor-build` and `run.ps1 editor-test` build and test the project.
 
 ## Repository conventions
 

@@ -1,3 +1,180 @@
+## Session 48: 2026-09-28, Claude Code
+
+Author: Claude Code
+Session: author PR-14, round 2 close. Repository: iron-absolution. Branch: `feat/pr-14-windows-engine-commands`. PR: #14. Role: author. Base: `0351bbba52a4fddd91b559ad7ace9f1bb020b2f0`.
+
+### What this session did, and why
+
+- Round 2 approved the effective head `aed74bb`, and the five checks passed at `9e426cb`.
+- The owner read the merge summary and confirmed the merge.
+- One hosted test failed one time before a clean rerun. This PR adds it to the design doc as F-28, on the choice of the owner. Its fix is a separate concern (G-7).
+
+### The state of the build
+
+- The effective head stays `aed74bb`, because this commit changes `docs/` alone (D-49).
+- The remote head is the commit of this entry, pending merge through auto-merge.
+
+### What is in flight
+
+- The auto-merge of #14 after the checks of this commit.
+
+### Traps and gotchas
+
+- F-28: the stub of D-103 can fail to start on the hosted runner. The assert on the exit code hides the error text, so a fix first proves the cause.
+
+### The questions that block progress
+
+- None. OQ-16 still holds the gitar pass (D-7).
+
+### The next concrete action
+
+- After the merge, write the transitional prompt for PR-11, the gate record. Name F-28 as work for a later PR.
+
+## Session 47: 2026-09-28, Codex
+
+Author: Codex
+Session: reviewer PR-14, round 2. Repository: iron-absolution. Branch: `feat/pr-14-windows-engine-commands`. PR: #14. Role: reviewer. Base: `0351bbba52a4fddd91b559ad7ace9f1bb020b2f0`.
+
+### What this session did, and why
+
+- The review checked the response to round 1, D-107, and the final effective head, `aed74bb`.
+- The provider gate passed. The review found no defect in scope.
+- The local verification passed. The hosted test rerun passed after one test failed in the first attempt.
+
+### The state of the build
+
+- `run.ps1 verify` passed with 538 tests, no skips, format, and ste-check.
+- The hosted build, test, and format, coverage, doc-gate, and ste-check jobs passed. `review-gate` awaits this record.
+- The work head is `aed74bb2c76d0840a555772b86f82696d175c59f`. The remote head before this metadata commit is `efcf922d9034dea504f415bce68a269051439219`.
+- This review record and handoff entry are pending push as one metadata commit.
+
+### What is in flight
+
+- The review approves effective head `aed74bb`. The PR is ready for the owner merge step after the checks read this record.
+
+### Traps and gotchas
+
+- The first hosted attempt had one failed test. The rerun passed, and local verification passed.
+- `review/pr-14` has no upstream. Check the remote head with `gh pr view` after the push.
+
+### The questions that block progress
+
+- None. OQ-16 still holds the separate gitar pass (D-7).
+
+### The next concrete action
+
+- Push this metadata commit, check the remote head and `review-gate`, then give the owner the merge summary.
+
+## Session 46: 2026-09-28, Claude Code
+
+Author: Claude Code
+Session: author PR-14, round 2. Repository: iron-absolution. Branch: `feat/pr-14-windows-engine-commands`. PR: #14. Role: author. Base: `0351bbba52a4fddd91b559ad7ace9f1bb020b2f0`.
+
+### What this session did, and why
+
+- Round 1 gave `Blocked` with no finding. It read D-96 as a rule for each build and test, and it recorded `f6f1d35` as the head.
+- The owner confirmed that D-96 covers a window alone. D-107 records it.
+- `docs/reviews/pr-14-response.md` answers both causes. The effective head stays `aed74bb`, because that commit changes three files under `Game/Source/` (D-49).
+
+### The state of the build
+
+- `run.ps1 verify` passed at `aed74bb`: 538 tests, no skips, format, and ste-check with 0 findings.
+- Four hosted checks passed at `aed74bb`. `review-gate` waits for an approval record.
+- The remote head is the commit of this entry, pending merge.
+
+### What is in flight
+
+- Round 2 of `run.ps1 codex-review -PR 14`, then the merge summary.
+
+### Traps and gotchas
+
+- Round 1 left its worktree in the temporary folder. Round 2 removes it through the worktree check of D-106.
+- A commit of C++ comments moves the effective head, because `Game/` is outside the documents set (D-49).
+
+### The questions that block progress
+
+- None. OQ-16 still holds the gitar pass (D-7).
+
+### The next concrete action
+
+- After the merge, write the transitional prompt for PR-11, the gate record.
+
+## Session 45: 2026-09-28, Codex
+
+Author: Codex
+Session: reviewer PR-14, round 1. Repository: iron-absolution. Branch: `feat/pr-14-windows-engine-commands`. PR: #14. Role: reviewer. Base: `0351bbba52a4fddd91b559ad7ace9f1bb020b2f0`.
+
+### What this session did, and why
+
+- The review read the PR-14 diff, its focused roadmap, the owner decisions, the PR comment, and the hosted checks.
+- The provider gate passed. The review found no defect in scope.
+- Local verification awaits the owner's confirmation under D-96. The review record gives the blocked verdict until that check completes.
+
+### The state of the build
+
+- The owner reported that `run.ps1 verify` passed with 538 tests, no skips, format, and ste-check.
+- The owner provided Windows evidence for the engine exit tests. The hosted build, test, and format, coverage, doc-gate, and ste-check jobs passed.
+- The remote head before this metadata push was `aed74bb2c76d0840a555772b86f82696d175c59f`. The work head is `f6f1d35f122e7769f2733ba69cd6395459a8cafc`.
+- The review record, this entry, and the rotated archive entry are pending push as one metadata commit.
+
+### What is in flight
+
+- The owner must confirm local verification under D-96. Then update the review record and rerun the review gate.
+
+### Traps and gotchas
+
+- `review/pr-14` has no upstream. Compare `git rev-parse HEAD` with the head from `gh pr view` after the push.
+- `package-run` opens a game window. D-96 requires the owner's confirmation before that command.
+
+### The questions that block progress
+
+- The local build and test checks await the owner's confirmation under D-96.
+- OQ-16 still holds the gitar pass (D-7).
+
+### The next concrete action
+
+- Wait for the owner's answer about local verification. If confirmed, run `run.ps1 verify`, update the review record, and check `review-gate` again.
+
+## Session 44: 2026-09-28, Claude Code
+
+Author: Claude Code
+Session: author PR-14, round 1. Repository: iron-absolution. Branch: `feat/pr-14-windows-engine-commands`. PR: #14. Role: author. Base: `0351bbba52a4fddd91b559ad7ace9f1bb020b2f0`.
+
+### What this session did, and why
+
+- Exit test 6 of PR-13 held: the five checks passed on the final head of #13, and `ci` passed on `main`.
+- `run.ps1` got the five engine targets. `toolchain-check` reads the Windows pins in C#. It gives the same lines as the old script (D-104).
+- The Makefile, `scripts/`, the Xcode and Metal pins, the Mac paths, and the Mac and Linux sections of `DefaultEngine.ini` went (D-97, D-105).
+- The package gets `-abslog`, because the game is a program of the Windows subsystem.
+- The worktree check of `codex-review` reads the forward slashes of git on Windows (D-106). The regression tests fail on the old code.
+- The runbooks, the agent files, the README, and the evidence form of the PR template name the targets of the entry.
+- The owner gave D-104 to D-106.
+
+### The state of the build
+
+- `run.ps1 verify` passed: 538 tests, no skips, format, and ste-check with 0 findings.
+- A fresh clone passed exit tests 1 to 5 and 7 from the entry. The PR comment "Windows evidence" holds the output.
+- M-1 is 3.53 GB. M-2 is 41.6 s for the editor and 101.25 s for the package.
+- The remote head is the commit of this entry, pending merge.
+
+### What is in flight
+
+- The Codex review of #14, then the merge summary.
+
+### Traps and gotchas
+
+- The Bash tool of Claude Code turns a doubled backslash into one backslash, so `.\run.ps1` in a heredoc became a carriage return. Use the Edit tool for a backslash.
+- The editor log has no `LoadMap` line. It writes `MAP LOAD FILE="...L_Test.umap"` when the map loads.
+- Unreal on Windows quotes each argument again (`LaunchWindows.cpp`), so `ArgumentList` works for `-ExecCmds`.
+
+### The questions that block progress
+
+- None. OQ-16 still holds the gitar pass (D-7).
+
+### The next concrete action
+
+- After the merge, write the transitional prompt for PR-11, the gate record.
+
 ## Session 43: 2026-09-28, Codex
 
 Author: Codex
@@ -173,175 +350,3 @@ Session: review PR-10, round 1. Repository: iron-absolution. Branch: `feat/pr-10
 ### The next concrete action
 
 - The author gives the owner the merge summary after all required checks pass.
-
-## Session 38: 2026-09-28, Claude Code
-
-Author: Claude Code
-Session: author PR-10, round 1. Repository: iron-absolution. Branch: `feat/pr-10-packaged-build`. PR: #11. Role: author. Base: `b46321ed8a4909c36e7c305a0e07af859c7320bb`.
-
-### What this session did, and why
-
-- Before the work, the `ci` run of `main` at `b46321e` passed (exit test 9 of PR-9). `make toolchain-check` and `make editor-test` passed.
-- `make package-build`, `make package-run`, and the two Windows scripts. The game subsystem `UTimedRunSubsystem` runs the first map for a set time and writes the success line.
-- The owner gave D-89 (10 seconds, a limit of 5 minutes) and D-90 (the bundle id `com.nkramber.ironabsolution`).
-- The first package runs found F-25 (the PR-9 test in the game target), F-26 (the `-package` step of the Mac), and F-27 (the App Sandbox stops `-abslog`).
-
-### The state of the build
-
-- `make` passes on the Mac: 527 tests, a clean format, and 0 findings. CI ran the PowerShell tests with 0 skips.
-- A fresh clone passed `make package-build` (136.5 s) and `make package-run` on the Mac. The Windows scripts passed in the checkout of the owner (105.6 s). The PR comments "Mac evidence" and "Windows evidence" hold the output.
-- The remote head is the commit of this entry. The state is pending merge.
-
-### What is in flight
-
-- The review of round 1 by `make codex-review PR=11`.
-
-### Traps and gotchas
-
-- The Mac package writes its log in the container `~/Library/Containers/com.nkramber.ironabsolution`. `make package-run` reads stdout.
-- The owner gives Windows output as text in the chat. The session posts it in the PR.
-
-### The questions that block progress
-
-- None. OQ-16 still holds gitar (D-7).
-
-### The next concrete action
-
-- After the merge, the next PR is not PR-11. The owner changed the scope on 2026-09-28, and no D-# id holds it yet. The next session records these two answers as decisions:
-  1. "We will ONLY support Windows, not Mac." This supersedes the macOS part of D-32.
-  2. The engine work moves to the Windows PC, and the sessions run there. This reverses D-55 and revises D-33 in part.
-- That PR takes the id PR-12, and it comes before PR-11. It plans the change first. The Mac pins, the Mac targets, and the Mac M-9 of PR-11 change.
-
-## Session 37: 2026-09-28, Claude Code
-
-Author: Claude Code
-Session: author PR-9, merge. Repository: iron-absolution. Branch: `feat/pr-9-project-scaffold`. PR: #10. Role: author. Base: `830bf40cd47f8f707d060a894017c29bff446566`.
-
-### What this session did, and why
-
-- Round 1 of the review gave `Ready for owner merge` for the effective head `124e1ae1e449af46cceaadc475a17f3510b9b669`, with no finding.
-- The record notes a blank line at the end of `Game/Config/DefaultInput.ini`, from the template of Epic. No check reads it, so the file stays.
-
-### The state of the build
-
-- `make` passes on the Mac: 494 tests, a clean format, and 0 findings. CI ran the PowerShell tests.
-- The remote head is the commit of this entry. The state is pending merge.
-
-### What is in flight
-
-- The owner confirms the squash merge after the merge summary. Then auto-merge runs (D-67).
-
-### Traps and gotchas
-
-- This entry is a metadata commit, so the approval of `124e1ae` stands (D-14).
-
-### The questions that block progress
-
-- None. OQ-16 still holds gitar (D-7).
-
-### The next concrete action
-
-- After the merge, write the transitional prompt of PR-10, the packaged build. Work from the clone on the `IronAbsolution` volume (D-81).
-
-## Session 36: 2026-09-28, Codex
-
-Author: Codex
-Session: reviewer PR-9, round 1. Repository: iron-absolution. Branch: `feat/pr-9-project-scaffold`. PR: #10. Role: reviewer. Base: `830bf40cd47f8f707d060a894017c29bff446566`.
-
-### What this session did, and why
-
-- Reviewed the full PR-9 diff and its contracts. No finding holds at effective head `124e1ae1e449af46cceaadc475a17f3510b9b669`.
-- Added the review record for PR #10. The provider gate passes under T-4 and D-6.
-
-### The state of the build
-
-- `make` passed: 474 tests passed, 20 PowerShell tests skipped because `pwsh` is not installed, formatting passed, and ste-check reported 0 findings.
-- CI passed build, test, and format; coverage; doc-gate; and ste-check on remote head `f3f015537d8c0e5da54b765dbdcae23fd599f236`. The review-gate check failed because the review record did not exist yet.
-- The Mac and Windows build and test results are in the owner comments. The Windows run is owner-reported.
-- The PR state is pending merge. The metadata commit must reach `origin/feat/pr-9-project-scaffold`.
-
-### What is in flight
-
-- The review-gate check must run after the metadata commit.
-
-### Traps and gotchas
-
-- The local Mac cannot run the PowerShell tests. CI ran the full test set.
-- `git diff --check` reports one extra blank line at EOF in `Game/Config/DefaultInput.ini`.
-
-### The questions that block progress
-
-- None. OQ-16 still holds the gitar pass under D-7.
-
-### The next concrete action
-
-- Read the review-gate result after the metadata push. If it passes, prepare the four-part merge summary for the owner.
-
-## Session 35: 2026-09-28, Claude Code
-
-Author: Claude Code
-Session: author PR-9, round 1. Repository: iron-absolution. Branch: `feat/pr-9-project-scaffold`. PR: #10. Role: author. Base: `830bf40cd47f8f707d060a894017c29bff446566`.
-
-### What this session did, and why
-
-- Added the Unreal project in `Game/` from the Blank C++ template of 5.8.3: one module, the Game and Editor targets, and the test `IronAbsolution.Project.Settings` (D-73).
-- The owner made the empty map `L_Test` with no World Partition (D-84). Git LFS stores it (D-86).
-- Added `make editor-build`, `make editor-test`, and two PowerShell scripts (D-72). A pass needs the exit code 0, a report with passed tests alone, and the success line.
-- The owner answered D-84 to D-88. F-23: Zen starts before Editor Preferences, so the owner wrote the cache path first (D-85). F-24: the check passed with no Metal Toolchain, so the check has a fourth pin (D-87). D-88 turns off the Android File Server, which wrote a token.
-- Mac evidence: a fresh clone builds in 35.5 s (M-2) and restores the map from LFS. The test passes headless. A test that failed on purpose gave the exit code 3, and the session removed it. M-1 is 6.42 GB. The internal disk holds the Zen programs alone.
-
-### The state of the build
-
-- `make` passes: 494 tests, a clean format, and 0 findings. The script tests ran under a portable pwsh 7.5.3 in the scratchpad.
-- The remote head is the commit of this entry. The state is pending merge.
-
-### What is in flight
-
-- Windows evidence: the owner ran both scripts in a fresh clone at `C:\dev\iron-absolution`. The build took 45.3 s (M-2), and each check of the test passed. The PR comments hold both logs.
-- The review of `make codex-review PR=10` is next.
-
-### Traps and gotchas
-
-- A shell of the harness does not read `~/.zshrc`. Export `IRON_ABSOLUTION_ENGINE_DIR` in each engine command.
-- The old clone on `/Volumes/SSD-1TB` has the same name. Run `pwd` first.
-- The report `index.json` starts with a UTF-8 byte order mark.
-- `GetGameDefaultMap` gives the package name, with no object name.
-
-### The questions that block progress
-
-- None. OQ-16 still holds gitar (D-7).
-
-### The next concrete action
-
-- Read the verdict of the review, and answer each finding with the review-response skill.
-
-## Session 34: 2026-09-27, Claude Code
-
-Author: Claude Code
-Session: author PR-8, merge. Repository: iron-absolution. Branch: `feat/pr-8-engine-toolchain`. PR: #9. Role: author. Base: `2133abdbd714b3ba2dddf916adc1aef2b693a120`.
-
-### What this session did, and why
-
-- Round 2 of the review gave `Ready for owner merge` for the effective head `bc930a946d214c805ac5eefc77a31d4599fc5625`, with no open finding.
-- The five required checks are green on `743e61d`, `review-gate` included. No review thread is open.
-
-### The state of the build
-
-- `make` passes on the Mac: 405 tests, with 7 skipped where PowerShell is absent. CI ran 405 of 405 with none skipped.
-- The remote head is the commit of this entry. The state is pending merge.
-
-### What is in flight
-
-- The owner confirms the squash merge after the merge summary. Then auto-merge runs (D-67).
-
-### Traps and gotchas
-
-- This entry is a metadata commit, so the approval of `bc930a9` stands (D-14).
-
-### The questions that block progress
-
-- None. OQ-16 still holds gitar (D-7).
-
-### The next concrete action
-
-- After the merge, write the transitional prompt of PR-9. Work from the clone on the `IronAbsolution` volume (D-81). Set the cache path at the first editor start (D-83).
