@@ -70,7 +70,7 @@ What we pay:
 What we do not know, and the measurement that answers it:
 
 - M-1: Peak memory of the Unreal Editor on the 16 GB Mac. Phase 1. First value on 2026-09-28 in PR-9: a peak memory footprint of 6.42 GB, with the empty test map open (`/usr/bin/time -l`).
-- M-2: Time of a clean build of the editor target and of a packaged build, on both platforms. Phase 1. First values of the editor target from a fresh clone, on 2026-09-28 in PR-9: 35.5 seconds on the Mac, and 45.3 seconds on Windows.
+- M-2: Time of a clean build of the editor target and of a packaged build, on both platforms. Phase 1. First values of the editor target from a fresh clone, on 2026-09-28 in PR-9: 35.5 seconds on the Mac, and 45.3 seconds on Windows. First values of the packaged Development build on 2026-09-28 in PR-10: 136.5 seconds on the Mac, and 105.6 seconds on Windows. The Mac value comes from a fresh clone with a warm engine cache. The Windows value comes from the checkout of the owner, with a full cook. Each value is the `BuildCookRun time` of RunUAT.
 - M-3: Frame time in the test gym on both platforms, against the budgets of D-32. Phase 3.
 - M-4: Frame time in the combat sandbox at the maximum enemy count. Phase 4.
 - M-5: Frame time and memory of the vertical-slice room. Phase 5.

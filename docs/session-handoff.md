@@ -1,3 +1,41 @@
+## Session 38: 2026-09-28, Claude Code
+
+Author: Claude Code
+Session: author PR-10, round 1. Repository: iron-absolution. Branch: `feat/pr-10-packaged-build`. PR: #11. Role: author. Base: `b46321ed8a4909c36e7c305a0e07af859c7320bb`.
+
+### What this session did, and why
+
+- Before the work, the `ci` run of `main` at `b46321e` passed (exit test 9 of PR-9). `make toolchain-check` and `make editor-test` passed.
+- `make package-build`, `make package-run`, and the two Windows scripts. The game subsystem `UTimedRunSubsystem` runs the first map for a set time and writes the success line.
+- The owner gave D-89 (10 seconds, a limit of 5 minutes) and D-90 (the bundle id `com.nkramber.ironabsolution`).
+- The first package runs found F-25 (the PR-9 test in the game target), F-26 (the `-package` step of the Mac), and F-27 (the App Sandbox stops `-abslog`).
+
+### The state of the build
+
+- `make` passes on the Mac: 527 tests, a clean format, and 0 findings. CI ran the PowerShell tests with 0 skips.
+- A fresh clone passed `make package-build` (136.5 s) and `make package-run` on the Mac. The Windows scripts passed in the checkout of the owner (105.6 s). The PR comments "Mac evidence" and "Windows evidence" hold the output.
+- The remote head is the commit of this entry. The state is pending merge.
+
+### What is in flight
+
+- The review of round 1 by `make codex-review PR=11`.
+
+### Traps and gotchas
+
+- The Mac package writes its log in the container `~/Library/Containers/com.nkramber.ironabsolution`. `make package-run` reads stdout.
+- The owner gives Windows output as text in the chat. The session posts it in the PR.
+
+### The questions that block progress
+
+- None. OQ-16 still holds gitar (D-7).
+
+### The next concrete action
+
+- After the merge, the next PR is not PR-11. The owner changed the scope on 2026-09-28, and no D-# id holds it yet. The next session records these two answers as decisions:
+  1. "We will ONLY support Windows, not Mac." This supersedes the macOS part of D-32.
+  2. The engine work moves to the Windows PC, and the sessions run there. This reverses D-55 and revises D-33 in part.
+- That PR takes the id PR-12, and it comes before PR-11. It plans the change first. The Mac pins, the Mac targets, and the Mac M-9 of PR-11 change.
+
 ## Session 37: 2026-09-28, Claude Code
 
 Author: Claude Code
@@ -314,36 +352,3 @@ Session: author PR-7, round 1. Repository: iron-absolution. Branch: `docs/pr-7-p
 ### The next concrete action
 
 - After the merge, write the transitional prompt of PR-8. PR-8 has two concerns: the engine toolchain and the label text of D-77.
-
-## Session 28: 2026-09-27, Claude Code
-
-Author: Claude Code
-Session: author PR-6, merge. Repository: iron-absolution. Branch: `feat/pr-6-review-gate`. PR: #7. Role: author. Base: `5871f2c870d5eb110eccbadd67c5f633c5619155`.
-
-### What this session did, and why
-
-- Review round 2 approved the effective head `2338304` with the verdict `Ready for owner merge`. The two rounds used the exit codes 10 and 0.
-- P2-1 has the status `accepted risk, D-68.` No finding stays open.
-
-### The state of the build
-
-- The effective head is `2338304`. `make` passes on the Mac: 363 tests, a clean format, and 0 findings of ste-check.
-- The four checks of the head are green. PR #7 gets no `review-gate` check, because GitHub runs that workflow only from `main` (D-67).
-- The remote head is the commit of this entry. The state is pending merge.
-
-### What is in flight
-
-- The owner confirms the squash merge of PR #7. Auto-merge is off, so the session runs `gh pr merge 7 --squash` after the confirmation.
-
-### Traps and gotchas
-
-- The live ruleset requires four checks until the owner instructs the change of D-67.
-- The label `review-override` does not exist yet, and auto-merge is off. Both are owner steps of `docs/runbooks/main-ruleset.md`.
-
-### The questions that block progress
-
-- None. OQ-16 still holds gitar (D-7).
-
-### The next concrete action
-
-- After the merge, on the explicit instruction of the owner, apply the ruleset file of `main` to the live ruleset, and run the comparison (D-67). Then write the transitional prompt of PR-7.
