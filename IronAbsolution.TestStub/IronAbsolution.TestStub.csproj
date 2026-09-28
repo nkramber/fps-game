@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    The stub program of the tests (D-103). The tests copy its build output beside the path of a
+    program of the engine, and they name the copy of the host after that program. The host looks
+    for `IronAbsolution.TestStub.dll` in its own folder, and not for its own name, so the copy
+    runs under any name. Windows needs a real program file at a path that ends with `.exe`, and
+    a shell script does not run there.
+  -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>IronAbsolution.TestStub</RootNamespace>
+    <AssemblyName>IronAbsolution.TestStub</AssemblyName>
+    <IsPackable>false</IsPackable>
+    <!-- The tests read each check of this program, so no document comment is needed. -->
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+  </PropertyGroup>
+
+</Project>

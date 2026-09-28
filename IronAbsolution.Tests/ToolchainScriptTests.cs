@@ -1,8 +1,6 @@
 using System;
-using System.ComponentModel;
-using System.Diagnostics;
+using System.Collections.Generic;
 using System.IO;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace IronAbsolution.Tests;
@@ -11,10 +9,15 @@ namespace IronAbsolution.Tests;
 /// Runs `scripts/toolchain-check.ps1` under PowerShell with a temporary engine folder (D-72). A
 /// fault in one source fails its own pin, and the script still reports each later pin and the
 /// total (T-2). <see cref="PowerShellScript"/> runs the script, and CI must run these tests.
+/// Each run points `ProgramFiles(x86)` at an empty folder, so the Visual Studio, MSVC, and
+/// Windows SDK pins read no value of this machine and give the same result everywhere (D-101).
 /// </summary>
 public sealed class ToolchainScriptTests : IDisposable
 {
     private const string EngineVariable = "IRON_ABSOLUTION_ENGINE_DIR";
+
+    /// <summary>The script reads the Visual Studio installer and the Windows SDK under this folder.</summary>
+    private const string ProgramFilesVariable = "ProgramFiles(x86)";
 
     private readonly string folder = Path.Combine(Path.GetTempPath(), $"toolchain-script-{Guid.NewGuid():N}");
 
@@ -70,7 +73,8 @@ public sealed class ToolchainScriptTests : IDisposable
     [Fact]
     public void AMachineWithNoVisualStudioFailsEachWindowsPinAndStillReportsTheRest()
     {
-        // The runner is not a Windows PC, so the Visual Studio, MSVC, and SDK sources each fail with a reason.
+        // `ProgramFiles(x86)` points at an empty folder, so the Visual Studio, MSVC, and SDK
+        // sources each fail with a reason, on a Windows PC with Visual Studio too (D-101).
         (int exitCode, string output) = this.RunScript(engineFolder: null);
 
         Assert.Equal(1, exitCode);
@@ -93,6 +97,15 @@ public sealed class ToolchainScriptTests : IDisposable
 
     private (int ExitCode, string Output) RunScript(string? engineFolder)
     {
-        return PowerShellScript.Run(RepositoryRoot.PathTo("scripts/toolchain-check.ps1"), this.folder, EngineVariable, engineFolder);
+        string emptyProgramFiles = Path.Combine(this.folder, "program-files");
+        Directory.CreateDirectory(emptyProgramFiles);
+        return PowerShellScript.Run(
+            RepositoryRoot.PathTo("scripts/toolchain-check.ps1"),
+            this.folder,
+            new Dictionary<string, string?>
+            {
+                [EngineVariable] = engineFolder,
+                [ProgramFilesVariable] = emptyProgramFiles,
+            });
     }
 }

@@ -68,7 +68,7 @@ At the end of a session, do these steps:
 1. Fetch the remote.
 2. Print the highest session number with `grep -m1 '^## Session ' docs/session-handoff.md`, and add one.
 3. Add a new entry at the top with one edit. Never append to an older entry.
-4. Run `make handoff-rotate`. It keeps the ten newest entries and moves each older entry to the archive (D-58).
+4. Run `run.ps1 handoff-rotate`. It keeps the ten newest entries and moves each older entry to the archive (D-58).
 5. Commit the entry with the work that it describes.
 6. Push, then fetch, and check that the status shows no `[ahead N]`.
 
@@ -138,7 +138,7 @@ The C# tools project `IronAbsolution.Tools` holds the commands of the repository
 
 The provider that did not write the PR reviews it (D-6). Codex reviews a PR that Claude Code wrote, and Claude Code reviews a PR that Codex wrote.
 
-After each push of a Claude Code PR, the author runs `make codex-review PR=<n>` from a clean checkout of the PR branch (D-14). Load the one-pr-one-session skill for the review loop. The reviewer follows the pr-review skill, and the author answers with the review-response skill (D-46).
+After each push of a Claude Code PR, the author runs `run.ps1 codex-review -PR <n>` from a clean checkout of the PR branch (D-14). Load the one-pr-one-session skill for the review loop. The reviewer follows the pr-review skill, and the author answers with the review-response skill (D-46).
 
 The command refuses a PR that changes documents alone (D-49). Such a PR merges through the `review-override` label. The author session adds that label on the standing instruction of the owner (D-35, D-66, D-76). The `review-gate` check then reads the label in place of a review record (D-65).
 
@@ -148,13 +148,13 @@ Gitar is a documented plan only (D-7). Add no gitar step, wait, script, template
 
 ## Build and test commands
 
-The Makefile is the entry point (D-41). Run each target from the checkout root.
+`run.ps1` is the entry point (D-99). Run each target from any folder of the checkout.
 
-- `make`: build, test, format, and ste-check. Run it before each push.
-- `make ste-check`: the STE checker, the reference check, the session number check, and the size check (D-17).
-- `make handoff-rotate`: move each handoff entry after the tenth to the archive, and print the next session number (D-58, D-59).
-- `make hooks`: install the pre-commit hook in this checkout, one time (D-43).
-- `make codex-review PR=<n>`: the cross-provider review of one PR. The exit codes are 0 approve, 10 changes, 11 three-strike stop, 3 refused start, and 1 fault (D-14).
+- `run.ps1 verify`: build, test, format, and ste-check. Run it before each push. It is the default target.
+- `run.ps1 ste-check`: the STE checker, the reference check, the session number check, and the size check (D-17).
+- `run.ps1 handoff-rotate`: move each handoff entry after the tenth to the archive, and print the next session number (D-58, D-59).
+- `run.ps1 hooks`: install the pre-commit hook in this checkout, one time (D-43).
+- `run.ps1 codex-review -PR <n>`: the cross-provider review of one PR. The exit codes are 0 approve, 10 changes, 11 three-strike stop, 3 refused start, and 1 fault (D-14).
 - `make toolchain-check`: the pins of the Mac toolchain: Xcode, the engine, Git LFS, and the Metal Toolchain (D-28, D-79, D-87). `docs/runbooks/engine-setup.md` gives the install. PR-14 moves the check to the Windows pins (D-97).
 - `make editor-build`: build the editor target of the Unreal project on the Mac. `scripts/editor-build.ps1` does the same on the Windows PC (D-72).
 - `make editor-test`: run each automation test headless on the Mac. A pass needs the exit code 0, a test report, and the success line of the log. `scripts/editor-test.ps1` does the same on the Windows PC.

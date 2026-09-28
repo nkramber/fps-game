@@ -12,7 +12,7 @@ Always commit the review record and the session handoff entry, then push them to
 | Work that answers a review | `docs/reviews/pr-<number>-response.md`, each corrected file, and `docs/session-handoff.md` | The author |
 
 Make one commit that holds the record and its handoff entry. Never leave either file uncommitted or unpushed.
-A push is the only way for a reader of the PR head to see the record. The `make codex-review` command reads the branch on origin, and so does the `review-gate` check (D-64).
+A push is the only way for a reader of the PR head to see the record. The `run.ps1 codex-review` command reads the branch on origin, and so does the `review-gate` check (D-64).
 A review is complete only when the remote holds the record. The session end gate below proves it.
 
 An uncommitted review record has three effects:
@@ -43,7 +43,7 @@ gh pr view <number> --json headRefOid --jq .headRefOid
 
 The status line must show no `[ahead N]`. The hash from `gh pr view` must equal `git rev-parse HEAD`.
 
-A review that `make codex-review` starts runs on the local branch `review/pr-<n>`, and it pushes with `git push origin HEAD:<branch>` (D-48). That branch has no upstream, so its status line shows no count. The hash comparison alone is the proof there.
+A review that `run.ps1 codex-review` starts runs on the local branch `review/pr-<n>`, and it pushes with `git push origin HEAD:<branch>` (D-48). That branch has no upstream, so its status line shows no count. The hash comparison alone is the proof there.
 
 Write the push line in the Verification section of the review record, and name the remote head in the handoff entry.
 A record with no push line is incomplete, and the next session treats it as unpushed.

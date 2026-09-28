@@ -42,13 +42,13 @@ Steps 2 to 4 use the targeted reads of `docs/runbooks/session-context.md`. The f
 
 A review ends with one of three verdicts: `Blocked`, `Changes required`, or `Ready for owner merge`. The file `references/review-record.md` gives the condition of each one.
 
-Write one verdict name in the `## Verdict` section, exactly as that file spells it. The `make codex-review` command reads that section, and it fails a section that names two verdicts. The `review-gate` check reads the same section (D-64). A line under `## Out of scope` never gives the verdict `Changes required`.
+Write one verdict name in the `## Verdict` section, exactly as that file spells it. The `run.ps1 codex-review` command reads that section, and it fails a section that names two verdicts. The `review-gate` check reads the same section (D-64). A line under `## Out of scope` never gives the verdict `Changes required`.
 
 An approving record lets the author turn on auto-merge after the owner confirms the merge, and the owner can also merge the PR (D-5, D-12). Approval applies to the recorded revision alone.
 
-## A review that `make codex-review` starts
+## A review that `run.ps1 codex-review` starts
 
-The author session starts the review with `make codex-review PR=<n>` (D-14). Make installs the newest Codex CLI with npm, then runs the command with `--codex <path>` and `--pr <n>` (D-47). The Codex process is a session of its own, in the reviewer role (D-5). The procedure, the depth, and the record format do not change.
+The author session starts the review with `run.ps1 codex-review -PR <n>` (D-14). Make installs the newest Codex CLI with npm, then runs the command with `--codex <path>` and `--pr <n>` (D-47). The Codex process is a session of its own, in the reviewer role (D-5). The procedure, the depth, and the record format do not change.
 
 - The checkout is a worktree on the local branch `review/pr-<n>`, which starts at the PR branch on origin (D-48).
 - Commit the review record and your own handoff entry as one metadata commit (D-14). Set the handoff author field to `Codex`.

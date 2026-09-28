@@ -7,7 +7,7 @@ The `one-pr-one-session` skill names this file when the PR is ready for review. 
 1. Push the round of changes.
 2. Wait until each check of the head is green, with the wait command of the skill.
 3. Answer each review thread, and resolve it after the answer (D-52).
-4. Run `make codex-review PR=<n>` in the background, and wait for the completion notice (D-14). Ask the owner no question first (D-54).
+4. Run `run.ps1 codex-review -PR <n>` in the background, and wait for the completion notice (D-14). Ask the owner no question first (D-54).
 5. Read the outcome line of the command and its exit code.
 6. Do the step that the table below gives for that exit code.
 

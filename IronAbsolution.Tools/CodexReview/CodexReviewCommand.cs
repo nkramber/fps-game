@@ -16,7 +16,7 @@ public sealed record PullRequestView(string State, string Branch, string Head, s
 /// <summary>
 /// The `codex-review` command (D-14). It checks the start conditions, probes the model, runs one
 /// Codex review round in a worktree at the PR head, and judges the review record that the
-/// round pushed. The exit code names the outcome (<see cref="CodexReviewExit"/>). The Makefile
+/// round pushed. The exit code names the outcome (<see cref="CodexReviewExit"/>). The entry script
 /// target `codex-review` installs the CLI and runs the command (D-47).
 /// </summary>
 public static class CodexReviewCommand
@@ -55,14 +55,14 @@ public static class CodexReviewCommand
             || !int.TryParse(pullRequestText, NumberStyles.None, CultureInfo.InvariantCulture, out int pullRequest)
             || pullRequest <= 0)
         {
-            errors.WriteLine($"Error: {Name} needs {PullRequestOption} <number>, the GitHub number of the PR, such as `make codex-review PR=4`. Found '{pullRequestText}'.");
+            errors.WriteLine($"Error: {Name} needs {PullRequestOption} <number>, the GitHub number of the PR, such as `run.ps1 codex-review -PR 4`. Found '{pullRequestText}'.");
             return Program.FaultExitCode;
         }
 
         string? codex = options.Value(CodexOption);
         if (codex is null)
         {
-            errors.WriteLine($"Error: {Name} needs {CodexOption} <path>, the path of `bin/codex.js` of the Codex CLI. `make codex-review` gives it (D-47).");
+            errors.WriteLine($"Error: {Name} needs {CodexOption} <path>, the path of `bin/codex.js` of the Codex CLI. `run.ps1 codex-review` gives it (D-47).");
             return Program.FaultExitCode;
         }
 
@@ -155,7 +155,7 @@ public static class CodexReviewCommand
     {
         ArgumentNullException.ThrowIfNull(effectiveHead);
 
-        string folder = Path.Combine(root, CodexReviewSettings.TranscriptFolder);
+        string folder = ToolPaths.UnderFolder(root, CodexReviewSettings.TranscriptFolder);
         Directory.CreateDirectory(folder);
         string stem = $"pr-{pullRequest.ToString(CultureInfo.InvariantCulture)}-{effectiveHead[..ReviewHeads.ShortestHash]}";
         string name = stem;

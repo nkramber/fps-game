@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using Xunit;
 
@@ -7,14 +8,15 @@ namespace IronAbsolution.Tests;
 /// <summary>
 /// Runs `scripts/package-build.ps1` and `scripts/package-run.ps1` under PowerShell with stub
 /// programs (D-72, D-89). Each script takes the checkout from its own folder, so each test copies
-/// the script into a temporary checkout. Each stub is a POSIX shell script at the path of the
-/// Windows program, and the hosted Linux runner starts it (D-55). <see cref="PowerShellScript"/>
-/// runs each script, and CI must run these tests.
+/// the script into a temporary checkout. <see cref="StubProgram"/> writes each stub at the path of
+/// the Windows program, and that stub runs on Windows and on the hosted Linux runner (D-103).
+/// <see cref="PowerShellScript"/> runs each script, and CI must run these tests.
 /// </summary>
 public sealed class PackageScriptTests : IDisposable
 {
     private const string EngineVariable = "IRON_ABSOLUTION_ENGINE_DIR";
     private const string SuccessLine = "LogTimedRun: Display: Timed run: pass. The map /Game/Maps/L_Test ran for 10 seconds.";
+    private const string StartLine = "LogInit: Display: Engine is initialized.";
 
     private readonly string folder = Path.Combine(Path.GetTempPath(), $"package-script-{Guid.NewGuid():N}");
     private readonly string root;
@@ -42,7 +44,7 @@ public sealed class PackageScriptTests : IDisposable
     public void TheRunScriptPassesAStubRunThatWritesTheSuccessLineToItsLog()
     {
         // Exit test 3 of PR-10 on the Windows script.
-        this.WriteGame($"echo '{SuccessLine}' > \"$log\"\nexit 0\n");
+        this.WriteGame(new StubProgram().WritesToLog(SuccessLine), exitCode: 0);
 
         (int exitCode, string output) = this.RunScript("package-run.ps1", engineFolder: null);
 
@@ -58,7 +60,7 @@ public sealed class PackageScriptTests : IDisposable
         // Exit test 4 of PR-10 on the Windows script (T-2).
         Directory.CreateDirectory(Path.GetDirectoryName(this.logPath)!);
         File.WriteAllText(this.logPath, SuccessLine);
-        this.WriteGame("echo 'LogInit: Display: Engine is initialized.' > \"$log\"\nexit 0\n");
+        this.WriteGame(new StubProgram().WritesToLog(StartLine), exitCode: 0);
 
         (int exitCode, string output) = this.RunScript("package-run.ps1", engineFolder: null);
 
@@ -70,7 +72,7 @@ public sealed class PackageScriptTests : IDisposable
     [Fact]
     public void TheRunScriptFailsAnAbsentLogAndACrashWithThePath()
     {
-        this.WriteGame("exit 3\n");
+        this.WriteGame(new StubProgram(), exitCode: 3);
 
         (int exitCode, string output) = this.RunScript("package-run.ps1", engineFolder: null);
 
@@ -84,7 +86,7 @@ public sealed class PackageScriptTests : IDisposable
     public void TheRunScriptGivesTheGameTheTimedRunOptionAndTheLogPath()
     {
         string argumentsFile = Path.Combine(this.folder, "arguments.txt");
-        this.WriteGame($"for arg in \"$@\"; do echo \"$arg\" >> '{argumentsFile}'; done\nexit 0\n");
+        this.WriteGame(new StubProgram().RecordsArgumentsTo(argumentsFile), exitCode: 0);
 
         this.RunScript("package-run.ps1", engineFolder: null);
 
@@ -129,7 +131,7 @@ public sealed class PackageScriptTests : IDisposable
         Directory.CreateDirectory(oldPackage);
         string argumentsFile = Path.Combine(this.folder, "arguments.txt");
         string runUat = Path.Combine(this.engine, "Engine", "Build", "BatchFiles", "RunUAT.bat");
-        WriteStub(runUat, $"for arg in \"$@\"; do echo \"$arg\" >> '{argumentsFile}'; done\necho 'BUILD FAILED'\nexit 7\n");
+        new StubProgram().RecordsArgumentsTo(argumentsFile).WritesLine("BUILD FAILED").ExitsWith(runUat, exitCode: 7);
 
         (int exitCode, string output) = this.RunScript("package-build.ps1", this.engine);
 
@@ -159,30 +161,16 @@ public sealed class PackageScriptTests : IDisposable
             File.ReadAllLines(argumentsFile));
     }
 
-    private static void WriteStub(string path, string body)
+    private void WriteGame(StubProgram stub, int exitCode)
     {
-        Directory.CreateDirectory(Path.GetDirectoryName(path)!);
-        string script = "#!/bin/sh\n"
-            + "for arg in \"$@\"; do\n"
-            + "  case \"$arg\" in -abslog=*) log=\"${arg#-abslog=}\" ;; esac\n"
-            + "done\n"
-            + body;
-        File.WriteAllText(path, script);
-        if (OperatingSystem.IsWindows())
-        {
-            throw new PlatformNotSupportedException("Each stub is a POSIX shell script, and the development tools run on the Mac alone (D-55).");
-        }
-
-        File.SetUnixFileMode(path, UnixFileMode.UserRead | UnixFileMode.UserWrite | UnixFileMode.UserExecute);
-    }
-
-    private void WriteGame(string body)
-    {
-        WriteStub(Path.Combine(this.root, "Game", "Saved", "Packages", "Windows", "IronAbsolution", "Binaries", "Win64", "IronAbsolution.exe"), body);
+        stub.ExitsWith(Path.Combine(this.root, "Game", "Saved", "Packages", "Windows", "IronAbsolution", "Binaries", "Win64", "IronAbsolution.exe"), exitCode);
     }
 
     private (int ExitCode, string Output) RunScript(string script, string? engineFolder)
     {
-        return PowerShellScript.Run(Path.Combine(this.root, "scripts", script), this.folder, EngineVariable, engineFolder);
+        return PowerShellScript.Run(
+            Path.Combine(this.root, "scripts", script),
+            this.folder,
+            new Dictionary<string, string?> { [EngineVariable] = engineFolder });
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using Xunit;
 
@@ -7,9 +8,9 @@ namespace IronAbsolution.Tests;
 /// <summary>
 /// Runs `scripts/editor-build.ps1` and `scripts/editor-test.ps1` under PowerShell with stub
 /// programs of the engine (D-72). Each script takes the checkout from its own folder, so each
-/// test copies the script into a temporary checkout. Each stub is a POSIX shell script at the
-/// path of the Windows program, and the hosted Linux runner starts it (D-55).
-/// <see cref="PowerShellScript"/> runs each script, and CI must run these tests.
+/// test copies the script into a temporary checkout. <see cref="StubProgram"/> writes each stub
+/// at the path of the Windows program, and that stub runs on Windows and on the hosted Linux
+/// runner (D-103). <see cref="PowerShellScript"/> runs each script, and CI must run these tests.
 /// </summary>
 public sealed class EditorScriptTests : IDisposable
 {
@@ -45,7 +46,7 @@ public sealed class EditorScriptTests : IDisposable
     [Fact]
     public void TheTestScriptPassesAStubRunWithTheReportAndTheSuccessLine()
     {
-        this.WriteEditor(Passes(PassedReport, SuccessLine, exitCode: 0));
+        this.WriteEditor(Passes(PassedReport, SuccessLine), exitCode: 0);
 
         (int exitCode, string output) = this.RunScript("editor-test.ps1", this.engine);
 
@@ -59,7 +60,7 @@ public sealed class EditorScriptTests : IDisposable
     public void TheTestScriptFailsAFailedTestAndNamesIt()
     {
         // Exit test 5 of PR-9 on the Windows script: a test that fails gives a nonzero exit code.
-        this.WriteEditor(Passes(FailedReport, "LogAutomationCommandLine: Display: **** TEST COMPLETE. EXIT CODE: -1 ****", exitCode: 255));
+        this.WriteEditor(Passes(FailedReport, "LogAutomationCommandLine: Display: **** TEST COMPLETE. EXIT CODE: -1 ****"), exitCode: 255);
 
         (int exitCode, string output) = this.RunScript("editor-test.ps1", this.engine);
 
@@ -75,7 +76,7 @@ public sealed class EditorScriptTests : IDisposable
         // Exit test 6 of PR-9 on the Windows script (T-2).
         Directory.CreateDirectory(this.reportFolder);
         File.WriteAllText(Path.Combine(this.reportFolder, "index.json"), PassedReport);
-        this.WriteEditor($"echo '{SuccessLine}'\nexit 0\n");
+        this.WriteEditor(new StubProgram().WritesLine(SuccessLine), exitCode: 0);
 
         (int exitCode, string output) = this.RunScript("editor-test.ps1", this.engine);
 
@@ -86,7 +87,7 @@ public sealed class EditorScriptTests : IDisposable
     [Fact]
     public void TheTestScriptFailsAnExitCodeOfZeroWithNoSuccessLine()
     {
-        this.WriteEditor(Passes(PassedReport, "LogInit: Display: Engine is initialized.", exitCode: 0));
+        this.WriteEditor(Passes(PassedReport, "LogInit: Display: Engine is initialized."), exitCode: 0);
 
         (int exitCode, string output) = this.RunScript("editor-test.ps1", this.engine);
 
@@ -102,7 +103,7 @@ public sealed class EditorScriptTests : IDisposable
     [InlineData("""{ "succeeded": 1, "succeededWithWarnings": 0, "failed": 0, "notRun": 0, "inProcess": 0, "tests": [ { "state": "Success" } ] }""", "has a test with no text in the field 'fullTestPath'")]
     public void TheTestScriptFailsAnInvalidReportWithThePathAndTheField(string report, string fault)
     {
-        this.WriteEditor(Passes(report, SuccessLine, exitCode: 0));
+        this.WriteEditor(Passes(report, SuccessLine), exitCode: 0);
 
         (int exitCode, string output) = this.RunScript("editor-test.ps1", this.engine);
 
@@ -114,7 +115,7 @@ public sealed class EditorScriptTests : IDisposable
     public void TheTestScriptGivesTheEditorTheAutomationCommandAsOneArgument()
     {
         string argumentsFile = Path.Combine(this.folder, "arguments.txt");
-        this.WriteEditor($"for arg in \"$@\"; do echo \"$arg\" >> '{argumentsFile}'; done\nexit 0\n");
+        this.WriteEditor(new StubProgram().RecordsArgumentsTo(argumentsFile), exitCode: 0);
 
         this.RunScript("editor-test.ps1", this.engine);
 
@@ -152,7 +153,7 @@ public sealed class EditorScriptTests : IDisposable
     {
         string argumentsFile = Path.Combine(this.folder, "arguments.txt");
         string buildBatch = Path.Combine(this.engine, "Engine", "Build", "BatchFiles", "Build.bat");
-        WriteStub(buildBatch, $"for arg in \"$@\"; do echo \"$arg\" >> '{argumentsFile}'; done\nexit 7\n");
+        new StubProgram().RecordsArgumentsTo(argumentsFile).ExitsWith(buildBatch, exitCode: 7);
 
         (int exitCode, string output) = this.RunScript("editor-build.ps1", this.engine);
 
@@ -171,37 +172,22 @@ public sealed class EditorScriptTests : IDisposable
             arguments);
     }
 
-    /// <summary>The body of a stub editor that writes a report and one log line, then exits.</summary>
-    private static string Passes(string report, string logLine, int exitCode)
+    /// <summary>A stub editor that writes a report and one log line, then exits.</summary>
+    private static StubProgram Passes(string report, string logLine)
     {
-        // The editor of 5.8.3 writes the report with a UTF-8 byte order mark, so the stub does too.
-        return $"mkdir -p \"$report\"\nprintf '\\357\\273\\277%s' '{report}' > \"$report/index.json\"\necho '{logLine}'\nexit {exitCode}\n";
+        return new StubProgram().WritesReport(report).WritesLine(logLine);
     }
 
-    private static void WriteStub(string path, string body)
+    private void WriteEditor(StubProgram stub, int exitCode)
     {
-        Directory.CreateDirectory(Path.GetDirectoryName(path)!);
-        string script = "#!/bin/sh\n"
-            + "for arg in \"$@\"; do\n"
-            + "  case \"$arg\" in -ReportExportPath=*) report=\"${arg#-ReportExportPath=}\" ;; esac\n"
-            + "done\n"
-            + body;
-        File.WriteAllText(path, script);
-        if (OperatingSystem.IsWindows())
-        {
-            throw new PlatformNotSupportedException("Each stub is a POSIX shell script, and the development tools run on the Mac alone (D-55).");
-        }
-
-        File.SetUnixFileMode(path, UnixFileMode.UserRead | UnixFileMode.UserWrite | UnixFileMode.UserExecute);
-    }
-
-    private void WriteEditor(string body)
-    {
-        WriteStub(Path.Combine(this.engine, "Engine", "Binaries", "Win64", "UnrealEditor-Cmd.exe"), body);
+        stub.ExitsWith(Path.Combine(this.engine, "Engine", "Binaries", "Win64", "UnrealEditor-Cmd.exe"), exitCode);
     }
 
     private (int ExitCode, string Output) RunScript(string script, string? engineFolder)
     {
-        return PowerShellScript.Run(Path.Combine(this.root, "scripts", script), this.folder, EngineVariable, engineFolder);
+        return PowerShellScript.Run(
+            Path.Combine(this.root, "scripts", script),
+            this.folder,
+            new Dictionary<string, string?> { [EngineVariable] = engineFolder });
     }
 }

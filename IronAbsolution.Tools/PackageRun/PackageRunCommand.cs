@@ -17,8 +17,13 @@ public static class PackageRunCommand
     /// <summary>The name of the command on the command line.</summary>
     public const string Name = "package-run";
 
-    /// <summary>The program of the Mac package, under the root. `make package-build` writes the package there.</summary>
-    public const string PackageProgram = "Game/Saved/Packages/Mac/IronAbsolution.app/Contents/MacOS/IronAbsolution";
+    /// <summary>
+    /// Gets the program of the package of this platform, under the root (D-102). The build of the
+    /// package writes it there. Windows has one program file, and the Mac has an application bundle.
+    /// </summary>
+    public static string PackageProgram { get; } = OperatingSystem.IsWindows()
+        ? "Game/Saved/Packages/Windows/IronAbsolution/Binaries/Win64/IronAbsolution.exe"
+        : "Game/Saved/Packages/Mac/IronAbsolution.app/Contents/MacOS/IronAbsolution";
 
     /// <summary>The file that takes the stdout of the package, under the root. The evidence form takes it (D-31).</summary>
     public const string LogFile = "Game/Saved/Logs/package-run.log";
@@ -67,15 +72,15 @@ public static class PackageRunCommand
         ArgumentNullException.ThrowIfNull(output);
         ArgumentNullException.ThrowIfNull(errors);
 
-        string package = UnderFolder(root, PackageProgram);
+        string package = ToolPaths.UnderFolder(root, PackageProgram);
         if (!File.Exists(package))
         {
             errors.WriteLine($"{Name}: no file '{package}'. Run `make package-build` first, and --root names the checkout.");
             return Program.FaultExitCode;
         }
 
-        string logPath = UnderFolder(root, LogFile);
-        string errorLogPath = UnderFolder(root, ErrorLogFile);
+        string logPath = ToolPaths.UnderFolder(root, LogFile);
+        string errorLogPath = ToolPaths.UnderFolder(root, ErrorLogFile);
         try
         {
             RemoveOldLogs(logPath, errorLogPath);
@@ -119,11 +124,6 @@ public static class PackageRunCommand
             "-stdout",
             "-FullStdOutLogOutput",
         ];
-    }
-
-    private static string UnderFolder(string folder, string relativePath)
-    {
-        return Path.Combine(folder, relativePath.Replace('/', Path.DirectorySeparatorChar));
     }
 
     /// <summary>

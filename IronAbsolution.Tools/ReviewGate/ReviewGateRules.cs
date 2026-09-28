@@ -106,7 +106,7 @@ public static class ReviewGateRules
             return Fail(
                 $"the review record '{recordPath}' is on the PR head (T-4)",
                 $"the record on the head {facts.Head}",
-                "no record. Run `make codex-review`, or the author session adds the label for a PR with no code (D-76)");
+                "no record. Run `run.ps1 codex-review`, or the author session adds the label for a PR with no code (D-76)");
         }
 
         ReviewRecord? record = ReviewRecord.TryParse(facts.ReviewRecordText, out string parseError);
@@ -139,7 +139,7 @@ public static class ReviewGateRules
             return Fail(
                 "the review record names the effective head (D-49)",
                 $"'{facts.EffectiveHead}'",
-                $"'{record.RecordedHead}'. A commit outside the documents set came after the review. Run `make codex-review` again");
+                $"'{record.RecordedHead}'. A commit outside the documents set came after the review. Run `run.ps1 codex-review` again");
         }
 
         return new ReviewGateResult(

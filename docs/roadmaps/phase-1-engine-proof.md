@@ -60,7 +60,7 @@ An exit test is a test or a job that the PR adds and that must pass before the m
 - The runbook adds a case-insensitive volume on the SSD for the engine, its cache, Xcode, and the checkout (F-21, D-81, superseded by D-97).
 - A PowerShell script that prints the versions of the Windows toolchain (D-72). The owner runs it and posts the output (D-33).
 - The evidence form of an engine PR (D-31, D-71), in the PR template (D-80). It has one line for each log: the two toolchain checks, the Mac build, the Windows build, the tests, the package, and each measurement.
-- A second concern that the owner accepts (D-77): the text of `review-gate`, `make codex-review`, and their test follows D-76. On the instruction of the owner, the session changes the description of the live label (F-20, D-82).
+- A second concern that the owner accepts (D-77): the text of `review-gate`, `run.ps1 codex-review`, and their test follows D-76. On the instruction of the owner, the session changes the description of the live label (F-20, D-82).
 
 **Out of scope.**
 
@@ -74,7 +74,7 @@ An exit test is a test or a job that the PR adds and that must pass before the m
 3. Tests show a failure that names the pin when the engine, Xcode, or Git LFS is absent (T-2).
 4. The owner runs the PowerShell script on the Windows PC and posts its output in the PR.
 5. The `doc-gate` job accepts the PR description with the evidence form.
-6. The tests of `review-gate` and `make codex-review` assert the label text of D-76 (F-20).
+6. The tests of `review-gate` and `run.ps1 codex-review` assert the label text of D-76 (F-20).
 
 **Review focus.** The pins against D-28, the error messages against T-2, and no machine-specific path in a commit (G-6). The label text against D-76.
 
@@ -216,16 +216,18 @@ Owner, during PR-8 (D-78). No PR.
 
 **Scope.**
 
-- A PowerShell entry script with the development targets of the Makefile: `verify` as the default, `build`, `test`, `format`, `ste-check`, `handoff-rotate`, `codex-review`, `hooks`, `where`, and `clean` (D-99).
+- `run.ps1`, the entry script, with the development targets of the Makefile: `verify` as the default, `build`, `test`, `format`, `ste-check`, `handoff-rotate`, `codex-review`, `hooks`, `where`, and `clean` (D-99). A `help` target prints the list.
 - The Makefile keeps the Mac engine targets alone until PR-14 removes it. This split is a recommendation of PR-12.
 - The `codex-review` target starts the Codex CLI on the Windows PC (D-14, D-47).
 - The pre-commit hook runs on the Windows PC (D-43).
 - Each document, skill, tool message, and test that names a `make` target of the development tools names the entry target instead. On 2026-09-28, the agent files, four skills, the runbooks, the pre-commit hook, and the review commands of the tools project held such names.
 - `docs/runbooks/session-context.md` gives the commands of a session on the Windows PC. It marks each owner step, such as the install of the .NET SDK of `global.json`, the Codex CLI, the GitHub CLI, and Git LFS.
 
+- The whole test suite runs on Windows. 25 tests refused to run there, because each stub of a program of the engine was a POSIX shell script. `IronAbsolution.TestStub` replaces each one (D-103). The `editor-test` and `package-run` commands read the program path of the platform (D-102). The owner widened the scope to this in PR-13, so exit test 1 holds with no skipped test.
+
 **Out of scope.**
 
-- The engine targets and the Mac removal. PR-14 holds them.
+- The Mac removal, and the move of `toolchain-check` to the Windows pins. PR-14 holds them (D-97).
 - A change of the hosted jobs. They call `dotnet` and no Makefile target (D-42).
 
 **Exit tests.**
@@ -237,11 +239,11 @@ Owner, during PR-8 (D-78). No PR.
 5. No live document names a development target of the Makefile.
 6. The five required checks of `main` stay green (D-61, D-64).
 
-**Review focus.** The targets of the entry against the targets of D-41. The error messages against T-2. The start of Codex on Windows (D-47).
+**Review focus.** The targets of the entry against the targets of D-41. The error messages against T-2. The start of Codex on Windows (D-47). The stub program against the four test classes that use it (D-103).
 
-**Questions.** None open. The session asks each new question at its start.
+**Questions.** None open. The owner answered three at the start of PR-13. The whole test suite runs on Windows. PowerShell 7 is an owner step. The entry script is `run.ps1`.
 
-**State.** 🔧 planned.
+**State.** ✅ done in PR #13.
 
 > *In plain English:* The tools that check, test, and review each change move from the Mac to the Windows PC. After this change, every session runs on that PC.
 

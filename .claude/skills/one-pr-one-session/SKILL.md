@@ -66,7 +66,7 @@ A PR cannot know its merge commit or its merge time. Git and GitHub hold both, a
 
 - Mark the item as done in `docs/design.md` and in its focused roadmap, with the status marks of the design-doc-style skill (D-19).
 - Name the PR number in the mark. Write no merge date and no merge commit.
-- Write the mark before `make codex-review`. A documents commit during a round moves the work head, and the round fails (D-14).
+- Write the mark before `run.ps1 codex-review`. A documents commit during a round moves the work head, and the round fails (D-14).
 - The handoff entry names the branch and the state "pending merge". The handoff and the review record are metadata, so they do not move the work head.
 - A later session reads the merge from git. It does not open a PR to record the merge.
 - An exit test that needs a run on `main` after the merge stays in the PR. The next session runs it and states the result in its own handoff entry.
@@ -83,7 +83,7 @@ Run no other status command while the wait runs, and read the result one time. R
 
 ## Procedure: the completion gate
 
-Before `make codex-review`, confirm items 1 to 5, 7, and 8. Before the merge, confirm all eight. Then write the merge summary of `references/review-and-merge.md`: What, How, CI, and Codex review.
+Before `run.ps1 codex-review`, confirm items 1 to 5, 7, and 8. Before the merge, confirm all eight. Then write the merge summary of `references/review-and-merge.md`: What, How, CI, and Codex review.
 
 1. The PR holds the code and the regression tests (T-3). A PR of documents alone needs the ste-check job instead.
 2. `docs/decisions.md` and `docs/questions.md` hold each new decision and question.

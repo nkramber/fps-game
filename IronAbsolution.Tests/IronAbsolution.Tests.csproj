@@ -25,6 +25,25 @@
 
   <ItemGroup>
     <ProjectReference Include="../IronAbsolution.Tools/IronAbsolution.Tools.csproj" />
+    <!--
+      The stub program stands in for a program of the engine (D-103). The tests copy its build
+      output, so they need the files and not a reference to the assembly. `ReferenceOutputAssembly`
+      is off, and the project reference gives the build order alone.
+    -->
+    <ProjectReference Include="../IronAbsolution.TestStub/IronAbsolution.TestStub.csproj"
+                      ReferenceOutputAssembly="false" />
   </ItemGroup>
+
+  <!--
+    Puts the whole build output of the stub program under `stub/` of the test output. A test copies
+    that folder beside the path of a program of the engine (D-103). The host of the stub needs its
+    own assembly, its runtime configuration, and its dependency list in one folder.
+  -->
+  <Target Name="CopyTestStub" AfterTargets="Build">
+    <ItemGroup>
+      <TestStubFile Include="$(MSBuildThisFileDirectory)../IronAbsolution.TestStub/bin/$(Configuration)/$(TargetFramework)/*.*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(TestStubFile)" DestinationFolder="$(OutDir)stub" SkipUnchangedFiles="true" />
+  </Target>
 
 </Project>

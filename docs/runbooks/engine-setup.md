@@ -164,8 +164,12 @@ The Unreal project of PR-9 builds from a case-insensitive volume too (D-81, supe
    ```
    git clone git@github.com:nkramber/iron-absolution.git /Volumes/IronAbsolution/iron-absolution
    cd /Volumes/IronAbsolution/iron-absolution
-   make hooks
+   pwsh ./run.ps1 hooks
    ```
+
+   The hook target moved from the Makefile to the entry script in PR-13 (D-99). A Mac needs
+   PowerShell 7 for it. The Windows PC is the platform of each session now (D-92), and
+   `docs/runbooks/session-context.md` gives its steps.
 
 ### The first start of the editor
 

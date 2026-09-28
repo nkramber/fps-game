@@ -88,7 +88,7 @@ public static class CodexReviewSettings
         string number = pullRequest.ToString(CultureInfo.InvariantCulture);
         return $"Review PR #{number}.\n"
             + $"Load and follow `{ReviewSkillPath}`.\n"
-            + $"The command `make codex-review` started this review in a worktree on the local branch `{ReviewBranch(pullRequest)}`, at the PR head.\n"
+            + $"The command `run.ps1 codex-review` started this review in a worktree on the local branch `{ReviewBranch(pullRequest)}`, at the PR head.\n"
             + $"Push the review record and your session handoff entry as one metadata commit (D-14) with `git push origin HEAD:{branch}`.\n";
     }
 

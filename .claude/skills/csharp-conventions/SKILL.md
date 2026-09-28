@@ -48,7 +48,7 @@ The skill takes the errors, style, tests, and command rules of the-thing-below, 
 
 ## Commands
 
-The Makefile is the entry point (D-41). These are the raw commands:
+`run.ps1` is the entry point (D-99). These are the raw commands:
 
 ```
 dotnet build IronAbsolution.slnx

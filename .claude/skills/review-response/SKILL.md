@@ -28,10 +28,10 @@ Use this skill when you answer a review of your own PR. The reviewing provider u
 7. Decide the disposition: full merit, partial merit, or no merit.
 8. Correct every finding that has merit. Use the smallest change that restores the contract.
 9. Record each disposition in `docs/reviews/pr-<number>-response.md`.
-10. Run `make`, then commit the response, the corrections, and the handoff entry.
+10. Run `run.ps1 verify`, then commit the response, the corrections, and the handoff entry.
 11. Push the commit, and run the session end gate.
 12. Answer each review thread, and resolve it after the answer.
-13. When each check of the new head is green, start the next round with `make codex-review PR=<n>` (D-14).
+13. When each check of the new head is green, start the next round with `run.ps1 codex-review -PR <n>` (D-14).
 
 A correction of documents alone needs the ste-check job. A correction that changes code needs its tests and a regression test too (T-3).
 
@@ -47,7 +47,7 @@ Push back when the evidence supports it. State the reason and show the proof:
 | The finding states a style preference. | Name the contract that the code does not break. |
 | The finding repeats a risk that a decision already accepted. | Quote the D-# id and its accepted risk. |
 | The finding asks for work outside the PR scope. | Quote the roadmap entry and the exit tests. Name the PR that holds the work. |
-| `make codex-review` exits 11 for an id. | Do the three-strike stop of `one-pr-one-session`, in `references/review-and-merge.md` (D-14). |
+| `run.ps1 codex-review` exits 11 for an id. | Do the three-strike stop of `one-pr-one-session`, in `references/review-and-merge.md` (D-14). |
 
 A disagreement belongs in the response file, with the evidence. Never delete a finding from the review record.
 The reviewer sets a refuted finding to `withdrawn.` and keeps the evidence that refuted it.
@@ -61,7 +61,7 @@ Partial merit is common. Correct the part that has merit, and refute the rest in
 ## The response file
 
 The author answers a review in `docs/reviews/pr-<number>-response.md`.
-This file is a convention, not a gate. The `make codex-review` command does not read it, and the `review-gate` check does not read it.
+This file is a convention, not a gate. The `run.ps1 codex-review` command does not read it, and the `review-gate` check does not read it.
 Write one when the verdict is `Changes required` or `Blocked`. A clean first pass needs none.
 
 The response file states, for each finding:
@@ -92,6 +92,6 @@ The author alone answers a comment or a review thread on the PR. The reviewing p
 
 - Treat each comment as a finding: verify it, then correct it or refute it with evidence.
 - A reply names no provider, harness, or model as the source of the work (T-6, D-16).
-- Resolve each thread after its reply, also after a fix. The `make codex-review` command refuses to start while a thread is unresolved (D-52).
+- Resolve each thread after its reply, also after a fix. The `run.ps1 codex-review` command refuses to start while a thread is unresolved (D-52).
 - Record in the handoff entry the count of comments, the count with merit, and the commit that answered each one.
 - The gitar pass stays out of this repository until the owner answers OQ-16 (D-7).
