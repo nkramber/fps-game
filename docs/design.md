@@ -14,6 +14,7 @@ Status: the owner accepts it on the condition of D-27. Written in ASD-STE100 (D-
 - 2026-09-27 seventh pass: PR-8 adds the engine toolchain (D-78 to D-82). The owner installs the engine during PR-8 (D-78). The project SSD is case-sensitive, so the engine gets a case-insensitive volume (F-21, D-81). D-97 later superseded D-81.
 - 2026-09-28 eighth pass: the owner gave D-91 to D-100 in PR-10 and PR-12. The game ships on Windows alone (D-91), and the sessions run on the Windows PC (D-92). PR-12 to PR-14 move the project to Windows before PR-11 (D-93, D-94). M-9 goes out of scope (D-95). Each earlier Mac claim stays, with this dated correction.
 - 2026-09-28 ninth pass: PR-14 moves the engine commands to `run.ps1` on the Windows PC and removes each Mac part (D-97). The owner gave D-104 to D-106. The C# commands are the one copy of each engine command (D-104).
+- 2026-09-28 tenth pass: PR-11 records the gate of phase 1 and the first value of M-8. The owner gave D-108 to D-110.
 
 ## 1. Thesis
 
@@ -80,7 +81,7 @@ What we do not know, and the measurement that answers it:
 - M-5: Frame time and memory of the vertical-slice room. Phase 5.
 - M-6: Time to change one kit piece and see the change in each space. Phase 5.
 - M-7: First-clear time of the full level in graybox. Phase 6.
-- M-8: LFS storage in use, at the end of each phase. Each phase.
+- M-8: LFS storage in use, at the end of each phase. Each phase. D-108 gives the method. The value at the end of phase 1, on 2026-09-28 in PR-11: 8,404 bytes in one LFS object, the test map. The session read a fresh clone of `main` at `95546e3`. The value uses less than 0.0001% of the free quota of 10 GiB.
 - M-9: Internal resolution of TSR that holds 60 fps at 4K output on the Mac (D-32). ⏸ Out of scope since 2026-09-28 (D-95). The first frame time comes from M-3.
 
 ## 5. Defect and finding register
@@ -124,6 +125,7 @@ Status legend:
 | F-26 | 2026-09-28 | A Mac package with no `-package` step stopped at its start with "Library not loaded: @rpath/libtbb.12.dylib". The archive step took the app of `Game/Binaries`, and that app holds no libraries and no content. | The output of dyld, and the archive lines of RunUAT | ✅ PR #11: the Mac build had the `-package` step. PR #14 removed the Mac build (D-97). |
 | F-27 | 2026-09-28 | The Mac package runs in the App Sandbox, with the default bundle id `com.YourCompany.IronAbsolution`. It writes its log in its container, and `-abslog` to a path outside the container writes no file and gives no error. | `codesign -d --entitlements`, and a run with `-abslog` | ✅ PR #11: the Mac start command read the log from stdout, and the app had the bundle id of D-90. D-90 is superseded by D-97, and PR #14 removed the Mac part. The Windows package writes its log through `-abslog`. |
 | F-28 | 2026-09-28 | The hosted test `PackageRunCommandTests.AStubRunThatWritesTheSuccessLinePasses` failed one time after 6 ms with the exit code 1, and its rerun passed. So the stub of D-103 probably did not start. An assumption, not proved: Linux refused to start the new copy of the stub ("Text file busy") while a parallel test started a process. | The first attempt of CI run 36493078596 on PR #14, and the first rerun or failure in 40 runs of `ci` | 🔧 planned. The owner chose to record it in PR-14. A later PR proves the cause and fixes the start of the stub. |
+| F-29 | 2026-09-28 | After the removal of PR-14, `.editorconfig` held a section for the Makefile, and the comment of `IronAbsolution.Tests/PowerShellScript.cs` named the scripts folder. PR-14 removed the Makefile and the scripts folder. Neither leftover is a Mac part of exit test 6 of PR-14. | A search of the tracked files for line 11 of the gate of phase 1 | ✅ PR #15: the section and the comment go. `EditorConfigTests` refuses a section for a file that git does not track (D-110). |
 
 ## 6. Guardrails (the safety contract for every PR)
 
@@ -267,7 +269,7 @@ When the owner confirms that gitar works here, one PR ports the gitar-wait scrip
 - Objective: prove the engine, the toolchain, the source control, and the tests on the Windows PC before any game code. Correction of 2026-09-28: the objective named the Mac too until D-91. The gate named a first M-9 until D-95.
 - Dependencies: phase 0. The owner answered each engine question: D-24, D-28 to D-34, and D-39. The owner installs Unreal Engine 5.8 and Xcode 26.1.1 on the SSD, and Unreal Engine 5.8 on the Windows PC. Correction of 2026-09-27: the install comes after PR-8, from its runbook (D-69). Second correction of 2026-09-27: the install comes during PR-8, on a case-insensitive volume of the SSD (D-78, D-81, F-21). Third correction of 2026-09-28: PR-14 removes the Mac install (D-97).
 - Work: a setup runbook for both machines, with the owner actions marked. The minimal C++ project `IronAbsolution`, with one module and Enhanced Input. An empty test map. LFS attributes. Scripts for the headless automation test and the package on both platforms. The Windows commands that the owner runs (D-33). An evidence template for engine PRs (D-31). Unreal best practices apply (D-34). Correction of 2026-09-28: PR-13 moves each development command to `run.ps1` on the Windows PC, and the whole test suite runs there (D-99, D-101 to D-103).
-- Focused roadmap: `docs/roadmaps/phase-1-engine-proof.md` holds PR-8 to PR-14 and the gate (D-71, D-94). PR-7 adds it. Status: ✅ done in PR #8. PR-12 adds PR-12 to PR-14.
+- Focused roadmap: `docs/roadmaps/phase-1-engine-proof.md` holds PR-8 to PR-14 and the gate (D-71, D-94). PR-7 adds it. Status: ✅ done in PR #8. PR-12 adds PR-12 to PR-14. The gate of phase 1 passes: ✅ PR #15 records the evidence of each line in section 7.9 of the phase file.
 - Exit evidence: a clean clone builds the editor target and a packaged Development build on each platform. The owner posts the Windows logs. Each package starts and stops from the command line. One automation test passes headless, with its log. A fresh clone restores LFS content. M-1 and M-2 have values. A first TSR test at 4K output on the Mac gives a first value of M-9. The project records its World Partition choice with a reason (D-4). Correction of 2026-09-28: the evidence is for the Windows PC alone, and a session posts the logs (D-91, D-92). M-9 is out of scope (D-95). PR-14 gives M-1 on Windows (D-98).
 
 > *In plain English:* Before we build the game, we prove that the engine builds, tests, and packages on Windows. The Mac was a second platform until 2026-09-28.
@@ -367,7 +369,7 @@ After that, each phase gets a focused roadmap just before it starts. `docs/roadm
 9. PR-7: the focused roadmap of phase 1. Its PR ids continue after PR-6.
 10. PR-8: the engine toolchain. Then the owner installs the engine and Xcode on the Mac, and the engine on the Windows PC (D-28, D-33). Correction of 2026-09-27: the install was step 9, before its runbook (F-19, D-69). Second correction of 2026-09-27: the owner installs during PR-8, before its merge (D-78).
 11. PR-9 to PR-14 in the order of section 8 of the phase file. Correction of 2026-09-28: PR-12 to PR-14 come before PR-11, and they move the project to Windows alone (D-93, D-94). Phase 2 starts beside phase 1. The owner picks for OQ-9 and OQ-10, then answers OQ-12.
-12. Gate of phase 1, then gate of phase 2.
+12. Gate of phase 1, then gate of phase 2. The gate of phase 1 passes in PR #15 (PR-11).
 13. Phase 3, then its gate. Phase 5 starts beside it.
 14. Phase 4, then its gate.
 15. Gate of phase 5.

@@ -12,6 +12,8 @@ Correction of 2026-09-28, PR-12: the game ships on Windows alone (D-91), and the
 
 Correction of 2026-09-28, PR-14: the engine commands run from `run.ps1` on the Windows PC, and PR-14 removed each Mac part (D-97). The owner gave D-104 to D-106 at the start of PR-14.
 
+Correction of 2026-09-28, PR-11: the gate record adds the first value of M-8 and the evidence of each line of the gate. The owner gave D-108 to D-110. PR-11 also removes two leftovers of PR-14 (F-29, D-110).
+
 Labels: each claim of a plan is evidence (with a link), a recommendation, an assumption, or an unknown.
 
 ## 1. Thesis
@@ -43,6 +45,7 @@ The register in section 5 of `docs/design.md` holds every finding. These rows bi
 | F-22 | The name of an MSVC folder does not give the version of its compiler | PR-8: the Windows check reads `cl.exe` (D-74) |
 | F-23 | The editor starts its cache server before Editor Preferences can open | PR-9: the owner writes the cache path before the first start (D-85). PR #14 removed it (D-97) |
 | F-24 | The toolchain check passed with no Metal Toolchain | PR-9: the check has a Metal Toolchain pin (D-87). PR #14 removed it (D-97) |
+| F-29 | PR-14 left a Makefile section in `.editorconfig` and a comment that named the scripts folder | PR-11: both go, and a hosted test refuses such a section (D-110) |
 
 ## 7. Roadmap
 
@@ -307,6 +310,7 @@ Owner, during PR-8 (D-78). No PR.
 - The value of M-8 at the end of phase 1.
 - The values of M-1, M-2, and M-8 in section 4 of `docs/design.md`.
 - The evidence of each line of the gate of phase 1 (section 7.9).
+- The removal of the two leftovers of PR-14, as a second concern (F-29, D-110). A hosted test refuses a section of `.editorconfig` for a file that git does not track.
 
 Correction of 2026-09-28: the scope held a room of basic shapes, a TSR procedure on the Mac package, and the first value of M-9. They went out of scope with M-9 (D-75, superseded by D-95).
 
@@ -319,12 +323,13 @@ Correction of 2026-09-28: the scope held a room of basic shapes, a TSR procedure
 
 1. M-8 has a value.
 2. Each line of section 7.9 names its evidence.
+3. `EditorConfigTests` fails on the Makefile section of `.editorconfig`, and it passes after the removal (D-110).
 
-**Review focus.** The claim that each value makes, and the evidence of each line of the gate.
+**Review focus.** The claim that each value makes, and the evidence of each line of the gate. The test of the leftovers (D-110).
 
-**Questions.** None open. D-75 answered OQ-23, and D-95 superseded D-75.
+**Questions.** None open. D-75 answered OQ-23, and D-95 superseded D-75. The owner gave D-108 to D-110 in PR-11: the method of M-8, the evidence of line 5, and the leftovers.
 
-**State.** 🔧 planned.
+**State.** ✅ done in PR #15. M-8 is 8,404 bytes in one LFS object, on 2026-09-28, from a fresh clone of `main` at `95546e3` (D-108).
 
 > *In plain English:* This change collects the proof of each line of the gate. It measures the storage of the large files, and it records the first costs of the engine.
 
@@ -346,6 +351,24 @@ Correction of 2026-09-28: the gate reads the Windows PC alone (D-91). The Mac ev
 10. The five required checks of `main` are green on each PR of the phase (D-61, D-64).
 11. No tracked file holds a Mac part (PR-14, D-97).
 
+**The evidence.** PR-11 read each line on 2026-09-28. The "Windows evidence" comment of PR #14 holds the logs of a fresh clone on the Windows PC.
+
+| Line | Evidence |
+|---|---|
+| 1 | PR #14, "Windows evidence": `run.ps1 editor-build` passed in 41.55 seconds at `f6f1d35`, and again at `aed74bb` |
+| 2 | PR #14, "Windows evidence": `run.ps1 editor-test` passed at `aed74bb`, with 3 tests in the report and the success line in the log |
+| 3 | PR #14, "Windows evidence": the fresh clone restored the test map, 8404 bytes, with the package tag `C1832A9E`. The M-8 clone of PR-11 lists the same object |
+| 4 | D-84 applies D-4: the test map loads whole, with no World Partition. The comment of the test map in `Game/Source/IronAbsolution/Private/Tests/ProjectSettingsTest.cpp` cites D-84. The map file holds no `WorldPartition` text |
+| 5 | D-109: EnhancedInput.uplugin of engine 5.8.3 on the Windows PC gives the version 1.0, `IsBetaVersion` false, and no experimental flag. `Game/IronAbsolution.uproject` turns the plugin on. `IronAbsolution.Project.Settings` passed in PR #14. The Mac editor showed the same state in PR #10 (F-6) |
+| 6 | PR #14, "Windows evidence": `run.ps1 package-build` passed, with a `BuildCookRun time` of 101.25 seconds |
+| 7 | PR #14, "Windows evidence": `run.ps1 package-run` passed, with the exit code 0 and the success line of the timed run |
+| 8 | Section 4 of `docs/design.md`: M-1 is 3.53 GB, and M-2 is 41.6 seconds for the editor target and 101.25 seconds for the package (PR #14) |
+| 9 | ⏸ Out of scope (D-95) |
+| 10 | `gh pr view`: PR #8 to PR #14 show the five checks green on each head. PR #12 also shows one cancelled `review-gate` run, and a newer run passed. The ruleset holds PR #15 to the same five checks (D-61, D-64) |
+| 11 | Exit test 6 of PR-14: `GameFilesTests` reads `Game/Config/DefaultEngine.ini`, and CI run 36495084063 passed on `main` at `95546e3`. A search of the tracked files found no Mac target, pin, program path, or engine setting. It found two leftovers, F-29, and PR-11 removes them (D-110) |
+
+**State.** ✅ passes in PR #15, the gate record (PR-11).
+
 **What the gate does not ask.** No play, no feel, and no frame budget. Phase 3 holds those (D-32).
 
 > *In plain English:* At this point the game still does nothing that a player can see. But it builds, tests, and runs on the Windows PC, and we know its first costs.
@@ -363,7 +386,7 @@ The global order lives in section 8 of `docs/design.md`. Phase 1 holds this orde
 7. PR-13: the development tools on the Windows PC (D-94).
 8. PR-14: the engine commands on Windows alone (D-94).
 9. PR-11: the gate record (D-95).
-10. **← GATE of phase 1.** Section 7.9 holds each line.
+10. **← GATE of phase 1.** Section 7.9 holds each line. ✅ passes in PR #15.
 
 Correction of 2026-09-28: PR-11 was step 6, before the move to Windows (D-93, D-94).
 

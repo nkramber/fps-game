@@ -2,6 +2,111 @@
 
 This file holds the entries that the rotation moves out of `docs/session-handoff.md`, newest first.
 
+## Session 41: 2026-09-28, Claude Code
+
+Author: Claude Code
+Session: author PR-12, round 1. Repository: iron-absolution. Branch: `docs/pr-12-windows-only-plan`. PR: #12. Role: author. Base: `7f87dbc5b0313eddae55140b027bb7e72aed58ad`.
+
+### What this session did, and why
+
+- Recorded the three answers of PR-10 as D-91 to D-93: Windows alone, the sessions on the Windows PC, and PR-12 before PR-11.
+- Listed each Mac part, then asked the owner. The answers are D-94 to D-100: three PRs, M-9 retired, the window confirmation, the Mac removal, M-1 on Windows, the PowerShell entry, and the Windows paths.
+- Marked D-55, D-75, D-81, D-83, D-85, D-87, and D-90 as superseded, and D-14, D-28, D-32, D-33, D-41, D-71, and D-72 as revised in part. Each live citation names the new decision.
+- The phase 1 file has PR-12 to PR-14, the new PR-11, the gate for Windows alone, and the new order. The PR-14 entry holds the inventory of Mac parts.
+- The design doc, G-12, the agent files, the `pr-review` skill, and two runbooks follow D-91 and D-92.
+
+### The state of the build
+
+- `make ste-check` gives 0 findings on the Mac. The PR changes documents alone.
+- The remote head is the commit of this entry. The state is pending merge.
+
+### What is in flight
+
+- The author session adds the `review-override` label (D-35, D-76). Then the owner confirms the squash merge after the merge summary.
+
+### Traps and gotchas
+
+- The reference check flags each line that cites a superseded decision and does not name its successor (REF 3). Each line that PR-13 or PR-14 keeps with a citation of D-55, D-75, or D-81 to D-90 must name the successor.
+- The Makefile stays for the Mac engine targets until PR-14 (section 7.6 of the phase file). PR-13 removes only the development targets.
+- Ask the owner before each command that opens a game window (D-96).
+
+### The questions that block progress
+
+- None. OQ-16 still holds gitar (D-7).
+
+### The next concrete action
+
+- After the merge, write the transitional prompt of PR-13. The session of PR-13 runs on the Windows PC (D-92). Its first action is the owner install of the development tools there.
+
+## Session 40: 2026-09-28, Claude Code
+
+Author: Claude Code
+Session: author PR-10, merge. Repository: iron-absolution. Branch: `feat/pr-10-packaged-build`. PR: #11. Role: author. Base: `b46321ed8a4909c36e7c305a0e07af859c7320bb`.
+
+### What this session did, and why
+
+- Round 1 of the review gave `Ready for owner merge` for the effective head `5d268b707becefc0101fd9814faa9ec51d12d335`, with no finding.
+- Each check of the PR passed after the review record, `review-gate` included.
+
+### The state of the build
+
+- `make` passes on the Mac: 527 tests, a clean format, and 0 findings.
+- The remote head is the commit of this entry. The state is pending merge.
+
+### What is in flight
+
+- The owner confirms the squash merge after the merge summary. Then auto-merge runs (D-67).
+
+### Traps and gotchas
+
+- This entry is a metadata commit, so the approval of `5d268b7` stands (D-14).
+
+### The questions that block progress
+
+- None. OQ-16 still holds gitar (D-7).
+
+### The next concrete action
+
+- After the merge, the next PR is PR-12, and it comes before PR-11. On 2026-09-28 the owner gave two answers that no D-# id holds yet:
+  1. "We will ONLY support Windows, not Mac." This supersedes the macOS part of D-32.
+  2. The engine work moves to the Windows PC, and the sessions run there. This reverses D-55 and revises D-33 in part.
+- PR-12 records both answers as decisions, and it plans the change first. The Mac pins, the Mac targets, and the Mac M-9 of PR-11 change.
+
+## Session 39: 2026-09-28, Codex
+
+Author: Codex
+Session: review PR-10, round 1. Repository: iron-absolution. Branch: `feat/pr-10-packaged-build`. PR: #11. Role: reviewer. Base: `b46321ed8a4909c36e7c305a0e07af859c7320bb`.
+
+### What this session did, and why
+
+- Reviewed PR #11 at effective head `5d268b707becefc0101fd9814faa9ec51d12d335` under D-14.
+- The provider gate passed. The review found no blocking defect.
+- Added `docs/reviews/pr-11.md` and this entry in one metadata commit for `origin/feat/pr-10-packaged-build`.
+
+### The state of the build
+
+- The CI build, test, and format, coverage, STE, and document gate checks passed. The review gate failed before the review record existed.
+- Local `make` passed. It skipped 28 PowerShell tests because `pwsh` was absent. CI ran those tests.
+- The owner posted Mac and Windows package logs and run results in PR #11.
+- The remote work head before the metadata commit was `2cf6a526ae61d5d5608d9fa59aa224de4e2f2f2c`.
+
+### What is in flight
+
+- The metadata commit must pass the review gate at the effective head.
+
+### Traps and gotchas
+
+- The tools project does not install PowerShell. CI runs the PowerShell script tests.
+- The Unreal Engine build and package need the owner machine and engine cache.
+
+### The questions that block progress
+
+- None. OQ-16 still holds gitar (D-7).
+
+### The next concrete action
+
+- The author gives the owner the merge summary after all required checks pass.
+
 ## Session 38: 2026-09-28, Claude Code
 
 Author: Claude Code
