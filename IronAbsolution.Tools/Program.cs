@@ -5,6 +5,7 @@ using IronAbsolution.Tools.CodexReview;
 using IronAbsolution.Tools.DocGate;
 using IronAbsolution.Tools.EditorTest;
 using IronAbsolution.Tools.HandoffRotate;
+using IronAbsolution.Tools.PackageRun;
 using IronAbsolution.Tools.ReviewGate;
 using IronAbsolution.Tools.SteCheck;
 using IronAbsolution.Tools.ToolchainCheck;
@@ -18,8 +19,8 @@ public static class Program
     public const int FaultExitCode = 1;
 
     /// <summary>
-    /// The commands that no PR has written yet, and the PR that adds each one (G-8). PR-8 and PR-9
-    /// wrote the commands of phase 1, so the list is empty until a roadmap plans another.
+    /// The commands that no PR has written yet, and the PR that adds each one (G-8). PR-8, PR-9, and
+    /// PR-10 wrote the commands of phase 1, so the list is empty until a roadmap plans another.
     /// </summary>
     public static readonly IReadOnlyDictionary<string, string> PlannedCommands =
         new SortedDictionary<string, string>(StringComparer.Ordinal);
@@ -86,6 +87,11 @@ public static class Program
             return EditorTestCommand.Run(args[1..], output, errors);
         }
 
+        if (command == PackageRunCommand.Name)
+        {
+            return PackageRunCommand.Run(args[1..], output, errors);
+        }
+
         if (PlannedCommands.TryGetValue(command, out string? pullRequest))
         {
             errors.WriteLine(
@@ -108,6 +114,7 @@ public static class Program
         errors.WriteLine($"  {ReviewGateCommand.Name}: ready");
         errors.WriteLine($"  {ToolchainCheckCommand.Name}: ready");
         errors.WriteLine($"  {EditorTestCommand.Name}: ready");
+        errors.WriteLine($"  {PackageRunCommand.Name}: ready");
         if (PlannedCommands.Count == 0)
         {
             errors.WriteLine("The planned commands: none.");

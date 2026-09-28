@@ -190,6 +190,24 @@ Exit test 8 of PR-9 checks that the internal disk holds no cache data. These fol
 - `~/Library/Application Support/Epic/Zen`: the default data folder of Zen. It stays empty when the setting holds.
 - `~/.epic/UnrealBuildAccelerator`: the store of the build accelerator. A build with no remote agent writes almost nothing to it.
 
+### The package
+
+The package is a Development build of the game, with the test map (D-89).
+
+1. **Owner.** Make the package from the root of the checkout.
+
+   ```
+   make package-build
+   ```
+
+2. **Owner.** Start the package for its timed run.
+
+   ```
+   make package-run
+   ```
+
+The package opens a window, runs the test map for 10 seconds, and stops. The start command gives the exit code 1 when a check fails. A pass needs the exit code 0 of the package and the success line of the timed run in `Game/Saved/Logs/package-run.log`.
+
 ## The Windows PC
 
 The owner runs each step on the Windows PC and posts the output in the PR (D-33).
@@ -272,6 +290,24 @@ Each script matches a Makefile target of the Mac (D-72). Each script reads `IRON
 
 The test script gives the exit code 1 when a check fails. A pass needs the exit code 0 of the editor, a test report with no failed test, and the success line of the log.
 
+### The package
+
+1. **Owner.** In PowerShell, make the package from the root of the checkout.
+
+   ```
+   powershell -NoProfile -ExecutionPolicy Bypass -File scripts\package-build.ps1
+   ```
+
+2. **Owner.** Start the package for its timed run.
+
+   ```
+   powershell -NoProfile -ExecutionPolicy Bypass -File scripts\package-run.ps1
+   ```
+
+3. **Owner.** Post the output of each script in the PR (D-33). Attach `Game\Saved\Logs\package-build.log` and `Game\Saved\Logs\package-run.log`.
+
+The package opens a window, runs the test map for 10 seconds, and stops. The start script gives the exit code 1 when a check fails.
+
 ## Traps
 
 - On an external volume, `xip` can leave `Xcode.app` in a temporary folder with a UUID name. Find the app with `find`, and do not expect `Xcode.app` in the current folder.
@@ -280,3 +316,6 @@ The test script gives the exit code 1 when a check fails. A pass needs the exit 
 - A program from the Dock or the Finder does not read `~/.zshrc`. The check and the Makefile targets run from the shell, so they read the variable.
 - The first clone on `/Volumes/SSD-1TB` has the same folder name. The editor does not find the project there, so run `pwd` before each engine command.
 - `Build.sh` of the engine gives 0 for the result "up to date" of the build tool, so `make editor-build` gives 0 when no file changed.
+- On the Mac, a package with no `-package` step holds no libraries, and it stops at its start with "Library not loaded" (F-26). `make package-build` has the step.
+- The Mac package runs in the App Sandbox. It cannot write a log outside its container, and `-abslog` fails with no error. So `make package-run` reads the log from stdout (F-27).
+- Windows PowerShell 5.1 writes `package-build.log` in UTF-16. PowerShell 7 writes UTF-8. Both logs are complete.

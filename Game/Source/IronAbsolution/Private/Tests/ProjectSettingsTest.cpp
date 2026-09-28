@@ -13,7 +13,9 @@ namespace IronAbsolution::Tests
 {
 	// The test map of phase 1. It is a plain level with no World Partition (D-84).
 	const TCHAR* const TestMapPackage = TEXT("/Game/Maps/L_Test");
+#if WITH_EDITORONLY_DATA
 	const TCHAR* const TestMapObject = TEXT("/Game/Maps/L_Test.L_Test");
+#endif
 }
 
 // The first automation test of the project (D-71). The headless run of `make editor-test` and of
@@ -29,8 +31,12 @@ bool FIronAbsolutionProjectSettingsTest::RunTest(const FString& Parameters)
 
 	// The game and the editor both start on the test map. GetGameDefaultMap gives the package name.
 	TestEqual(TEXT("The default map of the game"), UGameMapsSettings::GetGameDefaultMap(), FString(TestMapPackage));
+	// The game target of a packaged Development build compiles this test too, and that target has
+	// no editor-only data. So the check of the editor map has its own guard (F-25).
+#if WITH_EDITORONLY_DATA
 	const UGameMapsSettings* MapsSettings = GetDefault<UGameMapsSettings>();
 	TestEqual(TEXT("The startup map of the editor"), MapsSettings->EditorStartupMap.ToString(), FString(TestMapObject));
+#endif
 	TestTrue(FString::Printf(TEXT("The package of the test map exists: %s"), TestMapPackage), FPackageName::DoesPackageExist(TestMapPackage));
 
 	// Enhanced Input is the input system of the project (F-6).

@@ -7,21 +7,6 @@ using IronAbsolution.Tools.ToolchainCheck;
 
 namespace IronAbsolution.Tools.EditorTest;
 
-/// <summary>The result of one check of a headless test run: its name, its state, and what it saw.</summary>
-/// <param name="Check">The name of the check, such as `Test report`.</param>
-/// <param name="Holds">True when the check passes.</param>
-/// <param name="Detail">What the check saw, with the path of each file that it read (T-2).</param>
-public sealed record CheckResult(string Check, bool Holds, string Detail)
-{
-    /// <summary>Gives the one report line of the check.</summary>
-    /// <returns>The line, such as `Editor exit: pass. The editor gave the exit code 0.`</returns>
-    public string Line()
-    {
-        string state = this.Holds ? "pass" : "fail";
-        return $"{this.Check}: {state}. {this.Detail.TrimEnd('.')}.";
-    }
-}
-
 /// <summary>
 /// Every fact of one headless run, read one time after the editor stopped. The rules do no I/O.
 /// </summary>

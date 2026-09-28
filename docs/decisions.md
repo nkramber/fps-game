@@ -19,6 +19,7 @@ How to read this file:
 - The owner gave D-69 to D-77 on 2026-09-27 in PR-7, the focused roadmap of phase 1.
 - The owner gave D-78 to D-83 on 2026-09-27 in PR-8, the engine toolchain.
 - The owner gave D-84 to D-88 on 2026-09-27 and 2026-09-28 in PR-9, the project scaffold.
+- The owner gave D-89 and D-90 on 2026-09-28 in PR-10, the packaged build.
 - For D-15, the owner asked for the best fit, and the session recommended it. The owner then chose it.
 
 How to add a decision:
@@ -125,6 +126,8 @@ Find a row with `grep -n -E '^\| D-(12|14) \|' docs/decisions.md`.
 | D-85 | 2026-09-27 | Cache path before the first start | Before the first start of the editor, the owner writes the cache path into the stored settings file of the editor with one command. At the first start, the owner confirms that Editor Preferences shows that path. | The owner gave this answer in PR-9, after F-23. Revised in part: the time of the step of D-83. The setting and the path of D-83 stand. |
 | D-87 | 2026-09-28 | Metal Toolchain pin | `make toolchain-check` has a fourth pin on the Mac: Xcode shows the Metal Toolchain as installed. PR-9 adds the pin and its tests. | The owner gave this answer in PR-9, after F-24. Applies D-28. Adds one item to the scope of PR-9. |
 | D-88 | 2026-09-28 | Android File Server | The project file turns off the Android File Server plugin. No commit holds its settings or its security token. | The owner gave this answer in PR-9. The editor of 5.8.3 wrote the settings of the plugin, with a random token, into `DefaultEngine.ini` at the first start. Applies D-9 and D-32: Android is not a target. |
+| D-89 | 2026-09-28 | Package run time | The start command of each package runs the test map for 10 seconds after the map loads, and then the package stops itself. The start command stops a package that runs for 5 minutes, and it fails with the log path. | The owner gave this answer in PR-10. Applies T-2 and D-72. The measurement of the frame rate is not in this run. |
+| D-90 | 2026-09-28 | Mac bundle id | The Mac app has the bundle id `com.nkramber.ironabsolution`. PR-10 sets it in `DefaultEngine.ini`, and a hosted test reads it. | The owner gave this answer in PR-10, after F-27. The id replaces the placeholder of Epic. The sandbox container of the Mac package moves to the new id. |
 
 ## Content, assets, and the repository
 

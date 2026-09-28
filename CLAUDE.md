@@ -156,6 +156,8 @@ The Makefile is the entry point (D-41). Run each target from the checkout root.
 - `make toolchain-check`: the pins of the Mac toolchain: Xcode, the engine, Git LFS, and the Metal Toolchain (D-28, D-79, D-87). `docs/runbooks/engine-setup.md` gives the install.
 - `make editor-build`: build the editor target of the Unreal project on the Mac. `scripts/editor-build.ps1` does the same on the Windows PC (D-72).
 - `make editor-test`: run each automation test headless on the Mac. A pass needs the exit code 0, a test report, and the success line of the log. `scripts/editor-test.ps1` does the same on the Windows PC.
+- `make package-build`: make a packaged Development build of the game on the Mac. `scripts/package-build.ps1` does the same on the Windows PC (D-72).
+- `make package-run`: start the package for a timed run of the test map. A pass needs the exit code 0 and the success line of the log (D-89). `scripts/package-run.ps1` does the same on the Windows PC.
 
 The CI of each PR runs the `ste-check`, `build, test, and format`, and `coverage report` jobs (D-42, D-45). The `doc-gate` workflow runs on each push and on each edit of the description (D-56). The `review-gate` workflow runs from the base branch on each push and on each label change (D-64). The ruleset of `main` requires these five checks (D-61, D-64). `docs/runbooks/main-ruleset.md` gives its steps.
 

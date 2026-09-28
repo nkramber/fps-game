@@ -11,7 +11,8 @@ namespace IronAbsolution.Tests;
 /// <summary>
 /// The text files of the Unreal project that the hosted runners can read (D-31): the Git LFS
 /// rules (D-30, D-86), the ignore rules of the Unreal folders (D-9), and the plugin list of the
-/// project file (F-6, D-88). Git reads each rule, so the tests see what git does, not a copy of a rule.
+/// project file (F-6, D-88), and the map list of the packaging settings (D-89). Git reads each rule,
+/// so the tests see what git does, not a copy of a rule.
 /// </summary>
 public sealed class GameFilesTests
 {
@@ -84,6 +85,10 @@ public sealed class GameFilesTests
     [InlineData("Game/Intermediate/Build/Mac/UnrealEditor/Inc/IronAbsolution/UHT/Timestamp")]
     [InlineData("Game/Saved/Logs/IronAbsolution.log")]
     [InlineData("Game/Saved/Automation/editor-test/index.json")]
+    [InlineData("Game/Saved/Packages/Mac/IronAbsolution.app/Contents/Info.plist")]
+    [InlineData("Game/Saved/StagedBuilds/Mac/IronAbsolution.app/Contents/Info.plist")]
+    [InlineData("Game/Saved/Cooked/Mac/IronAbsolution/Content/Maps/L_Test.umap")]
+    [InlineData("Game/Build/Mac/FileOpenOrder/CookerOpenOrder.log")]
     [InlineData("Game/DerivedDataCache/Compressed.ddp")]
     [InlineData("Game/Plugins/Sample/Binaries/Mac/UnrealEditor-Sample.dylib")]
     [InlineData("Game/Plugins/Sample/Intermediate/Build/Mac/Sample.o")]
@@ -99,6 +104,9 @@ public sealed class GameFilesTests
     [InlineData("Game/Config/DefaultEngine.ini")]
     [InlineData("Game/Source/IronAbsolution/IronAbsolution.Build.cs")]
     [InlineData("Game/Source/IronAbsolution/Private/Tests/ProjectSettingsTest.cpp")]
+    [InlineData("Game/Source/IronAbsolution/Public/TimedRunSubsystem.h")]
+    [InlineData("Game/Source/IronAbsolution/Private/TimedRunSubsystem.cpp")]
+    [InlineData("Game/Config/DefaultGame.ini")]
     [InlineData(TestMap)]
     [InlineData("Game/Plugins/Sample/Sample.uplugin")]
     [InlineData("Game/Plugins/Sample/Content/Sample.uasset")]
@@ -132,6 +140,42 @@ public sealed class GameFilesTests
         JsonElement module = Assert.Single(root.GetProperty("Modules").EnumerateArray());
         Assert.Equal("IronAbsolution", module.GetProperty("Name").GetString());
         Assert.Equal("Runtime", module.GetProperty("Type").GetString());
+    }
+
+    [Fact]
+    public void ThePackagingSettingsCookTheTestMapAlone()
+    {
+        // The package loads the test map for the timed run of PR-10 (D-89). The list is explicit,
+        // so a new map needs a new line here (T-1).
+        string[] lines = File.ReadAllLines(RepositoryRoot.PathTo("Game/Config/DefaultGame.ini"));
+        int section = Array.IndexOf(lines, "[/Script/UnrealEd.ProjectPackagingSettings]");
+        Assert.True(section >= 0, "DefaultGame.ini has no section of the packaging settings.");
+
+        List<string> maps = lines
+            .Skip(section + 1)
+            .TakeWhile(line => !line.StartsWith('['))
+            .Where(line => line.Contains("MapsToCook", StringComparison.Ordinal))
+            .ToList();
+
+        Assert.Equal(["+MapsToCook=(FilePath=\"/Game/Maps/L_Test\")"], maps);
+    }
+
+    [Fact]
+    public void TheMacAppHasTheBundleIdOfTheOwner()
+    {
+        // The default of Epic is the placeholder `com.YourCompany`, and the sandbox container of
+        // the Mac package takes its name from the id (D-90, F-27).
+        string[] lines = File.ReadAllLines(RepositoryRoot.PathTo("Game/Config/DefaultEngine.ini"));
+        int section = Array.IndexOf(lines, "[/Script/MacTargetPlatform.XcodeProjectSettings]");
+        Assert.True(section >= 0, "DefaultEngine.ini has no section of the Xcode project settings.");
+
+        List<string> ids = lines
+            .Skip(section + 1)
+            .TakeWhile(line => !line.StartsWith('['))
+            .Where(line => line.StartsWith("BundleIdentifier=", StringComparison.Ordinal))
+            .ToList();
+
+        Assert.Equal(["BundleIdentifier=com.nkramber.ironabsolution"], ids);
     }
 
     /// <summary>Gives the value of each LFS attribute and of `text` for one path, as git reads them.</summary>
