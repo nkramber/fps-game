@@ -156,11 +156,13 @@ public sealed class ToolchainCheckCommandTests : IDisposable
     [Fact]
     public void TheWindowsScriptPinsTheToolchainOfTheEpicPage()
     {
-        // D-74: Visual Studio 2026 and the MSVC toolset 14.50, from the Epic page read on 2026-09-27.
+        // D-74: Visual Studio 2026 and the MSVC toolset 14.50, from the Epic page read on 2026-09-27. The first
+        // 14.50 build that Windows_SDK.json of 5.8.3 does not ban is 14.50.35723.
         string script = File.ReadAllText(RepositoryRoot.PathTo("scripts/toolchain-check.ps1"));
 
         Assert.Contains("$VisualStudioMajorPin = 18", script, StringComparison.Ordinal);
-        Assert.Contains("$MsvcPin = '14.50'", script, StringComparison.Ordinal);
+        Assert.Contains("$MsvcMinimum = [version]'14.50.35723'", script, StringComparison.Ordinal);
+        Assert.Contains("$MsvcNextFamily = [version]'14.51.0'", script, StringComparison.Ordinal);
         Assert.Contains("$WindowsSdkMinimum = [version]'10.0.22621.0'", script, StringComparison.Ordinal);
         Assert.Contains("read on 2026-09-27 (D-74)", script, StringComparison.Ordinal);
     }
