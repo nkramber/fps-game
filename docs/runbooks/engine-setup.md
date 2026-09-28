@@ -259,4 +259,5 @@ The test script gives the exit code 1 when a check fails. A pass needs the exit 
 - `xcodebuild` fails with "requires Xcode" when the active folder is the Command Line Tools. Select the app with `xcode-select -s`.
 - The name of an MSVC toolset folder does not change after a servicing update. The folder 14.50.35717 can hold `cl.exe` 14.50.35739. The check reads `cl.exe`, as UnrealBuildTool does (F-22).
 - A program from the Dock or the Finder does not read `~/.zshrc`. The check and the Makefile targets run from the shell, so they read the variable.
+- The first clone on `/Volumes/SSD-1TB` has the same folder name. The editor does not find the project there, so run `pwd` before each engine command.
 - `Build.sh` of the engine gives 0 for the result "up to date" of the build tool, so `make editor-build` gives 0 when no file changed.

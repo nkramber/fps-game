@@ -2,6 +2,40 @@
 
 This file holds the entries that the rotation moves out of `docs/session-handoff.md`, newest first.
 
+## Session 25: 2026-09-27, Codex
+
+Author: Codex
+Session: reviewer PR-6, round 1. Repository: iron-absolution. Branch: `feat/pr-6-review-gate`. PR: #7. Role: reviewer. Base: `5871f2c870d5eb110eccbadd67c5f633c5619155`.
+
+### What this session did, and why
+
+- Reviewed PR #7 at effective head `7f4cb583772c28e2bdb2a1a32c8f2e921442a88c`.
+- Found that the override label accepts a document commit pushed after the label when its Git committer time is earlier. The temporary reproduction passed the gate.
+- Wrote `docs/reviews/pr-7.md` with verdict `Changes required` and P2-1.
+
+### The state of the build
+
+- `make` passes on the Mac: 363 tests, a clean format, and 0 ste-check findings.
+- All four checks available to PR #7 pass on head `7f4cb58`. GitHub does not run `review-gate` until the workflow reaches `main` (D-67).
+- The remote work head is `7f4cb583772c28e2bdb2a1a32c8f2e921442a88c`. This review record and handoff must publish together.
+
+### What is in flight
+
+- P2-1 needs a freshness check that does not trust a PR-controlled commit time.
+
+### Traps and gotchas
+
+- The override rule reads Git `%cI`. A PR author controls the committer timestamp.
+- This PR does not get a `review-gate` check because the workflow runs from `main` (D-67).
+
+### The questions that block progress
+
+- None. OQ-16 still holds gitar under D-7.
+
+### The next concrete action
+
+- The author corrects P2-1 and adds a regression test for a backdated document commit.
+
 ## Session 24: 2026-09-27, Claude Code
 
 Author: Claude Code

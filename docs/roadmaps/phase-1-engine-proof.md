@@ -27,7 +27,7 @@ The register in section 5 of `docs/design.md` holds every finding. These rows bi
 | F-3 | Xcode 16.2 is on the Mac, and Unreal Engine 5.8 needs Xcode 26.0 to 26.3 | PR-8: the toolchain check refuses each other Xcode version (D-28) |
 | F-4 | The internal disk has 45 GB free | PR-8: the runbook puts the engine and its cache on the project SSD (D-28) |
 | F-5 | The Mac has 16 GB of memory, the minimum of Epic | PR-9: the first value of M-1 |
-| F-6 | Two Epic pages disagree on the state of Enhanced Input | PR-9: the editor shows the state of the plugin |
+| F-6 | Two Epic pages disagree on the state of Enhanced Input | PR-9: the editor shows the state of the plugin. Done in PR #10: Enhanced Input 1.0 is on, with no Beta or Experimental label |
 | F-8 | Hosted runners have no Unreal Engine | Each engine PR attaches local logs (D-31) |
 | F-14 | 60 fps at 4K output on the M4 with 16 GB is a hard target | PR-11: the first value of M-9 |
 | F-17 | Unreal cannot build Windows packages on the Mac | PR-9 and PR-10: the owner runs the Windows scripts (D-33, D-72) |
@@ -144,7 +144,7 @@ Owner, during PR-8 (D-78). No PR.
 
 **Questions.** None open. The owner answered the questions of the PR in D-84 to D-88.
 
-**State.** 🔧 planned.
+**State.** ✅ done in PR #10.
 
 > *In plain English:* The repository gets an empty game project with one test. The change proves that the project builds and that the test runs with no screen, on both computers.
 

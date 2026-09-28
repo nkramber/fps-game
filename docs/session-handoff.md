@@ -1,3 +1,41 @@
+## Session 35: 2026-09-28, Claude Code
+
+Author: Claude Code
+Session: author PR-9, round 1. Repository: iron-absolution. Branch: `feat/pr-9-project-scaffold`. PR: #10. Role: author. Base: `830bf40cd47f8f707d060a894017c29bff446566`.
+
+### What this session did, and why
+
+- Added the Unreal project in `Game/` from the Blank C++ template of 5.8.3: one module, the Game and Editor targets, and the test `IronAbsolution.Project.Settings` (D-73).
+- The owner made the empty map `L_Test` with no World Partition (D-84). Git LFS stores it (D-86).
+- Added `make editor-build`, `make editor-test`, and two PowerShell scripts (D-72). A pass needs the exit code 0, a report with passed tests alone, and the success line.
+- The owner answered D-84 to D-88. F-23: Zen starts before Editor Preferences, so the owner wrote the cache path first (D-85). F-24: the check passed with no Metal Toolchain, so the check has a fourth pin (D-87). D-88 turns off the Android File Server, which wrote a token.
+- Mac evidence: a fresh clone builds in 35.5 s (M-2) and restores the map from LFS. The test passes headless. A test that failed on purpose gave the exit code 3, and the session removed it. M-1 is 6.42 GB. The internal disk holds the Zen programs alone.
+
+### The state of the build
+
+- `make` passes: 494 tests, a clean format, and 0 findings. The script tests ran under a portable pwsh 7.5.3 in the scratchpad.
+- The remote head is the commit of this entry. The state is pending merge.
+
+### What is in flight
+
+- The owner runs `scripts/editor-build.ps1` and `scripts/editor-test.ps1` on the Windows PC and posts both logs (exit tests 2 and 4, M-2).
+- Then the session records the Windows M-2 value and runs `make codex-review PR=10`.
+
+### Traps and gotchas
+
+- A shell of the harness does not read `~/.zshrc`. Export `IRON_ABSOLUTION_ENGINE_DIR` in each engine command.
+- The old clone on `/Volumes/SSD-1TB` has the same name. Run `pwd` first.
+- The report `index.json` starts with a UTF-8 byte order mark.
+- `GetGameDefaultMap` gives the package name, with no object name.
+
+### The questions that block progress
+
+- None. OQ-16 still holds gitar (D-7).
+
+### The next concrete action
+
+- Read the Windows logs of the owner, then record the Windows M-2 value, and start the review.
+
 ## Session 34: 2026-09-27, Claude Code
 
 Author: Claude Code
@@ -316,37 +354,3 @@ Session: author PR-6, round 2. Repository: iron-absolution. Branch: `feat/pr-6-r
 
 - After the approval, ask the owner to confirm the merge. Auto-merge is off, so merge with `gh pr merge 7 --squash`.
 - After the merge, on the explicit instruction of the owner, apply the ruleset file of `main` to the live ruleset, and run the comparison (D-67).
-
-## Session 25: 2026-09-27, Codex
-
-Author: Codex
-Session: reviewer PR-6, round 1. Repository: iron-absolution. Branch: `feat/pr-6-review-gate`. PR: #7. Role: reviewer. Base: `5871f2c870d5eb110eccbadd67c5f633c5619155`.
-
-### What this session did, and why
-
-- Reviewed PR #7 at effective head `7f4cb583772c28e2bdb2a1a32c8f2e921442a88c`.
-- Found that the override label accepts a document commit pushed after the label when its Git committer time is earlier. The temporary reproduction passed the gate.
-- Wrote `docs/reviews/pr-7.md` with verdict `Changes required` and P2-1.
-
-### The state of the build
-
-- `make` passes on the Mac: 363 tests, a clean format, and 0 ste-check findings.
-- All four checks available to PR #7 pass on head `7f4cb58`. GitHub does not run `review-gate` until the workflow reaches `main` (D-67).
-- The remote work head is `7f4cb583772c28e2bdb2a1a32c8f2e921442a88c`. This review record and handoff must publish together.
-
-### What is in flight
-
-- P2-1 needs a freshness check that does not trust a PR-controlled commit time.
-
-### Traps and gotchas
-
-- The override rule reads Git `%cI`. A PR author controls the committer timestamp.
-- This PR does not get a `review-gate` check because the workflow runs from `main` (D-67).
-
-### The questions that block progress
-
-- None. OQ-16 still holds gitar under D-7.
-
-### The next concrete action
-
-- The author corrects P2-1 and adds a regression test for a backdated document commit.
