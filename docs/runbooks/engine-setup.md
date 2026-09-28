@@ -2,6 +2,8 @@
 
 Status: procedure, written 2026-09-27 in PR-8. Written in ASD-STE100 (D-17). The owner did the Mac steps on 2026-09-27 (D-78).
 
+Correction of 2026-09-28: the project supports Windows alone (D-91). The Mac steps stay here as history until PR-14 removes them (D-97). Do not do a Mac step for new work.
+
 This runbook installs the toolchain of phase 1 on both computers. The pins come from D-28 and D-74. Each step that needs the owner has the mark **Owner**. The owner does each step of this runbook, because each one changes a computer (D-33).
 
 The evidence of the pins, read on 2026-09-27:
@@ -23,7 +25,7 @@ The evidence of the pins, read on 2026-09-27:
 | MSVC | none | a 14.50 toolset with a `cl.exe` of 14.50.35723 or later, installed | D-74 |
 | Windows SDK | none | 10.0.22621.0 or later | D-74 |
 | Git LFS | any version | any version | D-30 |
-| Metal Toolchain | installed | none | D-87 |
+| Metal Toolchain | installed | none | D-87, superseded by D-97 |
 | Engine folder | `IRON_ABSOLUTION_ENGINE_DIR` | `IRON_ABSOLUTION_ENGINE_DIR` | D-79 |
 
 The variable names the folder that holds the `Engine` folder. No commit holds that path (D-9).
@@ -32,7 +34,7 @@ The variable names the folder that holds the `Engine` folder. No commit holds th
 
 ## The Mac
 
-The project SSD is case-sensitive APFS, and Unreal Engine does not start from it (F-21). A second volume in the same APFS container is case-insensitive. The engine, its cache, Xcode, and the checkout of the engine work go on that volume (D-81). The volume shares the free space of the container, and the step changes no file on the first volume.
+The project SSD is case-sensitive APFS, and Unreal Engine does not start from it (F-21). A second volume in the same APFS container is case-insensitive. The engine, its cache, Xcode, and the checkout of the engine work go on that volume (D-81, superseded by D-97). The volume shares the free space of the container, and the step changes no file on the first volume.
 
 ### The volume
 
@@ -130,9 +132,9 @@ CAUTION: The launcher installs each new hotfix without a question. Each hotfix u
 
 ### The engine cache
 
-The engine keeps its cache in a Zen server. By default, the Zen data goes to the user folder on the internal disk. The internal disk has too little space for it (F-4). The editor setting "Local DDC Path" moves the cache (D-83). The file `BaseEngine.ini` of 5.8.3 names that setting in its section `[Zen.AutoLaunch]`, and Zen uses the `Zen` folder in that path.
+The engine keeps its cache in a Zen server. By default, the Zen data goes to the user folder on the internal disk. The internal disk has too little space for it (F-4). The editor setting "Local DDC Path" moves the cache (D-83, superseded by D-97). The file `BaseEngine.ini` of 5.8.3 names that setting in its section `[Zen.AutoLaunch]`, and Zen uses the `Zen` folder in that path.
 
-The editor starts Zen during its own startup, before Editor Preferences can open (F-23). So the owner writes the setting before the first start of the editor (D-85). The editor keeps the setting in the file `KeyValueStore.ini` of the user.
+The editor starts Zen during its own startup, before Editor Preferences can open (F-23). So the owner writes the setting before the first start of the editor (D-85, superseded by D-97). The editor keeps the setting in the file `KeyValueStore.ini` of the user.
 
 1. **Owner.** Before the first start of the editor, make the cache folder.
 
@@ -155,7 +157,7 @@ At the first start, the owner makes sure that Editor Preferences shows the path.
 
 ### The checkout of the engine work
 
-The Unreal project of PR-9 builds from a case-insensitive volume too (D-81).
+The Unreal project of PR-9 builds from a case-insensitive volume too (D-81, superseded by D-97).
 
 1. **Owner.** Clone the repository to the volume, and install the hook.
 
@@ -167,7 +169,7 @@ The Unreal project of PR-9 builds from a case-insensitive volume too (D-81).
 
 ### The first start of the editor
 
-The first start compiles the shaders of the engine, so it takes a long time. Do the steps of "The engine cache" first (D-85).
+The first start compiles the shaders of the engine, so it takes a long time. Do the steps of "The engine cache" first (D-85, superseded by D-97).
 
 1. **Owner.** Build the editor target from the root of the checkout.
 

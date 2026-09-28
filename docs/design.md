@@ -8,16 +8,19 @@ Status: the owner accepts it on the condition of D-27. Written in ASD-STE100 (D-
 - 2026-09-27 correction pass: the owner set D-12 to D-23. This doc moved to the template of the role models, and GitHub PR #1 closed (D-23).
 - 2026-09-27 second pass: the owner answered the open questions (D-24 to D-38). The license is now MIT (D-24).
 - 2026-09-27 third pass: Steam lists a game with the name Emberline. The project name is now Iron Absolution (D-39).
-- 2026-09-27 fourth pass: the owner resolved the divergences of the PR-3 port (D-46 to D-53). D-53 corrects exit test 3 of PR-3. D-55 scopes G-12 to the game.
+- 2026-09-27 fourth pass: the owner resolved the divergences of the PR-3 port (D-46 to D-53). D-53 corrects exit test 3 of PR-3. D-55 scopes G-12 to the game. D-92 later superseded D-55.
 - 2026-09-27 fifth pass: the owner resolved the divergences of the PR-4 port (D-56 to D-59).
-- 2026-09-27 sixth pass: PR-7 adds the focused roadmap of phase 1 (D-69 to D-75). The engine install now comes after PR-8, because section 8 put it before its runbook (F-19, D-69). The author session now adds the `review-override` label (D-76, F-20).
-- 2026-09-27 seventh pass: PR-8 adds the engine toolchain (D-78 to D-82). The owner installs the engine during PR-8 (D-78). The project SSD is case-sensitive, so the engine gets a case-insensitive volume (F-21, D-81).
+- 2026-09-27 sixth pass: PR-7 adds the focused roadmap of phase 1 (D-69 to D-75). The engine install now comes after PR-8, because section 8 put it before its runbook (F-19, D-69). The author session now adds the `review-override` label (D-76, F-20). D-95 later superseded D-75.
+- 2026-09-27 seventh pass: PR-8 adds the engine toolchain (D-78 to D-82). The owner installs the engine during PR-8 (D-78). The project SSD is case-sensitive, so the engine gets a case-insensitive volume (F-21, D-81). D-97 later superseded D-81.
+- 2026-09-28 eighth pass: the owner gave D-91 to D-100 in PR-10 and PR-12. The game ships on Windows alone (D-91), and the sessions run on the Windows PC (D-92). PR-12 to PR-14 move the project to Windows before PR-11 (D-93, D-94). M-9 goes out of scope (D-95). Each earlier Mac claim stays, with this dated correction.
 
 ## 1. Thesis
 
-The product is one complete, polished level of a fast first-person shooter with limited resources (D-1). The player can play it again, but replay-value features are not a primary goal (D-37). Doom (2016) is a reference for combat intensity and pacing only. All content is original (D-2). The game uses Unreal Engine 5.8 (D-3, D-28) in a compact, hand-authored level (D-4) that takes 30 minutes or more (D-37). It ships on macOS and Windows (D-32).
+The product is one complete, polished level of a fast first-person shooter with limited resources (D-1). The player can play it again, but replay-value features are not a primary goal (D-37). Doom (2016) is a reference for combat intensity and pacing only. All content is original (D-2). The game uses Unreal Engine 5.8 (D-3, D-28) in a compact, hand-authored level (D-4) that takes 30 minutes or more (D-37). It ships on Windows alone (D-32, D-91).
 
-The plan removes the costly unknowns first. The order is: engine proof on both platforms, feel, combat loop, and art pipeline. The full level layout and the content production come after these gates, because they cost the most to change.
+Correction of 2026-09-28: the thesis named macOS and Windows until D-91.
+
+The plan removes the costly unknowns first. The order is: engine proof on Windows (D-91), feel, combat loop, and art pipeline. The full level layout and the content production come after these gates, because they cost the most to change.
 
 The owner decides the product. Approved facts cite a D-# id. Open choices cite an OQ-# id:
 
@@ -29,7 +32,7 @@ The owner decides the product. Approved facts cite a D-# id. Open choices cite a
 | Weapon roster, enemy roster, combat spaces, secrets | Numbers for the brief of phase 2 (D-37) |
 | Replay value | Not a primary goal. The player can start the level again (D-37). |
 | Setting, tone, and art direction | Open (OQ-9). Phase 2 proposes, and the owner picks (D-36). |
-| Platforms and frame budget | macOS 60 fps at 4K output through TSR. Windows 120 fps at 1440p on the owner's PC (D-32). |
+| Platforms and frame budget | Windows 120 fps at 1440p on the owner's PC (D-32). The macOS budget of 60 fps at 4K output went on 2026-09-28 (D-91). |
 | Input devices | Keyboard and mouse (D-32). Gamepad is open (OQ-21). |
 | Working title and project name | Iron Absolution, `IronAbsolution` in code (D-39) |
 
@@ -54,7 +57,7 @@ The owner decides the product. Approved facts cite a D-# id. Open choices cite a
 | Tools project (PR-2 onward) | documents, PR data | check results, review records | Medium |
 | CI workflows (PR-2 onward) | the PR head | check runs | High. They gate the merge. |
 | Codex review (PR-3) | the PR diff | `docs/reviews/pr-<n>.md` | High |
-| Unreal project `IronAbsolution` (phase 1) | source, content, config | builds and packages for macOS and Windows | High |
+| Unreal project `IronAbsolution` (phase 1) | source, content, config | builds and packages for Windows (D-91). The Mac targets go in PR-14 (D-97). | High |
 | Content pipeline (phase 5) | DCC exports, generated assets | Unreal assets through LFS | Medium. Each asset needs terms that allow redistribution (D-24). |
 
 ## 4. Cost model (what we pay, what we do not know)
@@ -62,22 +65,22 @@ The owner decides the product. Approved facts cite a D-# id. Open choices cite a
 What we pay:
 
 - Model tokens for each PR. The-thing-below measured 68.4 million context tokens for its mean code PR.
-- Owner time at each gate and for each question, and for each Windows build and test run (D-33).
+- Owner time at each gate and for each question, and for each confirmation of a command that opens a game window (D-96). Correction of 2026-09-28: a session on the Windows PC runs the Windows builds and tests (D-33, D-92).
 - GitHub LFS: the free quota is 10 GiB of storage and 10 GiB of bandwidth each month.
 - Hosted CI minutes. Public repositories get hosted runners free.
 - Meshy credits: none now. Each spend needs owner approval (D-8).
 
 What we do not know, and the measurement that answers it:
 
-- M-1: Peak memory of the Unreal Editor on the 16 GB Mac. Phase 1. First value on 2026-09-28 in PR-9: a peak memory footprint of 6.42 GB, with the empty test map open (`/usr/bin/time -l`).
-- M-2: Time of a clean build of the editor target and of a packaged build, on both platforms. Phase 1. First values of the editor target from a fresh clone, on 2026-09-28 in PR-9: 35.5 seconds on the Mac, and 45.3 seconds on Windows. First values of the packaged Development build on 2026-09-28 in PR-10: 136.5 seconds on the Mac, and 105.6 seconds on Windows. The Mac value comes from a fresh clone with a warm engine cache. The Windows value comes from the checkout of the owner, with a full cook. Each value is the `BuildCookRun time` of RunUAT.
-- M-3: Frame time in the test gym on both platforms, against the budgets of D-32. Phase 3.
+- M-1: Peak memory of the Unreal Editor on the 16 GB Mac. Phase 1. First value on 2026-09-28 in PR-9: a peak memory footprint of 6.42 GB, with the empty test map open (`/usr/bin/time -l`). Correction of 2026-09-28: PR-14 records a first value on the Windows PC. The Mac value stays as history (D-98).
+- M-2: Time of a clean build of the editor target and of a packaged build, on both platforms. Phase 1. First values of the editor target from a fresh clone, on 2026-09-28 in PR-9: 35.5 seconds on the Mac, and 45.3 seconds on Windows. First values of the packaged Development build on 2026-09-28 in PR-10: 136.5 seconds on the Mac, and 105.6 seconds on Windows. The Mac value comes from a fresh clone with a warm engine cache. The Windows value comes from the checkout of the owner, with a full cook. Each value is the `BuildCookRun time` of RunUAT. Correction of 2026-09-28: the Windows values count, and the Mac values stay as history (D-91).
+- M-3: Frame time in the test gym on Windows, against the budget of D-32. Phase 3. Correction of 2026-09-28: the Mac goes (D-91).
 - M-4: Frame time in the combat sandbox at the maximum enemy count. Phase 4.
 - M-5: Frame time and memory of the vertical-slice room. Phase 5.
 - M-6: Time to change one kit piece and see the change in each space. Phase 5.
 - M-7: First-clear time of the full level in graybox. Phase 6.
 - M-8: LFS storage in use, at the end of each phase. Each phase.
-- M-9: Internal resolution of TSR that holds 60 fps at 4K output on the Mac (D-32). Phases 1 and 3.
+- M-9: Internal resolution of TSR that holds 60 fps at 4K output on the Mac (D-32). ⏸ Out of scope since 2026-09-28 (D-95). The first frame time comes from M-3.
 
 ## 5. Defect and finding register
 
@@ -94,9 +97,9 @@ Status legend:
 |---|---|---|---|---|
 | F-1 | 2026-09-26 | The repository is GPL-3.0. The Unreal Engine EULA prohibits a combination with GPL code. | EULA for Creators, "Non-Compatible Licenses" | ✅ doc. The license is MIT (D-24). |
 | F-2 | 2026-09-26 | The owner's local `main` holds two commits and untracked C++ that no review saw. | `git status` on the owner's checkout | ✅ doc. Discarded on 2026-09-27 (D-25). |
-| F-3 | 2026-09-26 | Xcode 16.2 is on the Mac. Unreal Engine 5.8 needs Xcode 26.0 or later. Xcode 26.4 does not work with it. | Epic macOS requirements, Apple Xcode table | ⚠ binds phase 1 |
-| F-4 | 2026-09-26 | The internal disk has 45 GB free. The project SSD has 923 GB free. | `df -h` | ⚠ binds phase 1 |
-| F-5 | 2026-09-26 | The Mac has 16 GB of memory. Epic gives 16 GB as the minimum and 32 GB as the recommendation. | Epic macOS requirements | ⚠ binds M-1 |
+| F-3 | 2026-09-26 | Xcode 16.2 is on the Mac. Unreal Engine 5.8 needs Xcode 26.0 or later. Xcode 26.4 does not work with it. | Epic macOS requirements, Apple Xcode table | ⏸ out of scope (D-91). PR-14 removes the Xcode pin (D-97). |
+| F-4 | 2026-09-26 | The internal disk has 45 GB free. The project SSD has 923 GB free. | `df -h` | ⏸ out of scope (D-91). The Windows PC keeps the default cache place (D-100). |
+| F-5 | 2026-09-26 | The Mac has 16 GB of memory. Epic gives 16 GB as the minimum and 32 GB as the recommendation. | Epic macOS requirements | ⏸ out of scope (D-91). PR-14 measures M-1 on the Windows PC (D-98). |
 | F-6 | 2026-09-26 | The Epic input overview page calls Enhanced Input experimental. The Enhanced Input page says it is on by default. | Two Epic pages for 5.8 | ✅ PR #10: on 2026-09-28 the Plugins window of the editor showed Enhanced Input 1.0 on, with no Beta or Experimental label. The automation test reads the Enhanced Input classes |
 | F-7 | 2026-09-26 | The Meshy plugin has Windows builds for Unreal Engine 5.4 to 5.7 only. Its bridge needs Meshy Pro. | Meshy integration page | ⚠ binds OQ-12 |
 | F-8 | 2026-09-26 | Hosted runners have no Unreal Engine. | Role-model CI, GitHub runners | ✅ doc. Engine PRs attach local logs (D-31). |
@@ -105,20 +108,20 @@ Status legend:
 | F-11 | 2026-09-27 | Tenet T-2 kept assertions on in shipped builds. Unreal removes `check` from the Shipping configuration by default. | Epic asserts page | ✅ doc. Asserts follow the Unreal rules (D-34). |
 | F-12 | 2026-09-27 | D-6 asks for a review of each PR. Both role models let the owner skip the review of a PR with no code through a label. | Tenet T-4 of the role models | ✅ doc. The owner label comes after PR-6 (D-35). |
 | F-13 | 2026-09-27 | The ste-writing skill of the-thing-below starts with a stray table row before its front matter. | Line 1 of that skill | ✅ doc. The port in PR-1 leaves the row out. |
-| F-14 | 2026-09-27 | 60 fps at 4K output on the base M4 with 16 GB is a hard target. Epic recommends an M3 or later with 32 GB for development. | Epic macOS requirements, TSR page | ⚠ binds M-9, phases 1, 3, and 5 |
+| F-14 | 2026-09-27 | 60 fps at 4K output on the base M4 with 16 GB is a hard target. Epic recommends an M3 or later with 32 GB for development. | Epic macOS requirements, TSR page | ⏸ out of scope (D-91, D-95). |
 | F-15 | 2026-09-27 | A level of 30 minutes or more multiplies the content cost of phases 6 and 7. | D-37 | ⚠ binds the brief of phase 2 |
 | F-16 | 2026-09-27 | MIT covers the whole repository. An asset with terms that forbid redistribution, or free Meshy output under CC BY, cannot enter it as MIT content. | D-24, Meshy terms | ⚠ binds OQ-12 and phase 5 |
-| F-17 | 2026-09-27 | Unreal cannot build Windows packages on the Mac. Windows builds need the Windows PC of the owner. | D-33 | ⚠ binds phase 1 |
+| F-17 | 2026-09-27 | Unreal cannot build Windows packages on the Mac. Windows builds need the Windows PC of the owner. | D-33 | ⏸ out of scope (D-91). The engine work runs on the Windows PC (D-92). |
 | F-18 | 2026-09-27 | The time rule of the `review-override` label reads the committer time of the work head. The commit author sets that time, so a backdated commit after the label passes. | Review P2-1 of PR #7, reproduced with a backdated commit | ⚠ accepted risk (D-68). The rule stops an accident, not an attack (F-9). |
 | F-19 | 2026-09-27 | Section 8 put the engine install (step 9) before the setup runbook of phase 1, which guides that install. On that date the Mac had no engine, no Xcode app, and no Git LFS. | Section 8, the work of phase 1, `xcode-select -p` and `git lfs version` on the Mac | ✅ doc. The install comes after PR-8 (D-69). |
 | F-20 | 2026-09-27 | D-76 lets the author session add the `review-override` label. The messages of `review-gate` and `make codex-review`, their test, and the description of the live label still say that the owner adds it. | `ReviewGateRules.cs`, `StartChecks.cs`, `ReviewGateCommandTests.cs`, and the label on GitHub | ✅ done in PR-8 (D-77, D-82) |
-| F-21 | 2026-09-27 | The project SSD is case-sensitive APFS. Unreal Engine does not start from a case-sensitive file system on macOS. | `diskutil info /Volumes/SSD-1TB`, [Epic forum](https://forums.unrealengine.com/t/help-epic-games-launcher-unreal-engine-does-not-support-running-from-case-sensitive-file-systems/2021754) | ✅ doc. A case-insensitive volume on the SSD holds the engine (D-81). |
+| F-21 | 2026-09-27 | The project SSD is case-sensitive APFS. Unreal Engine does not start from a case-sensitive file system on macOS. | `diskutil info /Volumes/SSD-1TB`, [Epic forum](https://forums.unrealengine.com/t/help-epic-games-launcher-unreal-engine-does-not-support-running-from-case-sensitive-file-systems/2021754) | ✅ doc. A case-insensitive volume on the SSD holds the engine (D-81).. D-81 is superseded by D-97, and PR-14 removes the Mac part. |
 | F-22 | 2026-09-27 | The first Windows check read the name of each MSVC toolset folder. UnrealBuildTool reads the product version of `cl.exe`, and a servicing update keeps the folder name. The check failed a good toolset: the folder 14.50.35717 held `cl.exe` 14.50.35739. | The run of the owner in PR-8, `MicrosoftPlatformSDK.cs` of 5.8.3 | ✅ done in PR-8. The check reads `cl.exe` (D-74). |
-| F-23 | 2026-09-27 | The editor starts its Zen cache server during its own startup, before Editor Preferences can open. The default data folder of Zen is on the internal disk. So a cache path that the owner sets at the first start comes too late for the shaders of that start. The UI name of the setting in 5.8.3 is "Local DDC Path". The editor stores it in the key-value file of the user, and Zen reads it from there. | `ZenServerInterface.cpp` and `EditorSettings.cpp` of 5.8.3, and the section `[Zen.AutoLaunch]` of `BaseEngine.ini` | ✅ PR #10: the owner writes the setting before the first start (D-85). The log of the editor shows the path on the volume |
-| F-24 | 2026-09-28 | `make toolchain-check` passed on the Mac, and the first start of the editor then stopped with "cannot execute tool 'metal' due to missing Metal Toolchain". Xcode 26 downloads the Metal Toolchain apart from the app, and the check did not read it. `xcodebuild -showComponent MetalToolchain` gave `Status: uninstalled`. | The dialog of the editor, and the output of `xcodebuild` | ✅ PR #10: the check has a Metal Toolchain pin (D-87) |
+| F-23 | 2026-09-27 | The editor starts its Zen cache server during its own startup, before Editor Preferences can open. The default data folder of Zen is on the internal disk. So a cache path that the owner sets at the first start comes too late for the shaders of that start. The UI name of the setting in 5.8.3 is "Local DDC Path". The editor stores it in the key-value file of the user, and Zen reads it from there. | `ZenServerInterface.cpp` and `EditorSettings.cpp` of 5.8.3, and the section `[Zen.AutoLaunch]` of `BaseEngine.ini` | ✅ PR #10: the owner writes the setting before the first start (D-85). The log of the editor shows the path on the volume. D-85 is superseded by D-97, and PR-14 removes the Mac part. |
+| F-24 | 2026-09-28 | `make toolchain-check` passed on the Mac, and the first start of the editor then stopped with "cannot execute tool 'metal' due to missing Metal Toolchain". Xcode 26 downloads the Metal Toolchain apart from the app, and the check did not read it. `xcodebuild -showComponent MetalToolchain` gave `Status: uninstalled`. | The dialog of the editor, and the output of `xcodebuild` | ✅ PR #10: the check has a Metal Toolchain pin (D-87). D-87 is superseded by D-97, and PR-14 removes the Mac part. |
 | F-25 | 2026-09-28 | The first packaged build on the Mac failed in the game target: "no member named 'EditorStartupMap' in 'UGameMapsSettings'". The automation test of PR-9 reads a field that exists only under `WITH_EDITORONLY_DATA`. The editor target of PR-9 compiled it, and no build of PR-9 compiled the game target. | The output of RunUAT, and `GameMapsSettings.h` of 5.8.3 | ✅ PR #11: the check of the editor map has its own guard, and `make package-build` compiles the game target |
 | F-26 | 2026-09-28 | A Mac package with no `-package` step stopped at its start with "Library not loaded: @rpath/libtbb.12.dylib". The archive step took the app of `Game/Binaries`, and that app holds no libraries and no content. | The output of dyld, and the archive lines of RunUAT | ✅ PR #11: `make package-build` has the `-package` step |
-| F-27 | 2026-09-28 | The Mac package runs in the App Sandbox, with the default bundle id `com.YourCompany.IronAbsolution`. It writes its log in its container, and `-abslog` to a path outside the container writes no file and gives no error. | `codesign -d --entitlements`, and a run with `-abslog` | ✅ PR #11: `make package-run` reads the log from stdout, and the app has the bundle id of D-90 |
+| F-27 | 2026-09-28 | The Mac package runs in the App Sandbox, with the default bundle id `com.YourCompany.IronAbsolution`. It writes its log in its container, and `-abslog` to a path outside the container writes no file and gives no error. | `codesign -d --entitlements`, and a run with `-abslog` | ✅ PR #11: `make package-run` reads the log from stdout, and the app has the bundle id of D-90. D-90 is superseded by D-97, and PR-14 removes the Mac part. |
 
 ## 6. Guardrails (the safety contract for every PR)
 
@@ -146,7 +149,7 @@ The tenets are the constitution. When a tenet conflicts with speed or convenienc
 - **G-9.** No agent edits `LICENSE` without an instruction of the owner (D-10, D-24).
 - **G-10.** Infrastructure follows the role models. When the two differ, ask the owner (D-12, D-13).
 - **G-11.** Unreal best practices govern the engine work, the game code, and the content (D-34).
-- **G-12.** Each change keeps both platforms of the game working and inside their budgets (D-32). The development tools run on the Mac alone (D-55).
+- **G-12.** Each change keeps the game working on Windows and inside its budget (D-32, D-91). The development tools and the sessions run on the Windows PC (D-92). Correction of 2026-09-28: this guardrail named macOS and the Mac tools until D-91 and D-92 superseded D-55.
 
 ## 7. Roadmap
 
@@ -257,15 +260,15 @@ When the owner confirms that gitar works here, one PR ports the gitar-wait scrip
 
 > *In plain English:* An extra automated reviewer joins later, but only after the owner says that it works.
 
-### Phase 1: Engine and toolchain proof (gate: a clean clone builds, packages, and runs one headless test on macOS and on Windows, M-1, M-2, and a first M-9 recorded)
+### Phase 1: Engine and toolchain proof (gate: a clean clone builds, packages, and runs one headless test on Windows, M-1 and M-2 recorded)
 
-- Objective: prove the engine, the toolchain, the source control, and the tests on the Mac and on the Windows PC before any game code.
-- Dependencies: phase 0. The owner answered each engine question: D-24, D-28 to D-34, and D-39. The owner installs Unreal Engine 5.8 and Xcode 26.1.1 on the SSD, and Unreal Engine 5.8 on the Windows PC. Correction of 2026-09-27: the install comes after PR-8, from its runbook (D-69). Second correction of 2026-09-27: the install comes during PR-8, on a case-insensitive volume of the SSD (D-78, D-81, F-21).
+- Objective: prove the engine, the toolchain, the source control, and the tests on the Windows PC before any game code. Correction of 2026-09-28: the objective named the Mac too until D-91. The gate named a first M-9 until D-95.
+- Dependencies: phase 0. The owner answered each engine question: D-24, D-28 to D-34, and D-39. The owner installs Unreal Engine 5.8 and Xcode 26.1.1 on the SSD, and Unreal Engine 5.8 on the Windows PC. Correction of 2026-09-27: the install comes after PR-8, from its runbook (D-69). Second correction of 2026-09-27: the install comes during PR-8, on a case-insensitive volume of the SSD (D-78, D-81, F-21). Third correction of 2026-09-28: PR-14 removes the Mac install (D-97).
 - Work: a setup runbook for both machines, with the owner actions marked. The minimal C++ project `IronAbsolution`, with one module and Enhanced Input. An empty test map. LFS attributes. Scripts for the headless automation test and the package on both platforms. The Windows commands that the owner runs (D-33). An evidence template for engine PRs (D-31). Unreal best practices apply (D-34).
-- Focused roadmap: `docs/roadmaps/phase-1-engine-proof.md` holds PR-8 to PR-11 and the gate (D-71). PR-7 adds it. Status: ✅ done in PR #8.
-- Exit evidence: a clean clone builds the editor target and a packaged Development build on each platform. The owner posts the Windows logs. Each package starts and stops from the command line. One automation test passes headless, with its log. A fresh clone restores LFS content. M-1 and M-2 have values. A first TSR test at 4K output on the Mac gives a first value of M-9. The project records its World Partition choice with a reason (D-4).
+- Focused roadmap: `docs/roadmaps/phase-1-engine-proof.md` holds PR-8 to PR-14 and the gate (D-71, D-94). PR-7 adds it. Status: ✅ done in PR #8. PR-12 adds PR-12 to PR-14.
+- Exit evidence: a clean clone builds the editor target and a packaged Development build on each platform. The owner posts the Windows logs. Each package starts and stops from the command line. One automation test passes headless, with its log. A fresh clone restores LFS content. M-1 and M-2 have values. A first TSR test at 4K output on the Mac gives a first value of M-9. The project records its World Partition choice with a reason (D-4). Correction of 2026-09-28: the evidence is for the Windows PC alone, and a session posts the logs (D-91, D-92). M-9 is out of scope (D-95). PR-14 gives M-1 on Windows (D-98).
 
-> *In plain English:* Before we build the game, we prove that the engine builds, tests, and packages on the Mac and on Windows.
+> *In plain English:* Before we build the game, we prove that the engine builds, tests, and packages on Windows. The Mac was a second platform until 2026-09-28.
 
 ### Phase 2: Game direction and the level brief (gate: the owner picks for OQ-9 and OQ-10, and a brief with numeric targets)
 
@@ -276,12 +279,12 @@ When the owner confirms that gitar works here, one PR ports the gitar-wait scrip
 
 > *In plain English:* The owner decides what the game feels like, looks like, and how long the level is.
 
-### Phase 3: Core-feel prototype (gate: owner feel sign-off, M-3 within the budgets of D-32 on both platforms)
+### Phase 3: Core-feel prototype (gate: owner feel sign-off, M-3 within the budget of D-32 on Windows)
 
 - Objective: make movement, aim, and fire feel fast and exact in a graybox gym before other systems.
 - Dependencies: phase 1, the verbs of phase 2, and the budgets and input of D-32.
 - Work: player movement and camera, with metric markers. Keyboard and mouse input through Enhanced Input, ready for a later gamepad (OQ-21). Sensitivity, invert, and field of view. One weapon from fire to hit feedback and ammo. Automated tests of movement and the weapon, and a frame-time capture.
-- Exit evidence: the owner plays the packaged gym and records a sign-off or a list of changes as a D-# row. M-3 has a profile on each platform, and M-9 has a value. The movement metrics have values, because the layout rules of phase 6 use them. The tests pass headless.
+- Exit evidence: the owner plays the packaged gym and records a sign-off or a list of changes as a D-# row. M-3 has a profile on Windows. Correction of 2026-09-28: M-9 is out of scope (D-95). The movement metrics have values, because the layout rules of phase 6 use them. The tests pass headless.
 
 > *In plain English:* We make moving and shooting feel right in an empty test room before we build anything on top.
 
@@ -299,7 +302,7 @@ When the owner confirms that gitar works here, one PR ports the gitar-wait scrip
 - Objective: prove a repeatable content pipeline on one small room before we pay for a whole level.
 - Dependencies: phase 1 and the art direction of phase 2. It runs beside phases 3 and 4. The kit grid waits for the movement metrics of phase 3.
 - Work: standards for scale, grid, pivots, names, collision, UVs, texel density, LODs, and folders. A DCC round trip, for example Blender to FBX to Unreal. A kit and trim-sheet prototype. A measured choice of the light method. The audio pipeline (D-38). A Meshy trial of one to three props, only after OQ-12 and with owner approval of the spend (D-8). The provenance manifest and import checks. A plan for the animation sources, which is still unknown.
-- Exit evidence: the room meets M-5 on both platforms. M-6 has a value. Each asset in the room has a provenance record. The import checks pass. The owner approves the look as a D-# row.
+- Exit evidence: the room meets M-5 on Windows (D-91). M-6 has a value. Each asset in the room has a provenance record. The import checks pass. The owner approves the look as a D-# row.
 
 > *In plain English:* We finish one small room to full quality first, to prove that our art method works and runs fast.
 
@@ -321,21 +324,21 @@ When the owner confirms that gitar works here, one PR ports the gitar-wait scrip
 
 > *In plain English:* We give every space its final art, light, and sound, and we keep it fast.
 
-### Phase 8: Integration, polish, and the release candidate (gate: packaged candidates for both platforms from a clean clone, no known crash or blocker, the budgets met)
+### Phase 8: Integration, polish, and the release candidate (gate: a packaged Windows candidate from a clean clone, no known crash or blocker, the budgets met)
 
 - Objective: turn a complete level into a complete product that the player can start again (D-37).
 - Dependencies: phase 7. The menu and settings work can start after phase 4.
-- Work: menu, level, results, and restart flow. Settings, remapping, and basic accessibility. The gamepad choice (OQ-21). Tuning from playtests. Bug triage and the release bar. The packages, the signatures, and the distribution form for both platforms.
-- Exit evidence: recorded commands package both candidates from a clean clone. No known crash, blocker, or progression bug remains. The player can start the level again from the menu. The budgets of D-32 hold across the level.
+- Work: menu, level, results, and restart flow. Settings, remapping, and basic accessibility. The gamepad choice (OQ-21). Tuning from playtests. Bug triage and the release bar. The package, the signature, and the distribution form for Windows (D-91).
+- Exit evidence: recorded commands package the Windows candidate from a clean clone. No known crash, blocker, or progression bug remains. The player can start the level again from the menu. The budgets of D-32 hold across the level.
 
-> *In plain English:* We add menus, settings, and polish, and we fix bugs until both builds are ready to ship.
+> *In plain English:* We add menus, settings, and polish, and we fix bugs until the Windows build is ready to ship.
 
 ### Phase 9: First-level acceptance (gate: the owner's acceptance as a D-# row, and a release tag on the accepted commit)
 
 - Objective: the formal acceptance of the first level by the owner.
 - Dependencies: phase 8.
 - Work: an acceptance checklist from D-1 and the brief. Owner plays of a clean packaged build. A release tag and a retrospective.
-- Exit evidence: the owner completes the level more than one time, on both platforms. The checklist items pass or have a waiver. A D-# row records the acceptance.
+- Exit evidence: the owner completes the level more than one time, on Windows (D-91). The checklist items pass or have a waiver. A D-# row records the acceptance.
 
 > *In plain English:* The owner plays the finished level and accepts it. That ends the first goal.
 
@@ -361,7 +364,7 @@ After that, each phase gets a focused roadmap just before it starts. `docs/roadm
 8. Gate of phase 0.
 9. PR-7: the focused roadmap of phase 1. Its PR ids continue after PR-6.
 10. PR-8: the engine toolchain. Then the owner installs the engine and Xcode on the Mac, and the engine on the Windows PC (D-28, D-33). Correction of 2026-09-27: the install was step 9, before its runbook (F-19, D-69). Second correction of 2026-09-27: the owner installs during PR-8, before its merge (D-78).
-11. PR-9 to PR-11 in the order of section 8 of the phase file. Phase 2 starts beside phase 1. The owner picks for OQ-9 and OQ-10, then answers OQ-12.
+11. PR-9 to PR-14 in the order of section 8 of the phase file. Correction of 2026-09-28: PR-12 to PR-14 come before PR-11, and they move the project to Windows alone (D-93, D-94). Phase 2 starts beside phase 1. The owner picks for OQ-9 and OQ-10, then answers OQ-12.
 12. Gate of phase 1, then gate of phase 2.
 13. Phase 3, then its gate. Phase 5 starts beside it.
 14. Phase 4, then its gate.
