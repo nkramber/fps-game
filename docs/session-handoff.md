@@ -1,3 +1,37 @@
+## Session 46: 2026-09-28, Claude Code
+
+Author: Claude Code
+Session: author PR-14, round 2. Repository: iron-absolution. Branch: `feat/pr-14-windows-engine-commands`. PR: #14. Role: author. Base: `0351bbba52a4fddd91b559ad7ace9f1bb020b2f0`.
+
+### What this session did, and why
+
+- Round 1 gave `Blocked` with no finding. It read D-96 as a rule for each build and test, and it recorded `f6f1d35` as the head.
+- The owner confirmed that D-96 covers a window alone. D-107 records it.
+- `docs/reviews/pr-14-response.md` answers both causes. The effective head stays `aed74bb`, because that commit changes three files under `Game/Source/` (D-49).
+
+### The state of the build
+
+- `run.ps1 verify` passed at `aed74bb`: 538 tests, no skips, format, and ste-check with 0 findings.
+- Four hosted checks passed at `aed74bb`. `review-gate` waits for an approval record.
+- The remote head is the commit of this entry, pending merge.
+
+### What is in flight
+
+- Round 2 of `run.ps1 codex-review -PR 14`, then the merge summary.
+
+### Traps and gotchas
+
+- Round 1 left its worktree in the temporary folder. Round 2 removes it through the worktree check of D-106.
+- A commit of C++ comments moves the effective head, because `Game/` is outside the documents set (D-49).
+
+### The questions that block progress
+
+- None. OQ-16 still holds the gitar pass (D-7).
+
+### The next concrete action
+
+- After the merge, write the transitional prompt for PR-11, the gate record.
+
 ## Session 45: 2026-09-28, Codex
 
 Author: Codex
@@ -318,37 +352,3 @@ Session: author PR-9, merge. Repository: iron-absolution. Branch: `feat/pr-9-pro
 ### The next concrete action
 
 - After the merge, write the transitional prompt of PR-10, the packaged build. Work from the clone on the `IronAbsolution` volume (D-81).
-
-## Session 36: 2026-09-28, Codex
-
-Author: Codex
-Session: reviewer PR-9, round 1. Repository: iron-absolution. Branch: `feat/pr-9-project-scaffold`. PR: #10. Role: reviewer. Base: `830bf40cd47f8f707d060a894017c29bff446566`.
-
-### What this session did, and why
-
-- Reviewed the full PR-9 diff and its contracts. No finding holds at effective head `124e1ae1e449af46cceaadc475a17f3510b9b669`.
-- Added the review record for PR #10. The provider gate passes under T-4 and D-6.
-
-### The state of the build
-
-- `make` passed: 474 tests passed, 20 PowerShell tests skipped because `pwsh` is not installed, formatting passed, and ste-check reported 0 findings.
-- CI passed build, test, and format; coverage; doc-gate; and ste-check on remote head `f3f015537d8c0e5da54b765dbdcae23fd599f236`. The review-gate check failed because the review record did not exist yet.
-- The Mac and Windows build and test results are in the owner comments. The Windows run is owner-reported.
-- The PR state is pending merge. The metadata commit must reach `origin/feat/pr-9-project-scaffold`.
-
-### What is in flight
-
-- The review-gate check must run after the metadata commit.
-
-### Traps and gotchas
-
-- The local Mac cannot run the PowerShell tests. CI ran the full test set.
-- `git diff --check` reports one extra blank line at EOF in `Game/Config/DefaultInput.ini`.
-
-### The questions that block progress
-
-- None. OQ-16 still holds the gitar pass under D-7.
-
-### The next concrete action
-
-- Read the review-gate result after the metadata push. If it passes, prepare the four-part merge summary for the owner.

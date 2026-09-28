@@ -2,6 +2,40 @@
 
 This file holds the entries that the rotation moves out of `docs/session-handoff.md`, newest first.
 
+## Session 36: 2026-09-28, Codex
+
+Author: Codex
+Session: reviewer PR-9, round 1. Repository: iron-absolution. Branch: `feat/pr-9-project-scaffold`. PR: #10. Role: reviewer. Base: `830bf40cd47f8f707d060a894017c29bff446566`.
+
+### What this session did, and why
+
+- Reviewed the full PR-9 diff and its contracts. No finding holds at effective head `124e1ae1e449af46cceaadc475a17f3510b9b669`.
+- Added the review record for PR #10. The provider gate passes under T-4 and D-6.
+
+### The state of the build
+
+- `make` passed: 474 tests passed, 20 PowerShell tests skipped because `pwsh` is not installed, formatting passed, and ste-check reported 0 findings.
+- CI passed build, test, and format; coverage; doc-gate; and ste-check on remote head `f3f015537d8c0e5da54b765dbdcae23fd599f236`. The review-gate check failed because the review record did not exist yet.
+- The Mac and Windows build and test results are in the owner comments. The Windows run is owner-reported.
+- The PR state is pending merge. The metadata commit must reach `origin/feat/pr-9-project-scaffold`.
+
+### What is in flight
+
+- The review-gate check must run after the metadata commit.
+
+### Traps and gotchas
+
+- The local Mac cannot run the PowerShell tests. CI ran the full test set.
+- `git diff --check` reports one extra blank line at EOF in `Game/Config/DefaultInput.ini`.
+
+### The questions that block progress
+
+- None. OQ-16 still holds the gitar pass under D-7.
+
+### The next concrete action
+
+- Read the review-gate result after the metadata push. If it passes, prepare the four-part merge summary for the owner.
+
 ## Session 35: 2026-09-28, Claude Code
 
 Author: Claude Code
