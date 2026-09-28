@@ -2,6 +2,42 @@
 
 This file holds the entries that the rotation moves out of `docs/session-handoff.md`, newest first.
 
+## Session 27: 2026-09-27, Codex
+
+Author: Codex
+Session: reviewer PR-6, round 2. Repository: iron-absolution. Branch: `feat/pr-6-review-gate`. PR: #7. Role: reviewer. Base: `5871f2c870d5eb110eccbadd67c5f633c5619155`.
+
+### What this session did, and why
+
+- Rechecked P2-1 against the author response and D-68. The owner accepts the backdated commit risk.
+- Verified that commit `2338304` changes no behavior. It adds the risk rationale to the rule comment and records the owner decision.
+- Updated `docs/reviews/pr-7.md`. P2-1 now records the accepted risk, and the round 1 verdict stays in the history.
+
+### The state of the build
+
+- The effective head is `2338304d6a448277f96270caaf90ee7213df6106`.
+- `make` passes on the Mac: 363 tests, a clean format, and 0 findings of ste-check.
+- The focused review-gate command tests pass: 17 tests. All four available hosted checks pass.
+- The remote head is the commit of this entry. The state is ready for owner merge.
+
+### What is in flight
+
+- The owner reads the merge summary and confirms the merge of PR #7.
+
+### Traps and gotchas
+
+- PR #7 has no `review-gate` check. D-67 defers its GitHub proof to the first PR after this one reaches `main`.
+- Run filtered MTP tests with `dotnet test --solution IronAbsolution.slnx --no-build --filter-class <type>`. Put the filter option before no extra `--` separator.
+
+### The questions that block progress
+
+- None blocks this review. OQ-16 still holds gitar under D-7.
+
+### The next concrete action
+
+- Give the owner the merge summary for PR #7. Wait for the owner's merge confirmation.
+- After the merge, apply the ruleset file of `main` only on the explicit instruction of the owner, then run the comparison (D-67).
+
 ## Session 26: 2026-09-27, Claude Code
 
 Author: Claude Code

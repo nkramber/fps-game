@@ -1,3 +1,34 @@
+## Session 37: 2026-09-28, Claude Code
+
+Author: Claude Code
+Session: author PR-9, merge. Repository: iron-absolution. Branch: `feat/pr-9-project-scaffold`. PR: #10. Role: author. Base: `830bf40cd47f8f707d060a894017c29bff446566`.
+
+### What this session did, and why
+
+- Round 1 of the review gave `Ready for owner merge` for the effective head `124e1ae1e449af46cceaadc475a17f3510b9b669`, with no finding.
+- The record notes a blank line at the end of `Game/Config/DefaultInput.ini`, from the template of Epic. No check reads it, so the file stays.
+
+### The state of the build
+
+- `make` passes on the Mac: 494 tests, a clean format, and 0 findings. CI ran the PowerShell tests.
+- The remote head is the commit of this entry. The state is pending merge.
+
+### What is in flight
+
+- The owner confirms the squash merge after the merge summary. Then auto-merge runs (D-67).
+
+### Traps and gotchas
+
+- This entry is a metadata commit, so the approval of `124e1ae` stands (D-14).
+
+### The questions that block progress
+
+- None. OQ-16 still holds gitar (D-7).
+
+### The next concrete action
+
+- After the merge, write the transitional prompt of PR-10, the packaged build. Work from the clone on the `IronAbsolution` volume (D-81).
+
 ## Session 36: 2026-09-28, Codex
 
 Author: Codex
@@ -316,39 +347,3 @@ Session: author PR-6, merge. Repository: iron-absolution. Branch: `feat/pr-6-rev
 ### The next concrete action
 
 - After the merge, on the explicit instruction of the owner, apply the ruleset file of `main` to the live ruleset, and run the comparison (D-67). Then write the transitional prompt of PR-7.
-
-## Session 27: 2026-09-27, Codex
-
-Author: Codex
-Session: reviewer PR-6, round 2. Repository: iron-absolution. Branch: `feat/pr-6-review-gate`. PR: #7. Role: reviewer. Base: `5871f2c870d5eb110eccbadd67c5f633c5619155`.
-
-### What this session did, and why
-
-- Rechecked P2-1 against the author response and D-68. The owner accepts the backdated commit risk.
-- Verified that commit `2338304` changes no behavior. It adds the risk rationale to the rule comment and records the owner decision.
-- Updated `docs/reviews/pr-7.md`. P2-1 now records the accepted risk, and the round 1 verdict stays in the history.
-
-### The state of the build
-
-- The effective head is `2338304d6a448277f96270caaf90ee7213df6106`.
-- `make` passes on the Mac: 363 tests, a clean format, and 0 findings of ste-check.
-- The focused review-gate command tests pass: 17 tests. All four available hosted checks pass.
-- The remote head is the commit of this entry. The state is ready for owner merge.
-
-### What is in flight
-
-- The owner reads the merge summary and confirms the merge of PR #7.
-
-### Traps and gotchas
-
-- PR #7 has no `review-gate` check. D-67 defers its GitHub proof to the first PR after this one reaches `main`.
-- Run filtered MTP tests with `dotnet test --solution IronAbsolution.slnx --no-build --filter-class <type>`. Put the filter option before no extra `--` separator.
-
-### The questions that block progress
-
-- None blocks this review. OQ-16 still holds gitar under D-7.
-
-### The next concrete action
-
-- Give the owner the merge summary for PR #7. Wait for the owner's merge confirmation.
-- After the merge, apply the ruleset file of `main` only on the explicit instruction of the owner, then run the comparison (D-67).
