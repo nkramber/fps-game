@@ -9,7 +9,7 @@ using Xunit;
 namespace IronAbsolution.Tests;
 
 /// <summary>
-/// Runs one PowerShell script of `scripts/` under `pwsh` (D-72). The hosted Ubuntu runner has
+/// Runs the entry script `run.ps1`, or a copy of it, under `pwsh` (D-99). The hosted Ubuntu runner has
 /// PowerShell, so CI runs each test that uses this class, and CI fails without it. The Windows PC
 /// takes PowerShell 7 as an owner step of `docs/runbooks/session-context.md` (D-101). A machine
 /// without it skips the test with the reason, and no test reads a machine-dependent value.
