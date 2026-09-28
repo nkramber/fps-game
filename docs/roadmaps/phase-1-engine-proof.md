@@ -35,6 +35,8 @@ The register in section 5 of `docs/design.md` holds every finding. These rows bi
 | F-20 | The text of the review commands says that the owner adds the label | PR-8: the text follows D-76 (D-77, D-82) |
 | F-21 | The project SSD is case-sensitive, and Unreal Engine does not start from it | PR-8: the runbook adds a case-insensitive volume (D-81) |
 | F-22 | The name of an MSVC folder does not give the version of its compiler | PR-8: the Windows check reads `cl.exe` (D-74) |
+| F-23 | The editor starts its cache server before Editor Preferences can open | PR-9: the owner writes the cache path before the first start (D-85) |
+| F-24 | The toolchain check passed with no Metal Toolchain | PR-9: the check has a Metal Toolchain pin (D-87) |
 
 ## 7. Roadmap
 
@@ -106,17 +108,18 @@ Owner, during PR-8 (D-78). No PR.
 **Scope.**
 
 - The project `IronAbsolution` in the `Game/` folder, with one C++ module and the Game and Editor targets (D-39, D-73).
-- Enhanced Input on. The session confirms the state of the plugin in the editor (F-6).
+- Enhanced Input on. The session confirms the state of the plugin in the editor (F-6). The Android File Server plugin off (D-88).
 - One empty test map. It is the default map of the game and of the editor.
-- The World Partition choice of the test map, with the reason (D-4). Recommendation: no World Partition, because the level loads whole.
-- LFS attributes for each binary type of Unreal (D-30). Ignore rules for the cache folders of Unreal (D-9).
+- The World Partition choice of the test map, with the reason (D-4). The owner chose no World Partition, because the level loads whole (D-84).
+- LFS attributes for each binary type of Unreal, and for the source formats of meshes, images, and sounds (D-30, D-86). Ignore rules for the cache folders of Unreal (D-9).
 - One automation test in the module (D-71).
 - A Makefile target that builds the editor target on the Mac (D-41). A Makefile target that runs the automation tests headless on the Mac.
 - A PowerShell script for each of the two actions on the Windows PC (D-72).
 - The test command reads the test report and a success line in the log. An exit code of 0 alone is not a pass. The-thing-below met a headless run that ended with 0 and no success line (finding 64 of its design doc).
 - Tests on the hosted runners for the text files: the LFS attributes, the plugin list of the project, and the ignore rules (D-31).
 - Unreal best practices govern the C++ and the content (D-34).
-- At the first start of the editor, the owner sets the path of the engine cache on the volume (D-83).
+- Before the first start of the editor, the owner writes the path of the engine cache on the volume (D-83, D-85). The editor starts its cache server before Editor Preferences can open (F-23).
+- A fourth pin of `toolchain-check`: the Metal Toolchain of Xcode is installed (D-87). The check passed with no Metal Toolchain, and the editor then compiled no shader (F-24).
 
 **Out of scope.**
 
@@ -137,9 +140,9 @@ Owner, during PR-8 (D-78). No PR.
 10. M-1 has a value: the peak memory of the editor on the Mac with the test map open (F-5).
 11. M-2 has a value for the clean build of the editor target on both platforms.
 
-**Review focus.** The C++ against the Epic coding standard (D-34), and the pass rule of the test command. Also the LFS and ignore rules (D-9, D-30), and the Windows scripts (D-72).
+**Review focus.** The C++ against the Epic coding standard (D-34), and the pass rule of the test command. The Metal Toolchain pin (D-87). Also the LFS and ignore rules (D-9, D-30), and the Windows scripts (D-72).
 
-**Questions.** None open. The session asks each new question when this PR starts.
+**Questions.** None open. The owner answered the questions of the PR in D-84 to D-88.
 
 **State.** 🔧 planned.
 

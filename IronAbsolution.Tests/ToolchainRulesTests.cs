@@ -15,6 +15,8 @@ public sealed class ToolchainRulesTests
     private const string XcodePinned = "Xcode 26.1.1\nBuild version 17B100\n";
     private const string EnginePinned = """{ "MajorVersion": 5, "MinorVersion": 8, "PatchVersion": 3, "Changelist": 0, "BranchName": "++UE5+Release-5.8" }""";
     private const string GitLfsFound = "git-lfs/3.7.1 (GitHub; darwin arm64; go 1.25.3)\n";
+    private const string MetalInstalled = "Build Version: 17B54\nStatus: installed\n";
+    private const string MetalSource = "xcodebuild -showComponent MetalToolchain";
     private const string EngineSource = "/Volumes/IronAbsolution/Epic Games/UE_5.8/Engine/Build/Build.version";
 
     [Fact]
@@ -22,11 +24,12 @@ public sealed class ToolchainRulesTests
     {
         IReadOnlyList<PinResult> results = ToolchainRules.Evaluate(Facts());
 
-        Assert.Equal(["Xcode", "Unreal Engine", "Git LFS"], [results[0].Tool, results[1].Tool, results[2].Tool]);
+        Assert.Equal(["Xcode", "Unreal Engine", "Git LFS", "Metal Toolchain"], [results[0].Tool, results[1].Tool, results[2].Tool, results[3].Tool]);
         Assert.All(results, result => Assert.True(result.Holds, result.Line()));
         Assert.Equal("Xcode: pass. Expected 26.1.1 (D-28), found 26.1.1.", results[0].Line());
         Assert.Equal("Unreal Engine: pass. Expected 5.8.3 (D-28), found 5.8.3.", results[1].Line());
         Assert.Equal("Git LFS: pass. Expected an install of any version (D-30), found 3.7.1.", results[2].Line());
+        Assert.Equal("Metal Toolchain: pass. Expected installed (D-87), found installed.", results[3].Line());
     }
 
     [Theory]
@@ -148,6 +151,34 @@ public sealed class ToolchainRulesTests
         Assert.Contains("found the line 'lfs 3.7.1' from `git lfs version`", gitLfs.Line(), StringComparison.Ordinal);
     }
 
+    [Fact]
+    public void AnUninstalledMetalToolchainFailsWithTheDownloadCommand()
+    {
+        // F-24: the check passed on a Mac whose editor could compile no shader.
+        PinResult metal = ToolchainRules.Evaluate(Facts(metal: ToolOutput.Found(MetalSource, "Build Version: 17B54\nStatus: uninstalled\n")))[3];
+
+        Assert.False(metal.Holds);
+        Assert.Equal("Metal Toolchain: fail. Expected installed (D-87), found uninstalled. Run `xcodebuild -downloadComponent MetalToolchain`.", metal.Line());
+    }
+
+    [Fact]
+    public void AnAbsentMetalAnswerFailsWithTheReason()
+    {
+        PinResult metal = ToolchainRules.Evaluate(Facts(metal: ToolOutput.Absent(MetalSource, "the exit code 70, stderr: xcodebuild: error: unknown component")))[3];
+
+        Assert.False(metal.Holds);
+        Assert.Contains($"found no state. `{MetalSource}` failed: the exit code 70", metal.Line(), StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void AMetalAnswerWithNoStatusLineFails()
+    {
+        PinResult metal = ToolchainRules.Evaluate(Facts(metal: ToolOutput.Found(MetalSource, "Build Version: 17B54\n")))[3];
+
+        Assert.False(metal.Holds);
+        Assert.Contains($"found no line 'Status: <state>' in the output of `{MetalSource}`", metal.Line(), StringComparison.Ordinal);
+    }
+
     private static PinResult XcodeResult(string output)
     {
         return ToolchainRules.Evaluate(Facts(xcode: ToolOutput.Found("xcodebuild -version", output)))[0];
@@ -158,11 +189,12 @@ public sealed class ToolchainRulesTests
         return ToolchainRules.Evaluate(Facts(engine: ToolOutput.Found(EngineSource, text)))[1];
     }
 
-    private static ToolchainFacts Facts(ToolOutput? xcode = null, ToolOutput? engine = null, ToolOutput? gitLfs = null)
+    private static ToolchainFacts Facts(ToolOutput? xcode = null, ToolOutput? engine = null, ToolOutput? gitLfs = null, ToolOutput? metal = null)
     {
         return new ToolchainFacts(
             xcode ?? ToolOutput.Found("xcodebuild -version", XcodePinned),
             engine ?? ToolOutput.Found(EngineSource, EnginePinned),
-            gitLfs ?? ToolOutput.Found("git lfs version", GitLfsFound));
+            gitLfs ?? ToolOutput.Found("git lfs version", GitLfsFound),
+            metal ?? ToolOutput.Found(MetalSource, MetalInstalled));
     }
 }

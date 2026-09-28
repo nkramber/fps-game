@@ -10,8 +10,7 @@ namespace IronAbsolution.Tests;
 /// <summary>
 /// Runs `scripts/toolchain-check.ps1` under PowerShell with a temporary engine folder (D-72). A
 /// fault in one source fails its own pin, and the script still reports each later pin and the
-/// total (T-2). The hosted Ubuntu runner has PowerShell, so CI runs these tests. The Mac has no
-/// PowerShell by default, so a local run skips them with the reason, and CI fails without it.
+/// total (T-2). <see cref="PowerShellScript"/> runs the script, and CI must run these tests.
 /// </summary>
 public sealed class ToolchainScriptTests : IDisposable
 {
@@ -94,48 +93,6 @@ public sealed class ToolchainScriptTests : IDisposable
 
     private (int ExitCode, string Output) RunScript(string? engineFolder)
     {
-        ProcessStartInfo startInfo = new ProcessStartInfo("pwsh")
-        {
-            WorkingDirectory = this.folder,
-            RedirectStandardOutput = true,
-            RedirectStandardError = true,
-            UseShellExecute = false,
-        };
-        foreach (string arg in new[] { "-NoProfile", "-NonInteractive", "-File", RepositoryRoot.PathTo("scripts/toolchain-check.ps1") })
-        {
-            startInfo.ArgumentList.Add(arg);
-        }
-
-        startInfo.Environment.Remove(EngineVariable);
-        if (engineFolder is not null)
-        {
-            startInfo.Environment[EngineVariable] = engineFolder;
-        }
-
-        Process process;
-        try
-        {
-            process = Process.Start(startInfo) ?? throw new InvalidOperationException("'pwsh' gave no process.");
-        }
-        catch (Win32Exception exception)
-        {
-            // CI must run these tests. A local Mac with no PowerShell skips them with the reason.
-            if (Environment.GetEnvironmentVariable("CI") == "true")
-            {
-                throw new InvalidOperationException($"'pwsh' did not start on CI: {exception.Message}", exception);
-            }
-
-            Assert.Skip($"PowerShell ('pwsh') is not on this machine: {exception.Message}. CI runs this test.");
-            throw;
-        }
-
-        using (process)
-        {
-            Task<string> standardError = process.StandardError.ReadToEndAsync();
-            string standardOutput = process.StandardOutput.ReadToEnd();
-            process.WaitForExit();
-            string errors = standardError.GetAwaiter().GetResult();
-            return (process.ExitCode, standardOutput + errors);
-        }
+        return PowerShellScript.Run(RepositoryRoot.PathTo("scripts/toolchain-check.ps1"), this.folder, EngineVariable, engineFolder);
     }
 }

@@ -74,6 +74,8 @@ public sealed class ToolchainCheckCommandTests : IDisposable
         Assert.Contains($"'{AbsentProgram}' did not start", facts.Xcode.Absence, StringComparison.Ordinal);
         Assert.Null(facts.GitLfs.Text);
         Assert.Equal($"{AbsentProgram} lfs version", facts.GitLfs.Source);
+        Assert.Null(facts.MetalToolchain.Text);
+        Assert.Equal($"{AbsentProgram} -showComponent MetalToolchain", facts.MetalToolchain.Source);
 
         IReadOnlyList<PinResult> results = ToolchainRules.Evaluate(facts);
         Assert.All(results, result => Assert.False(result.Holds));
