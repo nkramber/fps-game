@@ -115,6 +115,7 @@ Owner, during PR-8 (D-78). No PR.
 - The test command reads the test report and a success line in the log. An exit code of 0 alone is not a pass. The-thing-below met a headless run that ended with 0 and no success line (finding 64 of its design doc).
 - Tests on the hosted runners for the text files: the LFS attributes, the plugin list of the project, and the ignore rules (D-31).
 - Unreal best practices govern the C++ and the content (D-34).
+- At the first start of the editor, the owner sets the path of the engine cache on the volume (D-83).
 
 **Out of scope.**
 
@@ -130,6 +131,7 @@ Owner, during PR-8 (D-78). No PR.
 5. A test that fails on purpose gives a nonzero exit code. The session removes that test before the merge.
 6. The test command fails with the path when the test report is absent (T-2).
 7. A fresh clone restores the test map from LFS, and the map file is not an LFS pointer.
+8. After the first editor build, the engine cache is on the volume. The internal disk holds no cache data (D-83, F-4).
 8. The hosted tests pass for the LFS attributes, the plugin list, and the ignore rules.
 9. M-1 has a value: the peak memory of the editor on the Mac with the test map open (F-5).
 10. M-2 has a value for the clean build of the editor target on both platforms.

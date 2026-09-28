@@ -17,7 +17,7 @@ How to read this file:
 - The owner gave D-56 to D-59 on 2026-09-27 in PR-4. They resolve the divergences of the role models that the port of PR-4 met (D-13).
 - The owner gave D-60 to D-63 on 2026-09-27 in PR-5, and D-64 to D-68 on 2026-09-27 in PR-6.
 - The owner gave D-69 to D-77 on 2026-09-27 in PR-7, the focused roadmap of phase 1.
-- The owner gave D-78 to D-82 on 2026-09-27 in PR-8, the engine toolchain.
+- The owner gave D-78 to D-83 on 2026-09-27 in PR-8, the engine toolchain.
 - For D-15, the owner asked for the best fit, and the session recommended it. The owner then chose it.
 
 How to add a decision:
@@ -119,6 +119,7 @@ Find a row with `grep -n -E '^\| D-(12|14) \|' docs/decisions.md`.
 | D-75 | 2026-09-27 | First M-9 scene | PR-11 builds a small original room of basic shapes, with a set count of lights and meshes. The first M-9 run uses that room. | Resolves OQ-23. The room is original content under the license of D-24. Each later run of M-9 can use it again. |
 | D-79 | 2026-09-27 | Engine folder variable | The environment variable `IRON_ABSOLUTION_ENGINE_DIR` names the engine folder, the folder that holds `Engine`. Each tool and each script of the engine reads it. | The owner gave this answer in PR-8. Applies D-9: no commit holds the path. |
 | D-81 | 2026-09-27 | Engine volume | A case-insensitive APFS volume, `IronAbsolution`, on the project SSD holds the engine, its cache, Xcode 26.1.1, and the checkout of the engine work. The first volume of the SSD does not change. | The owner gave this answer in PR-8. Records F-21. Applies the SSD of D-28 and F-4. |
+| D-83 | 2026-09-27 | Engine cache path | On the Mac, the editor setting "Global Local DDC Path" puts the engine cache on the `IronAbsolution` volume. The owner sets it at the first start of the editor in PR-9. | The owner gave this answer in PR-8. The engine reads the setting for its Zen cache (`BaseEngine.ini` of 5.8.3). Applies F-4 and D-9: no commit holds the path. PR-9 checks the internal disk. |
 
 ## Content, assets, and the repository
 

@@ -120,6 +120,16 @@ CAUTION: The launcher installs each new hotfix without a question. Each hotfix u
 
 3. Make sure that the last line says `each of the 3 pins holds`.
 
+### The engine cache
+
+The engine keeps its cache in a Zen server. By default, the Zen data goes to the user folder on the internal disk. The internal disk has too little space for it (F-4). The engine reads a path for this cache from the editor setting "Global Local DDC Path" (D-83). The file `BaseEngine.ini` of 5.8.3 names that setting in its section `[Zen.AutoLaunch]`.
+
+1. **Owner.** At the first start of the editor in PR-9, open Edit, then Editor Preferences, then General, then Global.
+2. **Owner.** Set "Global Local DDC Path" to `/Volumes/IronAbsolution/DerivedDataCache`.
+3. **Owner.** Close the editor, and start it again.
+
+Exit test 8 of PR-9 checks that the internal disk holds no cache data.
+
 ### The checkout of the engine work
 
 The Unreal project of PR-9 builds from a case-insensitive volume too (D-81).
