@@ -1,3 +1,35 @@
+## Session 48: 2026-09-28, Claude Code
+
+Author: Claude Code
+Session: author PR-14, round 2 close. Repository: iron-absolution. Branch: `feat/pr-14-windows-engine-commands`. PR: #14. Role: author. Base: `0351bbba52a4fddd91b559ad7ace9f1bb020b2f0`.
+
+### What this session did, and why
+
+- Round 2 approved the effective head `aed74bb`, and the five checks passed at `9e426cb`.
+- The owner read the merge summary and confirmed the merge.
+- One hosted test failed one time before a clean rerun. The owner chose to record it as F-28 and fix it in a later PR.
+
+### The state of the build
+
+- The effective head stays `aed74bb`, because this commit changes `docs/` alone (D-49).
+- The remote head is the commit of this entry, pending merge through auto-merge.
+
+### What is in flight
+
+- The auto-merge of #14 after the checks of this commit.
+
+### Traps and gotchas
+
+- F-28: the stub of D-103 can fail to start on the hosted runner. The assert on the exit code hides the error text, so a fix first proves the cause.
+
+### The questions that block progress
+
+- None. OQ-16 still holds the gitar pass (D-7).
+
+### The next concrete action
+
+- After the merge, write the transitional prompt for PR-11, the gate record. Name F-28 as work for a later PR.
+
 ## Session 47: 2026-09-28, Codex
 
 Author: Codex
@@ -318,41 +350,3 @@ Session: review PR-10, round 1. Repository: iron-absolution. Branch: `feat/pr-10
 ### The next concrete action
 
 - The author gives the owner the merge summary after all required checks pass.
-
-## Session 38: 2026-09-28, Claude Code
-
-Author: Claude Code
-Session: author PR-10, round 1. Repository: iron-absolution. Branch: `feat/pr-10-packaged-build`. PR: #11. Role: author. Base: `b46321ed8a4909c36e7c305a0e07af859c7320bb`.
-
-### What this session did, and why
-
-- Before the work, the `ci` run of `main` at `b46321e` passed (exit test 9 of PR-9). `make toolchain-check` and `make editor-test` passed.
-- `make package-build`, `make package-run`, and the two Windows scripts. The game subsystem `UTimedRunSubsystem` runs the first map for a set time and writes the success line.
-- The owner gave D-89 (10 seconds, a limit of 5 minutes) and D-90 (the bundle id `com.nkramber.ironabsolution`).
-- The first package runs found F-25 (the PR-9 test in the game target), F-26 (the `-package` step of the Mac), and F-27 (the App Sandbox stops `-abslog`).
-
-### The state of the build
-
-- `make` passes on the Mac: 527 tests, a clean format, and 0 findings. CI ran the PowerShell tests with 0 skips.
-- A fresh clone passed `make package-build` (136.5 s) and `make package-run` on the Mac. The Windows scripts passed in the checkout of the owner (105.6 s). The PR comments "Mac evidence" and "Windows evidence" hold the output.
-- The remote head is the commit of this entry. The state is pending merge.
-
-### What is in flight
-
-- The review of round 1 by `make codex-review PR=11`.
-
-### Traps and gotchas
-
-- The Mac package writes its log in the container `~/Library/Containers/com.nkramber.ironabsolution`. `make package-run` reads stdout.
-- The owner gives Windows output as text in the chat. The session posts it in the PR.
-
-### The questions that block progress
-
-- None. OQ-16 still holds gitar (D-7).
-
-### The next concrete action
-
-- After the merge, the next PR is not PR-11. The owner changed the scope on 2026-09-28, and no D-# id holds it yet. The next session records these two answers as decisions:
-  1. "We will ONLY support Windows, not Mac." This supersedes the macOS part of D-32.
-  2. The engine work moves to the Windows PC, and the sessions run there. This reverses D-55 and revises D-33 in part.
-- That PR takes the id PR-12, and it comes before PR-11. It plans the change first. The Mac pins, the Mac targets, and the Mac M-9 of PR-11 change.
