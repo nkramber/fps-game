@@ -2,6 +2,41 @@
 
 This file holds the entries that the rotation moves out of `docs/session-handoff.md`, newest first.
 
+## Session 31: 2026-09-27, Codex
+
+Author: Codex
+Session: reviewer PR-8, round 1. Repository: iron-absolution. Branch: `feat/pr-8-engine-toolchain`. PR: #9. Role: reviewer. Base: `2133abdbd714b3ba2dddf916adc1aef2b693a120`.
+
+### What this session did, and why
+
+- Reviewed the complete PR-8 diff at effective head `d57ed3312cb3479166ab48858287cdd862443cc2`.
+- Added `docs/reviews/pr-9.md` with two findings: invalid Windows engine version data stops the report, and two PR-9 exit tests share number 8.
+- `make` passed on macOS: 398 tests, clean format, and 0 findings of ste-check.
+
+### The state of the build
+
+- The effective head is `d57ed3312cb3479166ab48858287cdd862443cc2`. The PR tip before the review commit is `223269d7a640a3724c3ab338b7158d0ec6e02d72`.
+- The review metadata commit is the remote head of this entry. The verdict is Changes required.
+
+### What is in flight
+
+- The author answers P2-1 and P2-2 in `docs/reviews/pr-9.md`.
+- The `review-gate` check must read the published record. It fails for the open findings.
+
+### Traps and gotchas
+
+- The Windows script could not run here because this Mac has no PowerShell runtime. The owner posted the Windows result in the PR comment.
+- The cache-path exit test belongs to PR-9 (D-83).
+- OQ-16 keeps gitar outside this review (D-7).
+
+### The questions that block progress
+
+- None. The findings need code and roadmap corrections, not an owner decision.
+
+### The next concrete action
+
+- The author corrects the findings, adds regression evidence, and requests the next review round.
+
 ## Session 30: 2026-09-27, Claude Code
 
 Author: Claude Code

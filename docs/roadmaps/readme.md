@@ -35,7 +35,7 @@ Add an area file only when one area spans more than one phase. Two links carry a
 
 | File | Phase | Gate |
 |---|---|---|
-| `docs/roadmaps/phase-1-engine-proof.md` | Phase 1: engine and toolchain proof | A clean clone builds, packages, and runs one headless test on macOS and on Windows. M-1, M-2, and a first M-9 have values. |
+| `docs/roadmaps/phase-1-engine-proof.md` | Phase 1: engine and toolchain proof | A clean clone builds, packages, and runs one headless test on Windows. M-1 and M-2 have values (D-91, D-95). |
 
 Name a phase file `phase-<n>-<slug>.md`, for example phase-1-engine-proof.md. Name an area file area-<slug>.md.
 

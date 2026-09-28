@@ -102,7 +102,7 @@ export IRON_ABSOLUTION_ENGINE_DIR="/Volumes/IronAbsolution/Epic Games/UE_5.8"
 
 ## The Unreal project
 
-Work on the engine from the clone on the `IronAbsolution` volume (D-81). Build the editor target, then run the automation tests headless.
+Work on the engine from the clone on the `IronAbsolution` volume (D-81). Correction of 2026-09-28: the engine work moves to the Windows PC (D-92), and PR-14 removes the volume (D-97). Build the editor target, then run the automation tests headless.
 
 ```
 make editor-build

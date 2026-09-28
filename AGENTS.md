@@ -120,7 +120,9 @@ The C# tools project `IronAbsolution.Tools` holds the commands of the repository
 - Unreal best practices govern each rule and each implementation of the engine work, the game code, and the content (D-34). A tenet or a role-model rule gives way to them in that scope.
 - Follow the Epic C++ coding standard: https://dev.epicgames.com/documentation/unreal-engine/epic-cplusplus-coding-standard-for-unreal-engine.
 - C++ holds the rules. Data assets and Blueprint subclasses hold tuning and content (D-29).
-- Each change keeps the game working on macOS and Windows and inside the budgets of D-32. The owner runs the Windows builds and posts the logs (D-33). The development tools run on the Mac alone (D-55).
+- Each change keeps the game working on Windows and inside the budget of D-32. The game does not support macOS (D-91).
+- The sessions and the development tools run on the Windows PC (D-92). A session runs the builds and tests, and attaches the logs (D-33). PR-13 and PR-14 move the commands from the Mac (D-94).
+- Ask the owner before you run a build, a test, or a package that opens a game window. Wait for the confirmation (D-96).
 - Game rules and engine technology of the role models do not transfer (D-12).
 
 ## Git rules
@@ -153,7 +155,7 @@ The Makefile is the entry point (D-41). Run each target from the checkout root.
 - `make handoff-rotate`: move each handoff entry after the tenth to the archive, and print the next session number (D-58, D-59).
 - `make hooks`: install the pre-commit hook in this checkout, one time (D-43).
 - `make codex-review PR=<n>`: the cross-provider review of one PR. The exit codes are 0 approve, 10 changes, 11 three-strike stop, 3 refused start, and 1 fault (D-14).
-- `make toolchain-check`: the pins of the Mac toolchain: Xcode, the engine, Git LFS, and the Metal Toolchain (D-28, D-79, D-87). `docs/runbooks/engine-setup.md` gives the install.
+- `make toolchain-check`: the pins of the Mac toolchain: Xcode, the engine, Git LFS, and the Metal Toolchain (D-28, D-79, D-87). `docs/runbooks/engine-setup.md` gives the install. PR-14 moves the check to the Windows pins (D-97).
 - `make editor-build`: build the editor target of the Unreal project on the Mac. `scripts/editor-build.ps1` does the same on the Windows PC (D-72).
 - `make editor-test`: run each automation test headless on the Mac. A pass needs the exit code 0, a test report, and the success line of the log. `scripts/editor-test.ps1` does the same on the Windows PC.
 - `make package-build`: make a packaged Development build of the game on the Mac. `scripts/package-build.ps1` does the same on the Windows PC (D-72).
