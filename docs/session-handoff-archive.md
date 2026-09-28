@@ -2,6 +2,42 @@
 
 This file holds the entries that the rotation moves out of `docs/session-handoff.md`, newest first.
 
+## Session 26: 2026-09-27, Claude Code
+
+Author: Claude Code
+Session: author PR-6, round 2. Repository: iron-absolution. Branch: `feat/pr-6-review-gate`. PR: #7. Role: author. Base: `5871f2c870d5eb110eccbadd67c5f633c5619155`.
+
+### What this session did, and why
+
+- Round 1 gave `Changes required` with one finding, P2-1 (exit 10). A backdated commit after the `review-override` label passes the time rule, because the rule reads the committer time.
+- The trigger reproduces. The owner accepted the risk (D-68, F-18): one account can add the label again anyway (F-9).
+- The rule cites D-68, and `docs/reviews/pr-7-response.md` gives the evidence. No behavior changed.
+- The first `doc-gate` run failed on the words "update ... after the merge" in the description. The reworded description passes.
+
+### The state of the build
+
+- `make` passes on the Mac: 363 tests, a clean format, and 0 findings of ste-check.
+- The remote head is the commit of this entry. The state is pending review round 2.
+- The live ruleset still requires four checks (D-67).
+
+### What is in flight
+
+- Round 2 of `make codex-review PR=7`.
+
+### Traps and gotchas
+
+- The deferral rule of `doc-gate` reads the PR description and this entry. Its regular expressions match a document verb close to the words that name the time of the merge.
+- The label `review-override` does not exist yet, and auto-merge is off. Both are owner steps of `docs/runbooks/main-ruleset.md`.
+
+### The questions that block progress
+
+- None. OQ-16 still holds gitar (D-7).
+
+### The next concrete action
+
+- After the approval, ask the owner to confirm the merge. Auto-merge is off, so merge with `gh pr merge 7 --squash`.
+- After the merge, on the explicit instruction of the owner, apply the ruleset file of `main` to the live ruleset, and run the comparison (D-67).
+
 ## Session 25: 2026-09-27, Codex
 
 Author: Codex

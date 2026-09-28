@@ -1,3 +1,37 @@
+## Session 36: 2026-09-28, Codex
+
+Author: Codex
+Session: reviewer PR-9, round 1. Repository: iron-absolution. Branch: `feat/pr-9-project-scaffold`. PR: #10. Role: reviewer. Base: `830bf40cd47f8f707d060a894017c29bff446566`.
+
+### What this session did, and why
+
+- Reviewed the full PR-9 diff and its contracts. No finding holds at effective head `124e1ae1e449af46cceaadc475a17f3510b9b669`.
+- Added the review record for PR #10. The provider gate passes under T-4 and D-6.
+
+### The state of the build
+
+- `make` passed: 474 tests passed, 20 PowerShell tests skipped because `pwsh` is not installed, formatting passed, and ste-check reported 0 findings.
+- CI passed build, test, and format; coverage; doc-gate; and ste-check on remote head `f3f015537d8c0e5da54b765dbdcae23fd599f236`. The review-gate check failed because the review record did not exist yet.
+- The Mac and Windows build and test results are in the owner comments. The Windows run is owner-reported.
+- The PR state is pending merge. The metadata commit must reach `origin/feat/pr-9-project-scaffold`.
+
+### What is in flight
+
+- The review-gate check must run after the metadata commit.
+
+### Traps and gotchas
+
+- The local Mac cannot run the PowerShell tests. CI ran the full test set.
+- `git diff --check` reports one extra blank line at EOF in `Game/Config/DefaultInput.ini`.
+
+### The questions that block progress
+
+- None. OQ-16 still holds the gitar pass under D-7.
+
+### The next concrete action
+
+- Read the review-gate result after the metadata push. If it passes, prepare the four-part merge summary for the owner.
+
 ## Session 35: 2026-09-28, Claude Code
 
 Author: Claude Code
@@ -318,39 +352,3 @@ Session: reviewer PR-6, round 2. Repository: iron-absolution. Branch: `feat/pr-6
 
 - Give the owner the merge summary for PR #7. Wait for the owner's merge confirmation.
 - After the merge, apply the ruleset file of `main` only on the explicit instruction of the owner, then run the comparison (D-67).
-
-## Session 26: 2026-09-27, Claude Code
-
-Author: Claude Code
-Session: author PR-6, round 2. Repository: iron-absolution. Branch: `feat/pr-6-review-gate`. PR: #7. Role: author. Base: `5871f2c870d5eb110eccbadd67c5f633c5619155`.
-
-### What this session did, and why
-
-- Round 1 gave `Changes required` with one finding, P2-1 (exit 10). A backdated commit after the `review-override` label passes the time rule, because the rule reads the committer time.
-- The trigger reproduces. The owner accepted the risk (D-68, F-18): one account can add the label again anyway (F-9).
-- The rule cites D-68, and `docs/reviews/pr-7-response.md` gives the evidence. No behavior changed.
-- The first `doc-gate` run failed on the words "update ... after the merge" in the description. The reworded description passes.
-
-### The state of the build
-
-- `make` passes on the Mac: 363 tests, a clean format, and 0 findings of ste-check.
-- The remote head is the commit of this entry. The state is pending review round 2.
-- The live ruleset still requires four checks (D-67).
-
-### What is in flight
-
-- Round 2 of `make codex-review PR=7`.
-
-### Traps and gotchas
-
-- The deferral rule of `doc-gate` reads the PR description and this entry. Its regular expressions match a document verb close to the words that name the time of the merge.
-- The label `review-override` does not exist yet, and auto-merge is off. Both are owner steps of `docs/runbooks/main-ruleset.md`.
-
-### The questions that block progress
-
-- None. OQ-16 still holds gitar (D-7).
-
-### The next concrete action
-
-- After the approval, ask the owner to confirm the merge. Auto-merge is off, so merge with `gh pr merge 7 --squash`.
-- After the merge, on the explicit instruction of the owner, apply the ruleset file of `main` to the live ruleset, and run the comparison (D-67).
