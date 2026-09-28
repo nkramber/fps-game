@@ -1,4 +1,5 @@
 <Solution>
   <Project Path="IronAbsolution.Tools/IronAbsolution.Tools.csproj" />
   <Project Path="IronAbsolution.Tests/IronAbsolution.Tests.csproj" />
+  <Project Path="IronAbsolution.TestStub/IronAbsolution.TestStub.csproj" />
 </Solution>

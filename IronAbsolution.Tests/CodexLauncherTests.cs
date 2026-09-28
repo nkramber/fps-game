@@ -76,14 +76,15 @@ public sealed class CodexLauncherTests : IDisposable
     }
 
     [Fact]
-    public void TheMakefileGivesTheEntryScriptOfTheNpmPackage()
+    public void TheEntryScriptGivesTheEntryScriptOfTheNpmPackage()
     {
         // P2-1: `<npm prefix>/bin/codex` exists on macOS alone. `npm root` gives the package
-        // folder on each platform.
-        string makefile = File.ReadAllText(RepositoryRoot.PathTo("Makefile"));
+        // folder on each platform. The entry script holds the path now (D-99).
+        string entry = File.ReadAllText(RepositoryRoot.PathTo("run.ps1"));
 
-        Assert.Contains("CODEX ?= $(shell npm root --global)/@openai/codex/bin/codex.js", makefile, StringComparison.Ordinal);
-        Assert.DoesNotContain("/bin/codex\n", makefile, StringComparison.Ordinal);
+        Assert.Contains("npm root --global", entry, StringComparison.Ordinal);
+        Assert.Contains("@openai/codex/bin/codex.js", entry, StringComparison.Ordinal);
+        Assert.DoesNotContain("/bin/codex'", entry, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -92,7 +93,7 @@ public sealed class CodexLauncherTests : IDisposable
         string problem = CodexLauncher.MissingProblem("/no/codex.js");
 
         Assert.Contains("/no/codex.js", problem, StringComparison.Ordinal);
-        Assert.Contains("make codex-review", problem, StringComparison.Ordinal);
+        Assert.Contains("run.ps1 codex-review", problem, StringComparison.Ordinal);
     }
 
     /// <summary>Removes the folder of the fake CLI.</summary>

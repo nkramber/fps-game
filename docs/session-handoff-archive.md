@@ -2,6 +2,42 @@
 
 This file holds the entries that the rotation moves out of `docs/session-handoff.md`, newest first.
 
+## Session 32: 2026-09-27, Claude Code
+
+Author: Claude Code
+Session: author PR-8, round 2. Repository: iron-absolution. Branch: `feat/pr-8-engine-toolchain`. PR: #9. Role: author. Base: `2133abdbd714b3ba2dddf916adc1aef2b693a120`.
+
+### What this session did, and why
+
+- Answered round 1 of the review in `docs/reviews/pr-9-response.md`. Both findings have full merit.
+- P2-1: each source of `scripts/toolchain-check.ps1` now fails its own pin, and the script reports each later pin and the total (T-2). The Visual Studio block had the same fault, so the correction covers it.
+- P2-2: the exit tests of PR-9 read 1 to 11. Exit test 8 stays the cache test (D-83).
+- New `ToolchainScriptTests` runs the script under PowerShell. All 7 cases fail on the script of `d57ed33` and pass on the new script.
+
+### The state of the build
+
+- `make` passes on the Mac: 405 tests, with 7 skipped where PowerShell is absent, a clean format, and 0 findings of ste-check. With a portable PowerShell on the path, 405 of 405 pass.
+- The remote head is the commit of this entry. The state is pending merge.
+
+### What is in flight
+
+- Round 2 of `make codex-review PR=9` runs after the checks are green (D-14).
+- The owner confirms the squash merge after the merge summary.
+
+### Traps and gotchas
+
+- The Mac has no PowerShell. A portable PowerShell from the release archive in the scratch folder runs the script tests without an install.
+- `Join-Path` with a backslash path names one file on Linux. Join each part of a path that a test also reads on the runner.
+- One PR comment (the evidence of exit tests 1 and 4). No review thread.
+
+### The questions that block progress
+
+- None. OQ-16 still holds gitar (D-7).
+
+### The next concrete action
+
+- After the merge, write the transitional prompt of PR-9. Work from the clone on the `IronAbsolution` volume (D-81). Set the cache path at the first editor start (D-83).
+
 ## Session 31: 2026-09-27, Codex
 
 Author: Codex

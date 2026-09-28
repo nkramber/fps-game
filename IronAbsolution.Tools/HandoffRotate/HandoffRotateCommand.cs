@@ -8,7 +8,7 @@ namespace IronAbsolution.Tools.HandoffRotate;
 /// The `handoff-rotate` command (D-20, D-58). It keeps the 10 newest handoff entries and moves
 /// each older entry to the top of the archive. It puts an entry that sits under an older one
 /// back in its place, and it names that entry. It prints the moved numbers and the next
-/// session number. `make handoff-rotate` runs it (D-59).
+/// session number. `run.ps1 handoff-rotate` runs it (D-59).
 /// </summary>
 public static class HandoffRotateCommand
 {
@@ -36,8 +36,8 @@ public static class HandoffRotateCommand
         }
 
         string root = Path.GetFullPath(options.ValueOr(RootOption, "."));
-        string handoffPath = Path.Combine(root, HandoffRotateRules.HandoffPath);
-        string archivePath = Path.Combine(root, HandoffRotateRules.ArchivePath);
+        string handoffPath = ToolPaths.UnderFolder(root, HandoffRotateRules.HandoffPath);
+        string archivePath = ToolPaths.UnderFolder(root, HandoffRotateRules.ArchivePath);
         foreach (string path in new[] { handoffPath, archivePath })
         {
             if (!File.Exists(path))

@@ -300,7 +300,7 @@ public sealed class DocGateTests
         // The rule is no wider than T-6. The review command, the review record, the merge
         // summary, and the handoff author field name the providers for another reason.
         const string lines = """
-            - The other provider reviewed it through `make codex-review PR=5` (T-4, D-14).
+            - The other provider reviewed it through `run.ps1 codex-review -PR 5` (T-4, D-14).
             The review record names Codex as the reviewer.
             Author: Claude Code
             The merge summary names What, How, CI, and Codex review.

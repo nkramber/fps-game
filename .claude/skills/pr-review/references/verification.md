@@ -7,7 +7,7 @@ The `pr-review` skill names this file at step 6. It holds the checks that a revi
 Run the focused checks that can falsify the changed behavior. Complete the project gates that apply.
 Use the current build commands in `AGENTS.md`. Do not invent a successful command when no solution or tool exists.
 
-- Run `make` from the checkout root. It runs the build, the tests, the format check, and ste-check (D-41).
+- Run `run.ps1 verify`. It runs the build, the tests, the format check, and ste-check (D-99).
 - Read the tests as critically as the implementation.
 - Verify that each bug fix has a regression test that fails on the old behavior (T-3).
 - Run the regression test against the base in an isolated checkout when that is practical.

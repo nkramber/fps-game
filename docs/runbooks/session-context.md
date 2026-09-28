@@ -4,6 +4,33 @@ Status: procedure, written 2026-09-27. Written in ASD-STE100 (D-17). The source 
 
 A session pays for each byte that it reads and for each model call that it makes. This runbook holds the commands that keep both counts low. Later PRs add the commands of the other tools. PR-3 adds the wait and the review. PR-4 adds the rotation and the local run of the documents gate. `docs/runbooks/main-ruleset.md` holds the commands of the ruleset of `main`.
 
+A session runs on the Windows PC (D-92). `run.ps1` is the entry of each development command (D-99). Run it from any folder of the checkout, because it finds the root from its own folder.
+
+```
+.\run.ps1 help
+```
+
+## The owner steps
+
+Only the owner installs a program on the Windows PC. A session that finds one of these absent asks the owner, and it does not install it. `run.ps1` names the absent program and the step (T-2).
+
+| Step | Command | Used by |
+|---|---|---|
+| The .NET SDK of `global.json` | `winget install Microsoft.DotNet.SDK.10` | Each target of the tools project |
+| PowerShell 7 (D-101) | `winget install Microsoft.PowerShell` | `run.ps1`, each script of `scripts/`, and each script test |
+| Node.js with npm | `winget install OpenJS.NodeJS.LTS` | The Codex CLI of `codex-review` (D-47) |
+| Git for Windows with Git LFS | `winget install Git.Git` | Each git command, and the binary content (D-30) |
+| The GitHub CLI, then `gh auth login` | `winget install GitHub.cli` | `where`, the check wait, and each PR command |
+| The Codex login | `codex login` | The cross-provider review (D-14, D-53) |
+
+The `codex-review` target installs the Codex CLI itself with npm on each run (D-47). The login is the owner step.
+
+The pre-commit hook needs the hook path of this checkout. Run it one time (D-43).
+
+```
+.\run.ps1 hooks
+```
+
 ## Targeted reads
 
 Read the newest handoff entry first, and read that entry alone.
@@ -61,7 +88,7 @@ gh pr checks <number> --watch --interval 60 > /dev/null 2>&1; gh pr checks <numb
 Start the cross-provider review of a PR from a clean checkout of its branch (D-14). Run it in the background, and read the line `codex-review: <outcome> (exit <code>)`.
 
 ```
-make codex-review PR=<number>
+run.ps1 codex-review -PR <number>
 ```
 
 The one-pr-one-session skill gives the next step for each exit code.
@@ -69,7 +96,7 @@ The one-pr-one-session skill gives the next step for each exit code.
 At the end of a session, add the handoff entry, then rotate the handoff before the commit (D-58, D-59). The command prints the next session number.
 
 ```
-make handoff-rotate
+run.ps1 handoff-rotate
 ```
 
 Check the Documents section before the push with a local run of the documents gate (D-57). Write the PR description to a file first. The job in CI runs the same command.

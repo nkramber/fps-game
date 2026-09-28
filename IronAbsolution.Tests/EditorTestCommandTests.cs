@@ -7,14 +7,16 @@ using Xunit;
 namespace IronAbsolution.Tests;
 
 /// <summary>
-/// The I/O of the headless test command with a stub editor: a shell script at the path of the Mac
-/// editor under a temporary engine folder (D-71, D-79). The stub reads the report folder from its
-/// arguments, as the editor does, and it writes the report with the UTF-8 byte order mark of
-/// the editor of 5.8.3. The development tools run on the Mac alone, so the stub is a
-/// POSIX shell script, and the Linux runner of CI runs it too (D-55).
+/// The I/O of the headless test command with a stub editor at the path of the editor, under a
+/// temporary engine folder (D-71, D-79). That path differs between Windows and the Mac, so each
+/// test reads <see cref="EditorTestCommand.EditorProgram"/> (D-102). The stub reads the report
+/// folder from its arguments, as the editor does, and it writes the report with the UTF-8 byte
+/// order mark of the editor of 5.8.3. <see cref="StubProgram"/> writes a stub that runs on each
+/// platform (D-103).
 /// </summary>
 public sealed class EditorTestCommandTests : IDisposable
 {
+    private const string SuccessLine = "LogAutomationCommandLine: Display: **** TEST COMPLETE. EXIT CODE: 0 ****";
     private const string PassedReport = """{ "succeeded": 1, "succeededWithWarnings": 0, "failed": 0, "notRun": 0, "inProcess": 0, "tests": [ { "fullTestPath": "IronAbsolution.Project.Settings", "state": "Success" } ] }""";
 
     private static readonly TimeSpan Limit = TimeSpan.FromMinutes(2);
@@ -39,12 +41,7 @@ public sealed class EditorTestCommandTests : IDisposable
     [Fact]
     public void AStubRunThatWritesTheReportAndTheSuccessLinePasses()
     {
-        this.WriteEditor($"""
-            mkdir -p "$report"
-            printf '\357\273\277%s' '{PassedReport}' > "$report/index.json"
-            echo 'LogAutomationCommandLine: Display: **** TEST COMPLETE. EXIT CODE: 0 ****'
-            exit 0
-            """);
+        this.WriteEditor(new StubProgram().WritesReport(PassedReport).WritesLine(SuccessLine), exitCode: 0);
 
         (int exitCode, string output, string errors) = this.Run();
 
@@ -61,10 +58,7 @@ public sealed class EditorTestCommandTests : IDisposable
         string reportFolder = Path.Combine(this.root, "Game", "Saved", "Automation", "editor-test");
         Directory.CreateDirectory(reportFolder);
         File.WriteAllText(Path.Combine(reportFolder, EditorTestCommand.ReportFile), PassedReport);
-        this.WriteEditor("""
-            echo 'LogAutomationCommandLine: Display: **** TEST COMPLETE. EXIT CODE: 0 ****'
-            exit 0
-            """);
+        this.WriteEditor(new StubProgram().WritesLine(SuccessLine), exitCode: 0);
 
         (int exitCode, _, string errors) = this.Run();
 
@@ -77,12 +71,7 @@ public sealed class EditorTestCommandTests : IDisposable
     [Fact]
     public void AnExitCodeOfZeroWithNoSuccessLineFails()
     {
-        this.WriteEditor($"""
-            mkdir -p "$report"
-            printf '\357\273\277%s' '{PassedReport}' > "$report/index.json"
-            echo 'LogInit: Display: Engine is initialized.'
-            exit 0
-            """);
+        this.WriteEditor(new StubProgram().WritesReport(PassedReport).WritesLine("LogInit: Display: Engine is initialized."), exitCode: 0);
 
         (int exitCode, _, string errors) = this.Run();
 
@@ -94,10 +83,7 @@ public sealed class EditorTestCommandTests : IDisposable
     public void TheEditorGetsTheProjectFirstAndTheAutomationCommand()
     {
         string argumentsFile = Path.Combine(this.folder, "arguments.txt");
-        this.WriteEditor($"""
-            for arg in "$@"; do echo "$arg" >> '{argumentsFile}'; done
-            exit 0
-            """);
+        this.WriteEditor(new StubProgram().RecordsArgumentsTo(argumentsFile), exitCode: 0);
 
         this.Run();
 
@@ -129,29 +115,13 @@ public sealed class EditorTestCommandTests : IDisposable
         (int exitCode, _, string errors) = this.Run();
 
         Assert.Equal(Program.FaultExitCode, exitCode);
-        string editor = Path.Combine(this.engine, "Engine", "Binaries", "Mac", "UnrealEditor.app", "Contents", "MacOS", "UnrealEditor");
+        string editor = ToolPaths.UnderFolder(this.engine, EditorTestCommand.EditorProgram);
         Assert.Contains($"editor-test: no file '{editor}'.", errors, StringComparison.Ordinal);
     }
 
-    private void WriteEditor(string body)
+    private void WriteEditor(StubProgram stub, int exitCode)
     {
-        string path = Path.Combine(this.engine, EditorTestCommand.EditorProgram.Replace('/', Path.DirectorySeparatorChar));
-        Directory.CreateDirectory(Path.GetDirectoryName(path)!);
-        string script = $$"""
-            #!/bin/sh
-            for arg in "$@"; do
-              case "$arg" in -ReportExportPath=*) report="${arg#-ReportExportPath=}" ;; esac
-            done
-            {{body}}
-
-            """;
-        File.WriteAllText(path, script.Replace("\r\n", "\n", StringComparison.Ordinal));
-        if (OperatingSystem.IsWindows())
-        {
-            throw new PlatformNotSupportedException("The stub editor is a POSIX shell script, and the development tools run on the Mac alone (D-55).");
-        }
-
-        File.SetUnixFileMode(path, UnixFileMode.UserRead | UnixFileMode.UserWrite | UnixFileMode.UserExecute);
+        stub.ExitsWith(ToolPaths.UnderFolder(this.engine, EditorTestCommand.EditorProgram), exitCode);
     }
 
     private (int ExitCode, string Output, string Errors) Run()

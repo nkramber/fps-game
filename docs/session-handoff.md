@@ -1,3 +1,41 @@
+## Session 42: 2026-09-28, Claude Code
+
+Author: Claude Code
+Session: author PR-13, round 1. Repository: iron-absolution. Branch: `feat/pr-13-windows-dev-tools`. PR: #13. Role: author. Base: `2509d791d1769c7602fc802eb78158fd0c28dff6`.
+
+### What this session did, and why
+
+- This is the first session on the Windows PC (D-92). `run.ps1` is the new entry of each development command (D-99). The Makefile keeps the Mac engine targets until PR-14.
+- The owner answered three questions at the start. They are D-101 to D-103: PowerShell 7 as an owner step, the program path of the platform, and the stub program of the tests.
+- 27 tests failed on Windows before this PR. Two were real defects: a forward-slash constant into `Path.Combine` gave a mixed-separator path in `handoff-rotate` and in the Codex transcript. `ToolPaths.UnderFolder` now holds that rule one time.
+- 25 tests threw `PlatformNotSupportedException` and cited D-55, which D-92 superseded. Each stub of a program of the engine is now `IronAbsolution.TestStub`, so Windows can start it (D-103).
+- `EntryScriptTests` covers each start condition of the entry: an unknown target, a missing `-PR`, an absent .NET SDK, an absent git, and an absent npm.
+- 28 files that named a `make` development target now name the entry target. The runbook lists each owner install step.
+
+### The state of the build
+
+- `run.ps1 verify` passes on the Windows PC: build, 540 tests, format, and ste-check with 0 findings. No test is skipped. 527 tests ran before, with 27 failures and 13 skips.
+- The remote head is the commit of this entry. The state is pending merge.
+
+### What is in flight
+
+- The Codex review of PR-13 (D-14), then the merge summary and the merge confirmation of the owner.
+
+### Traps and gotchas
+
+- The Bash tool of this harness eats a backslash in a quoted heredoc. Write a file that needs a backslash escape with the Write tool or the Edit tool, and not with a heredoc.
+- The stub program runs because the host of .NET looks for its own assembly name, and not for its own file name. So a copy under another name still finds `IronAbsolution.TestStub.dll` beside it.
+- `ToolchainScriptTests` points `ProgramFiles(x86)` at an empty folder. Without it, the Visual Studio pin passes on a PC that has Visual Studio, and the test fails.
+- Ask the owner before each command that opens a game window (D-96).
+
+### The questions that block progress
+
+- None. OQ-16 still holds gitar (D-7).
+
+### The next concrete action
+
+- After the merge, write the transitional prompt of PR-14: the engine commands on Windows alone, and the removal of each Mac part (D-97).
+
 ## Session 41: 2026-09-28, Claude Code
 
 Author: Claude Code
@@ -308,39 +346,3 @@ Session: reviewer PR-8, round 2. Repository: iron-absolution. Branch: `feat/pr-8
 ### The next concrete action
 
 - Verify the published checks, then give the owner the merge summary if all required checks pass.
-
-## Session 32: 2026-09-27, Claude Code
-
-Author: Claude Code
-Session: author PR-8, round 2. Repository: iron-absolution. Branch: `feat/pr-8-engine-toolchain`. PR: #9. Role: author. Base: `2133abdbd714b3ba2dddf916adc1aef2b693a120`.
-
-### What this session did, and why
-
-- Answered round 1 of the review in `docs/reviews/pr-9-response.md`. Both findings have full merit.
-- P2-1: each source of `scripts/toolchain-check.ps1` now fails its own pin, and the script reports each later pin and the total (T-2). The Visual Studio block had the same fault, so the correction covers it.
-- P2-2: the exit tests of PR-9 read 1 to 11. Exit test 8 stays the cache test (D-83).
-- New `ToolchainScriptTests` runs the script under PowerShell. All 7 cases fail on the script of `d57ed33` and pass on the new script.
-
-### The state of the build
-
-- `make` passes on the Mac: 405 tests, with 7 skipped where PowerShell is absent, a clean format, and 0 findings of ste-check. With a portable PowerShell on the path, 405 of 405 pass.
-- The remote head is the commit of this entry. The state is pending merge.
-
-### What is in flight
-
-- Round 2 of `make codex-review PR=9` runs after the checks are green (D-14).
-- The owner confirms the squash merge after the merge summary.
-
-### Traps and gotchas
-
-- The Mac has no PowerShell. A portable PowerShell from the release archive in the scratch folder runs the script tests without an install.
-- `Join-Path` with a backslash path names one file on Linux. Join each part of a path that a test also reads on the runner.
-- One PR comment (the evidence of exit tests 1 and 4). No review thread.
-
-### The questions that block progress
-
-- None. OQ-16 still holds gitar (D-7).
-
-### The next concrete action
-
-- After the merge, write the transitional prompt of PR-9. Work from the clone on the `IronAbsolution` volume (D-81). Set the cache path at the first editor start (D-83).

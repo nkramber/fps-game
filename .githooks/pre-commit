@@ -1,5 +1,5 @@
 #!/bin/sh
-# The pre-commit hook of the repository. `make hooks` sets the hook path (D-43).
+# The pre-commit hook of the repository. `run.ps1 hooks` sets the hook path (D-43).
 #
 # It refuses a commit on `main`, and it runs the STE checker over the tracked files of
 # the checkout (D-5, D-17). A finding stops the commit.

@@ -52,7 +52,7 @@ Each procedure sets its own variables and writes its own temporary files with `m
 ## Procedure: a change of the ruleset
 
 1. Change `.github/rulesets/main.json` and the workflow jobs in one PR.
-2. Run `make`. It runs `RulesetTests`.
+2. Run `run.ps1 verify`. It runs `RulesetTests`.
 3. Get the approval of the owner for the update of the live ruleset.
 4. Update the live ruleset from the file on `main` after the merge.
 5. Compare the live ruleset with the file.

@@ -81,7 +81,7 @@ The `Status:` line takes exactly one of four forms:
 | `accepted risk, D-<n>.` | An owner decision accepts the risk. The decision id names that answer. |
 | `withdrawn.` | The evidence refuted the finding. |
 
-Start the `Status:` line and the `Open at:` line with those words. Write no list marker and no bold before them, because the `make codex-review` command reads each line by its first word.
+Start the `Status:` line and the `Open at:` line with those words. Write no list marker and no bold before them, because the `run.ps1 codex-review` command reads each line by its first word.
 A status in another form fails the round (T-2).
 A withdrawn finding stays in the file with the evidence that refuted it. Never delete a finding.
 
@@ -91,7 +91,7 @@ The `Open at:` line lists the effective head of each review round in which the f
 
 A repeat review adds its head to each finding that stays open or opens again. It never removes a head.
 
-The `make codex-review` command counts the heads. A P0 to P2 finding with three heads, in a round that does not approve, stops the fix loop with exit 11 (D-14). The author then asks the owner.
+The `run.ps1 codex-review` command counts the heads. A P0 to P2 finding with three heads, in a round that does not approve, stops the fix loop with exit 11 (D-14). The author then asks the owner.
 An open finding whose line does not name the head of the round fails the round (T-2).
 Each `###` heading of the Findings section is a finding heading with a severity from P0 to P3. Any other line that starts with `###` in that section fails the round.
 

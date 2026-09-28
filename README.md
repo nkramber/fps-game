@@ -22,7 +22,7 @@ Iron Absolution (working title, D-39) is an original, fast first-person shooter 
 
 ## Setup
 
-The tools project needs the .NET SDK of `global.json`. Run `make` to build, test, and check the repository, and run `make hooks` one time. Phase 1 of the roadmap proves and documents the engine, the toolchain, and Git LFS.
+The tools project needs the .NET SDK of `global.json`. Run `run.ps1 verify` to build, test, and check the repository, and run `run.ps1 hooks` one time. Phase 1 of the roadmap proves and documents the engine, the toolchain, and Git LFS.
 
 ## Repository conventions
 

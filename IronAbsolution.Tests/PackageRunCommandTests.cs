@@ -7,13 +7,15 @@ using Xunit;
 namespace IronAbsolution.Tests;
 
 /// <summary>
-/// The I/O of the start command of the Mac package with a stub package: a shell script at the path
-/// of the program of the package under a temporary checkout (D-89). The development tools run on
-/// the Mac alone, so the stub is a POSIX shell script, and the Linux runner of CI runs it too (D-55).
+/// The I/O of the start command of the package, with a stub package at the path of the program of
+/// the package under a temporary checkout (D-89). That path differs between Windows and the Mac,
+/// so each test reads <see cref="PackageRunCommand.PackageProgram"/> (D-102).
+/// <see cref="StubProgram"/> writes a stub that runs on each platform (D-103).
 /// </summary>
 public sealed class PackageRunCommandTests : IDisposable
 {
     private const string SuccessLine = "LogTimedRun: Display: Timed run: pass. The map /Game/Maps/L_Test ran for 10 seconds.";
+    private const string StartLine = "LogInit: Display: Engine is initialized.";
 
     private static readonly TimeSpan Limit = TimeSpan.FromMinutes(2);
 
@@ -37,7 +39,7 @@ public sealed class PackageRunCommandTests : IDisposable
     public void AStubRunThatWritesTheSuccessLinePasses()
     {
         // Exit test 3 of PR-10: the package starts and stops, and the command finds the success line.
-        this.WritePackage($"echo '{SuccessLine}'\nexit 0");
+        this.WritePackage(new StubProgram().WritesLine(SuccessLine), exitCode: 0);
 
         (int exitCode, string output, string errors) = this.Run(Limit);
 
@@ -53,7 +55,7 @@ public sealed class PackageRunCommandTests : IDisposable
         // Exit test 4 of PR-10. The log of an earlier run must not make a new run pass (T-2).
         Directory.CreateDirectory(Path.GetDirectoryName(this.logPath)!);
         File.WriteAllText(this.logPath, SuccessLine);
-        this.WritePackage("echo 'LogInit: Display: Engine is initialized.'\nexit 0");
+        this.WritePackage(new StubProgram().WritesLine(StartLine), exitCode: 0);
 
         (int exitCode, _, string errors) = this.Run(Limit);
 
@@ -65,7 +67,7 @@ public sealed class PackageRunCommandTests : IDisposable
     [Fact]
     public void APackageThatDoesNotStopFailsAtTheLimitAndNamesTheLog()
     {
-        this.WritePackage("echo 'LogInit: Display: Engine is initialized.'\nsleep 60\nexit 0");
+        this.WritePackage(new StubProgram().WritesLine(StartLine).WaitsForSeconds(60), exitCode: 0);
 
         (int exitCode, _, string errors) = this.Run(TimeSpan.FromSeconds(1));
 
@@ -76,7 +78,7 @@ public sealed class PackageRunCommandTests : IDisposable
     [Fact]
     public void ACrashFailsWithTheExitCodeAndTheLog()
     {
-        this.WritePackage($"echo '{SuccessLine}'\nexit 3");
+        this.WritePackage(new StubProgram().WritesLine(SuccessLine), exitCode: 3);
 
         (int exitCode, _, string errors) = this.Run(Limit);
 
@@ -88,7 +90,7 @@ public sealed class PackageRunCommandTests : IDisposable
     public void ThePackageGetsTheTimedRunOptionAndTheStdoutLog()
     {
         string argumentsFile = Path.Combine(this.folder, "arguments.txt");
-        this.WritePackage($"for arg in \"$@\"; do echo \"$arg\" >> '{argumentsFile}'; done\nexit 0");
+        this.WritePackage(new StubProgram().RecordsArgumentsTo(argumentsFile), exitCode: 0);
 
         this.Run(Limit);
 
@@ -103,14 +105,14 @@ public sealed class PackageRunCommandTests : IDisposable
         (int exitCode, _, string errors) = this.Run(Limit);
 
         Assert.Equal(Program.FaultExitCode, exitCode);
-        string package = Path.Combine(this.root, "Game", "Saved", "Packages", "Mac", "IronAbsolution.app", "Contents", "MacOS", "IronAbsolution");
+        string package = ToolPaths.UnderFolder(this.root, PackageRunCommand.PackageProgram);
         Assert.Equal($"package-run: no file '{package}'. Run `make package-build` first, and --root names the checkout.", errors.Trim());
     }
 
     [Fact]
     public void TheCommandLineReadsTheRootOption()
     {
-        this.WritePackage($"echo '{SuccessLine}'\nexit 0");
+        this.WritePackage(new StubProgram().WritesLine(SuccessLine), exitCode: 0);
         using StringWriter output = new StringWriter();
         using StringWriter errors = new StringWriter();
 
@@ -120,17 +122,9 @@ public sealed class PackageRunCommandTests : IDisposable
         Assert.Contains("package-run: pass.", output.ToString(), StringComparison.Ordinal);
     }
 
-    private void WritePackage(string body)
+    private void WritePackage(StubProgram stub, int exitCode)
     {
-        string path = Path.Combine(this.root, PackageRunCommand.PackageProgram.Replace('/', Path.DirectorySeparatorChar));
-        Directory.CreateDirectory(Path.GetDirectoryName(path)!);
-        File.WriteAllText(path, $"#!/bin/sh\n{body}\n");
-        if (OperatingSystem.IsWindows())
-        {
-            throw new PlatformNotSupportedException("The stub package is a POSIX shell script, and the development tools run on the Mac alone (D-55).");
-        }
-
-        File.SetUnixFileMode(path, UnixFileMode.UserRead | UnixFileMode.UserWrite | UnixFileMode.UserExecute);
+        stub.ExitsWith(ToolPaths.UnderFolder(this.root, PackageRunCommand.PackageProgram), exitCode);
     }
 
     private (int ExitCode, string Output, string Errors) Run(TimeSpan limit)

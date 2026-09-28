@@ -81,7 +81,7 @@ Find a question with `grep -n -E '^[0-9]+\. \*\*OQ-(1|18)\.' docs/questions.md`.
     - Options: original recordings or synthesis, licensed libraries, commissioned work, or AI generation under its terms.
     - Recommendation: original or clearly licensed sources, with a provenance record for each file.
 14. **OQ-14. Auto-merge.** Can an agent arm GitHub auto-merge, and on which conditions? Raised 2026-09-26 (PR-1). Resolved 2026-09-27: D-12. The auto-merge procedure of the role models applies after the owner confirms each PR. PR-6 enables it.
-15. **OQ-15. The start of the cross-provider review.** Which provider reviews, and who starts it? Raised 2026-09-26 (PR-1). Resolved 2026-09-27: D-14. Codex reviews through `make codex-review`, which PR-3 adds.
+15. **OQ-15. The start of the cross-provider review.** Which provider reviews, and who starts it? Raised 2026-09-26 (PR-1). Resolved 2026-09-27: D-14. Codex reviews through `run.ps1 codex-review`, which PR-3 adds.
 16. **OQ-16. Gitar.** Does gitar work on this repository, and does its pass become a gate? Raised 2026-09-26 (PR-1). Blocks the gitar pass only (D-7). The owner said on 2026-09-27 that gitar does not work here yet.
     - Evidence: the role models differ. The-thing-below makes the gitar check run a required check. What-you-carry keeps it out of its ruleset (D-13).
     - Recommendation: no action until the owner confirms that gitar works here. Then ask the divergence question, and add the pass in one PR.

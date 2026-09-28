@@ -7,9 +7,11 @@ using IronAbsolution.Tools.ToolchainCheck;
 namespace IronAbsolution.Tools.EditorTest;
 
 /// <summary>
-/// The `editor-test` command of the Mac (D-55, D-71). It starts the editor with no window, runs
-/// each automation test of the project, and applies the pass rule of <see cref="EditorTestRules"/>.
-/// `make editor-test` runs it. The Windows PC runs `scripts/editor-test.ps1` instead (D-72).
+/// The `editor-test` command (D-71, D-92). It starts the editor with no window, runs each
+/// automation test of the project, and applies the pass rule of <see cref="EditorTestRules"/>.
+/// The editor program differs between Windows and the Mac, so <see cref="EditorProgram"/> reads
+/// the platform (D-102). `make editor-test` runs it on the Mac, and `scripts/editor-test.ps1`
+/// does the same work on the Windows PC (D-72).
 /// </summary>
 public static class EditorTestCommand
 {
@@ -19,8 +21,13 @@ public static class EditorTestCommand
     /// <summary>The project file, under the root of the checkout (D-73).</summary>
     public const string ProjectFile = "Game/IronAbsolution.uproject";
 
-    /// <summary>The editor program of the Mac, under the engine folder (D-79).</summary>
-    public const string EditorProgram = "Engine/Binaries/Mac/UnrealEditor.app/Contents/MacOS/UnrealEditor";
+    /// <summary>
+    /// Gets the editor program of this platform, under the engine folder (D-79, D-102). Windows
+    /// has one program file, and the Mac has an application bundle.
+    /// </summary>
+    public static string EditorProgram { get; } = OperatingSystem.IsWindows()
+        ? "Engine/Binaries/Win64/UnrealEditor-Cmd.exe"
+        : "Engine/Binaries/Mac/UnrealEditor.app/Contents/MacOS/UnrealEditor";
 
     /// <summary>The folder of the test report, under the root. The ignore rules hold `Saved/` (D-9).</summary>
     public const string ReportFolder = "Game/Saved/Automation/editor-test";
@@ -86,8 +93,8 @@ public static class EditorTestCommand
             return Program.FaultExitCode;
         }
 
-        string editor = UnderFolder(engineFolder, EditorProgram);
-        string project = UnderFolder(root, ProjectFile);
+        string editor = ToolPaths.UnderFolder(engineFolder, EditorProgram);
+        string project = ToolPaths.UnderFolder(root, ProjectFile);
         foreach (string path in new[] { editor, project })
         {
             if (!File.Exists(path))
@@ -97,9 +104,9 @@ public static class EditorTestCommand
             }
         }
 
-        string reportFolder = UnderFolder(root, ReportFolder);
-        string logPath = UnderFolder(root, LogFile);
-        string errorLogPath = UnderFolder(root, ErrorLogFile);
+        string reportFolder = ToolPaths.UnderFolder(root, ReportFolder);
+        string logPath = ToolPaths.UnderFolder(root, LogFile);
+        string errorLogPath = ToolPaths.UnderFolder(root, ErrorLogFile);
         try
         {
             RemoveOldResults(reportFolder, logPath, errorLogPath);
@@ -147,11 +154,6 @@ public static class EditorTestCommand
             "-stdout",
             "-FullStdOutLogOutput",
         ];
-    }
-
-    private static string UnderFolder(string folder, string relativePath)
-    {
-        return Path.Combine(folder, relativePath.Replace('/', Path.DirectorySeparatorChar));
     }
 
     /// <summary>

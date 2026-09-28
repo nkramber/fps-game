@@ -14,7 +14,7 @@ Source: ASD-STE100 Issue 8 (2021-04-30), Part 1, Writing rules. Issue 9 (2025-01
 1. Write the text.
 2. Check each sentence against the checklist below.
 3. Correct each sentence that fails.
-4. Run `make ste-check` before each commit. The pre-commit hook runs it too (D-43).
+4. Run `run.ps1 ste-check` before each commit. The pre-commit hook runs it too (D-43).
 5. Read the text again as a reader who does not know the subject.
 
 ## Checklist (the rules that fail most often)
@@ -160,7 +160,7 @@ Process terms:
 
 ## The checker
 
-The `ste-check` command of the tools project is a port of the checker of the-thing-below (D-15, D-17). Run it with `make ste-check`. The command reads every live document that git tracks. It prints one line for each finding: the file, the line, the rule id, and what the rule saw. It exits 1 on any finding.
+The `ste-check` command of the tools project is a port of the checker of the-thing-below (D-15, D-17). Run it with `run.ps1 ste-check`. The command reads every live document that git tracks. It prints one line for each finding: the file, the line, the rule id, and what the rule saw. It exits 1 on any finding.
 
 | Rule id | What the checker flags |
 |---|---|

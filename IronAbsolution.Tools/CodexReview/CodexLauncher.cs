@@ -68,6 +68,6 @@ public static class CodexLauncher
     /// <returns>The text of the problem.</returns>
     public static string MissingProblem(string script)
     {
-        return string.Format(CultureInfo.InvariantCulture, "The Codex CLI is missing: no file at '{0}'. Run `make codex-review`, which installs it and gives the path of `bin/codex.js` (D-47).", script);
+        return string.Format(CultureInfo.InvariantCulture, "The Codex CLI is missing: no file at '{0}'. Run `run.ps1 codex-review`, which installs it and gives the path of `bin/codex.js` (D-47).", script);
     }
 }

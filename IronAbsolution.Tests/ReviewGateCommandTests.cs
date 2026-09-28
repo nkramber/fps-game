@@ -32,7 +32,7 @@ public sealed class ReviewGateCommandTests : IDisposable
         (int exitCode, string output, string errors) = this.Run(head, NoLabels);
 
         Assert.Equal(Program.FaultExitCode, exitCode);
-        Assert.Contains("review-gate: Found: no record. Run `make codex-review`, or the author session adds the label for a PR with no code (D-76).", output, StringComparison.Ordinal);
+        Assert.Contains("review-gate: Found: no record. Run `run.ps1 codex-review`, or the author session adds the label for a PR with no code (D-76).", output, StringComparison.Ordinal);
         Assert.DoesNotContain("owner adds", output, StringComparison.Ordinal);
         Assert.Contains($"review-gate: fail for PR #7 at {head}, the review gate fails.", output, StringComparison.Ordinal);
         Assert.Empty(errors);

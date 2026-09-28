@@ -9,7 +9,7 @@ For a new record, use `docs/reviews/pr-<number>.md` with the actual GitHub PR nu
 Write provider names only in the review record and in the handoff author field (T-6, D-16).
 Keep those names out of each PR description and each GitHub comment.
 
-The `make codex-review` command reads the review record (D-14). The `review-gate` check reads the same parts (D-64). Four parts of the record have a machine reader. Keep their format exact:
+The `run.ps1 codex-review` command reads the review record (D-14). The `review-gate` check reads the same parts (D-64). Four parts of the record have a machine reader. Keep their format exact:
 
 | Part | Exact form | Rule |
 |---|---|---|
