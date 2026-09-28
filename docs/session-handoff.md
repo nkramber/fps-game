@@ -1,3 +1,39 @@
+## Session 50: 2026-09-28, Codex
+
+Author: Codex
+Session: review PR-11, round 1. Repository: iron-absolution. Branch: `review/pr-15`. PR: #15. Role: reviewer. Base: `95546e35317aea9fff1f56a2ec2e9c549eceff84`.
+
+### What this session did, and why
+
+- Reviewed PR #15 at effective head `720ded38699038c9cf0f093cbd5377e5f8c484e7` under D-14.
+- The provider gate passed. The review found no blocking defect.
+- Added `docs/reviews/pr-15.md` and this entry as one metadata commit for `origin/docs/pr-11-gate-record`.
+- The new regression test fails on the base `Makefile` section and passes on the PR head.
+
+### The state of the build
+
+- `run.ps1 verify` passed on Windows: 539 tests, format, and STE passed.
+- CI passed the build, test, and format, coverage, document, and STE checks at the effective head.
+- The review gate failed before the review record existed. The metadata push triggers a new check.
+- The remote work head outside the metadata set is `720ded38699038c9cf0f093cbd5377e5f8c484e7`.
+
+### What is in flight
+
+- The review record and handoff entry need one metadata commit and push.
+
+### Traps and gotchas
+
+- M-8 counts the LFS objects in the fresh clone, not objects that only a deleted branch held (D-108).
+- `package-run` opens a game window and needs owner confirmation (D-96).
+
+### The questions that block progress
+
+- None. OQ-16 still holds gitar (D-7).
+
+### The next concrete action
+
+- The author checks the review gate, then gives the owner the merge summary.
+
 ## Session 49: 2026-09-28, Claude Code
 
 Author: Claude Code
@@ -321,37 +357,3 @@ Session: author PR-12, round 1. Repository: iron-absolution. Branch: `docs/pr-12
 ### The next concrete action
 
 - After the merge, write the transitional prompt of PR-13. The session of PR-13 runs on the Windows PC (D-92). Its first action is the owner install of the development tools there.
-
-## Session 40: 2026-09-28, Claude Code
-
-Author: Claude Code
-Session: author PR-10, merge. Repository: iron-absolution. Branch: `feat/pr-10-packaged-build`. PR: #11. Role: author. Base: `b46321ed8a4909c36e7c305a0e07af859c7320bb`.
-
-### What this session did, and why
-
-- Round 1 of the review gave `Ready for owner merge` for the effective head `5d268b707becefc0101fd9814faa9ec51d12d335`, with no finding.
-- Each check of the PR passed after the review record, `review-gate` included.
-
-### The state of the build
-
-- `make` passes on the Mac: 527 tests, a clean format, and 0 findings.
-- The remote head is the commit of this entry. The state is pending merge.
-
-### What is in flight
-
-- The owner confirms the squash merge after the merge summary. Then auto-merge runs (D-67).
-
-### Traps and gotchas
-
-- This entry is a metadata commit, so the approval of `5d268b7` stands (D-14).
-
-### The questions that block progress
-
-- None. OQ-16 still holds gitar (D-7).
-
-### The next concrete action
-
-- After the merge, the next PR is PR-12, and it comes before PR-11. On 2026-09-28 the owner gave two answers that no D-# id holds yet:
-  1. "We will ONLY support Windows, not Mac." This supersedes the macOS part of D-32.
-  2. The engine work moves to the Windows PC, and the sessions run there. This reverses D-55 and revises D-33 in part.
-- PR-12 records both answers as decisions, and it plans the change first. The Mac pins, the Mac targets, and the Mac M-9 of PR-11 change.

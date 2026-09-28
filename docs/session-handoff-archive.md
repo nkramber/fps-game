@@ -2,6 +2,40 @@
 
 This file holds the entries that the rotation moves out of `docs/session-handoff.md`, newest first.
 
+## Session 40: 2026-09-28, Claude Code
+
+Author: Claude Code
+Session: author PR-10, merge. Repository: iron-absolution. Branch: `feat/pr-10-packaged-build`. PR: #11. Role: author. Base: `b46321ed8a4909c36e7c305a0e07af859c7320bb`.
+
+### What this session did, and why
+
+- Round 1 of the review gave `Ready for owner merge` for the effective head `5d268b707becefc0101fd9814faa9ec51d12d335`, with no finding.
+- Each check of the PR passed after the review record, `review-gate` included.
+
+### The state of the build
+
+- `make` passes on the Mac: 527 tests, a clean format, and 0 findings.
+- The remote head is the commit of this entry. The state is pending merge.
+
+### What is in flight
+
+- The owner confirms the squash merge after the merge summary. Then auto-merge runs (D-67).
+
+### Traps and gotchas
+
+- This entry is a metadata commit, so the approval of `5d268b7` stands (D-14).
+
+### The questions that block progress
+
+- None. OQ-16 still holds gitar (D-7).
+
+### The next concrete action
+
+- After the merge, the next PR is PR-12, and it comes before PR-11. On 2026-09-28 the owner gave two answers that no D-# id holds yet:
+  1. "We will ONLY support Windows, not Mac." This supersedes the macOS part of D-32.
+  2. The engine work moves to the Windows PC, and the sessions run there. This reverses D-55 and revises D-33 in part.
+- PR-12 records both answers as decisions, and it plans the change first. The Mac pins, the Mac targets, and the Mac M-9 of PR-11 change.
+
 ## Session 39: 2026-09-28, Codex
 
 Author: Codex
