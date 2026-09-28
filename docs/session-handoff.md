@@ -1,7 +1,7 @@
 ## Session 50: 2026-09-28, Codex
 
 Author: Codex
-Session: review PR-11, round 1. Repository: iron-absolution. Branch: `review/pr-15`. PR: #15. Role: reviewer. Base: `95546e35317aea9fff1f56a2ec2e9c549eceff84`.
+Session: review PR-11, round 1. Repository: iron-absolution. Branch: `docs/pr-11-gate-record`. PR: #15. Role: reviewer. Base: `95546e35317aea9fff1f56a2ec2e9c549eceff84`.
 
 ### What this session did, and why
 
@@ -15,6 +15,7 @@ Session: review PR-11, round 1. Repository: iron-absolution. Branch: `review/pr-
 - `run.ps1 verify` passed on Windows: 539 tests, format, and STE passed.
 - CI passed the build, test, and format, coverage, document, and STE checks at the effective head.
 - The review gate failed before the review record existed. The metadata push triggers a new check.
+- The first metadata push passed `review-gate`, but `doc-gate` found the local worktree branch in this entry. The entry now names the PR branch, and the local document gate passes.
 - The remote work head outside the metadata set is `720ded38699038c9cf0f093cbd5377e5f8c484e7`.
 
 ### What is in flight
