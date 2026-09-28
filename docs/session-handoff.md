@@ -7,7 +7,7 @@ Session: author PR-14, round 2 close. Repository: iron-absolution. Branch: `feat
 
 - Round 2 approved the effective head `aed74bb`, and the five checks passed at `9e426cb`.
 - The owner read the merge summary and confirmed the merge.
-- One hosted test failed one time before a clean rerun. The owner chose to record it as F-28 and fix it in a later PR.
+- One hosted test failed one time before a clean rerun. This PR adds it to the design doc as F-28, on the choice of the owner. Its fix is a separate concern (G-7).
 
 ### The state of the build
 
