@@ -1,3 +1,38 @@
+## Session 39: 2026-09-28, Codex
+
+Author: Codex
+Session: review PR-10, round 1. Repository: iron-absolution. Branch: `feat/pr-10-packaged-build`. PR: #11. Role: reviewer. Base: `b46321ed8a4909c36e7c305a0e07af859c7320bb`.
+
+### What this session did, and why
+
+- Reviewed PR #11 at effective head `5d268b707becefc0101fd9814faa9ec51d12d335` under D-14.
+- The provider gate passed. The review found no blocking defect.
+- Added `docs/reviews/pr-11.md` and this entry in one metadata commit for `origin/feat/pr-10-packaged-build`.
+
+### The state of the build
+
+- The CI build, test, and format, coverage, STE, and document gate checks passed. The review gate failed before the review record existed.
+- Local `make` passed. It skipped 28 PowerShell tests because `pwsh` was absent. CI ran those tests.
+- The owner posted Mac and Windows package logs and run results in PR #11.
+- The remote work head before the metadata commit was `2cf6a526ae61d5d5608d9fa59aa224de4e2f2f2c`.
+
+### What is in flight
+
+- The metadata commit must pass the review gate at the effective head.
+
+### Traps and gotchas
+
+- The tools project does not install PowerShell. CI runs the PowerShell script tests.
+- The Unreal Engine build and package need the owner machine and engine cache.
+
+### The questions that block progress
+
+- None. OQ-16 still holds gitar (D-7).
+
+### The next concrete action
+
+- The author gives the owner the merge summary after all required checks pass.
+
 ## Session 38: 2026-09-28, Claude Code
 
 Author: Claude Code
@@ -312,43 +347,3 @@ Session: author PR-8, round 1. Repository: iron-absolution. Branch: `feat/pr-8-e
 ### The next concrete action
 
 - After the merge, write the transitional prompt of PR-9. Work from the clone `/Volumes/IronAbsolution/iron-absolution` (D-81). The first action of PR-9 is exit test 8 setup: the cache path at the first editor start (D-83).
-
-## Session 29: 2026-09-27, Claude Code
-
-Author: Claude Code
-Session: author PR-7, round 1. Repository: iron-absolution. Branch: `docs/pr-7-phase-1-roadmap`. PR: #8. Role: author. Base: `6e879a3d1f73295c5c8565369abac65e50e31178`.
-
-### What this session did, and why
-
-- Ran the exit tests of PR-6 on `main` first. Test 1: `make` on a clean worktree of `origin/main` gave 363 tests, a clean format, and 0 findings. Test 2: the comparison with `ref=origin/main` printed "The live ruleset matches the file." with five required checks, `review-gate` included. Auto-merge is on, and the label `review-override` exists.
-- Added `docs/roadmaps/phase-1-engine-proof.md`, the focused roadmap of phase 1, in the form of the-thing-below (D-70).
-- The owner answered nine questions: D-69 to D-77. The Mac had no engine, no Xcode app, and no Git LFS, so step 9 of section 8 was not done. D-69 moves the install after PR-8 (F-19).
-- Phase 1 has four PRs (D-71): PR-8 toolchain, PR-9 scaffold with the first headless test, PR-10 package, PR-11 first M-9 and the gate record.
-- Updated section 8 and the phase 1 entry of `docs/design.md`, the index of `docs/roadmaps/`, and the design-doc-style skill.
-- The owner told the session to add the `review-override` label each time (D-76). The agent files and the review skills now say so. PR-8 corrects the text of the tools and the live label (D-77, F-20).
-
-### The state of the build
-
-- `make` passes on the Mac: 363 tests, a clean format, and 0 findings of ste-check.
-- The remote head is the commit of this entry. The state is pending merge.
-
-### What is in flight
-
-- Exit test 3 of PR-6 passed: `review-gate` was red on the first head `847ad04`, with "Found: no record".
-- Exit test 4 of PR-6 passed: after the session added `review-override` at 19:42 UTC, `review-gate` turned green on `47e8203`. It read 15 changed paths, each in the documents set (D-65, D-66, D-76).
-- `make codex-review` refuses this PR, because it changes documents alone (D-49).
-- The five required checks are green. The owner confirms the squash merge.
-
-### Traps and gotchas
-
-- A new phase file defines its PR ids only after `git add`, because ste-check reads tracked files.
-- The phase file heading form `### 7.N PR-#:` is the form that the reference check reads.
-- Add the label only after the last commit outside the metadata set (D-65).
-
-### The questions that block progress
-
-- None. OQ-22 and OQ-23 are resolved (D-74, D-75). OQ-16 still holds gitar (D-7).
-
-### The next concrete action
-
-- After the merge, write the transitional prompt of PR-8. PR-8 has two concerns: the engine toolchain and the label text of D-77.
