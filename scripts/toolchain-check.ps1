@@ -45,6 +45,96 @@ function Write-Pin {
     Write-Output $line
 }
 
+# Each Get- function gives the value of one source, or throws a message with the path and the
+# cause. The caller turns each throw into a failed pin, and then goes on to the next pin, so one
+# fault never hides the other pins (T-2).
+
+function Get-ProgramFilesX86 {
+    $folder = ${env:ProgramFiles(x86)}
+    if (-not $folder) {
+        throw 'the variable ProgramFiles(x86) is not set, so this is not a Windows PC'
+    }
+    return $folder
+}
+
+function Get-VisualStudioInstance {
+    $vswhere = Join-Path (Get-ProgramFilesX86) 'Microsoft Visual Studio\Installer\vswhere.exe'
+    if (-not (Test-Path -LiteralPath $vswhere)) {
+        throw "no file '$vswhere'"
+    }
+    $instances = @(& $vswhere -latest -products '*' -requires 'Microsoft.VisualStudio.Component.VC.Tools.x86.x64' -format json | ConvertFrom-Json)
+    if ($instances.Count -eq 0) {
+        throw 'no install with the C++ tools'
+    }
+    return $instances[0]
+}
+
+# Each toolset: the folder name, and the product version of its x64 cl.exe.
+function Get-MsvcToolsets {
+    param([string]$InstallationPath)
+    $toolsetFolder = Join-Path $InstallationPath 'VC\Tools\MSVC'
+    if (-not (Test-Path -LiteralPath $toolsetFolder)) {
+        throw "no folder '$toolsetFolder'"
+    }
+    $toolsets = @()
+    foreach ($folder in @(Get-ChildItem -LiteralPath $toolsetFolder -Directory | Sort-Object Name)) {
+        $compiler = Join-Path $folder.FullName 'bin\Hostx64\x64\cl.exe'
+        if (-not (Test-Path -LiteralPath $compiler)) {
+            $toolsets += [pscustomobject]@{ Folder = $folder.Name; Version = $null; Text = "$($folder.Name) (no x64 cl.exe)" }
+            continue
+        }
+        $info = (Get-Item -LiteralPath $compiler).VersionInfo
+        $version = [version]::new($info.ProductMajorPart, $info.ProductMinorPart, $info.ProductBuildPart)
+        $toolsets += [pscustomobject]@{ Folder = $folder.Name; Version = $version; Text = "$($folder.Name) (cl.exe $version)" }
+    }
+    if ($toolsets.Count -eq 0) {
+        throw "no toolset in '$toolsetFolder'"
+    }
+    return $toolsets
+}
+
+function Get-WindowsSdkVersions {
+    $sdkFolder = Join-Path (Get-ProgramFilesX86) 'Windows Kits\10\Include'
+    if (-not (Test-Path -LiteralPath $sdkFolder)) {
+        throw "no folder '$sdkFolder'"
+    }
+    $versions = @(Get-ChildItem -LiteralPath $sdkFolder -Directory | ForEach-Object { $_.Name } | Where-Object { $_ -match '^\d+\.\d+\.\d+\.\d+$' } | ForEach-Object { [version]$_ } | Sort-Object)
+    if ($versions.Count -eq 0) {
+        throw "no version folder in '$sdkFolder'"
+    }
+    return $versions
+}
+
+# The three numbers of the version file of the engine. Each field must hold a whole number.
+function Get-EngineVersion {
+    param([string]$EngineFolder)
+    if (-not $EngineFolder) {
+        throw "no engine: the variable $EngineVariable is not set (D-79)"
+    }
+    $path = Join-Path (Join-Path (Join-Path $EngineFolder 'Engine') 'Build') 'Build.version'
+    if (-not (Test-Path -LiteralPath $path)) {
+        throw "no engine: no file '$path'. $EngineVariable names the folder that holds 'Engine'"
+    }
+    try {
+        $build = Get-Content -LiteralPath $path -Raw | ConvertFrom-Json
+    }
+    catch {
+        throw "the file '$path' is not JSON: $($_.Exception.Message)"
+    }
+    $numbers = @()
+    foreach ($field in @('MajorVersion', 'MinorVersion', 'PatchVersion')) {
+        $value = $null
+        if ($build -is [pscustomobject] -and ($build.PSObject.Properties.Name -contains $field)) {
+            $value = $build.$field
+        }
+        if (-not ($value -is [int] -or $value -is [long])) {
+            throw "the file '$path' has no whole number in the field '$field'"
+        }
+        $numbers += $value
+    }
+    return ($numbers -join '.')
+}
+
 # The Windows version is information for the evidence, not a pin.
 $os = [System.Environment]::OSVersion.Version
 Write-Output "toolchain-check: Windows: $os (information, not a pin)."
@@ -52,90 +142,60 @@ Write-Output "toolchain-check: Windows: $os (information, not a pin)."
 # Visual Studio and MSVC (D-74). vswhere ships with the Visual Studio Installer.
 $vsExpected = "Visual Studio 2026, major version $VisualStudioMajorPin (D-74)"
 $msvcExpected = "an installed MSVC toolset with a cl.exe from $MsvcMinimum to before $MsvcNextFamily (D-74)"
-$vswhere = Join-Path ${env:ProgramFiles(x86)} 'Microsoft Visual Studio\Installer\vswhere.exe'
-if (-not (Test-Path -LiteralPath $vswhere)) {
-    Write-Pin 'Visual Studio' $false $vsExpected "no file '$vswhere'" 'Install Visual Studio 2026 from docs/runbooks/engine-setup.md.'
-    Write-Pin 'MSVC' $false $msvcExpected 'no Visual Studio'
+$instance = $null
+try {
+    $instance = Get-VisualStudioInstance
+    $vsVersion = [version]$instance.installationVersion
+    Write-Pin 'Visual Studio' ($vsVersion.Major -eq $VisualStudioMajorPin) $vsExpected "$($instance.displayName) $($instance.installationVersion)"
+}
+catch {
+    $instance = $null
+    Write-Pin 'Visual Studio' $false $vsExpected $_.Exception.Message 'Install Visual Studio 2026 from docs/runbooks/engine-setup.md.'
+}
+
+if ($null -eq $instance) {
+    Write-Pin 'MSVC' $false $msvcExpected 'no Visual Studio with the C++ tools'
 }
 else {
-    $instances = @(& $vswhere -latest -products '*' -requires 'Microsoft.VisualStudio.Component.VC.Tools.x86.x64' -format json | ConvertFrom-Json)
-    if ($instances.Count -eq 0) {
-        Write-Pin 'Visual Studio' $false $vsExpected 'no install with the C++ tools' 'Add the workload "Game development with C++".'
-        Write-Pin 'MSVC' $false $msvcExpected 'no Visual Studio with the C++ tools'
-    }
-    else {
-        $instance = $instances[0]
-        $vsVersion = [version]$instance.installationVersion
-        Write-Pin 'Visual Studio' ($vsVersion.Major -eq $VisualStudioMajorPin) $vsExpected "$($instance.displayName) $($instance.installationVersion)"
-
-        $toolsetFolder = Join-Path $instance.installationPath 'VC\Tools\MSVC'
-        # Each toolset: the folder name, and the product version of its x64 cl.exe.
-        $toolsets = @()
-        if (Test-Path -LiteralPath $toolsetFolder) {
-            foreach ($folder in @(Get-ChildItem -LiteralPath $toolsetFolder -Directory | Sort-Object Name)) {
-                $compiler = Join-Path $folder.FullName 'bin\Hostx64\x64\cl.exe'
-                if (-not (Test-Path -LiteralPath $compiler)) {
-                    $toolsets += [pscustomobject]@{ Folder = $folder.Name; Version = $null; Text = "$($folder.Name) (no x64 cl.exe)" }
-                    continue
-                }
-                $info = (Get-Item -LiteralPath $compiler).VersionInfo
-                $version = [version]::new($info.ProductMajorPart, $info.ProductMinorPart, $info.ProductBuildPart)
-                $toolsets += [pscustomobject]@{ Folder = $folder.Name; Version = $version; Text = "$($folder.Name) (cl.exe $version)" }
-            }
-        }
-        if ($toolsets.Count -eq 0) {
-            Write-Pin 'MSVC' $false $msvcExpected "no toolset in '$toolsetFolder'" 'Add the component "MSVC Build Tools v14.50 for x64/x86".'
+    try {
+        $toolsets = @(Get-MsvcToolsets $instance.installationPath)
+        $good = @($toolsets | Where-Object { $null -ne $_.Version -and $_.Version -ge $MsvcMinimum -and $_.Version -lt $MsvcNextFamily })
+        $found = "installed toolsets: $(($toolsets | ForEach-Object { $_.Text }) -join ', ')"
+        if ($good.Count -gt 0) {
+            Write-Pin 'MSVC' $true $msvcExpected "cl.exe $($good[-1].Version), $found"
         }
         else {
-            $good = @($toolsets | Where-Object { $null -ne $_.Version -and $_.Version -ge $MsvcMinimum -and $_.Version -lt $MsvcNextFamily })
-            $found = "installed toolsets: $(($toolsets | ForEach-Object { $_.Text }) -join ', ')"
-            if ($good.Count -gt 0) {
-                Write-Pin 'MSVC' $true $msvcExpected "cl.exe $($good[-1].Version), $found"
-            }
-            else {
-                Write-Pin 'MSVC' $false $msvcExpected $found 'Add the component "MSVC Build Tools v14.50 for x64/x86", then update Visual Studio.'
-            }
+            Write-Pin 'MSVC' $false $msvcExpected $found 'Add the component "MSVC Build Tools v14.50 for x64/x86", then update Visual Studio.'
         }
+    }
+    catch {
+        Write-Pin 'MSVC' $false $msvcExpected $_.Exception.Message 'Add the component "MSVC Build Tools v14.50 for x64/x86".'
     }
 }
 
 # The Windows SDK: the minimum of the Epic page.
 $sdkExpected = "$WindowsSdkMinimum or later (the minimum of Epic, D-74)"
-$sdkFolder = Join-Path ${env:ProgramFiles(x86)} 'Windows Kits\10\Include'
-if (-not (Test-Path -LiteralPath $sdkFolder)) {
-    Write-Pin 'Windows SDK' $false $sdkExpected "no folder '$sdkFolder'"
+try {
+    $sdkVersions = @(Get-WindowsSdkVersions)
+    $newest = $sdkVersions[-1]
+    Write-Pin 'Windows SDK' ($newest -ge $WindowsSdkMinimum) $sdkExpected "$newest. Installed: $($sdkVersions -join ', ')"
 }
-else {
-    $sdkVersions = @(Get-ChildItem -LiteralPath $sdkFolder -Directory | ForEach-Object { $_.Name } | Where-Object { $_ -match '^\d+\.\d+\.\d+\.\d+$' } | ForEach-Object { [version]$_ } | Sort-Object)
-    if ($sdkVersions.Count -eq 0) {
-        Write-Pin 'Windows SDK' $false $sdkExpected "no version folder in '$sdkFolder'"
-    }
-    else {
-        $newest = $sdkVersions[-1]
-        Write-Pin 'Windows SDK' ($newest -ge $WindowsSdkMinimum) $sdkExpected "$newest. Installed: $($sdkVersions -join ', ')"
-    }
+catch {
+    Write-Pin 'Windows SDK' $false $sdkExpected $_.Exception.Message
 }
 
 # Unreal Engine (D-28). The variable names the folder that holds Engine (D-79).
 $engineExpected = "$EnginePin (D-28)"
-$engineFolder = [System.Environment]::GetEnvironmentVariable($EngineVariable)
-if (-not $engineFolder) {
-    Write-Pin 'Unreal Engine' $false $engineExpected "no engine: the variable $EngineVariable is not set (D-79)"
+try {
+    $engine = Get-EngineVersion ([System.Environment]::GetEnvironmentVariable($EngineVariable))
+    $advice = ''
+    if ($engine -ne $EnginePin) {
+        $advice = 'Each hotfix upgrade is its own PR with build evidence (D-28).'
+    }
+    Write-Pin 'Unreal Engine' ($engine -eq $EnginePin) $engineExpected $engine $advice
 }
-else {
-    $buildVersion = Join-Path $engineFolder 'Engine\Build\Build.version'
-    if (-not (Test-Path -LiteralPath $buildVersion)) {
-        Write-Pin 'Unreal Engine' $false $engineExpected "no engine: no file '$buildVersion'. $EngineVariable names the folder that holds 'Engine'"
-    }
-    else {
-        $build = Get-Content -LiteralPath $buildVersion -Raw | ConvertFrom-Json
-        $engine = "$($build.MajorVersion).$($build.MinorVersion).$($build.PatchVersion)"
-        $advice = ''
-        if ($engine -ne $EnginePin) {
-            $advice = 'Each hotfix upgrade is its own PR with build evidence (D-28).'
-        }
-        Write-Pin 'Unreal Engine' ($engine -eq $EnginePin) $engineExpected $engine $advice
-    }
+catch {
+    Write-Pin 'Unreal Engine' $false $engineExpected $_.Exception.Message
 }
 
 # Git LFS (D-30). No decision pins its version.

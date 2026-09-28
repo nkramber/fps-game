@@ -133,9 +133,9 @@ Owner, during PR-8 (D-78). No PR.
 6. The test command fails with the path when the test report is absent (T-2).
 7. A fresh clone restores the test map from LFS, and the map file is not an LFS pointer.
 8. After the first editor build, the engine cache is on the volume. The internal disk holds no cache data (D-83, F-4).
-8. The hosted tests pass for the LFS attributes, the plugin list, and the ignore rules.
-9. M-1 has a value: the peak memory of the editor on the Mac with the test map open (F-5).
-10. M-2 has a value for the clean build of the editor target on both platforms.
+9. The hosted tests pass for the LFS attributes, the plugin list, and the ignore rules.
+10. M-1 has a value: the peak memory of the editor on the Mac with the test map open (F-5).
+11. M-2 has a value for the clean build of the editor target on both platforms.
 
 **Review focus.** The C++ against the Epic coding standard (D-34), and the pass rule of the test command. Also the LFS and ignore rules (D-9, D-30), and the Windows scripts (D-72).
 

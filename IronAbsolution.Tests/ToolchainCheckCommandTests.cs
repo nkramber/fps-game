@@ -149,7 +149,7 @@ public sealed class ToolchainCheckCommandTests : IDisposable
 
         Assert.Contains($"$EngineVariable = '{ToolchainPins.EngineVariable}'", script, StringComparison.Ordinal);
         Assert.Contains($"$EnginePin = '{ToolchainPins.Engine}'", script, StringComparison.Ordinal);
-        Assert.Contains("Engine\\Build\\Build.version", script, StringComparison.Ordinal);
+        Assert.Contains("Join-Path (Join-Path (Join-Path $EngineFolder 'Engine') 'Build') 'Build.version'", script, StringComparison.Ordinal);
         Assert.Equal(ToolchainPins.BuildVersionPath, "Engine/Build/Build.version");
     }
 

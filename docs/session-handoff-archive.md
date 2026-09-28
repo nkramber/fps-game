@@ -2,6 +2,40 @@
 
 This file holds the entries that the rotation moves out of `docs/session-handoff.md`, newest first.
 
+## Session 22: 2026-09-27, Codex
+
+Author: Codex
+Session: reviewer PR-6, round 2. Repository: iron-absolution. Branch: `feat/pr-5-main-ruleset`. PR: #6. Role: reviewer. Base: `f5e9514ebae89c1a5a6a189a8213f2b44f9d1bf5`.
+
+### What this session did, and why
+
+- Re-reviewed PR-5 at effective head `1fe466b`. The review found that the new D-61 test fixes P2-1.
+- Updated `docs/reviews/pr-6.md` with the round-two result and preserved the earlier verdict.
+
+### The state of the build
+
+- `make` passes: 288 tests, clean format, and 0 findings from ste-check.
+- All four hosted checks pass on the PR branch. The effective work head is `1fe466b`.
+- The review record and this handoff entry are in one metadata commit on the PR branch.
+- The live ruleset does not exist yet. The author session must apply it and compare it with the PR file before merge (D-63).
+
+### What is in flight
+
+- The PR awaits the live ruleset comparison and the merge gate.
+
+### Traps and gotchas
+
+- The ruleset test keeps the four checks of D-61 as a subset. Roadmap PR-6 adds `review-gate`.
+- The review approves the effective work head. Later work changes need a new review.
+
+### The questions that block progress
+
+- None. OQ-16 still holds gitar under D-7.
+
+### The next concrete action
+
+- Apply the live ruleset from the PR head and run the comparison in `docs/runbooks/main-ruleset.md` (exit test 2, D-63).
+
 ## Session 21: 2026-09-27, Claude Code
 
 Author: Claude Code
