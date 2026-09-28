@@ -1,3 +1,38 @@
+## Session 47: 2026-09-28, Codex
+
+Author: Codex
+Session: reviewer PR-14, round 2. Repository: iron-absolution. Branch: `feat/pr-14-windows-engine-commands`. PR: #14. Role: reviewer. Base: `0351bbba52a4fddd91b559ad7ace9f1bb020b2f0`.
+
+### What this session did, and why
+
+- The review checked the response to round 1, D-107, and the final effective head, `aed74bb`.
+- The provider gate passed. The review found no defect in scope.
+- The local verification passed. The hosted test rerun passed after one test failed in the first attempt.
+
+### The state of the build
+
+- `run.ps1 verify` passed with 538 tests, no skips, format, and ste-check.
+- The hosted build, test, and format, coverage, doc-gate, and ste-check jobs passed. `review-gate` awaits this record.
+- The work head is `aed74bb2c76d0840a555772b86f82696d175c59f`. The remote head before this metadata commit is `efcf922d9034dea504f415bce68a269051439219`.
+- This review record and handoff entry are pending push as one metadata commit.
+
+### What is in flight
+
+- The review approves effective head `aed74bb`. The PR is ready for the owner merge step after the checks read this record.
+
+### Traps and gotchas
+
+- The first hosted attempt had one failed test. The rerun passed, and local verification passed.
+- `review/pr-14` has no upstream. Check the remote head with `gh pr view` after the push.
+
+### The questions that block progress
+
+- None. OQ-16 still holds the separate gitar pass (D-7).
+
+### The next concrete action
+
+- Push this metadata commit, check the remote head and `review-gate`, then give the owner the merge summary.
+
 ## Session 46: 2026-09-28, Claude Code
 
 Author: Claude Code
@@ -321,34 +356,3 @@ Session: author PR-10, round 1. Repository: iron-absolution. Branch: `feat/pr-10
   1. "We will ONLY support Windows, not Mac." This supersedes the macOS part of D-32.
   2. The engine work moves to the Windows PC, and the sessions run there. This reverses D-55 and revises D-33 in part.
 - That PR takes the id PR-12, and it comes before PR-11. It plans the change first. The Mac pins, the Mac targets, and the Mac M-9 of PR-11 change.
-
-## Session 37: 2026-09-28, Claude Code
-
-Author: Claude Code
-Session: author PR-9, merge. Repository: iron-absolution. Branch: `feat/pr-9-project-scaffold`. PR: #10. Role: author. Base: `830bf40cd47f8f707d060a894017c29bff446566`.
-
-### What this session did, and why
-
-- Round 1 of the review gave `Ready for owner merge` for the effective head `124e1ae1e449af46cceaadc475a17f3510b9b669`, with no finding.
-- The record notes a blank line at the end of `Game/Config/DefaultInput.ini`, from the template of Epic. No check reads it, so the file stays.
-
-### The state of the build
-
-- `make` passes on the Mac: 494 tests, a clean format, and 0 findings. CI ran the PowerShell tests.
-- The remote head is the commit of this entry. The state is pending merge.
-
-### What is in flight
-
-- The owner confirms the squash merge after the merge summary. Then auto-merge runs (D-67).
-
-### Traps and gotchas
-
-- This entry is a metadata commit, so the approval of `124e1ae` stands (D-14).
-
-### The questions that block progress
-
-- None. OQ-16 still holds gitar (D-7).
-
-### The next concrete action
-
-- After the merge, write the transitional prompt of PR-10, the packaged build. Work from the clone on the `IronAbsolution` volume (D-81).
