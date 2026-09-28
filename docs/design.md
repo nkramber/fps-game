@@ -11,6 +11,7 @@ Status: the owner accepts it on the condition of D-27. Written in ASD-STE100 (D-
 - 2026-09-27 fourth pass: the owner resolved the divergences of the PR-3 port (D-46 to D-53). D-53 corrects exit test 3 of PR-3. D-55 scopes G-12 to the game.
 - 2026-09-27 fifth pass: the owner resolved the divergences of the PR-4 port (D-56 to D-59).
 - 2026-09-27 sixth pass: PR-7 adds the focused roadmap of phase 1 (D-69 to D-75). The engine install now comes after PR-8, because section 8 put it before its runbook (F-19, D-69). The author session now adds the `review-override` label (D-76, F-20).
+- 2026-09-27 seventh pass: PR-8 adds the engine toolchain (D-78 to D-82). The owner installs the engine during PR-8 (D-78). The project SSD is case-sensitive, so the engine gets a case-insensitive volume (F-21, D-81).
 
 ## 1. Thesis
 
@@ -110,7 +111,9 @@ Status legend:
 | F-17 | 2026-09-27 | Unreal cannot build Windows packages on the Mac. Windows builds need the Windows PC of the owner. | D-33 | ⚠ binds phase 1 |
 | F-18 | 2026-09-27 | The time rule of the `review-override` label reads the committer time of the work head. The commit author sets that time, so a backdated commit after the label passes. | Review P2-1 of PR #7, reproduced with a backdated commit | ⚠ accepted risk (D-68). The rule stops an accident, not an attack (F-9). |
 | F-19 | 2026-09-27 | Section 8 put the engine install (step 9) before the setup runbook of phase 1, which guides that install. On that date the Mac had no engine, no Xcode app, and no Git LFS. | Section 8, the work of phase 1, `xcode-select -p` and `git lfs version` on the Mac | ✅ doc. The install comes after PR-8 (D-69). |
-| F-20 | 2026-09-27 | D-76 lets the author session add the `review-override` label. The messages of `review-gate` and `make codex-review`, their test, and the description of the live label still say that the owner adds it. | `ReviewGateRules.cs`, `StartChecks.cs`, `ReviewGateCommandTests.cs`, and the label on GitHub | ⚠ binds PR-8 (D-77) |
+| F-20 | 2026-09-27 | D-76 lets the author session add the `review-override` label. The messages of `review-gate` and `make codex-review`, their test, and the description of the live label still say that the owner adds it. | `ReviewGateRules.cs`, `StartChecks.cs`, `ReviewGateCommandTests.cs`, and the label on GitHub | ✅ done in PR-8 (D-77, D-82) |
+| F-21 | 2026-09-27 | The project SSD is case-sensitive APFS. Unreal Engine does not start from a case-sensitive file system on macOS. | `diskutil info /Volumes/SSD-1TB`, [Epic forum](https://forums.unrealengine.com/t/help-epic-games-launcher-unreal-engine-does-not-support-running-from-case-sensitive-file-systems/2021754) | ✅ doc. A case-insensitive volume on the SSD holds the engine (D-81). |
+| F-22 | 2026-09-27 | The first Windows check read the name of each MSVC toolset folder. UnrealBuildTool reads the product version of `cl.exe`, and a servicing update keeps the folder name. The check failed a good toolset: the folder 14.50.35717 held `cl.exe` 14.50.35739. | The run of the owner in PR-8, `MicrosoftPlatformSDK.cs` of 5.8.3 | ✅ done in PR-8. The check reads `cl.exe` (D-74). |
 
 ## 6. Guardrails (the safety contract for every PR)
 
@@ -252,7 +255,7 @@ When the owner confirms that gitar works here, one PR ports the gitar-wait scrip
 ### Phase 1: Engine and toolchain proof (gate: a clean clone builds, packages, and runs one headless test on macOS and on Windows, M-1, M-2, and a first M-9 recorded)
 
 - Objective: prove the engine, the toolchain, the source control, and the tests on the Mac and on the Windows PC before any game code.
-- Dependencies: phase 0. The owner answered each engine question: D-24, D-28 to D-34, and D-39. The owner installs Unreal Engine 5.8 and Xcode 26.1.1 on the SSD, and Unreal Engine 5.8 on the Windows PC. Correction of 2026-09-27: the install comes after PR-8, from its runbook (D-69).
+- Dependencies: phase 0. The owner answered each engine question: D-24, D-28 to D-34, and D-39. The owner installs Unreal Engine 5.8 and Xcode 26.1.1 on the SSD, and Unreal Engine 5.8 on the Windows PC. Correction of 2026-09-27: the install comes after PR-8, from its runbook (D-69). Second correction of 2026-09-27: the install comes during PR-8, on a case-insensitive volume of the SSD (D-78, D-81, F-21).
 - Work: a setup runbook for both machines, with the owner actions marked. The minimal C++ project `IronAbsolution`, with one module and Enhanced Input. An empty test map. LFS attributes. Scripts for the headless automation test and the package on both platforms. The Windows commands that the owner runs (D-33). An evidence template for engine PRs (D-31). Unreal best practices apply (D-34).
 - Focused roadmap: `docs/roadmaps/phase-1-engine-proof.md` holds PR-8 to PR-11 and the gate (D-71). PR-7 adds it. Status: ✅ done in PR #8.
 - Exit evidence: a clean clone builds the editor target and a packaged Development build on each platform. The owner posts the Windows logs. Each package starts and stops from the command line. One automation test passes headless, with its log. A fresh clone restores LFS content. M-1 and M-2 have values. A first TSR test at 4K output on the Mac gives a first value of M-9. The project records its World Partition choice with a reason (D-4).
@@ -352,7 +355,7 @@ After that, each phase gets a focused roadmap just before it starts. `docs/roadm
 7. PR-6: review gate and auto-merge. After the merge, `review-gate` joins the live ruleset, and the owner turns on auto-merge (D-67).
 8. Gate of phase 0.
 9. PR-7: the focused roadmap of phase 1. Its PR ids continue after PR-6.
-10. PR-8: the engine toolchain. Then the owner installs the engine and Xcode on the Mac, and the engine on the Windows PC (D-28, D-33). Correction of 2026-09-27: the install was step 9, before its runbook (F-19, D-69).
+10. PR-8: the engine toolchain. Then the owner installs the engine and Xcode on the Mac, and the engine on the Windows PC (D-28, D-33). Correction of 2026-09-27: the install was step 9, before its runbook (F-19, D-69). Second correction of 2026-09-27: the owner installs during PR-8, before its merge (D-78).
 11. PR-9 to PR-11 in the order of section 8 of the phase file. Phase 2 starts beside phase 1. The owner picks for OQ-9 and OQ-10, then answers OQ-12.
 12. Gate of phase 1, then gate of phase 2.
 13. Phase 3, then its gate. Phase 5 starts beside it.

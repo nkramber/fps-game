@@ -76,6 +76,10 @@ public sealed class StartChecksTests
         Assert.Contains("D-49", problem, StringComparison.Ordinal);
         Assert.Contains("merges through the review-override label", problem, StringComparison.Ordinal);
         Assert.Contains("D-66", problem, StringComparison.Ordinal);
+
+        // D-76: the author session adds the label, and the problem does not send the author to the owner (F-20).
+        Assert.Contains("The author session adds it after the last commit outside the metadata set (D-66, D-76).", problem, StringComparison.Ordinal);
+        Assert.DoesNotContain("owner", problem, StringComparison.Ordinal);
     }
 
     [Fact]

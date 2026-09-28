@@ -6,6 +6,7 @@ using IronAbsolution.Tools.DocGate;
 using IronAbsolution.Tools.HandoffRotate;
 using IronAbsolution.Tools.ReviewGate;
 using IronAbsolution.Tools.SteCheck;
+using IronAbsolution.Tools.ToolchainCheck;
 
 namespace IronAbsolution.Tools;
 
@@ -16,8 +17,8 @@ public static class Program
     public const int FaultExitCode = 1;
 
     /// <summary>
-    /// The commands that no PR has written yet, and the PR that adds each one (G-8). PR-6 wrote
-    /// the last planned command of phase 0, so the list is empty until a roadmap plans another.
+    /// The commands that no PR has written yet, and the PR that adds each one (G-8). PR-8 wrote
+    /// the one planned command of phase 1, so the list is empty until a roadmap plans another.
     /// </summary>
     public static readonly IReadOnlyDictionary<string, string> PlannedCommands =
         new SortedDictionary<string, string>(StringComparer.Ordinal);
@@ -74,6 +75,11 @@ public static class Program
             return ReviewGateCommand.Run(args[1..], output, errors);
         }
 
+        if (command == ToolchainCheckCommand.Name)
+        {
+            return ToolchainCheckCommand.Run(args[1..], output, errors);
+        }
+
         if (PlannedCommands.TryGetValue(command, out string? pullRequest))
         {
             errors.WriteLine(
@@ -94,6 +100,7 @@ public static class Program
         errors.WriteLine($"  {DocGateCommand.Name}: ready");
         errors.WriteLine($"  {HandoffRotateCommand.Name}: ready");
         errors.WriteLine($"  {ReviewGateCommand.Name}: ready");
+        errors.WriteLine($"  {ToolchainCheckCommand.Name}: ready");
         if (PlannedCommands.Count == 0)
         {
             errors.WriteLine("The planned commands: none.");

@@ -32,7 +32,8 @@ public sealed class ReviewGateCommandTests : IDisposable
         (int exitCode, string output, string errors) = this.Run(head, NoLabels);
 
         Assert.Equal(Program.FaultExitCode, exitCode);
-        Assert.Contains("review-gate: Found: no record.", output, StringComparison.Ordinal);
+        Assert.Contains("review-gate: Found: no record. Run `make codex-review`, or the author session adds the label for a PR with no code (D-76).", output, StringComparison.Ordinal);
+        Assert.DoesNotContain("owner adds", output, StringComparison.Ordinal);
         Assert.Contains($"review-gate: fail for PR #7 at {head}, the review gate fails.", output, StringComparison.Ordinal);
         Assert.Empty(errors);
     }
@@ -92,7 +93,9 @@ public sealed class ReviewGateCommandTests : IDisposable
         (int exitCode, string output, _) = this.Run(head, NoLabels);
 
         Assert.Equal(Program.FaultExitCode, exitCode);
-        Assert.Contains("The owner adds the label 'review-override' to such a PR.", output, StringComparison.Ordinal);
+        // D-76: the author session adds the label, and no message says that the owner adds it (F-20).
+        Assert.Contains("The author session adds the label 'review-override' to such a PR after the last commit outside the metadata set (D-76).", output, StringComparison.Ordinal);
+        Assert.DoesNotContain("owner adds", output, StringComparison.Ordinal);
     }
 
     [Fact]

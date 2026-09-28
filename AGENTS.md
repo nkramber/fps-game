@@ -153,6 +153,7 @@ The Makefile is the entry point (D-41). Run each target from the checkout root.
 - `make handoff-rotate`: move each handoff entry after the tenth to the archive, and print the next session number (D-58, D-59).
 - `make hooks`: install the pre-commit hook in this checkout, one time (D-43).
 - `make codex-review PR=<n>`: the cross-provider review of one PR. The exit codes are 0 approve, 10 changes, 11 three-strike stop, 3 refused start, and 1 fault (D-14).
+- `make toolchain-check`: the pins of the Mac toolchain: Xcode, the engine, and Git LFS (D-28, D-79). `docs/runbooks/engine-setup.md` gives the install.
 
 The CI of each PR runs the `ste-check`, `build, test, and format`, and `coverage report` jobs (D-42, D-45). The `doc-gate` workflow runs on each push and on each edit of the description (D-56). The `review-gate` workflow runs from the base branch on each push and on each label change (D-64). The ruleset of `main` requires these five checks (D-61, D-64). `docs/runbooks/main-ruleset.md` gives its steps.
 

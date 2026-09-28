@@ -1,3 +1,177 @@
+## Session 34: 2026-09-27, Claude Code
+
+Author: Claude Code
+Session: author PR-8, merge. Repository: iron-absolution. Branch: `feat/pr-8-engine-toolchain`. PR: #9. Role: author. Base: `2133abdbd714b3ba2dddf916adc1aef2b693a120`.
+
+### What this session did, and why
+
+- Round 2 of the review gave `Ready for owner merge` for the effective head `bc930a946d214c805ac5eefc77a31d4599fc5625`, with no open finding.
+- The five required checks are green on `743e61d`, `review-gate` included. No review thread is open.
+
+### The state of the build
+
+- `make` passes on the Mac: 405 tests, with 7 skipped where PowerShell is absent. CI ran 405 of 405 with none skipped.
+- The remote head is the commit of this entry. The state is pending merge.
+
+### What is in flight
+
+- The owner confirms the squash merge after the merge summary. Then auto-merge runs (D-67).
+
+### Traps and gotchas
+
+- This entry is a metadata commit, so the approval of `bc930a9` stands (D-14).
+
+### The questions that block progress
+
+- None. OQ-16 still holds gitar (D-7).
+
+### The next concrete action
+
+- After the merge, write the transitional prompt of PR-9. Work from the clone on the `IronAbsolution` volume (D-81). Set the cache path at the first editor start (D-83).
+
+## Session 33: 2026-09-27, Codex
+
+Author: Codex
+Session: reviewer PR-8, round 2. Repository: iron-absolution. Branch: `feat/pr-8-engine-toolchain`. PR: #9. Role: reviewer. Base: `2133abdbd714b3ba2dddf916adc1aef2b693a120`.
+
+### What this session did, and why
+
+- Reviewed the author response and the changes since the first review.
+- Verified both findings as fixed in `bc930a9`. The script tests cover malformed and absent engine version files. The PR-9 exit tests use unique numbers 1 to 11.
+- Updated `docs/reviews/pr-9.md` for effective head `bc930a946d214c805ac5eefc77a31d4599fc5625`.
+
+### The state of the build
+
+- `make` passed with portable PowerShell: 405 tests, no skips, clean format, and 0 findings of ste-check.
+- The remote head is the metadata commit of this entry. PR #9 is pending merge. The fresh `review-gate` result needs verification.
+
+### What is in flight
+
+- Read `gh pr checks 9` after the metadata push. Confirm that `review-gate` passes for this record.
+- The owner confirms the squash merge after the merge summary.
+
+### Traps and gotchas
+
+- The owner posted the Windows pin results in the PR comment. The Windows run remains owner-reported evidence.
+- The cache-path exit test belongs to PR-9 (D-83). OQ-16 keeps gitar outside this review (D-7).
+
+### The questions that block progress
+
+- None. OQ-16 still holds gitar (D-7).
+
+### The next concrete action
+
+- Verify the published checks, then give the owner the merge summary if all required checks pass.
+
+## Session 32: 2026-09-27, Claude Code
+
+Author: Claude Code
+Session: author PR-8, round 2. Repository: iron-absolution. Branch: `feat/pr-8-engine-toolchain`. PR: #9. Role: author. Base: `2133abdbd714b3ba2dddf916adc1aef2b693a120`.
+
+### What this session did, and why
+
+- Answered round 1 of the review in `docs/reviews/pr-9-response.md`. Both findings have full merit.
+- P2-1: each source of `scripts/toolchain-check.ps1` now fails its own pin, and the script reports each later pin and the total (T-2). The Visual Studio block had the same fault, so the correction covers it.
+- P2-2: the exit tests of PR-9 read 1 to 11. Exit test 8 stays the cache test (D-83).
+- New `ToolchainScriptTests` runs the script under PowerShell. All 7 cases fail on the script of `d57ed33` and pass on the new script.
+
+### The state of the build
+
+- `make` passes on the Mac: 405 tests, with 7 skipped where PowerShell is absent, a clean format, and 0 findings of ste-check. With a portable PowerShell on the path, 405 of 405 pass.
+- The remote head is the commit of this entry. The state is pending merge.
+
+### What is in flight
+
+- Round 2 of `make codex-review PR=9` runs after the checks are green (D-14).
+- The owner confirms the squash merge after the merge summary.
+
+### Traps and gotchas
+
+- The Mac has no PowerShell. A portable PowerShell from the release archive in the scratch folder runs the script tests without an install.
+- `Join-Path` with a backslash path names one file on Linux. Join each part of a path that a test also reads on the runner.
+- One PR comment (the evidence of exit tests 1 and 4). No review thread.
+
+### The questions that block progress
+
+- None. OQ-16 still holds gitar (D-7).
+
+### The next concrete action
+
+- After the merge, write the transitional prompt of PR-9. Work from the clone on the `IronAbsolution` volume (D-81). Set the cache path at the first editor start (D-83).
+
+## Session 31: 2026-09-27, Codex
+
+Author: Codex
+Session: reviewer PR-8, round 1. Repository: iron-absolution. Branch: `feat/pr-8-engine-toolchain`. PR: #9. Role: reviewer. Base: `2133abdbd714b3ba2dddf916adc1aef2b693a120`.
+
+### What this session did, and why
+
+- Reviewed the complete PR-8 diff at effective head `d57ed3312cb3479166ab48858287cdd862443cc2`.
+- Added `docs/reviews/pr-9.md` with two findings: invalid Windows engine version data stops the report, and two PR-9 exit tests share number 8.
+- `make` passed on macOS: 398 tests, clean format, and 0 findings of ste-check.
+
+### The state of the build
+
+- The effective head is `d57ed3312cb3479166ab48858287cdd862443cc2`. The PR tip before the review commit is `223269d7a640a3724c3ab338b7158d0ec6e02d72`.
+- The review metadata commit is the remote head of this entry. The verdict is Changes required.
+
+### What is in flight
+
+- The author answers P2-1 and P2-2 in `docs/reviews/pr-9.md`.
+- The `review-gate` check must read the published record. It fails for the open findings.
+
+### Traps and gotchas
+
+- The Windows script could not run here because this Mac has no PowerShell runtime. The owner posted the Windows result in the PR comment.
+- The cache-path exit test belongs to PR-9 (D-83).
+- OQ-16 keeps gitar outside this review (D-7).
+
+### The questions that block progress
+
+- None. The findings need code and roadmap corrections, not an owner decision.
+
+### The next concrete action
+
+- The author corrects the findings, adds regression evidence, and requests the next review round.
+
+## Session 30: 2026-09-27, Claude Code
+
+Author: Claude Code
+Session: author PR-8, round 1. Repository: iron-absolution. Branch: `feat/pr-8-engine-toolchain`. PR: #9. Role: author. Base: `2133abdbd714b3ba2dddf916adc1aef2b693a120`.
+
+### What this session did, and why
+
+- Added `toolchain-check` for the Mac (`make toolchain-check`) and `scripts/toolchain-check.ps1` for the Windows PC (D-28, D-72, D-74). Each line names the pin, the expected value, and the found value (T-2).
+- Added `docs/runbooks/engine-setup.md` and the `## Evidence` section of the PR template (D-80).
+- The label text of `review-gate`, `make codex-review`, their tests, and the template follows D-76. The session changed the live label on the instruction of the owner (D-77, D-82).
+- The owner answered six questions: D-78 to D-83. The owner installed during PR-8 (D-78). The SSD is case-sensitive, so a new volume `IronAbsolution` holds the engine, Xcode, the cache, and a clone (F-21, D-81).
+- Exit test 1 passed on the Mac: 3 of 3 pins. Exit test 4 passed on the Windows PC: 5 of 5 pins. The Windows run first failed a good toolset, because the script read the folder name (F-22). The script now reads `cl.exe`.
+
+### The state of the build
+
+- `make` passes on the Mac: 398 tests, a clean format, and 0 findings of ste-check.
+- The remote head is the commit of this entry. The state is pending merge.
+
+### What is in flight
+
+- The Codex review of PR #9 runs after the push (D-14).
+- The owner confirms the squash merge after the merge summary.
+
+### Traps and gotchas
+
+- The launcher picker lists `5.8.0`, and it installs the newest hotfix. It also upgrades the hotfix without a question (D-28).
+- On an external volume, `xip` can leave `Xcode.app` in a folder with a UUID name.
+- VS 2026 18.6 and later default to MSVC 14.51. Unreal 5.8 prefers 14.50 and bans a `cl.exe` before 14.50.35723 (`Windows_SDK.json` of the engine).
+- The Zen cache goes to the internal disk until the owner sets the editor setting in PR-9 (D-83).
+
+### The questions that block progress
+
+- None. OQ-16 still holds gitar (D-7).
+
+### The next concrete action
+
+- After the merge, write the transitional prompt of PR-9. Work from the clone `/Volumes/IronAbsolution/iron-absolution` (D-81). The first action of PR-9 is exit test 8 setup: the cache path at the first editor start (D-83).
+
 ## Session 29: 2026-09-27, Claude Code
 
 Author: Claude Code
@@ -176,181 +350,3 @@ Session: reviewer PR-6, round 1. Repository: iron-absolution. Branch: `feat/pr-6
 ### The next concrete action
 
 - The author corrects P2-1 and adds a regression test for a backdated document commit.
-
-## Session 24: 2026-09-27, Claude Code
-
-Author: Claude Code
-Session: author PR-6, round 1. Repository: iron-absolution. Branch: `feat/pr-6-review-gate`. PR: #7. Role: author. Base: `5871f2c870d5eb110eccbadd67c5f633c5619155`.
-
-### What this session did, and why
-
-- The exit tests of PR-5 passed on `main` first: `make` gave 288 tests, a clean format, and 0 findings. The comparison of the live ruleset gave an empty diff.
-- The owner answered four divergences of the port (D-64 to D-67). The job is the check, with no mode file. The label rules of what-you-carry apply. A PR of documents alone merges through the label alone. The live ruleset takes `review-gate` after the merge.
-- The `review-gate` command reads the record at the PR head through git, and the label facts from a JSON file. It reuses `ReviewRecord`, `ReviewHeads`, and `GitRepository`.
-- The workflow runs on `pull_request_target` from the base, with read rights alone, and fetches the head as data. The job shell has pipefail (T-2).
-- The ruleset file requires `review-gate`. The agent files, the skills, the runbooks, and the design doc now describe the live gate and auto-merge.
-
-### The state of the build
-
-- `make` passes on the Mac: 363 tests, a clean format, and 0 findings of ste-check.
-- The remote head is the commit of this entry. The state is pending review.
-- The live ruleset still requires four checks. PR #7 gets no `review-gate` check, because GitHub runs that workflow only from `main` (D-67).
-
-### What is in flight
-
-- Round 1 of `make codex-review PR=7`.
-
-### Traps and gotchas
-
-- A run step with no shell starts `bash -e` with no pipefail. The review-gate job sets `shell: bash` for each step.
-- The label `review-override` does not exist yet, and auto-merge is off. Both are owner steps of `docs/runbooks/main-ruleset.md`.
-- The fixture commits all have the time 2026-09-27T10:00:00Z. The label tests put the label one hour before or after it.
-
-### The questions that block progress
-
-- None. OQ-16 still holds gitar (D-7).
-
-### The next concrete action
-
-- After the approval, ask the owner to confirm the merge. Auto-merge is off, so merge with `gh pr merge 7 --squash`.
-- After the merge, on the explicit instruction of the owner, update the live ruleset from `main`, and run the comparison (D-67).
-
-## Session 23: 2026-09-27, Claude Code
-
-Author: Claude Code
-Session: author PR-5, merge. Repository: iron-absolution. Branch: `feat/pr-5-main-ruleset`. PR: #6. Role: author. Base: `f5e9514ebae89c1a5a6a189a8213f2b44f9d1bf5`.
-
-### What this session did, and why
-
-- Review round 2 approved the effective head `1fe466b` with the verdict `Ready for owner merge`. The two rounds used the exit codes 10 and 0.
-- On the instruction of the owner, the session created the live ruleset of `main` from the file of the PR head (D-63). The ruleset id is 24080063, with the enforcement `active`.
-- Exit test 2 passed: the comparison of `docs/runbooks/main-ruleset.md` gave an empty diff. PR #6 then read `CLEAN` and `MERGEABLE` under the live ruleset.
-
-### The state of the build
-
-- The effective head is `1fe466b`. `make` passes on the Mac: 288 tests, a clean format, and 0 findings of ste-check.
-- The remote head is the commit of this entry. The state is pending merge.
-- The live ruleset of `main` requires `ste-check`, `build, test, and format`, `coverage report`, and `doc-gate` (D-61).
-
-### What is in flight
-
-- The owner confirms the squash merge of PR #6. PR-5 merges under its own ruleset.
-
-### Traps and gotchas
-
-- A renamed or removed required job blocks every merge until the live ruleset changes. The runbook gives the order.
-- PR-6 must plan when `review-gate` joins the live ruleset, because a required check that never reports blocks the merge.
-- No session merges with `gh pr merge --admin` (D-60).
-
-### The questions that block progress
-
-- None. OQ-16 still holds gitar (D-7).
-
-### The next concrete action
-
-- After the merge, write the transitional prompt of PR-6.
-- For a fresh session: the session number check of `ste-check` reads a heading number with `int.Parse`, so a number too large for an int stops the check with no context (T-2).
-
-## Session 22: 2026-09-27, Codex
-
-Author: Codex
-Session: reviewer PR-6, round 2. Repository: iron-absolution. Branch: `feat/pr-5-main-ruleset`. PR: #6. Role: reviewer. Base: `f5e9514ebae89c1a5a6a189a8213f2b44f9d1bf5`.
-
-### What this session did, and why
-
-- Re-reviewed PR-5 at effective head `1fe466b`. The review found that the new D-61 test fixes P2-1.
-- Updated `docs/reviews/pr-6.md` with the round-two result and preserved the earlier verdict.
-
-### The state of the build
-
-- `make` passes: 288 tests, clean format, and 0 findings from ste-check.
-- All four hosted checks pass on the PR branch. The effective work head is `1fe466b`.
-- The review record and this handoff entry are in one metadata commit on the PR branch.
-- The live ruleset does not exist yet. The author session must apply it and compare it with the PR file before merge (D-63).
-
-### What is in flight
-
-- The PR awaits the live ruleset comparison and the merge gate.
-
-### Traps and gotchas
-
-- The ruleset test keeps the four checks of D-61 as a subset. Roadmap PR-6 adds `review-gate`.
-- The review approves the effective work head. Later work changes need a new review.
-
-### The questions that block progress
-
-- None. OQ-16 still holds gitar under D-7.
-
-### The next concrete action
-
-- Apply the live ruleset from the PR head and run the comparison in `docs/runbooks/main-ruleset.md` (exit test 2, D-63).
-
-## Session 21: 2026-09-27, Claude Code
-
-Author: Claude Code
-Session: author PR-5, round 2. Repository: iron-absolution. Branch: `feat/pr-5-main-ruleset`. PR: #6. Role: author. Base: `f5e9514ebae89c1a5a6a189a8213f2b44f9d1bf5`.
-
-### What this session did, and why
-
-- Review round 1 gave `Changes required` with the exit code 10. P2-1: no test held the four checks of D-61, so a check could leave the file and its workflow together.
-- The trigger reproduced. `1fe466b` adds `TheRulesetRequiresEachCheckOfTheDecision`, which holds the four names as a subset. `docs/reviews/pr-6-response.md` records the answer.
-
-### The state of the build
-
-- The effective head is `1fe466b`. `make` passes on the Mac: 288 tests, a clean format, and 0 findings of ste-check.
-- The remote head is the commit of this entry. The state is pending merge.
-- No live ruleset exists yet. `main` has no branch protection.
-
-### What is in flight
-
-- The review round 2 of `make codex-review PR=6`.
-- After an approval and green checks, the session applies the live ruleset from the PR head and runs the comparison of `docs/runbooks/main-ruleset.md` (exit test 2, D-63).
-
-### Traps and gotchas
-
-- The ruleset requires the four checks by name. A renamed or removed job blocks every merge until the live ruleset changes.
-- A required check that no workflow of `main` has yet can block the PR that adds it. PR-6 must plan the order of `review-gate`.
-
-### The questions that block progress
-
-- None. OQ-16 still holds gitar (D-7).
-
-### The next concrete action
-
-- Run `make codex-review PR=6` after the checks are green.
-- For a fresh session: the session number check of `ste-check` reads a heading number with `int.Parse`, so a number too large for an int stops the check with no context (T-2).
-
-## Session 20: 2026-09-27, Codex
-
-Author: Codex
-Session: reviewer PR-5, round 1. Repository: iron-absolution. Branch: `feat/pr-5-main-ruleset`. PR: #6. Role: reviewer. Base: `f5e9514ebae89c1a5a6a189a8213f2b44f9d1bf5`.
-
-### What this session did, and why
-
-- Reviewed the ruleset, its tests, the setup runbook, and the related documents.
-- Found that the tests allow one of the four required checks and its matching job to disappear together.
-- Wrote `docs/reviews/pr-6.md` with verdict `Changes required` for effective head `2d0f013`.
-
-### The state of the build
-
-- `make` passes on the Mac: 287 tests, a clean format, and 0 findings of ste-check.
-- The four hosted checks pass on PR head `2d0f013`.
-- The pushed metadata commit will be the remote head. The PR work head remains `2d0f013`.
-
-### What is in flight
-
-- P2-1 needs a test that fixes the four check names of D-61.
-- The live ruleset does not exist yet. D-63 assigns its setup and comparison to the author session after review approval and before merge.
-
-### Traps and gotchas
-
-- Ruleset tests currently derive their expected checks from the ruleset file and workflows.
-- OQ-16 keeps the gitar pass out of this PR under D-7.
-
-### The questions that block progress
-
-- None. OQ-16 still holds the gitar pass.
-
-### The next concrete action
-
-- The author fixes P2-1, runs its regression check, and starts the next review round.

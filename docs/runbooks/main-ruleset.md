@@ -87,7 +87,7 @@ Steps 5 and 6 change the repository, so the owner does them, or a session on the
 
 ```
 repo=$(gh repo view --json nameWithOwner --jq .nameWithOwner)
-gh label create review-override --repo "$repo" --color B60205 --description "Owner only: a PR with no code merges with no review record (D-35)"
+gh label create review-override --repo "$repo" --color B60205 --description "A PR with no code merges with no review record. The author session adds it (D-35, D-76)"
 gh api --method PATCH "repos/$repo" -F allow_auto_merge=true --jq '{allow_auto_merge}'
 ```
 

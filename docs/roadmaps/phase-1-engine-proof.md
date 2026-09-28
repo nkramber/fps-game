@@ -6,6 +6,8 @@ The design doc holds the thesis of the game, the system map (section 3), and the
 
 External facts: this file states no new external fact. The engine facts come from `docs/research/technology-and-art-pipeline.md`, which the session checked on 2026-09-26. Each PR below checks the facts of its part again, with a date.
 
+Correction of 2026-09-27, PR-8: the owner installs the engine during PR-8 (D-78). The project SSD is case-sensitive, so the engine goes on a case-insensitive volume (F-21, D-81). PR-8 read the pages of Epic again on 2026-09-27. `docs/runbooks/engine-setup.md` holds the links.
+
 Labels: each claim of a plan is evidence (with a link), a recommendation, an assumption, or an unknown.
 
 ## 1. Thesis
@@ -29,8 +31,10 @@ The register in section 5 of `docs/design.md` holds every finding. These rows bi
 | F-8 | Hosted runners have no Unreal Engine | Each engine PR attaches local logs (D-31) |
 | F-14 | 60 fps at 4K output on the M4 with 16 GB is a hard target | PR-11: the first value of M-9 |
 | F-17 | Unreal cannot build Windows packages on the Mac | PR-9 and PR-10: the owner runs the Windows scripts (D-33, D-72) |
-| F-19 | Section 8 of the design doc put the engine install before its runbook | Section 8 below: PR-8 comes before the install (D-69) |
-| F-20 | The text of the review commands says that the owner adds the label | PR-8: the text follows D-76 (D-77) |
+| F-19 | Section 8 of the design doc put the engine install before its runbook | Section 8 below: the install comes during PR-8, from its runbook (D-69, D-78) |
+| F-20 | The text of the review commands says that the owner adds the label | PR-8: the text follows D-76 (D-77, D-82) |
+| F-21 | The project SSD is case-sensitive, and Unreal Engine does not start from it | PR-8: the runbook adds a case-insensitive volume (D-81) |
+| F-22 | The name of an MSVC folder does not give the version of its compiler | PR-8: the Windows check reads `cl.exe` (D-74) |
 
 ## 7. Roadmap
 
@@ -45,10 +49,12 @@ An exit test is a test or a job that the PR adds and that must pass before the m
 - A setup runbook for the Mac and for the Windows PC. It marks each owner step. It names the pins of D-28 and D-74, and Git LFS.
 - The runbook puts the engine and its cache on the project SSD of the Mac (F-4).
 - A `toolchain-check` command in the tools project, for the Mac (D-15, D-55). It reads the Xcode version, the engine version, and the Git LFS version. It fails on each pin that does not hold, and it names the pin, the expected value, and the found value (T-2).
-- Recommendation: the command reads the engine folder from one environment variable. No commit holds a machine-specific path (D-9, G-6).
+- The command reads the engine folder from `IRON_ABSOLUTION_ENGINE_DIR` (D-79). No commit holds a machine-specific path (D-9, G-6).
+- D-28 pins one Xcode version, so the command refuses each other version. Its message names the bounds of F-3.
+- The runbook adds a case-insensitive volume on the SSD for the engine, its cache, Xcode, and the checkout (F-21, D-81).
 - A PowerShell script that prints the versions of the Windows toolchain (D-72). The owner runs it and posts the output (D-33).
-- The evidence form of an engine PR (D-31, D-71). It has one line for each log: the Mac build, the Windows build, the tests, the package, and each measurement.
-- A second concern that the owner accepts (D-77): the text of `review-gate`, `make codex-review`, and their test follows D-76. On the instruction of the owner, the session changes the description of the live label (F-20).
+- The evidence form of an engine PR (D-31, D-71), in the PR template (D-80). It has one line for each log: the two toolchain checks, the Mac build, the Windows build, the tests, the package, and each measurement.
+- A second concern that the owner accepts (D-77): the text of `review-gate`, `make codex-review`, and their test follows D-76. On the instruction of the owner, the session changes the description of the live label (F-20, D-82).
 
 **Out of scope.**
 
@@ -57,7 +63,7 @@ An exit test is a test or a job that the PR adds and that must pass before the m
 
 **Exit tests.**
 
-1. `toolchain-check` passes on the Mac of the owner after the install.
+1. `toolchain-check` passes on the Mac of the owner after the install, before the merge (D-78).
 2. Tests with fixtures show that the command refuses Xcode 26.4 and later, and each Xcode version before 26.0 (F-3).
 3. Tests show a failure that names the pin when the engine, Xcode, or Git LFS is absent (T-2).
 4. The owner runs the PowerShell script on the Windows PC and posts its output in the PR.
@@ -66,19 +72,19 @@ An exit test is a test or a job that the PR adds and that must pass before the m
 
 **Review focus.** The pins against D-28, the error messages against T-2, and no machine-specific path in a commit (G-6). The label text against D-76.
 
-**Questions.** None open. D-74 answers OQ-22, the Windows toolchain pin.
+**Questions.** None open. D-74 answers OQ-22, the Windows toolchain pin. The owner answered the questions of the PR in D-78 to D-82.
 
-**State.** 🔧 planned.
+**State.** ✅ done in PR #9.
 
 > *In plain English:* The Mac has no engine and the wrong Xcode today. This change writes the install steps for both computers. It adds a check that shows each wrong version by name.
 
 ### 7.2 The engine install
 
-Owner, after PR-8 (D-69). No PR.
+Owner, during PR-8 (D-78). No PR.
 
 **Scope.**
 
-- The owner installs Unreal Engine 5.8 at the pinned hotfix and Xcode 26.1.1 on the Mac, from the runbook of PR-8 (D-28).
+- The owner installs Unreal Engine 5.8 at the pinned hotfix and Xcode 26.1.1 on the Mac, from the runbook of PR-8 (D-28). Both go on the case-insensitive volume (D-81).
 - The owner installs Unreal Engine 5.8 at the same hotfix on the Windows PC, with the toolchain of D-74 (D-33).
 - The owner installs Git LFS on both machines.
 
@@ -87,11 +93,11 @@ Owner, after PR-8 (D-69). No PR.
 1. `toolchain-check` passes on the Mac.
 2. The PowerShell script of PR-8 shows each Windows pin.
 
-**Review focus.** This step has no PR and no review. The next session records the result in its handoff entry.
+**Review focus.** This step has no PR and no review. The session of PR-8 records the result in its handoff entry (D-78).
 
 **Questions.** None.
 
-**State.** 🔧 planned. On 2026-09-27 the Mac had no engine, no Xcode app, and no Git LFS (F-3).
+**State.** ✅ done on 2026-09-27 on both machines. `make toolchain-check` passed on the Mac, and the script passed on the Windows PC (D-78). Before the install, the Mac had no engine, no Xcode app, and no Git LFS (F-3).
 
 > *In plain English:* The owner installs the engine and its tools on both computers. The steps come from the runbook, so the install proves that the runbook is correct.
 
@@ -110,6 +116,7 @@ Owner, after PR-8 (D-69). No PR.
 - The test command reads the test report and a success line in the log. An exit code of 0 alone is not a pass. The-thing-below met a headless run that ended with 0 and no success line (finding 64 of its design doc).
 - Tests on the hosted runners for the text files: the LFS attributes, the plugin list of the project, and the ignore rules (D-31).
 - Unreal best practices govern the C++ and the content (D-34).
+- At the first start of the editor, the owner sets the path of the engine cache on the volume (D-83).
 
 **Out of scope.**
 
@@ -125,9 +132,10 @@ Owner, after PR-8 (D-69). No PR.
 5. A test that fails on purpose gives a nonzero exit code. The session removes that test before the merge.
 6. The test command fails with the path when the test report is absent (T-2).
 7. A fresh clone restores the test map from LFS, and the map file is not an LFS pointer.
-8. The hosted tests pass for the LFS attributes, the plugin list, and the ignore rules.
-9. M-1 has a value: the peak memory of the editor on the Mac with the test map open (F-5).
-10. M-2 has a value for the clean build of the editor target on both platforms.
+8. After the first editor build, the engine cache is on the volume. The internal disk holds no cache data (D-83, F-4).
+9. The hosted tests pass for the LFS attributes, the plugin list, and the ignore rules.
+10. M-1 has a value: the peak memory of the editor on the Mac with the test map open (F-5).
+11. M-2 has a value for the clean build of the editor target on both platforms.
 
 **Review focus.** The C++ against the Epic coding standard (D-34), and the pass rule of the test command. Also the LFS and ignore rules (D-9, D-30), and the Windows scripts (D-72).
 
@@ -220,7 +228,7 @@ The global order lives in section 8 of `docs/design.md`. Phase 1 holds this orde
 
 1. PR-7: this file.
 2. PR-8: the engine toolchain and the evidence form.
-3. Owner: the engine install from the runbook of PR-8 (D-69).
+3. Owner: the engine install from the runbook of PR-8, during PR-8 (D-69, D-78).
 4. PR-9: the project scaffold and the first headless test.
 5. PR-10: the packaged build.
 6. PR-11: the first M-9 and the gate record.

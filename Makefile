@@ -9,7 +9,7 @@ TOOLS_PROJECT := IronAbsolution.Tools/IronAbsolution.Tools.csproj
 # macOS is absent on Windows, where npm writes a `codex.cmd` shim.
 CODEX ?= $(shell npm root --global)/@openai/codex/bin/codex.js
 
-.PHONY: verify where hooks build test format ste-check handoff-rotate codex-review clean
+.PHONY: verify where hooks build test format ste-check handoff-rotate codex-review toolchain-check clean
 
 ## verify: every check that this machine can run.
 verify: build test format ste-check
@@ -55,6 +55,16 @@ codex-review:
 	@test -n "$(PR)" || { echo "codex-review: set PR=<number>, such as make codex-review PR=4 (T-2)." >&2; exit 1; }
 	npm install --global @openai/codex@latest
 	dotnet run --project $(TOOLS_PROJECT) -- codex-review --root . --pr $(PR) --codex "$(CODEX)"
+
+## toolchain-check: the pins of the Mac toolchain: Xcode, the engine, and Git LFS (D-28, D-79).
+#
+# The command reads the engine folder from IRON_ABSOLUTION_ENGINE_DIR, so no commit holds a
+# path of one machine (D-9). It prints one line for each pin, with the expected value and the
+# found value, and it fails on each pin that does not hold. `verify` does not run it, because
+# the hosted runners have no engine (D-31). `docs/runbooks/engine-setup.md` gives the install.
+# The Windows PC runs `scripts/toolchain-check.ps1` instead (D-72).
+toolchain-check:
+	dotnet run --project $(TOOLS_PROJECT) -- toolchain-check
 
 ## where: the branch, the tree, and the PR state.
 where:
