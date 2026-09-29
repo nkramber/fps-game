@@ -2,6 +2,43 @@
 
 This file holds the entries that the rotation moves out of `docs/session-handoff.md`, newest first.
 
+## Session 50: 2026-09-28, Codex
+
+Author: Codex
+Session: review PR-11, round 1. Repository: iron-absolution. Branch: `docs/pr-11-gate-record`. PR: #15. Role: reviewer. Base: `95546e35317aea9fff1f56a2ec2e9c549eceff84`.
+
+### What this session did, and why
+
+- Reviewed PR #15 at effective head `720ded38699038c9cf0f093cbd5377e5f8c484e7` under D-14.
+- The provider gate passed. The review found no blocking defect.
+- Added `docs/reviews/pr-15.md` and this entry as one metadata commit for `origin/docs/pr-11-gate-record`.
+- The new regression test fails on the base `Makefile` section and passes on the PR head.
+
+### The state of the build
+
+- `run.ps1 verify` passed on Windows: 539 tests, format, and STE passed.
+- CI passed the build, test, and format, coverage, document, and STE checks at the effective head.
+- The review gate failed before the review record existed. The metadata push triggers a new check.
+- The first metadata push passed `review-gate`, but `doc-gate` found the local worktree branch in this entry. The corrected entry names the PR branch. All five hosted checks then passed at PR tip `9b653bf`.
+- The remote work head outside the metadata set is `720ded38699038c9cf0f093cbd5377e5f8c484e7`.
+
+### What is in flight
+
+- The review record and handoff entry need one metadata commit and push.
+
+### Traps and gotchas
+
+- M-8 counts the LFS objects in the fresh clone, not objects that only a deleted branch held (D-108).
+- `package-run` opens a game window and needs owner confirmation (D-96).
+
+### The questions that block progress
+
+- None. OQ-16 still holds gitar (D-7).
+
+### The next concrete action
+
+- The author checks the review gate, then gives the owner the merge summary.
+
 ## Session 49: 2026-09-28, Claude Code
 
 Author: Claude Code

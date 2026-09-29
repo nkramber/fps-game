@@ -52,7 +52,18 @@ bool AIronPlayerCharacter::ApplyMovementTuning(const UIronMovementTuning& Tuning
 		return false;
 	}
 
+	// The check of the gravity comes before each write, so a refused tuning changes nothing. The
+	// gravity of the world comes from the base class, because the movement component multiplies
+	// it by the scale of the old tuning.
 	UCharacterMovementComponent* Movement = GetCharacterMovement();
+	const float WorldGravityZ = Movement->UMovementComponent::GetGravityZ();
+	const float Gravity = FMath::Abs(WorldGravityZ * Tuning.GravityScale);
+	if (Gravity <= UE_KINDA_SMALL_NUMBER)
+	{
+		UE_LOG(LogIronPlayer, Error, TEXT("%s did not take the tuning %s: the gravity of the world is %f, so no jump comes down."), *GetPathName(), *Tuning.GetPathName(), WorldGravityZ);
+		return false;
+	}
+
 	Movement->MaxWalkSpeed = Tuning.RunSpeed;
 	Movement->MaxAcceleration = Tuning.Acceleration;
 	Movement->BrakingDecelerationWalking = Tuning.BrakingDeceleration;
@@ -64,12 +75,6 @@ bool AIronPlayerCharacter::ApplyMovementTuning(const UIronMovementTuning& Tuning
 
 	// The tuning gives the height of the jump, so a new gravity keeps the height. The start speed
 	// of a jump to the height h under the gravity g is sqrt(2 * g * h).
-	const float Gravity = FMath::Abs(Movement->GetGravityZ());
-	if (Gravity <= UE_KINDA_SMALL_NUMBER)
-	{
-		UE_LOG(LogIronPlayer, Error, TEXT("%s did not take the jump of the tuning %s: the gravity of the world is %f, so no jump comes down."), *GetPathName(), *Tuning.GetPathName(), Movement->GetGravityZ());
-		return false;
-	}
 	Movement->JumpZVelocity = FMath::Sqrt(2.0f * Gravity * Tuning.JumpHeight);
 
 	// The tuning gives the eye height above the feet. The camera is relative to the center of the capsule.

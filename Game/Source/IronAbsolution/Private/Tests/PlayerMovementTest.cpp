@@ -1,15 +1,19 @@
 // Copyright (c) 2026 nkramber. Licensed under the MIT License. See LICENSE.
 
+#include "Camera/CameraComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine/StaticMesh.h"
 #include "Engine/StaticMeshActor.h"
 #include "Engine/World.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/WorldSettings.h"
 #include "IronMovementTuning.h"
 #include "IronPlayerCharacter.h"
 #include "Misc/AutomationTest.h"
 #include "Tests/AutomationCommon.h"
 #include "UObject/Package.h"
+
+#include <limits>
 
 #if WITH_DEV_AUTOMATION_TESTS
 
@@ -126,6 +130,18 @@ namespace IronAbsolution::Tests::Movement
 		return static_cast<float>(TopZ - StartZ);
 	}
 
+	/** Describes each value that ApplyMovementTuning writes, so a test can compare the state before and after. */
+	FString DescribeTunedState(const AIronPlayerCharacter& Character)
+	{
+		const UCharacterMovementComponent* Movement = Character.GetCharacterMovement();
+		const UCameraComponent* Camera = Character.GetFirstPersonCamera();
+		return FString::Printf(
+			TEXT("speed %f, acceleration %f, braking %f, friction %f, gravity scale %f, air control %f, step %f, slope %f, jump %f, eye %f, camera Z %f, field of view %f"),
+			Movement->MaxWalkSpeed, Movement->MaxAcceleration, Movement->BrakingDecelerationWalking, Movement->GroundFriction,
+			Movement->GravityScale, Movement->AirControl, Movement->MaxStepHeight, Movement->GetWalkableFloorAngle(),
+			Movement->JumpZVelocity, Character.BaseEyeHeight, Camera->GetRelativeLocation().Z, Camera->FieldOfView);
+	}
+
 	/** Compares a measured value with the value of the tuning, with the tolerance of the pass rule. */
 	void TestMeasured(FAutomationTestBase& Test, const TCHAR* What, float Measured, float Expected)
 	{
@@ -240,6 +256,51 @@ bool FIronAbsolutionInvalidTuningTest::RunTest(const FString& Parameters)
 	AddExpectedMessagePlain(TEXT("did not take the tuning"), ELogVerbosity::Error, EAutomationExpectedMessageFlags::Contains, 11);
 	TestFalse(TEXT("The character refuses the empty tuning"), Character->ApplyMovementTuning(*Empty));
 	TestEqual(TEXT("The run speed does not change"), Character->GetCharacterMovement()->MaxWalkSpeed, RunSpeedBefore);
+	return !HasAnyErrors();
+}
+
+// A refused tuning changes no value of the character: a NaN value, and a world with no gravity (T-2).
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(
+	FIronAbsolutionRefusedTuningTest,
+	"IronAbsolution.Player.Movement.RefusedTuning",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
+
+bool FIronAbsolutionRefusedTuningTest::RunTest(const FString& Parameters)
+{
+	using namespace IronAbsolution::Tests::Movement;
+
+	FMovementWorld World;
+	AIronPlayerCharacter* Character = World.Start(*this);
+	if (Character == nullptr || !TestNotNull(TEXT("The movement tuning of the player character"), Character->GetMovementTuning()))
+	{
+		return false;
+	}
+	const FString Before = DescribeTunedState(*Character);
+
+	// A NaN fails each comparison of a range, so the check of the range alone lets it pass.
+	UIronMovementTuning* WithNaN = DuplicateObject<UIronMovementTuning>(Character->GetMovementTuning(), GetTransientPackage());
+	WithNaN->RunSpeed = std::numeric_limits<float>::quiet_NaN();
+	const TArray<FString> Errors = WithNaN->FindInvalidValues();
+	TestEqual(TEXT("A tuning with one NaN has one error"), Errors.Num(), 1);
+	if (Errors.Num() == 1)
+	{
+		TestTrue(FString::Printf(TEXT("The error names the value: %s"), *Errors[0]), Errors[0].StartsWith(TEXT("RunSpeed of ")));
+	}
+	AddExpectedMessagePlain(TEXT("did not take the tuning: RunSpeed of"), ELogVerbosity::Error, EAutomationExpectedMessageFlags::Contains, 1);
+	TestFalse(TEXT("The character refuses the tuning with a NaN"), Character->ApplyMovementTuning(*WithNaN));
+	TestEqual(TEXT("The tuning with a NaN changes nothing"), DescribeTunedState(*Character), Before);
+
+	// A valid tuning in a world with no gravity: the character refuses it before any write.
+	UIronMovementTuning* Changed = DuplicateObject<UIronMovementTuning>(Character->GetMovementTuning(), GetTransientPackage());
+	Changed->RunSpeed *= 1.5f;
+	Changed->FieldOfView = 110.0f;
+	AWorldSettings* Settings = Character->GetWorld()->GetWorldSettings();
+	Settings->WorldGravityZ = 0.0f;
+	Settings->bWorldGravitySet = true;
+	AddExpectedMessagePlain(TEXT("so no jump comes down"), ELogVerbosity::Error, EAutomationExpectedMessageFlags::Contains, 1);
+	TestFalse(TEXT("The character refuses a tuning in a world with no gravity"), Character->ApplyMovementTuning(*Changed));
+	TestEqual(TEXT("The tuning in a world with no gravity changes nothing"), DescribeTunedState(*Character), Before);
+
 	return !HasAnyErrors();
 }
 

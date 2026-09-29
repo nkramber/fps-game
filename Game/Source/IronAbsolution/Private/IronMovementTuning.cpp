@@ -37,7 +37,8 @@ TArray<FString> UIronMovementTuning::FindInvalidValues() const
 	TArray<FString> Errors;
 	for (const FValueRange& Range : Ranges)
 	{
-		if (Range.Value < Range.Min || Range.Value > Range.Max)
+		// A NaN fails each comparison, so the range check alone lets it pass.
+		if (!FMath::IsFinite(Range.Value) || Range.Value < Range.Min || Range.Value > Range.Max)
 		{
 			const FString MaxText = Range.Max == NoMax ? FString(TEXT("no maximum")) : FString::SanitizeFloat(Range.Max);
 			Errors.Add(FString::Printf(TEXT("%s of %s is %s. The range is %s to %s."), Range.Name, *GetPathName(), *FString::SanitizeFloat(Range.Value), *FString::SanitizeFloat(Range.Min), *MaxText));

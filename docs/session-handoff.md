@@ -1,3 +1,39 @@
+## Session 60: 2026-09-29, Claude Code
+
+Author: Claude Code
+Session: author PR-21, round 2. Repository: iron-absolution. Branch: `feat/pr-21-gym-movement`. PR: #22. Role: author. Base: `ce25cfd4982d5d4be2c0eee0a0a2658f419b182f`.
+
+### What this session did, and why
+
+- The Codex review of round 1 gave `Blocked` with P2-1 and P2-2. Both have full merit. `docs/reviews/pr-22-response.md` gives each answer.
+- P2-1: `ApplyMovementTuning` now checks the gravity before any write, so a refused tuning changes nothing (T-2).
+- P2-2: `FindInvalidValues` now rejects each value that is not finite.
+- The new test `IronAbsolution.Player.Movement.RefusedTuning` fails on the old code and passes with the correction.
+- The `coverage report` job failed one time in a test of `ToolchainCheckCommandTests`, and its rerun passed. F-28 has a dated line for it.
+
+### The state of the build
+
+- The remote head is the commit of this entry on `feat/pr-21-gym-movement`, pending merge.
+- `editor-test` passes 9 automation tests. `run.ps1 verify` passes.
+
+### What is in flight
+
+- Round 2 of the Codex review of PR #22.
+- Exit test 1: the play test of the owner in the editor and in the package. It waits before the merge.
+
+### Traps and gotchas
+
+- Session 58 lists the traps of this PR. They all still hold.
+- `TNumericLimits<float>` has no NaN in 5.8. The test uses `std::numeric_limits<float>::quiet_NaN()`.
+
+### The questions that block progress
+
+- None for PR-21. OQ-25 blocks PR-22, and OQ-26 blocks the sound part of PR-25. OQ-16 still holds the gitar pass (D-7).
+
+### The next concrete action
+
+- Read the verdict of round 2. Then ask the owner for the play test of exit test 1, then give the merge summary.
+
 ## Session 59: 2026-09-29, Codex
 
 Author: Codex
@@ -354,40 +390,3 @@ Session: author PR-11, round 1 close. Repository: iron-absolution. Branch: `docs
 ### The next concrete action
 
 - After the merge, write the transitional prompt of the next PR from section 8 of `docs/design.md`. The gate of phase 1 passes, so the next item is in phase 2 or F-28.
-
-## Session 50: 2026-09-28, Codex
-
-Author: Codex
-Session: review PR-11, round 1. Repository: iron-absolution. Branch: `docs/pr-11-gate-record`. PR: #15. Role: reviewer. Base: `95546e35317aea9fff1f56a2ec2e9c549eceff84`.
-
-### What this session did, and why
-
-- Reviewed PR #15 at effective head `720ded38699038c9cf0f093cbd5377e5f8c484e7` under D-14.
-- The provider gate passed. The review found no blocking defect.
-- Added `docs/reviews/pr-15.md` and this entry as one metadata commit for `origin/docs/pr-11-gate-record`.
-- The new regression test fails on the base `Makefile` section and passes on the PR head.
-
-### The state of the build
-
-- `run.ps1 verify` passed on Windows: 539 tests, format, and STE passed.
-- CI passed the build, test, and format, coverage, document, and STE checks at the effective head.
-- The review gate failed before the review record existed. The metadata push triggers a new check.
-- The first metadata push passed `review-gate`, but `doc-gate` found the local worktree branch in this entry. The corrected entry names the PR branch. All five hosted checks then passed at PR tip `9b653bf`.
-- The remote work head outside the metadata set is `720ded38699038c9cf0f093cbd5377e5f8c484e7`.
-
-### What is in flight
-
-- The review record and handoff entry need one metadata commit and push.
-
-### Traps and gotchas
-
-- M-8 counts the LFS objects in the fresh clone, not objects that only a deleted branch held (D-108).
-- `package-run` opens a game window and needs owner confirmation (D-96).
-
-### The questions that block progress
-
-- None. OQ-16 still holds gitar (D-7).
-
-### The next concrete action
-
-- The author checks the review gate, then gives the owner the merge summary.

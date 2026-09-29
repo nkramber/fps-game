@@ -66,8 +66,8 @@ public:
 	float FieldOfView = 0.0f;
 
 	/**
-	 * Finds each value outside its range. The ranges are the same as the clamps of the editor, so
-	 * a value of 0 that the asset does not set is outside its range.
+	 * Finds each value that is not finite or is outside its range. The ranges are the same as the
+	 * clamps of the editor, so a value of 0 that the asset does not set is outside its range.
 	 * @return One line for each invalid value, with the name of the value, the value, and the range. Empty when each value is valid.
 	 */
 	TArray<FString> FindInvalidValues() const;
