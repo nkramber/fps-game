@@ -68,7 +68,7 @@ An exit test is a check that the PR must pass before the merge. The PR gate of `
 
 **Questions.** OQ-10, the pick of the owner. The session asks it during the PR (D-113).
 
-**State.** 🔧 planned.
+**State.** ✅ done in PR #17. Correction of 2026-09-29: the PR gave four proposals, not two or three. The owner asked for a fourth during the PR. The owner then picked none of them, and the combat rules follow Doom (2016) (D-115). D-116 records the player verbs. Exit test 3 applies to the four proposals.
 
 > *In plain English:* The game has no rules for its resources today. This change writes two or three ideas for how the player gets ammo or health back in a fight. The owner picks one, and a test room tries it later.
 
@@ -212,6 +212,6 @@ The register is `docs/questions.md`. These questions block an item of phase 2. E
 
 | Question | Subject | Blocks |
 |---|---|---|
-| OQ-10 | The combat loop with limited resources | PR-16, and the gate of phase 2 |
+| OQ-10 | The combat loop with limited resources. Resolved 2026-09-29: D-115 | PR-16, and the gate of phase 2 |
 | OQ-9 | Setting, tone, and art direction | PR-17, and the gate of phase 2 |
 | OQ-12 | Meshy and its plan | PR-18. It waits for the pick of PR-17 |

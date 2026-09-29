@@ -66,7 +66,7 @@ Find a question with `grep -n -E '^[0-9]+\. \*\*OQ-(1|18)\.' docs/questions.md`.
    - Options: the owner chooses. Phase 2 can give two or three short original proposals.
    - Recommendation: a style that a small team can make with modular kits and trim sheets. Photoreal organic terrain costs much more.
    - Plan: PR-17 gives the proposals, and the owner picks during that PR (D-111, D-113).
-10. **OQ-10. The combat loop with limited resources.** Which resources are limited, and which original mechanic gives them back in a fight? Raised 2026-09-26 (PR-1). Blocks phase 2 and phase 4. Method set 2026-09-27: D-36. The choice stays open.
+10. **OQ-10. The combat loop with limited resources.** Which resources are limited, and which original mechanic gives them back in a fight? Raised 2026-09-26 (PR-1). Blocks phase 2 and phase 4. Method set 2026-09-27: D-36. Resolved 2026-09-29: D-115, the combat rules of Doom (2016).
     - Options: the owner chooses. Phase 2 can compare two or three original ideas on paper.
     - Recommendation: one main recovery mechanic that rewards attack. Test it in the combat sandbox of phase 4. Do not copy a mechanic of the reference game (D-2).
     - Plan: PR-16 gives the proposals, and the owner picks during that PR (D-111, D-113).

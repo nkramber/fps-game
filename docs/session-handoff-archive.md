@@ -2,6 +2,39 @@
 
 This file holds the entries that the rotation moves out of `docs/session-handoff.md`, newest first.
 
+## Session 43: 2026-09-28, Codex
+
+Author: Codex
+Session: reviewer PR-13, round 1. Repository: iron-absolution. Branch: `feat/pr-13-windows-dev-tools`. PR: #13. Role: reviewer. Base: `2509d791d1769c7602fc802eb78158fd0c28dff6`.
+
+### What this session did, and why
+
+- Reviewed PR #13 at effective head `989a50592a924761358d775ed94a5f43918e1bd5` under D-14.
+- The provider gate passed. No blocking defect was found.
+- Added the review record and this entry as one metadata commit for `origin/feat/pr-13-windows-dev-tools`.
+
+### The state of the build
+
+- `run.ps1 verify` passed on Windows: build, 540 tests, no skips, format, and ste-check with 0 findings.
+- The remote head will be the metadata commit of this entry. The review gate must rerun after the push.
+
+### What is in flight
+
+- The owner reads the review, confirms the merge, then merges PR-13.
+
+### Traps and gotchas
+
+- The first `review-gate` run failed because the review record was absent. The other four required checks passed.
+- PR-14 removes the remaining Mac engine commands and paths (D-94, D-97).
+
+### The questions that block progress
+
+- None. OQ-16 still holds the gitar pass (D-7).
+
+### The next concrete action
+
+- After the merge, write the transitional prompt for PR-14: the engine commands on Windows alone, and the removal of each Mac part.
+
 ## Session 42: 2026-09-28, Claude Code
 
 Author: Claude Code
