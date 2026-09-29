@@ -1,3 +1,38 @@
+## Session 61: 2026-09-29, Codex
+
+Author: Codex
+Session: reviewer PR-21, round 2. Repository: iron-absolution. Branch: `feat/pr-21-gym-movement`. PR: #22. Role: reviewer. Base: `ce25cfd4982d5d4be2c0eee0a0a2658f419b182f`.
+
+### What this session did, and why
+
+- Reviewed PR #22 at work head `7e2e3f73c1c17b50c34505d7c5ce6d6c0cfc7408`.
+- Verified that P2-1 and P2-2 pass the new regression test. The review record keeps both findings and their first-round evidence.
+- Ran `run.ps1 verify`, `run.ps1 editor-build`, and `run.ps1 editor-test`. Each passed. All 9 editor tests passed.
+- The review record gives the verdict `Blocked`. The owner's play test in the gym still waits for exit test 1.
+
+### The state of the build
+
+- The remote work head is `7e2e3f73c1c17b50c34505d7c5ce6d6c0cfc7408` on `feat/pr-21-gym-movement`.
+- The local .NET gates, editor build, and editor tests pass.
+
+### What is in flight
+
+- The metadata commit for review round 2.
+- The owner play test of the gym in the editor and package.
+
+### Traps and gotchas
+
+- The first editor test failed because the worktree had no compiled editor module. Build the editor target before the test.
+- The `review-gate` fails until the review record approves the effective head.
+
+### The questions that block progress
+
+- No open question affects this PR. The owner play test remains required exit evidence.
+
+### The next concrete action
+
+- Push the review record and this entry together. The owner runs the play test before the merge.
+
 ## Session 60: 2026-09-29, Claude Code
 
 Author: Claude Code
@@ -357,36 +392,3 @@ Session: author PR-15, round 1. Repository: iron-absolution. Branch: `docs/pr-15
 ### The next concrete action
 
 - After the merge, write the transitional prompt of PR-16 from section 8 of the phase 2 file.
-
-## Session 51: 2026-09-28, Claude Code
-
-Author: Claude Code
-Session: author PR-11, round 1 close. Repository: iron-absolution. Branch: `docs/pr-11-gate-record`. PR: #15. Role: author. Base: `95546e35317aea9fff1f56a2ec2e9c549eceff84`.
-
-### What this session did, and why
-
-- Round 1 of `run.ps1 codex-review -PR 15` gave the exit code 0. The record says `Ready for owner merge` for the effective head `720ded3`, with no finding.
-- The reviewer ran `EditorConfigTests` at the base `95546e3`, and it failed on the Makefile section. So the test is a true regression test.
-- This entry closes the author loop before the merge summary.
-
-### The state of the build
-
-- The effective head stays `720ded3`, because the later commits change `docs/` alone (D-49).
-- The remote head is the commit of this entry on `docs/pr-11-gate-record`, pending merge.
-
-### What is in flight
-
-- The owner confirmation of the merge of #15, then auto-merge after the checks.
-
-### Traps and gotchas
-
-- The review record calls the "M-8 evidence" comment an owner comment. The session posted it through the account of the owner. The values in it are the output of the session.
-- F-28 stays open. The hosted stub test can fail one time. Run the failed job again before a change.
-
-### The questions that block progress
-
-- None. OQ-16 still holds the gitar pass (D-7).
-
-### The next concrete action
-
-- After the merge, write the transitional prompt of the next PR from section 8 of `docs/design.md`. The gate of phase 1 passes, so the next item is in phase 2 or F-28.

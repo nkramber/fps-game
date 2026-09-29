@@ -2,6 +2,39 @@
 
 This file holds the entries that the rotation moves out of `docs/session-handoff.md`, newest first.
 
+## Session 51: 2026-09-28, Claude Code
+
+Author: Claude Code
+Session: author PR-11, round 1 close. Repository: iron-absolution. Branch: `docs/pr-11-gate-record`. PR: #15. Role: author. Base: `95546e35317aea9fff1f56a2ec2e9c549eceff84`.
+
+### What this session did, and why
+
+- Round 1 of `run.ps1 codex-review -PR 15` gave the exit code 0. The record says `Ready for owner merge` for the effective head `720ded3`, with no finding.
+- The reviewer ran `EditorConfigTests` at the base `95546e3`, and it failed on the Makefile section. So the test is a true regression test.
+- This entry closes the author loop before the merge summary.
+
+### The state of the build
+
+- The effective head stays `720ded3`, because the later commits change `docs/` alone (D-49).
+- The remote head is the commit of this entry on `docs/pr-11-gate-record`, pending merge.
+
+### What is in flight
+
+- The owner confirmation of the merge of #15, then auto-merge after the checks.
+
+### Traps and gotchas
+
+- The review record calls the "M-8 evidence" comment an owner comment. The session posted it through the account of the owner. The values in it are the output of the session.
+- F-28 stays open. The hosted stub test can fail one time. Run the failed job again before a change.
+
+### The questions that block progress
+
+- None. OQ-16 still holds the gitar pass (D-7).
+
+### The next concrete action
+
+- After the merge, write the transitional prompt of the next PR from section 8 of `docs/design.md`. The gate of phase 1 passes, so the next item is in phase 2 or F-28.
+
 ## Session 50: 2026-09-28, Codex
 
 Author: Codex
