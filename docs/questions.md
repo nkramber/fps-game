@@ -117,3 +117,13 @@ Find a question with `grep -n -E '^[0-9]+\. \*\*OQ-(1|18)\.' docs/questions.md`.
     - Option B: a heavy two-hand weapon, for example a warden's hammer.
     - Option C: another original tool that phase 4 proposes.
     - Recommendation: phase 4 gives two or three original proposals that fit Penitent Iron (D-36, D-117). The owner picks in that PR (D-113).
+25. **OQ-25. The method of M-3.** Which build configuration, which scene, and which statistic of the frame time does M-3 read against the budget of D-32? Raised 2026-09-29 (PR-20). Blocks PR-22.
+    - The configuration: the Development package of phase 1, or a Test package. Epic removes more overhead in a Test build. PR-22 checks this fact with a date.
+    - The scene: a fixed set of views in the gym, or a scripted path through the gym.
+    - The statistic: for example the mean and the 99th percentile of the frame time, each at 8.33 ms or less for 120 fps.
+    - Recommendation: PR-22 gives the options with the facts of Epic, and the owner picks at the start of PR-22.
+26. **OQ-26. The sound of the gym.** Does the feel check of phase 3 need a sound for the shot and the hit? If so, what is its source (D-119, D-120)? Raised 2026-09-29 (PR-20). Blocks the sound part of PR-25.
+    - Option A: no sound in phase 3. Visual hit feedback alone. Phase 4 adds the sound with the hit feedback and the HUD.
+    - Option B: a placeholder sound from the content of the engine. It stays out of the repository, because the engine holds it.
+    - Option C: an original placeholder sound with a provenance record.
+    - Recommendation: the owner answers at the start of PR-25. A shot with no sound can feel weak, so the feel check can need one.

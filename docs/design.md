@@ -19,6 +19,7 @@ Status: the owner accepts it on the condition of D-27. Written in ASD-STE100 (D-
 - 2026-09-29 twelfth pass: PR-16 adds `docs/game/` with the pillars and the combat proposals. The owner gave D-115 and D-116. The combat rules follow Doom (2016), so D-1, D-2, and G-1 change in part.
 - 2026-09-29 thirteenth pass: PR-18 adds the provenance policy in `docs/game/provenance.md`, and checks the Meshy facts again (F-7). The owner gave D-118 to D-121. Meshy is for focal props on a paid plan (D-118).
 - 2026-09-29 fourteenth pass: PR-19 adds the level brief in `docs/game/level-brief.md`. It records the gate of phase 2 and the value of M-8 at the end of phase 2. The owner gave D-122 to D-125. An original harvest tool replaces the chainsaw (D-125).
+- 2026-09-29 fifteenth pass: PR-20 adds the focused roadmap of phase 3. The owner gave D-126 to D-132. Phase 5 now starts after the gate of phase 3, beside phase 4 (D-129).
 
 ## 1. Thesis
 
@@ -81,7 +82,7 @@ What we do not know, and the measurement that answers it:
 
 - M-1: Peak memory of the Unreal Editor on the 16 GB Mac. Phase 1. First value on 2026-09-28 in PR-9: a peak memory footprint of 6.42 GB, with the empty test map open (`/usr/bin/time -l`). Correction of 2026-09-28: PR-14 records a first value on the Windows PC. The Mac value stays as history (D-98). First Windows value on 2026-09-28 in PR-14: a peak working set of 3.53 GB, and a peak of 4.18 GB of private bytes. The editor had the empty test map open for 30 seconds. The PC has 32 GB of memory, and the `Process` counters of .NET gave the values.
 - M-2: Time of a clean build of the editor target and of a packaged build, on both platforms. Phase 1. First values of the editor target from a fresh clone, on 2026-09-28 in PR-9: 35.5 seconds on the Mac, and 45.3 seconds on Windows. First values of the packaged Development build on 2026-09-28 in PR-10: 136.5 seconds on the Mac, and 105.6 seconds on Windows. The Mac value comes from a fresh clone with a warm engine cache. The Windows value comes from the checkout of the owner, with a full cook. Each value is the `BuildCookRun time` of RunUAT. Correction of 2026-09-28: the Windows values count, and the Mac values stay as history (D-91). Values from a fresh clone on Windows through `run.ps1`, on 2026-09-28 in PR-14: 41.6 seconds for the editor target. The package took 101.25 seconds of `BuildCookRun time`.
-- M-3: Frame time in the test gym on Windows, against the budget of D-32. Phase 3. Correction of 2026-09-28: the Mac goes (D-91).
+- M-3: Frame time in the test gym on Windows, against the budget of D-32. Phase 3. Correction of 2026-09-28: the Mac goes (D-91). PR-22 gives the first value, and PR-27 gives the value at the gate (D-126). OQ-25 holds the method.
 - M-4: Frame time in the combat sandbox at the maximum enemy count. Phase 4.
 - M-5: Frame time and memory of the vertical-slice room. Phase 5.
 - M-6: Time to change one kit piece and see the change in each space. Phase 5.
@@ -130,6 +131,7 @@ Status legend:
 | F-26 | 2026-09-28 | A Mac package with no `-package` step stopped at its start with "Library not loaded: @rpath/libtbb.12.dylib". The archive step took the app of `Game/Binaries`, and that app holds no libraries and no content. | The output of dyld, and the archive lines of RunUAT | ✅ PR #11: the Mac build had the `-package` step. PR #14 removed the Mac build (D-97). |
 | F-27 | 2026-09-28 | The Mac package runs in the App Sandbox, with the default bundle id `com.YourCompany.IronAbsolution`. It writes its log in its container, and `-abslog` to a path outside the container writes no file and gives no error. | `codesign -d --entitlements`, and a run with `-abslog` | ✅ PR #11: the Mac start command read the log from stdout, and the app had the bundle id of D-90. D-90 is superseded by D-97, and PR #14 removed the Mac part. The Windows package writes its log through `-abslog`. |
 | F-28 | 2026-09-28 | The hosted test `PackageRunCommandTests.AStubRunThatWritesTheSuccessLinePasses` failed one time after 6 ms with the exit code 1, and its rerun passed. So the stub of D-103 probably did not start. An assumption, not proved: Linux refused to start the new copy of the stub ("Text file busy") while a parallel test started a process. Correction of 2026-09-29: the `coverage report` job of PR #20 failed two times in the same way. A test of `ToolchainCheckCommandTests` and a test of `EditorTestCommandTests` each failed after 6 or 7 ms, and each rerun passed. | The first attempt of CI run 36493078596 on PR #14, and the first rerun or failure in 40 runs of `ci`. CI runs 36566642502 and 36567047831 on PR #20 | 🔧 planned. The owner chose to record it in PR-14. A later PR proves the cause and fixes the start of the stub. |
+| F-30 | 2026-09-29 | D-116 puts the verb "change weapon" in phase 3. The work of phase 3 in section 7 gave it one weapon, so the verb had no second weapon. | D-116, and the work of phase 3 in section 7 | ✅ doc: one weapon rule with two data assets (D-128, PR-20) |
 | F-29 | 2026-09-28 | After the removal of PR-14, `.editorconfig` held a section for the Makefile, and the comment of `IronAbsolution.Tests/PowerShellScript.cs` named the scripts folder. PR-14 removed the Makefile and the scripts folder. Neither leftover is a Mac part of exit test 6 of PR-14. | A search of the tracked files for line 11 of the gate of phase 1 | ✅ PR #15: the section and the comment go. `EditorConfigTests` refuses a section for a file that git does not track (D-110). |
 
 ## 6. Guardrails (the safety contract for every PR)
@@ -176,6 +178,7 @@ flowchart LR
   P2 --> P4
   P1 --> P5[Phase 5 Pipeline proof]
   P2 --> P5
+  P3 --> P5
   P4 --> P6[Phase 6 Graybox and layout lock]
   P2 --> P6
   P5 --> P7[Phase 7 Content production]
@@ -184,7 +187,7 @@ flowchart LR
   P8 --> P9[Phase 9 Acceptance]
 ```
 
-The critical path is phases 0, 1, 3, 4, 6, 7, 8, and 9. Phase 2 runs beside phase 1. Phase 5 runs beside phases 3 and 4, and its gate comes before phase 7.
+The critical path is phases 0, 1, 3, 4, 6, 7, 8, and 9. Phase 2 runs beside phase 1. Phase 5 runs beside phases 3 and 4, and its gate comes before phase 7. Correction of 2026-09-29: phase 5 starts after the gate of phase 3 and runs beside phase 4 (D-129).
 
 ### Phase 0: Governance and the repository foundation (gate: PR-1 to PR-6 merged, each check required and green, one real `run.ps1 codex-review` record)
 
@@ -293,10 +296,11 @@ When the owner confirms that gitar works here, one PR ports the gitar-wait scrip
 
 - Objective: make movement, aim, and fire feel fast and exact in a graybox gym before other systems.
 - Dependencies: phase 1, the verbs of phase 2, and the budgets and input of D-32.
-- Work: player movement and camera, with metric markers. Keyboard and mouse input through Enhanced Input, ready for a later gamepad (OQ-21). Sensitivity, invert, and field of view. One weapon from fire to hit feedback and ammo. Automated tests of movement and the weapon, and a frame-time capture.
+- Work: player movement and camera, with metric markers. Keyboard and mouse input through Enhanced Input, ready for a later gamepad (OQ-21). Sensitivity, invert, and field of view. One weapon from fire to hit feedback and ammo. Automated tests of movement and the weapon, and a frame-time capture. Correction of 2026-09-29: the one weapon is one hitscan rule with two data assets, so the verb "change weapon" has a test (D-128, D-130, F-30).
+- Focused roadmap: `docs/roadmaps/phase-3-core-feel.md` holds PR-21 to PR-27 and the gate (D-126, D-127). PR-20 adds it. Status: ✅ done in PR #21.
 - Exit evidence: the owner plays the packaged gym and records a sign-off or a list of changes as a D-# row. M-3 has a profile on Windows. Correction of 2026-09-28: M-9 is out of scope (D-95). The movement metrics have values, because the layout rules of phase 6 use them. The tests pass headless.
 
-> *In plain English:* We make moving and shooting feel right in an empty test room before we build anything on top.
+> *In plain English:* We make moving and shooting feel right in the gym, an empty room of test blocks, before we build anything on top.
 
 ### Phase 4: Combat foundation (gate: owner combat sign-off, M-4 within budget, a new arena needs no new rule code)
 
@@ -310,7 +314,7 @@ When the owner confirms that gitar works here, one PR ports the gitar-wait scrip
 ### Phase 5: Art and audio pipeline proof (gate: a vertical-slice room at target quality, M-5 and M-6 recorded, owner approval of the look)
 
 - Objective: prove a repeatable content pipeline on one small room before we pay for a whole level.
-- Dependencies: phase 1 and the art direction of phase 2. It runs beside phases 3 and 4. The kit grid waits for the movement metrics of phase 3.
+- Dependencies: phase 1 and the art direction of phase 2. It runs beside phases 3 and 4. The kit grid waits for the movement metrics of phase 3. Correction of 2026-09-29: phase 5 starts after the gate of phase 3, and its phase file is a separate PR. It runs beside phase 4 (D-129).
 - Work: standards for scale, grid, pivots, names, collision, UVs, texel density, LODs, and folders. A DCC round trip, for example Blender to FBX to Unreal. A kit and trim-sheet prototype. A measured choice of the light method. The audio pipeline (D-38). A Meshy trial of one to three props, on the terms of D-118 and with owner approval of the spend (D-8). The provenance manifest, the credits file, and the import checks (D-119, D-121). A plan for the animation sources, which is still unknown.
 - Exit evidence: the room meets M-5 on Windows (D-91). M-6 has a value. Each asset in the room has a provenance record. The import checks pass. The owner approves the look as a D-# row.
 
@@ -376,8 +380,8 @@ After that, each phase gets a focused roadmap just before it starts. `docs/roadm
 10. PR-8: the engine toolchain. Then the owner installs the engine and Xcode on the Mac, and the engine on the Windows PC (D-28, D-33). Correction of 2026-09-27: the install was step 9, before its runbook (F-19, D-69). Second correction of 2026-09-27: the owner installs during PR-8, before its merge (D-78).
 11. PR-9 to PR-14 in the order of section 8 of the phase file. Correction of 2026-09-28: PR-12 to PR-14 come before PR-11, and they move the project to Windows alone (D-93, D-94). Phase 2 starts beside phase 1. The owner picks for OQ-9 and OQ-10, then answers OQ-12. Correction of 2026-09-29: no PR of phase 2 started beside phase 1.
 12. Gate of phase 1, then gate of phase 2. The gate of phase 1 passes in PR #15 (PR-11). Phase 2 holds PR-15 to PR-19, in the order of section 8 of its phase file (D-111, D-112). The gate of phase 2 passes in PR #20 (PR-19).
-13. Phase 3, then its gate. Phase 5 starts beside it.
-14. Phase 4, then its gate.
+13. Phase 3, then its gate. Phase 5 starts beside it. Correction of 2026-09-29: phase 3 holds PR-20 to PR-27, in the order of section 8 of its phase file (D-126, D-127). Phase 5 waits for the gate of phase 3 (D-129).
+14. Phase 4, then its gate. Correction of 2026-09-29: phase 5 runs beside phase 4. Its phase file comes after the gate of phase 3 (D-129).
 15. Gate of phase 5.
 16. Phase 6, then the layout lock.
 17. Phase 7, then its gate.

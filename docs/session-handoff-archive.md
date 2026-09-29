@@ -2,6 +2,41 @@
 
 This file holds the entries that the rotation moves out of `docs/session-handoff.md`, newest first.
 
+## Session 47: 2026-09-28, Codex
+
+Author: Codex
+Session: reviewer PR-14, round 2. Repository: iron-absolution. Branch: `feat/pr-14-windows-engine-commands`. PR: #14. Role: reviewer. Base: `0351bbba52a4fddd91b559ad7ace9f1bb020b2f0`.
+
+### What this session did, and why
+
+- The review checked the response to round 1, D-107, and the final effective head, `aed74bb`.
+- The provider gate passed. The review found no defect in scope.
+- The local verification passed. The hosted test rerun passed after one test failed in the first attempt.
+
+### The state of the build
+
+- `run.ps1 verify` passed with 538 tests, no skips, format, and ste-check.
+- The hosted build, test, and format, coverage, doc-gate, and ste-check jobs passed. `review-gate` awaits this record.
+- The work head is `aed74bb2c76d0840a555772b86f82696d175c59f`. The remote head before this metadata commit is `efcf922d9034dea504f415bce68a269051439219`.
+- This review record and handoff entry are pending push as one metadata commit.
+
+### What is in flight
+
+- The review approves effective head `aed74bb`. The PR is ready for the owner merge step after the checks read this record.
+
+### Traps and gotchas
+
+- The first hosted attempt had one failed test. The rerun passed, and local verification passed.
+- `review/pr-14` has no upstream. Check the remote head with `gh pr view` after the push.
+
+### The questions that block progress
+
+- None. OQ-16 still holds the separate gitar pass (D-7).
+
+### The next concrete action
+
+- Push this metadata commit, check the remote head and `review-gate`, then give the owner the merge summary.
+
 ## Session 46: 2026-09-28, Claude Code
 
 Author: Claude Code
