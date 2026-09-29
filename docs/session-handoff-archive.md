@@ -2,6 +2,42 @@
 
 This file holds the entries that the rotation moves out of `docs/session-handoff.md`, newest first.
 
+## Session 45: 2026-09-28, Codex
+
+Author: Codex
+Session: reviewer PR-14, round 1. Repository: iron-absolution. Branch: `feat/pr-14-windows-engine-commands`. PR: #14. Role: reviewer. Base: `0351bbba52a4fddd91b559ad7ace9f1bb020b2f0`.
+
+### What this session did, and why
+
+- The review read the PR-14 diff, its focused roadmap, the owner decisions, the PR comment, and the hosted checks.
+- The provider gate passed. The review found no defect in scope.
+- Local verification awaits the owner's confirmation under D-96. The review record gives the blocked verdict until that check completes.
+
+### The state of the build
+
+- The owner reported that `run.ps1 verify` passed with 538 tests, no skips, format, and ste-check.
+- The owner provided Windows evidence for the engine exit tests. The hosted build, test, and format, coverage, doc-gate, and ste-check jobs passed.
+- The remote head before this metadata push was `aed74bb2c76d0840a555772b86f82696d175c59f`. The work head is `f6f1d35f122e7769f2733ba69cd6395459a8cafc`.
+- The review record, this entry, and the rotated archive entry are pending push as one metadata commit.
+
+### What is in flight
+
+- The owner must confirm local verification under D-96. Then update the review record and rerun the review gate.
+
+### Traps and gotchas
+
+- `review/pr-14` has no upstream. Compare `git rev-parse HEAD` with the head from `gh pr view` after the push.
+- `package-run` opens a game window. D-96 requires the owner's confirmation before that command.
+
+### The questions that block progress
+
+- The local build and test checks await the owner's confirmation under D-96.
+- OQ-16 still holds the gitar pass (D-7).
+
+### The next concrete action
+
+- Wait for the owner's answer about local verification. If confirmed, run `run.ps1 verify`, update the review record, and check `review-gate` again.
+
 ## Session 44: 2026-09-28, Claude Code
 
 Author: Claude Code

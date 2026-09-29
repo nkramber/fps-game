@@ -17,6 +17,7 @@ Status: the owner accepts it on the condition of D-27. Written in ASD-STE100 (D-
 - 2026-09-28 tenth pass: PR-11 records the gate of phase 1 and the first value of M-8. The owner gave D-108 to D-110.
 - 2026-09-29 eleventh pass: PR-15 adds the focused roadmap of phase 2. The owner gave D-111 to D-114. Phase 2 starts after the gate of phase 1.
 - 2026-09-29 twelfth pass: PR-16 adds `docs/game/` with the pillars and the combat proposals. The owner gave D-115 and D-116. The combat rules follow Doom (2016), so D-1, D-2, and G-1 change in part.
+- 2026-09-29 thirteenth pass: PR-18 adds the provenance policy in `docs/game/provenance.md`, and checks the Meshy facts again (F-7). The owner gave D-118 to D-121. Meshy is for focal props on a paid plan (D-118).
 
 ## 1. Thesis
 
@@ -36,6 +37,7 @@ The owner decides the product. Approved facts cite a D-# id. Open choices cite a
 | Weapon roster, enemy roster, combat spaces, secrets | Numbers for the brief of phase 2 (D-37) |
 | Replay value | Not a primary goal. The player can start the level again (D-37). |
 | Setting, tone, and art direction | A monastery of cold iron on a sea cliff, a solemn tone, and a cold gothic look (D-117). `docs/game/art-proposals.md` gives the detail. Resolves OQ-9. |
+| Sources of art and audio | Original work, CC0 1.0, CC BY 4.0, and AI generation with terms that give ownership (D-119, D-120). Meshy on a paid plan, for focal props alone (D-118). `docs/game/provenance.md` gives the policy. |
 | Platforms and frame budget | Windows 120 fps at 1440p on the owner's PC (D-32). The macOS budget of 60 fps at 4K output went on 2026-09-28 (D-91). |
 | Input devices | Keyboard and mouse (D-32). Gamepad is open (OQ-21). |
 | Working title and project name | Iron Absolution, `IronAbsolution` in code (D-39) |
@@ -105,7 +107,7 @@ Status legend:
 | F-4 | 2026-09-26 | The internal disk has 45 GB free. The project SSD has 923 GB free. | `df -h` | ⏸ out of scope (D-91). The Windows PC keeps the default cache place (D-100). |
 | F-5 | 2026-09-26 | The Mac has 16 GB of memory. Epic gives 16 GB as the minimum and 32 GB as the recommendation. | Epic macOS requirements | ⏸ out of scope (D-91). PR-14 measures M-1 on the Windows PC (D-98). |
 | F-6 | 2026-09-26 | The Epic input overview page calls Enhanced Input experimental. The Enhanced Input page says it is on by default. | Two Epic pages for 5.8 | ✅ PR #10: on 2026-09-28 the Plugins window of the editor showed Enhanced Input 1.0 on, with no Beta or Experimental label. The automation test reads the Enhanced Input classes |
-| F-7 | 2026-09-26 | The Meshy plugin has Windows builds for Unreal Engine 5.4 to 5.7 only. Its bridge needs Meshy Pro. | Meshy integration page | ⚠ binds OQ-12 |
+| F-7 | 2026-09-26 | The Meshy plugin has Windows builds for Unreal Engine 5.4 to 5.7 only. Its bridge needs Meshy Pro. Correction of 2026-09-29: PR-18 checked the facts again, and they stand. | Meshy integration page, `docs/game/provenance.md` section 6 | ✅ doc: the path of D-118 uses no plugin (PR-18) |
 | F-8 | 2026-09-26 | Hosted runners have no Unreal Engine. | Role-model CI, GitHub runners | ✅ doc. Engine PRs attach local logs (D-31). |
 | F-9 | 2026-09-26 | Both providers push as one GitHub account. No machine check can prove which provider wrote a review. | The-thing-below merge runbook | ⚠ accepted risk. Binds PR-3 and PR-6. |
 | F-10 | 2026-09-27 | The commits of GitHub PR #1 carried AI co-author lines. Tenet T-6 forbids them. | GitHub PR #1 | ✅ doc. PR-1 moved to new commits (D-23). |
@@ -114,7 +116,7 @@ Status legend:
 | F-13 | 2026-09-27 | The ste-writing skill of the-thing-below starts with a stray table row before its front matter. | Line 1 of that skill | ✅ doc. The port in PR-1 leaves the row out. |
 | F-14 | 2026-09-27 | 60 fps at 4K output on the base M4 with 16 GB is a hard target. Epic recommends an M3 or later with 32 GB for development. | Epic macOS requirements, TSR page | ⏸ out of scope (D-91, D-95). |
 | F-15 | 2026-09-27 | A level of 30 minutes or more multiplies the content cost of phases 6 and 7. | D-37 | ⚠ binds the brief of phase 2 |
-| F-16 | 2026-09-27 | MIT covers the whole repository. An asset with terms that forbid redistribution, or free Meshy output under CC BY, cannot enter it as MIT content. | D-24, Meshy terms | ⚠ binds OQ-12 and phase 5 |
+| F-16 | 2026-09-27 | MIT covers the whole repository. An asset with terms that forbid redistribution, or free Meshy output under CC BY, cannot enter it as MIT content. Correction of 2026-09-29: section 4 of `docs/game/provenance.md` gives the rule (PR-18). A file under a license that forbids redistribution stays out of the repository and the package. A CC BY 4.0 file keeps its terms, with an attribution in its record and in the credits file (D-119). | D-24, D-119, Meshy terms | ⚠ binds phase 5: the manifest, the credits file, and the check (D-121) |
 | F-17 | 2026-09-27 | Unreal cannot build Windows packages on the Mac. Windows builds need the Windows PC of the owner. | D-33 | ⏸ out of scope (D-91). The engine work runs on the Windows PC (D-92). |
 | F-18 | 2026-09-27 | The time rule of the `review-override` label reads the committer time of the work head. The commit author sets that time, so a backdated commit after the label passes. | Review P2-1 of PR #7, reproduced with a backdated commit | ⚠ accepted risk (D-68). The rule stops an accident, not an attack (F-9). |
 | F-19 | 2026-09-27 | Section 8 put the engine install (step 9) before the setup runbook of phase 1, which guides that install. On that date the Mac had no engine, no Xcode app, and no Git LFS. | Section 8, the work of phase 1, `xcode-select -p` and `git lfs version` on the Mac | ✅ doc. The install comes after PR-8 (D-69). |
@@ -281,7 +283,7 @@ When the owner confirms that gitar works here, one PR ports the gitar-wait scrip
 - Objective: turn the intent of the owner into a short brief that a test can check.
 - Dependencies: PR-1. It runs beside phase 1. Correction of 2026-09-29: no PR of phase 2 started before the gate of phase 1. PR-15 starts phase 2 after that gate.
 - Work: pillars and the core loop. Two or three original proposals for the recovery mechanic (OQ-10) and for setting, tone, and art (OQ-9), as D-36 sets. The level brief for 30 minutes or more (D-37). The provenance policy for art and audio (D-24, D-38). The Meshy choice after the art direction (OQ-12).
-- Focused roadmap: `docs/roadmaps/phase-2-direction-brief.md` holds PR-16 to PR-19 and the gate (D-111, D-112). PR-15 adds it. Status: ✅ done in PR #16. The game documents go in `docs/game/`, and PR-16 creates the folder (D-114). PR-16 status: ✅ done in PR #17. The owner picked the combat rules of Doom (2016) (D-115) and the player verbs (D-116).
+- Focused roadmap: `docs/roadmaps/phase-2-direction-brief.md` holds PR-16 to PR-19 and the gate (D-111, D-112). PR-15 adds it. Status: ✅ done in PR #16. The game documents go in `docs/game/`, and PR-16 creates the folder (D-114). PR-16 status: ✅ done in PR #17. The owner picked the combat rules of Doom (2016) (D-115) and the player verbs (D-116). PR-17 status: ✅ done in PR #18 (D-117). PR-18 status: ✅ done in PR #19. The owner gave the Meshy choice and the rules of the provenance policy (D-118 to D-121).
 - Exit evidence: decision rows for the picks of OQ-9 and OQ-10. The brief gives numbers: clear time, combat spaces, and roster sizes. F-15 applies: the brief states the content cost of the length.
 
 > *In plain English:* The owner decides what the game feels like, looks like, and how long the level is.
@@ -308,7 +310,7 @@ When the owner confirms that gitar works here, one PR ports the gitar-wait scrip
 
 - Objective: prove a repeatable content pipeline on one small room before we pay for a whole level.
 - Dependencies: phase 1 and the art direction of phase 2. It runs beside phases 3 and 4. The kit grid waits for the movement metrics of phase 3.
-- Work: standards for scale, grid, pivots, names, collision, UVs, texel density, LODs, and folders. A DCC round trip, for example Blender to FBX to Unreal. A kit and trim-sheet prototype. A measured choice of the light method. The audio pipeline (D-38). A Meshy trial of one to three props, only after OQ-12 and with owner approval of the spend (D-8). The provenance manifest and import checks. A plan for the animation sources, which is still unknown.
+- Work: standards for scale, grid, pivots, names, collision, UVs, texel density, LODs, and folders. A DCC round trip, for example Blender to FBX to Unreal. A kit and trim-sheet prototype. A measured choice of the light method. The audio pipeline (D-38). A Meshy trial of one to three props, on the terms of D-118 and with owner approval of the spend (D-8). The provenance manifest, the credits file, and the import checks (D-119, D-121). A plan for the animation sources, which is still unknown.
 - Exit evidence: the room meets M-5 on Windows (D-91). M-6 has a value. Each asset in the room has a provenance record. The import checks pass. The owner approves the look as a D-# row.
 
 > *In plain English:* We finish one small room to full quality first, to prove that our art method works and runs fast.

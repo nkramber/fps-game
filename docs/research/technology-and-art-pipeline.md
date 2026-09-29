@@ -66,6 +66,8 @@ The owner decided these on 2026-09-27 (D-28 to D-34). The owner chose macOS and 
 
 ## 2. Meshy
 
+Correction of 2026-09-29: PR-18 checked these facts again. Section 6 of `docs/game/provenance.md` holds the result and each change. The owner picked Meshy on a paid plan, for focal props alone (D-118).
+
 ### Evidence
 
 - **Plugin.** The [Meshy Unreal page](https://www.meshy.ai/integrations/unreal-engine) says: "Windows binary builds are available for UE 5.4, 5.5, 5.6 and 5.7". It also says that "Other targets require building and verifying the source package". No macOS build and no 5.8 build exist (F-7).
