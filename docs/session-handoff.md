@@ -26,6 +26,7 @@ Session: author PR-21, round 1. Repository: iron-absolution. Branch: `feat/pr-21
 ### Traps and gotchas
 
 - The script is the source of each asset that it makes. A change in the editor alone goes away at the next `content-build`.
+- Each `content-build` writes `L_Gym` and `IMC_KeyboardMouse` again with new internal ids. Restore them when the script did not change.
 - A test world has no local player. The movement tests set `bRunPhysicsWithNoController`, then `SetDefaultMovementMode`, or the character never moves.
 - The project has `bEnableLegacyInputScales` on, so a positive pitch input turns the view down. The mapping context negates the Y axis of the mouse.
 - The C++ copies the ranges of the tuning from the clamps of the header, because a package has no metadata. Change both together.
