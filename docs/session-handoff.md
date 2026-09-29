@@ -1,3 +1,39 @@
+## Session 52: 2026-09-29, Claude Code
+
+Author: Claude Code
+Session: author PR-15, round 1. Repository: iron-absolution. Branch: `docs/pr-15-phase-2-roadmap`. PR: #16. Role: author. Base: `708dbf14c573db8fc4e5fc78a74fcd189f8e84f6`.
+
+### What this session did, and why
+
+- `run.ps1 verify` passed at the base `708dbf1`: 539 tests and 0 STE findings.
+- The session added `docs/roadmaps/phase-2-direction-brief.md`, the focused roadmap of phase 2 (D-70). It holds PR-16 to PR-19, the gate, and the order.
+- The owner gave D-111 to D-114: four PRs, the order PR-16 to PR-19, the pick in the proposal PR, and the folder `docs/game/`.
+- The design doc gets the eleventh pass line, the focused roadmap of phase 2, and a dated correction. No PR of phase 2 ran beside phase 1.
+- OQ-9, OQ-10, and OQ-12 each get a plan line that names its PR.
+
+### The state of the build
+
+- The remote head is the commit of this entry on `docs/pr-15-phase-2-roadmap`, pending merge.
+- The PR changes documents alone, so it has no effective head. The `review-override` label replaces the Codex review (D-35, D-66, D-76).
+
+### What is in flight
+
+- The checks of PR #16, then the merge summary and the owner confirmation.
+
+### Traps and gotchas
+
+- GitHub PR #16 is roadmap item PR-15. Roadmap item PR-16 gets a later GitHub number. Write "PR #n" for GitHub and "PR-n" for the roadmap.
+- `run.ps1 ste-check` reads tracked files alone. Stage a new phase file before the check, or its PR headings define no id.
+- A line that names a path under `docs/game/` must also name a PR id until PR-16 creates the folder (REF 2).
+
+### The questions that block progress
+
+- None for PR-15. OQ-10 blocks PR-16, and the owner answers it during PR-16 (D-113). OQ-16 still holds the gitar pass (D-7).
+
+### The next concrete action
+
+- After the merge, write the transitional prompt of PR-16 from section 8 of the phase 2 file.
+
 ## Session 51: 2026-09-28, Claude Code
 
 Author: Claude Code
@@ -317,41 +353,3 @@ Session: reviewer PR-13, round 1. Repository: iron-absolution. Branch: `feat/pr-
 ### The next concrete action
 
 - After the merge, write the transitional prompt for PR-14: the engine commands on Windows alone, and the removal of each Mac part.
-
-## Session 42: 2026-09-28, Claude Code
-
-Author: Claude Code
-Session: author PR-13, round 1. Repository: iron-absolution. Branch: `feat/pr-13-windows-dev-tools`. PR: #13. Role: author. Base: `2509d791d1769c7602fc802eb78158fd0c28dff6`.
-
-### What this session did, and why
-
-- This is the first session on the Windows PC (D-92). `run.ps1` is the new entry of each development command (D-99). The Makefile keeps the Mac engine targets until PR-14.
-- The owner answered three questions at the start. They are D-101 to D-103: PowerShell 7 as an owner step, the program path of the platform, and the stub program of the tests.
-- 27 tests failed on Windows before this PR. Two were real defects: a forward-slash constant into `Path.Combine` gave a mixed-separator path in `handoff-rotate` and in the Codex transcript. `ToolPaths.UnderFolder` now holds that rule one time.
-- 25 tests threw `PlatformNotSupportedException` and cited D-55, which D-92 superseded. Each stub of a program of the engine is now `IronAbsolution.TestStub`, so Windows can start it (D-103).
-- `EntryScriptTests` covers each start condition of the entry: an unknown target, a missing `-PR`, an absent .NET SDK, an absent git, and an absent npm.
-- 28 files that named a `make` development target now name the entry target. The runbook lists each owner install step.
-
-### The state of the build
-
-- `run.ps1 verify` passes on the Windows PC: build, 540 tests, format, and ste-check with 0 findings. No test is skipped. 527 tests ran before, with 27 failures and 13 skips.
-- The remote head is the commit of this entry. The state is pending merge.
-
-### What is in flight
-
-- The Codex review of PR-13 (D-14), then the merge summary and the merge confirmation of the owner.
-
-### Traps and gotchas
-
-- The Bash tool of this harness eats a backslash in a quoted heredoc. Write a file that needs a backslash escape with the Write tool or the Edit tool, and not with a heredoc.
-- The stub program runs because the host of .NET looks for its own assembly name, and not for its own file name. So a copy under another name still finds `IronAbsolution.TestStub.dll` beside it.
-- `ToolchainScriptTests` points `ProgramFiles(x86)` at an empty folder. Without it, the Visual Studio pin passes on a PC that has Visual Studio, and the test fails.
-- Ask the owner before each command that opens a game window (D-96).
-
-### The questions that block progress
-
-- None. OQ-16 still holds gitar (D-7).
-
-### The next concrete action
-
-- After the merge, write the transitional prompt of PR-14: the engine commands on Windows alone, and the removal of each Mac part (D-97).

@@ -65,9 +65,11 @@ Find a question with `grep -n -E '^[0-9]+\. \*\*OQ-(1|18)\.' docs/questions.md`.
 9. **OQ-9. Setting, tone, and art direction.** What is the original setting, tone, and visual style? Raised 2026-09-26 (PR-1). Blocks the gate of phase 2 and each choice of phase 5. Method set 2026-09-27: D-36. The choice stays open.
    - Options: the owner chooses. Phase 2 can give two or three short original proposals.
    - Recommendation: a style that a small team can make with modular kits and trim sheets. Photoreal organic terrain costs much more.
+   - Plan: PR-17 gives the proposals, and the owner picks during that PR (D-111, D-113).
 10. **OQ-10. The combat loop with limited resources.** Which resources are limited, and which original mechanic gives them back in a fight? Raised 2026-09-26 (PR-1). Blocks phase 2 and phase 4. Method set 2026-09-27: D-36. The choice stays open.
     - Options: the owner chooses. Phase 2 can compare two or three original ideas on paper.
     - Recommendation: one main recovery mechanic that rewards attack. Test it in the combat sandbox of phase 4. Do not copy a mechanic of the reference game (D-2).
+    - Plan: PR-16 gives the proposals, and the owner picks during that PR (D-111, D-113).
 11. **OQ-11. Level scope and replay value.** How long is the level, how many fights and roster types does it have, and why do players replay it? Raised 2026-09-26 (PR-1). Blocks phase 2, phase 6, and phase 8. Resolved 2026-09-27: D-37, 30 minutes or more, and replay value is not a primary goal.
     - Options for replay value: levels of difficulty, a score or a rank, a timer, secrets, other routes, or changed fights.
     - Recommendation: 15 to 25 minutes for a first clear, and 4 to 6 combat spaces. Use a small roster. Give replay value through difficulty and a score or time rank. These numbers are assumptions for phase 2 to test.
@@ -77,6 +79,7 @@ Find a question with `grep -n -E '^[0-9]+\. \*\*OQ-(1|18)\.' docs/questions.md`.
     - Option C: a paid plan. The customer owns the output and can keep it private. Meshy can still use it to train its models.
     - Evidence: the Unreal plugin has Windows builds up to Unreal Engine 5.7 only. Its bridge needs Meshy Pro.
     - Recommendation: decide after the art direction. If yes, use option C with a manual FBX export, for focal props only. Start with a trial of one to three assets and a budget.
+    - Plan: PR-18 checks the Meshy facts again and asks the owner, after the pick of PR-17 (D-111, D-112).
 13. **OQ-13. Audio sources.** Where does the audio come from? Raised 2026-09-26 (PR-1). Blocks the audio proof of phase 5. Resolved 2026-09-27: D-38.
     - Options: original recordings or synthesis, licensed libraries, commissioned work, or AI generation under its terms.
     - Recommendation: original or clearly licensed sources, with a provenance record for each file.

@@ -2,6 +2,44 @@
 
 This file holds the entries that the rotation moves out of `docs/session-handoff.md`, newest first.
 
+## Session 42: 2026-09-28, Claude Code
+
+Author: Claude Code
+Session: author PR-13, round 1. Repository: iron-absolution. Branch: `feat/pr-13-windows-dev-tools`. PR: #13. Role: author. Base: `2509d791d1769c7602fc802eb78158fd0c28dff6`.
+
+### What this session did, and why
+
+- This is the first session on the Windows PC (D-92). `run.ps1` is the new entry of each development command (D-99). The Makefile keeps the Mac engine targets until PR-14.
+- The owner answered three questions at the start. They are D-101 to D-103: PowerShell 7 as an owner step, the program path of the platform, and the stub program of the tests.
+- 27 tests failed on Windows before this PR. Two were real defects: a forward-slash constant into `Path.Combine` gave a mixed-separator path in `handoff-rotate` and in the Codex transcript. `ToolPaths.UnderFolder` now holds that rule one time.
+- 25 tests threw `PlatformNotSupportedException` and cited D-55, which D-92 superseded. Each stub of a program of the engine is now `IronAbsolution.TestStub`, so Windows can start it (D-103).
+- `EntryScriptTests` covers each start condition of the entry: an unknown target, a missing `-PR`, an absent .NET SDK, an absent git, and an absent npm.
+- 28 files that named a `make` development target now name the entry target. The runbook lists each owner install step.
+
+### The state of the build
+
+- `run.ps1 verify` passes on the Windows PC: build, 540 tests, format, and ste-check with 0 findings. No test is skipped. 527 tests ran before, with 27 failures and 13 skips.
+- The remote head is the commit of this entry. The state is pending merge.
+
+### What is in flight
+
+- The Codex review of PR-13 (D-14), then the merge summary and the merge confirmation of the owner.
+
+### Traps and gotchas
+
+- The Bash tool of this harness eats a backslash in a quoted heredoc. Write a file that needs a backslash escape with the Write tool or the Edit tool, and not with a heredoc.
+- The stub program runs because the host of .NET looks for its own assembly name, and not for its own file name. So a copy under another name still finds `IronAbsolution.TestStub.dll` beside it.
+- `ToolchainScriptTests` points `ProgramFiles(x86)` at an empty folder. Without it, the Visual Studio pin passes on a PC that has Visual Studio, and the test fails.
+- Ask the owner before each command that opens a game window (D-96).
+
+### The questions that block progress
+
+- None. OQ-16 still holds gitar (D-7).
+
+### The next concrete action
+
+- After the merge, write the transitional prompt of PR-14: the engine commands on Windows alone, and the removal of each Mac part (D-97).
+
 ## Session 41: 2026-09-28, Claude Code
 
 Author: Claude Code
