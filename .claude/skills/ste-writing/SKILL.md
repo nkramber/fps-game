@@ -136,7 +136,7 @@ One term per concept. Add a row for each term that the owner sets, with the refu
 | provider | Anthropic or OpenAI, as the source of a harness | vendor, model |
 | PR | a GitHub pull request | MR, change request |
 | role model | what-you-carry or the-thing-below, as the source of the infrastructure (D-12) | reference repo, template repo |
-| reference game | a game that informs feel or pacing only (D-2) | inspiration, clone target |
+| reference game | a game that informs feel or pacing (D-2). Doom (2016) also gives the combat rules (D-115) | inspiration, clone target |
 
 Process terms:
 

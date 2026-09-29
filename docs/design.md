@@ -16,12 +16,13 @@ Status: the owner accepts it on the condition of D-27. Written in ASD-STE100 (D-
 - 2026-09-28 ninth pass: PR-14 moves the engine commands to `run.ps1` on the Windows PC and removes each Mac part (D-97). The owner gave D-104 to D-106. The C# commands are the one copy of each engine command (D-104).
 - 2026-09-28 tenth pass: PR-11 records the gate of phase 1 and the first value of M-8. The owner gave D-108 to D-110.
 - 2026-09-29 eleventh pass: PR-15 adds the focused roadmap of phase 2. The owner gave D-111 to D-114. Phase 2 starts after the gate of phase 1.
+- 2026-09-29 twelfth pass: PR-16 adds `docs/game/` with the pillars and the combat proposals. The owner gave D-115 and D-116. The combat rules follow Doom (2016), so D-1, D-2, and G-1 change in part.
 
 ## 1. Thesis
 
-The product is one complete, polished level of a fast first-person shooter with limited resources (D-1). The player can play it again, but replay-value features are not a primary goal (D-37). Doom (2016) is a reference for combat intensity and pacing only. All content is original (D-2). The game uses Unreal Engine 5.8 (D-3, D-28) in a compact, hand-authored level (D-4) that takes 30 minutes or more (D-37). It ships on Windows alone (D-32, D-91).
+The product is one complete, polished level of a fast first-person shooter with limited resources (D-1). The player can play it again, but replay-value features are not a primary goal (D-37). Doom (2016) is a reference for combat intensity and pacing, and it gives the combat rules (D-115). The names, the art, the audio, and the layouts are original (D-2). The game uses Unreal Engine 5.8 (D-3, D-28) in a compact, hand-authored level (D-4) that takes 30 minutes or more (D-37). It ships on Windows alone (D-32, D-91).
 
-Correction of 2026-09-28: the thesis named macOS and Windows until D-91.
+Correction of 2026-09-28: the thesis named macOS and Windows until D-91. Correction of 2026-09-29: the thesis named Doom (2016) as a reference for intensity and pacing only until D-115.
 
 The plan removes the costly unknowns first. The order is: engine proof on Windows (D-91), feel, combat loop, and art pipeline. The full level layout and the content production come after these gates, because they cost the most to change.
 
@@ -29,8 +30,8 @@ The owner decides the product. Approved facts cite a D-# id. Open choices cite a
 
 | Topic | State |
 |---|---|
-| Player verbs: move, jump, aim, shoot, change weapon, and perhaps dash or melee | Proposal for phase 2 |
-| The limited resources and the original mechanic that gives them back | Open (OQ-10). Phase 2 proposes, and the owner picks (D-36). |
+| Player verbs: move, jump, aim, shoot, change weapon, melee, mantle, interact, and use the chainsaw | Decided (D-116). `docs/game/pillars.md` gives the list. The proposal of PR-1 had perhaps a dash, and D-116 has none. |
+| The limited resources and the mechanic that gives them back | Health and ammo. A melee finish of a stunned enemy gives health, and a chainsaw with fuel gives ammo, as in Doom (2016) (D-115). Resolves OQ-10. |
 | Level length | 30 minutes or more for a first clear, with more spaces and roster variety (D-37) |
 | Weapon roster, enemy roster, combat spaces, secrets | Numbers for the brief of phase 2 (D-37) |
 | Replay value | Not a primary goal. The player can start the level again (D-37). |
@@ -143,7 +144,7 @@ The tenets are the constitution. When a tenet conflicts with speed or convenienc
 
 ### 6.2 Guardrails
 
-- **G-1.** All content is original. Reference games inform feel and pacing, never assets, names, mechanics, or layouts (D-2).
+- **G-1.** All content is original. Reference games inform feel and pacing, never assets, names, mechanics, or layouts (D-2). Correction of 2026-09-29: the combat rules follow the mechanics of Doom (2016) (D-115). The names, the art, the audio, the layouts, and the look and sound of each cue stay original.
 - **G-2.** The level stays compact and hand-authored. Large-world streaming needs a measurement first (D-4).
 - **G-3.** No Meshy spend without owner approval. No generated mesh enters the game without a cleanup pass (D-8).
 - **G-4.** The scope is one level until the owner accepts it. A new level or system goes to `docs/questions.md` (D-1).
@@ -280,7 +281,7 @@ When the owner confirms that gitar works here, one PR ports the gitar-wait scrip
 - Objective: turn the intent of the owner into a short brief that a test can check.
 - Dependencies: PR-1. It runs beside phase 1. Correction of 2026-09-29: no PR of phase 2 started before the gate of phase 1. PR-15 starts phase 2 after that gate.
 - Work: pillars and the core loop. Two or three original proposals for the recovery mechanic (OQ-10) and for setting, tone, and art (OQ-9), as D-36 sets. The level brief for 30 minutes or more (D-37). The provenance policy for art and audio (D-24, D-38). The Meshy choice after the art direction (OQ-12).
-- Focused roadmap: `docs/roadmaps/phase-2-direction-brief.md` holds PR-16 to PR-19 and the gate (D-111, D-112). PR-15 adds it. Status: ✅ done in PR #16. The game documents go in `docs/game/`, and PR-16 creates the folder (D-114).
+- Focused roadmap: `docs/roadmaps/phase-2-direction-brief.md` holds PR-16 to PR-19 and the gate (D-111, D-112). PR-15 adds it. Status: ✅ done in PR #16. The game documents go in `docs/game/`, and PR-16 creates the folder (D-114). PR-16 status: ✅ done in PR #17. The owner picked the combat rules of Doom (2016) (D-115) and the player verbs (D-116).
 - Exit evidence: decision rows for the picks of OQ-9 and OQ-10. The brief gives numbers: clear time, combat spaces, and roster sizes. F-15 applies: the brief states the content cost of the length.
 
 > *In plain English:* The owner decides what the game feels like, looks like, and how long the level is.
