@@ -62,7 +62,7 @@ Find a question with `grep -n -E '^[0-9]+\. \*\*OQ-(1|18)\.' docs/questions.md`.
    - Option B: a self-hosted runner on the Mac of the owner. Fork PRs of a public repository then run code there.
    - Option C: paid or private build machines.
    - Recommendation: option A now. Think again at the gate of phase 3.
-9. **OQ-9. Setting, tone, and art direction.** What is the original setting, tone, and visual style? Raised 2026-09-26 (PR-1). Blocks the gate of phase 2 and each choice of phase 5. Method set 2026-09-27: D-36. The choice stays open.
+9. **OQ-9. Setting, tone, and art direction.** What is the original setting, tone, and visual style? Raised 2026-09-26 (PR-1). Blocks the gate of phase 2 and each choice of phase 5. Method set 2026-09-27: D-36. Resolved 2026-09-29: D-117, proposal A, Penitent Iron.
    - Options: the owner chooses. Phase 2 can give two or three short original proposals.
    - Recommendation: a style that a small team can make with modular kits and trim sheets. Photoreal organic terrain costs much more.
    - Plan: PR-17 gives the proposals, and the owner picks during that PR (D-111, D-113).

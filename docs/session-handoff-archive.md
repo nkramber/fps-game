@@ -2,6 +2,46 @@
 
 This file holds the entries that the rotation moves out of `docs/session-handoff.md`, newest first.
 
+## Session 44: 2026-09-28, Claude Code
+
+Author: Claude Code
+Session: author PR-14, round 1. Repository: iron-absolution. Branch: `feat/pr-14-windows-engine-commands`. PR: #14. Role: author. Base: `0351bbba52a4fddd91b559ad7ace9f1bb020b2f0`.
+
+### What this session did, and why
+
+- Exit test 6 of PR-13 held: the five checks passed on the final head of #13, and `ci` passed on `main`.
+- `run.ps1` got the five engine targets. `toolchain-check` reads the Windows pins in C#. It gives the same lines as the old script (D-104).
+- The Makefile, `scripts/`, the Xcode and Metal pins, the Mac paths, and the Mac and Linux sections of `DefaultEngine.ini` went (D-97, D-105).
+- The package gets `-abslog`, because the game is a program of the Windows subsystem.
+- The worktree check of `codex-review` reads the forward slashes of git on Windows (D-106). The regression tests fail on the old code.
+- The runbooks, the agent files, the README, and the evidence form of the PR template name the targets of the entry.
+- The owner gave D-104 to D-106.
+
+### The state of the build
+
+- `run.ps1 verify` passed: 538 tests, no skips, format, and ste-check with 0 findings.
+- A fresh clone passed exit tests 1 to 5 and 7 from the entry. The PR comment "Windows evidence" holds the output.
+- M-1 is 3.53 GB. M-2 is 41.6 s for the editor and 101.25 s for the package.
+- The remote head is the commit of this entry, pending merge.
+
+### What is in flight
+
+- The Codex review of #14, then the merge summary.
+
+### Traps and gotchas
+
+- The Bash tool of Claude Code turns a doubled backslash into one backslash, so `.\run.ps1` in a heredoc became a carriage return. Use the Edit tool for a backslash.
+- The editor log has no `LoadMap` line. It writes `MAP LOAD FILE="...L_Test.umap"` when the map loads.
+- Unreal on Windows quotes each argument again (`LaunchWindows.cpp`), so `ArgumentList` works for `-ExecCmds`.
+
+### The questions that block progress
+
+- None. OQ-16 still holds the gitar pass (D-7).
+
+### The next concrete action
+
+- After the merge, write the transitional prompt for PR-11, the gate record.
+
 ## Session 43: 2026-09-28, Codex
 
 Author: Codex
