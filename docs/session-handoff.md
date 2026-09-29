@@ -8,7 +8,7 @@ Session: reviewer PR-21, round 3. Repository: iron-absolution. Branch: `feat/pr-
 - Reviewed PR #22 at effective head `7e2e3f73c1c17b50c34505d7c5ce6d6c0cfc7408`.
 - Verified the owner play test in the package and editor from the PR comment. The owner reports movement, jump, and aim pass.
 - Findings P2-1 and P2-2 remain fixed. The review record now gives `Ready for owner merge`.
-- Current CI passes `ste-check`, `doc-gate`, build, test, format, and coverage. The old `review-gate` result fails on the prior Blocked record.
+- The metadata commit is pushed. All five required checks pass, including `review-gate`.
 
 ### The state of the build
 
@@ -17,12 +17,11 @@ Session: reviewer PR-21, round 3. Repository: iron-absolution. Branch: `feat/pr-
 
 ### What is in flight
 
-- The metadata commit for review round 3, then the new `review-gate` result.
 - The owner merge summary and merge decision.
 
 ### Traps and gotchas
 
-- `review-gate` failed before this record approved the effective head. Check its new result after the metadata push.
+- The `review-gate` result before the metadata push reflects the prior Blocked record.
 - OQ-25 blocks roadmap PR-22, not GitHub PR #22.
 
 ### The questions that block progress
@@ -31,7 +30,7 @@ Session: reviewer PR-21, round 3. Repository: iron-absolution. Branch: `feat/pr-
 
 ### The next concrete action
 
-- Push the review record and this entry together. Read the new checks, then give the owner the merge summary.
+- Give the owner the merge summary, then wait for the merge decision.
 
 ## Session 61: 2026-09-29, Codex
 
