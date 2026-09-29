@@ -1,3 +1,39 @@
+## Session 59: 2026-09-29, Codex
+
+Author: Codex
+Session: reviewer PR-21, round 1. Repository: iron-absolution. Branch: `review/pr-22`. PR: #22. Role: reviewer. Base: `ce25cfd4982d5d4be2c0eee0a0a2658f419b182f`.
+
+### What this session did, and why
+
+- Reviewed work head `e1d5667ccd6e7e5ac3534390dcb2beea1b1a7dac` for PR #22.
+- Recorded two P2 findings in `docs/reviews/pr-22.md`: a zero-gravity failure leaves partial tuning, and NaN values pass range checks.
+- The review verdict is Blocked. Exit test 1 still needs the owner play test of the gym in the editor and package.
+- CI passed `ste-check`, `doc-gate`, and build, test, and format. The first coverage run failed two package-run tests. Its required rerun passed. `review-gate` failed before this review record existed.
+- The owner-reported Windows checks pass at `e1d5667`. No local build or test ran because this session had no owner confirmation.
+
+### The state of the build
+
+- The remote work head is `e1d5667ccd6e7e5ac3534390dcb2beea1b1a7dac` on `feat/pr-21-gym-movement`. The review record and this entry need one metadata commit and push.
+
+### What is in flight
+
+- The author must answer the two findings.
+- The owner must run the play test for exit test 1 before merge.
+- Check `review-gate` after the metadata push.
+
+### Traps and gotchas
+
+- `run.ps1 content-build` rewrites `L_Gym` and `IMC_KeyboardMouse` with new internal ids. Restore them if the script did not change.
+- The gym play test remains open even though the owner reported that package-run passes on `L_Test`.
+
+### The questions that block progress
+
+- None for GitHub PR #22. OQ-25 applies to the later roadmap PR-22.
+
+### The next concrete action
+
+- Push the metadata commit to `feat/pr-21-gym-movement`, then verify the remote head and `review-gate`.
+
 ## Session 58: 2026-09-29, Claude Code
 
 Author: Claude Code
@@ -354,43 +390,3 @@ Session: review PR-11, round 1. Repository: iron-absolution. Branch: `docs/pr-11
 ### The next concrete action
 
 - The author checks the review gate, then gives the owner the merge summary.
-
-## Session 49: 2026-09-28, Claude Code
-
-Author: Claude Code
-Session: author PR-11, round 1. Repository: iron-absolution. Branch: `docs/pr-11-gate-record`. PR: #15. Role: author. Base: `95546e35317aea9fff1f56a2ec2e9c549eceff84`.
-
-### What this session did, and why
-
-- The `ci` run 36495084063 of `main` at `95546e3` passed. So exit test 6 of PR-14 holds after the merge.
-- `run.ps1 verify` passed on the Windows PC before the work.
-- The owner gave D-108: a session measures M-8 with `git lfs ls-files --all --json` in a fresh clone. M-8 is 8,404 bytes in one LFS object, the test map.
-- The owner gave D-109: headless evidence proves line 5 of the gate, and no editor window opens.
-- Section 7.9 of the phase file names the evidence of each line of the gate. The gate of phase 1 passes.
-- The search for line 11 found two leftovers of PR-14 (F-29). The owner chose to fix them in this PR (D-110). `.editorconfig` loses its Makefile section, and the comment of `PowerShellScript.cs` names `run.ps1`.
-- `EditorConfigTests` failed on the old `.editorconfig` with the name Makefile, and it passes after the fix.
-
-### The state of the build
-
-- `run.ps1 verify` passed: 539 tests and 0 STE findings.
-- The remote head is the commit of this entry on `docs/pr-11-gate-record`, pending merge.
-- The PR changes code, so it needs the Codex review. The `review-override` label does not apply (D-110).
-
-### What is in flight
-
-- Round 1 of `run.ps1 codex-review -PR 15`.
-
-### Traps and gotchas
-
-- M-8 does not count an LFS object that only a deleted branch held. GitHub counts it in the quota (D-108).
-- The billing API of GitHub needs the `user` scope, and the token of `gh` does not have it.
-- F-28 stays open. The hosted stub test can fail one time. Run the failed job again before a change.
-
-### The questions that block progress
-
-- None. OQ-16 still holds the gitar pass (D-7).
-
-### The next concrete action
-
-- Answer the Codex review of #15. After approval, give the owner the merge summary.
-- After the merge, the next PR comes from section 8 of `docs/design.md`: the gate of phase 2, or F-28.
