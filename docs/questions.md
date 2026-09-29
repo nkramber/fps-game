@@ -112,3 +112,8 @@ Find a question with `grep -n -E '^[0-9]+\. \*\*OQ-(1|18)\.' docs/questions.md`.
     - Option B: a sample scene of Epic on the Mac, outside the repository. Its terms keep it out of the repository (D-24).
     - Option C: a small original room of basic shapes in PR-11, with a set count of lights and meshes.
     - Recommendation: option C. The room is original, the repository holds it, and each later run can use it again.
+24. **OQ-24. The kind of the harvest tool.** What original tool takes the role of the chainsaw of D-115? It uses fuel, kills an enemy at once, and gives ammo (D-125). Raised 2026-09-29 (PR-19). Blocks the harvest tool in phase 4.
+    - Option A: a tool of the order, for example a rivet driver, that fits a world of riveted iron bodies.
+    - Option B: a heavy two-hand weapon, for example a warden's hammer.
+    - Option C: another original tool that phase 4 proposes.
+    - Recommendation: phase 4 gives two or three original proposals that fit Penitent Iron (D-36, D-117). The owner picks in that PR (D-113).

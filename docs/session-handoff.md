@@ -1,3 +1,46 @@
+## Session 56: 2026-09-29, Claude Code
+
+Author: Claude Code
+Session: author PR-19, round 1. Repository: iron-absolution. Branch: `docs/pr-19-level-brief`. PR: #20. Role: author. Base: `4c1dce4200caec2d34b4d9fe4fa59a0b9a8bcd12`.
+
+### What this session did, and why
+
+- `run.ps1 verify` passed at the base `4c1dce4`: 539 tests and 0 STE findings.
+- The session wrote `docs/game/level-brief.md`: the terms, the targets, the spaces of each zone, a time estimate, the rosters, and the content cost of the length (F-15).
+- The owner confirmed the targets:
+  - D-122: a first clear of 30 to 45 minutes, 10 combat spaces, and 6 other spaces.
+  - D-123: 6 secrets and 10 checkpoints.
+  - D-124: three guns and the harvest tool, and four enemy types with no boss.
+  - D-125: an original harvest tool replaces the chainsaw, with the same rule. It revises D-115 and D-116 in part.
+- OQ-24 asks the kind of the harvest tool. It blocks the tool in phase 4.
+- M-8 at the end of phase 2: 8,404 bytes in one LFS object, from a fresh clone at `4c1dce4` (D-108).
+- Section 7.5 of the phase 2 file gives the evidence of each line of the gate. The five checks passed on PR #16 to PR #19.
+- The design doc, the pillars, the two proposal files, and the glossary of the ste-writing skill name the harvest tool.
+
+### The state of the build
+
+- The remote head is the commit of this entry on `docs/pr-19-level-brief`, pending merge.
+- The PR changes documents alone, so the `review-override` label replaces the Codex review (D-35, D-66, D-76).
+
+### What is in flight
+
+- The checks of PR #20, then the merge summary and the owner confirmation.
+
+### Traps and gotchas
+
+- GitHub PR #20 is roadmap item PR-19.
+- The owner first answered "3 guns + something other than a chainsaw". That conflicted with D-115 and D-116, so the session asked again. The answer: the same rule, with a new tool.
+- The docs of PR-16 and PR-17 keep the word chainsaw as history, with a dated correction.
+- The time estimate of the brief gives 30 to 48 minutes. It is an assumption, and M-7 measures it in phase 6.
+
+### The questions that block progress
+
+- None for PR-19. OQ-24 blocks the harvest tool in phase 4. OQ-16 still holds the gitar pass (D-7).
+
+### The next concrete action
+
+- After the merge, write the transitional prompt of the first PR of phase 3. Phase 3 has no focused roadmap yet, so that PR adds it.
+
 ## Session 55: 2026-09-29, Claude Code
 
 Author: Claude Code
@@ -330,37 +373,3 @@ Session: reviewer PR-14, round 2. Repository: iron-absolution. Branch: `feat/pr-
 ### The next concrete action
 
 - Push this metadata commit, check the remote head and `review-gate`, then give the owner the merge summary.
-
-## Session 46: 2026-09-28, Claude Code
-
-Author: Claude Code
-Session: author PR-14, round 2. Repository: iron-absolution. Branch: `feat/pr-14-windows-engine-commands`. PR: #14. Role: author. Base: `0351bbba52a4fddd91b559ad7ace9f1bb020b2f0`.
-
-### What this session did, and why
-
-- Round 1 gave `Blocked` with no finding. It read D-96 as a rule for each build and test, and it recorded `f6f1d35` as the head.
-- The owner confirmed that D-96 covers a window alone. D-107 records it.
-- `docs/reviews/pr-14-response.md` answers both causes. The effective head stays `aed74bb`, because that commit changes three files under `Game/Source/` (D-49).
-
-### The state of the build
-
-- `run.ps1 verify` passed at `aed74bb`: 538 tests, no skips, format, and ste-check with 0 findings.
-- Four hosted checks passed at `aed74bb`. `review-gate` waits for an approval record.
-- The remote head is the commit of this entry, pending merge.
-
-### What is in flight
-
-- Round 2 of `run.ps1 codex-review -PR 14`, then the merge summary.
-
-### Traps and gotchas
-
-- Round 1 left its worktree in the temporary folder. Round 2 removes it through the worktree check of D-106.
-- A commit of C++ comments moves the effective head, because `Game/` is outside the documents set (D-49).
-
-### The questions that block progress
-
-- None. OQ-16 still holds the gitar pass (D-7).
-
-### The next concrete action
-
-- After the merge, write the transitional prompt for PR-11, the gate record.

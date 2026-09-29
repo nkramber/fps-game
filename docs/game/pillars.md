@@ -1,6 +1,6 @@
 # Pillars and the core loop
 
-Status: the pillars, the core loop, and the player verbs of the first level. PR-16 adds this file (D-111, D-114). Written 2026-09-29 in ASD-STE100 (D-17).
+Status: the pillars, the core loop, and the player verbs of the first level. PR-16 adds this file (D-111, D-114). Written 2026-09-29 in ASD-STE100 (D-17). Correction of 2026-09-29: an original harvest tool replaces the chainsaw, with the same rule (PR-19, D-125).
 
 This file states what the game is, in terms that a design choice can test. The design doc holds the roadmap, and `docs/decisions.md` holds each pick of the owner. The proposals of the recovery mechanic are in `docs/game/combat-proposals.md`.
 
@@ -23,11 +23,11 @@ The loop below runs once for each combat space. The recovery step follows the co
 
 1. The player enters a combat space, and sees the threats and the exits.
 2. The player moves and attacks. Each shot spends ammo, and each hit on the player spends health.
-3. The player finishes a stunned enemy for health, and uses the chainsaw for ammo (D-115).
+3. The player finishes a stunned enemy for health, and uses the harvest tool for ammo (D-115, D-125).
 4. The player clears the space, or dies and starts again at the last checkpoint.
 5. Between fights, the player explores, finds pickups and secrets, and reaches the next space.
 
-Assumption: the level places a small count of pickups between fights. PR-19 gives the count of secrets and checkpoints, and phase 6 places the pickups.
+Assumption: the level places a small count of pickups between fights. `docs/game/level-brief.md` gives the count of secrets and checkpoints (D-123), and phase 6 places the pickups.
 
 ## Player verbs
 
@@ -43,6 +43,6 @@ D-116 records the list of player verbs, because phase 3 builds them (D-111).
 | melee | a close attack, and the finish of a stunned enemy | 3 for the attack, 4 for the finish |
 | mantle | climb onto a ledge at chest height | 3 |
 | interact | use a switch, a door, or a pickup that needs a key | 3 |
-| use the chainsaw | kill an enemy with fuel, for ammo | 4 |
+| use the harvest tool | kill an enemy with fuel, for ammo (D-125) | 4 |
 
 The list has no dash and no reload (D-115, D-116).

@@ -18,6 +18,7 @@ Status: the owner accepts it on the condition of D-27. Written in ASD-STE100 (D-
 - 2026-09-29 eleventh pass: PR-15 adds the focused roadmap of phase 2. The owner gave D-111 to D-114. Phase 2 starts after the gate of phase 1.
 - 2026-09-29 twelfth pass: PR-16 adds `docs/game/` with the pillars and the combat proposals. The owner gave D-115 and D-116. The combat rules follow Doom (2016), so D-1, D-2, and G-1 change in part.
 - 2026-09-29 thirteenth pass: PR-18 adds the provenance policy in `docs/game/provenance.md`, and checks the Meshy facts again (F-7). The owner gave D-118 to D-121. Meshy is for focal props on a paid plan (D-118).
+- 2026-09-29 fourteenth pass: PR-19 adds the level brief in `docs/game/level-brief.md`. It records the gate of phase 2 and the value of M-8 at the end of phase 2. The owner gave D-122 to D-125. An original harvest tool replaces the chainsaw (D-125).
 
 ## 1. Thesis
 
@@ -31,10 +32,10 @@ The owner decides the product. Approved facts cite a D-# id. Open choices cite a
 
 | Topic | State |
 |---|---|
-| Player verbs: move, jump, aim, shoot, change weapon, melee, mantle, interact, and use the chainsaw | Decided (D-116). `docs/game/pillars.md` gives the list. The proposal of PR-1 had perhaps a dash, and D-116 has none. |
-| The limited resources and the mechanic that gives them back | Health and ammo. A melee finish of a stunned enemy gives health, and a chainsaw with fuel gives ammo, as in Doom (2016) (D-115). Resolves OQ-10. |
-| Level length | 30 minutes or more for a first clear, with more spaces and roster variety (D-37) |
-| Weapon roster, enemy roster, combat spaces, secrets | Numbers for the brief of phase 2 (D-37) |
+| Player verbs: move, jump, aim, shoot, change weapon, melee, mantle, interact, and use the harvest tool | Decided (D-116, D-125). `docs/game/pillars.md` gives the list. The proposal of PR-1 had perhaps a dash, and D-116 has none. Correction of 2026-09-29: the last verb was "use the chainsaw" until D-125. |
+| The limited resources and the mechanic that gives them back | Health and ammo. A melee finish of a stunned enemy gives health, and a harvest tool with fuel gives ammo, as in Doom (2016) (D-115, D-125). Resolves OQ-10. Correction of 2026-09-29: an original harvest tool replaces the chainsaw, with the same rule (D-125). |
+| Level length | 30 to 45 minutes for a first clear (D-37, D-122). `docs/game/level-brief.md` gives the targets. |
+| Weapon roster, enemy roster, combat spaces, secrets | Three guns and the harvest tool, four enemy types with no boss, 10 combat spaces and 6 other spaces, 6 secrets, and 10 checkpoints (D-122 to D-124). `docs/game/level-brief.md` gives the targets and the content cost. |
 | Replay value | Not a primary goal. The player can start the level again (D-37). |
 | Setting, tone, and art direction | A monastery of cold iron on a sea cliff, a solemn tone, and a cold gothic look (D-117). `docs/game/art-proposals.md` gives the detail. Resolves OQ-9. |
 | Sources of art and audio | Original work, CC0 1.0, CC BY 4.0, and AI generation with terms that give ownership (D-119, D-120). Meshy on a paid plan, for focal props alone (D-118). `docs/game/provenance.md` gives the policy. |
@@ -85,7 +86,7 @@ What we do not know, and the measurement that answers it:
 - M-5: Frame time and memory of the vertical-slice room. Phase 5.
 - M-6: Time to change one kit piece and see the change in each space. Phase 5.
 - M-7: First-clear time of the full level in graybox. Phase 6.
-- M-8: LFS storage in use, at the end of each phase. Each phase. D-108 gives the method. The value at the end of phase 1, on 2026-09-28 in PR-11: 8,404 bytes in one LFS object, the test map. The session read a fresh clone of `main` at `95546e3`. The value uses less than 0.0001% of the free quota of 10 GiB.
+- M-8: LFS storage in use, at the end of each phase. Each phase. D-108 gives the method. The value at the end of phase 1, on 2026-09-28 in PR-11: 8,404 bytes in one LFS object, the test map. The session read a fresh clone of `main` at `95546e3`. The value uses less than 0.0001% of the free quota of 10 GiB. The value at the end of phase 2, on 2026-09-29 in PR-19: 8,404 bytes in one LFS object, the test map. The session read a fresh clone of `main` at `4c1dce4`. Phase 2 added no LFS object.
 - M-9: Internal resolution of TSR that holds 60 fps at 4K output on the Mac (D-32). ⏸ Out of scope since 2026-09-28 (D-95). The first frame time comes from M-3.
 
 ## 5. Defect and finding register
@@ -115,7 +116,7 @@ Status legend:
 | F-12 | 2026-09-27 | D-6 asks for a review of each PR. Both role models let the owner skip the review of a PR with no code through a label. | Tenet T-4 of the role models | ✅ doc. The owner label comes after PR-6 (D-35). |
 | F-13 | 2026-09-27 | The ste-writing skill of the-thing-below starts with a stray table row before its front matter. | Line 1 of that skill | ✅ doc. The port in PR-1 leaves the row out. |
 | F-14 | 2026-09-27 | 60 fps at 4K output on the base M4 with 16 GB is a hard target. Epic recommends an M3 or later with 32 GB for development. | Epic macOS requirements, TSR page | ⏸ out of scope (D-91, D-95). |
-| F-15 | 2026-09-27 | A level of 30 minutes or more multiplies the content cost of phases 6 and 7. | D-37 | ⚠ binds the brief of phase 2 |
+| F-15 | 2026-09-27 | A level of 30 minutes or more multiplies the content cost of phases 6 and 7. Correction of 2026-09-29: the level brief gives the cost of 16 spaces, 40 to 60 kit pieces, and 39 to 53 props (PR-19, D-122). | D-37, D-122 | ⚠ binds phases 6 and 7: the cost of the brief |
 | F-16 | 2026-09-27 | MIT covers the whole repository. An asset with terms that forbid redistribution, or free Meshy output under CC BY, cannot enter it as MIT content. Correction of 2026-09-29: section 4 of `docs/game/provenance.md` gives the rule (PR-18). A file under a license that forbids redistribution stays out of the repository and the package. A CC BY 4.0 file keeps its terms, with an attribution in its record and in the credits file (D-119). | D-24, D-119, Meshy terms | ⚠ binds phase 5: the manifest, the credits file, and the check (D-121) |
 | F-17 | 2026-09-27 | Unreal cannot build Windows packages on the Mac. Windows builds need the Windows PC of the owner. | D-33 | ⏸ out of scope (D-91). The engine work runs on the Windows PC (D-92). |
 | F-18 | 2026-09-27 | The time rule of the `review-override` label reads the committer time of the work head. The commit author sets that time, so a backdated commit after the label passes. | Review P2-1 of PR #7, reproduced with a backdated commit | ⚠ accepted risk (D-68). The rule stops an accident, not an attack (F-9). |
@@ -283,7 +284,7 @@ When the owner confirms that gitar works here, one PR ports the gitar-wait scrip
 - Objective: turn the intent of the owner into a short brief that a test can check.
 - Dependencies: PR-1. It runs beside phase 1. Correction of 2026-09-29: no PR of phase 2 started before the gate of phase 1. PR-15 starts phase 2 after that gate.
 - Work: pillars and the core loop. Two or three original proposals for the recovery mechanic (OQ-10) and for setting, tone, and art (OQ-9), as D-36 sets. The level brief for 30 minutes or more (D-37). The provenance policy for art and audio (D-24, D-38). The Meshy choice after the art direction (OQ-12).
-- Focused roadmap: `docs/roadmaps/phase-2-direction-brief.md` holds PR-16 to PR-19 and the gate (D-111, D-112). PR-15 adds it. Status: ✅ done in PR #16. The game documents go in `docs/game/`, and PR-16 creates the folder (D-114). PR-16 status: ✅ done in PR #17. The owner picked the combat rules of Doom (2016) (D-115) and the player verbs (D-116). PR-17 status: ✅ done in PR #18 (D-117). PR-18 status: ✅ done in PR #19. The owner gave the Meshy choice and the rules of the provenance policy (D-118 to D-121).
+- Focused roadmap: `docs/roadmaps/phase-2-direction-brief.md` holds PR-16 to PR-19 and the gate (D-111, D-112). PR-15 adds it. Status: ✅ done in PR #16. The game documents go in `docs/game/`, and PR-16 creates the folder (D-114). PR-16 status: ✅ done in PR #17. The owner picked the combat rules of Doom (2016) (D-115) and the player verbs (D-116). PR-17 status: ✅ done in PR #18 (D-117). PR-18 status: ✅ done in PR #19. The owner gave the Meshy choice and the rules of the provenance policy (D-118 to D-121). PR-19 status: ✅ done in PR #20. The owner gave the targets of the brief (D-122 to D-125). The gate of phase 2 passes in PR #20 (PR-19).
 - Exit evidence: decision rows for the picks of OQ-9 and OQ-10. The brief gives numbers: clear time, combat spaces, and roster sizes. F-15 applies: the brief states the content cost of the length.
 
 > *In plain English:* The owner decides what the game feels like, looks like, and how long the level is.
@@ -374,7 +375,7 @@ After that, each phase gets a focused roadmap just before it starts. `docs/roadm
 9. PR-7: the focused roadmap of phase 1. Its PR ids continue after PR-6.
 10. PR-8: the engine toolchain. Then the owner installs the engine and Xcode on the Mac, and the engine on the Windows PC (D-28, D-33). Correction of 2026-09-27: the install was step 9, before its runbook (F-19, D-69). Second correction of 2026-09-27: the owner installs during PR-8, before its merge (D-78).
 11. PR-9 to PR-14 in the order of section 8 of the phase file. Correction of 2026-09-28: PR-12 to PR-14 come before PR-11, and they move the project to Windows alone (D-93, D-94). Phase 2 starts beside phase 1. The owner picks for OQ-9 and OQ-10, then answers OQ-12. Correction of 2026-09-29: no PR of phase 2 started beside phase 1.
-12. Gate of phase 1, then gate of phase 2. The gate of phase 1 passes in PR #15 (PR-11). Phase 2 holds PR-15 to PR-19, in the order of section 8 of its phase file (D-111, D-112).
+12. Gate of phase 1, then gate of phase 2. The gate of phase 1 passes in PR #15 (PR-11). Phase 2 holds PR-15 to PR-19, in the order of section 8 of its phase file (D-111, D-112). The gate of phase 2 passes in PR #20 (PR-19).
 13. Phase 3, then its gate. Phase 5 starts beside it.
 14. Phase 4, then its gate.
 15. Gate of phase 5.
