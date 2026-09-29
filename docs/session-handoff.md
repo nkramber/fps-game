@@ -32,6 +32,7 @@ Session: author PR-19, round 1. Repository: iron-absolution. Branch: `docs/pr-19
 - The owner first answered "3 guns + something other than a chainsaw". That conflicted with D-115 and D-116, so the session asked again. The answer: the same rule, with a new tool.
 - The docs of PR-16 and PR-17 keep the word chainsaw as history, with a dated correction.
 - The time estimate of the brief gives 30 to 48 minutes. It is an assumption, and M-7 measures it in phase 6.
+- The test `AVswhereWithAFaultExitCodeGivesAnAbsentOutputWithTheCode` failed one time in the `coverage report` job of PR #20 and passed on a second run. The stub did not start on the Linux runner, so the absence text started with its path. The session assumes a race of parallel tests on a new script file.
 
 ### The questions that block progress
 
@@ -40,6 +41,7 @@ Session: author PR-19, round 1. Repository: iron-absolution. Branch: `docs/pr-19
 ### The next concrete action
 
 - After the merge, write the transitional prompt of the first PR of phase 3. Phase 3 has no focused roadmap yet, so that PR adds it.
+- A later PR finds the cause of the flaky toolchain test above and adds a regression test (T-2, T-3). The owner chooses when.
 
 ## Session 55: 2026-09-29, Claude Code
 
