@@ -104,7 +104,7 @@ An exit test is a check that the PR must pass before the merge. The PR gate of `
 
 **Questions.** OQ-9, the pick of the owner. The session asks it during the PR (D-113).
 
-**State.** 🔧 planned.
+**State.** ✅ done in PR #18. The owner picked proposal A, Penitent Iron (D-117).
 
 > *In plain English:* The game has no look and no world yet. This change writes two or three ideas for them, and the owner picks one. The art work of phase 5 then follows that pick.
 
@@ -213,5 +213,5 @@ The register is `docs/questions.md`. These questions block an item of phase 2. E
 | Question | Subject | Blocks |
 |---|---|---|
 | OQ-10 | The combat loop with limited resources. Resolved 2026-09-29: D-115 | PR-16, and the gate of phase 2 |
-| OQ-9 | Setting, tone, and art direction | PR-17, and the gate of phase 2 |
+| OQ-9 | Setting, tone, and art direction. Resolved 2026-09-29: D-117 | PR-17, and the gate of phase 2 |
 | OQ-12 | Meshy and its plan | PR-18. It waits for the pick of PR-17 |

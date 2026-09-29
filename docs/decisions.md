@@ -24,6 +24,7 @@ How to read this file:
 - The owner gave D-94 to D-100 on 2026-09-28 in PR-12, the plan of the move to Windows alone.
 - The owner gave D-111 to D-114 on 2026-09-29 in PR-15, the focused roadmap of phase 2.
 - The owner gave D-115 and D-116 on 2026-09-29 in PR-16, the pillars, the core loop, and the recovery mechanic.
+- The owner gave D-117 on 2026-09-29 in PR-17, the setting, the tone, and the art direction.
 - For D-15, the owner asked for the best fit, and the session recommended it. The owner then chose it.
 
 How to add a decision:
@@ -61,6 +62,7 @@ Find a row with `grep -n -E '^\| D-(12|14) \|' docs/decisions.md`.
 | D-113 | 2026-09-29 | Pick in the proposal PR | The owner picks from the proposals during the PR that gives them. That PR records the pick as a decision row and marks its question resolved. | The owner gave this answer in PR-15. Binds PR-16 for OQ-10 and PR-17 for OQ-9. No PR exists only to record a pick (D-5). |
 | D-115 | 2026-09-29 | Combat rules | The combat rules follow Doom (2016). A stunned enemy can take a melee finish that gives health. A chainsaw with fuel kills an enemy and gives ammo. Kills and the level give pickups. No weapon needs a reload. The names, the art, the audio, the layouts, and the look and sound of each cue stay original. | Resolves OQ-10. The owner gave this answer in PR-16, after the four proposals of `docs/game/combat-proposals.md`. The owner first said "Same rules as Doom 2016", then chose to keep D-2, then said "Nah, back to Doom 2016. Use those mechanics." The owner confirmed this text. Revises in part D-1, D-2, D-36, and G-1. The sandbox of phase 4 tests the rules. |
 | D-116 | 2026-09-29 | Player verbs | The player verbs are: move, jump, aim, shoot, change weapon, melee, mantle, interact, and use the chainsaw. The melee verb also makes the finish of D-115 on a stunned enemy. | The owner gave this answer in PR-16 (D-111). Phase 3 builds the verbs, and phase 4 builds the finish and the chainsaw. The list has no dash and no reload. `docs/game/pillars.md` names this row. |
+| D-117 | 2026-09-29 | Art direction | The setting, the tone, and the visual style follow proposal A, Penitent Iron: a monastery of cold iron on a sea cliff, with hollow iron bodies as enemies. The tone is solemn and severe. The look is cold and gothic, with signal colors for pickups and cues. | Resolves OQ-9. The owner gave this answer in PR-17, after the three proposals of `docs/game/art-proposals.md` (D-36, D-113). That file holds the detail. Phase 5 sets the kit grid, the light method (M-5), and the final palette values. |
 
 ## Process, review, and tools
 

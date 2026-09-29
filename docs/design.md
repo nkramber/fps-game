@@ -35,7 +35,7 @@ The owner decides the product. Approved facts cite a D-# id. Open choices cite a
 | Level length | 30 minutes or more for a first clear, with more spaces and roster variety (D-37) |
 | Weapon roster, enemy roster, combat spaces, secrets | Numbers for the brief of phase 2 (D-37) |
 | Replay value | Not a primary goal. The player can start the level again (D-37). |
-| Setting, tone, and art direction | Open (OQ-9). Phase 2 proposes, and the owner picks (D-36). |
+| Setting, tone, and art direction | A monastery of cold iron on a sea cliff, a solemn tone, and a cold gothic look (D-117). `docs/game/art-proposals.md` gives the detail. Resolves OQ-9. |
 | Platforms and frame budget | Windows 120 fps at 1440p on the owner's PC (D-32). The macOS budget of 60 fps at 4K output went on 2026-09-28 (D-91). |
 | Input devices | Keyboard and mouse (D-32). Gamepad is open (OQ-21). |
 | Working title and project name | Iron Absolution, `IronAbsolution` in code (D-39) |
