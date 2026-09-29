@@ -4,7 +4,7 @@ Status: **active focused phase roadmap.** PR-15 adds it. This file gives each it
 
 The design doc holds the thesis of the game, the system map (section 3), and the cost model (section 4). It also holds the guardrails (section 6) and the global order of every PR (section 8). This file cites each decision by its id and never restates it. The index of this folder is `docs/roadmaps/readme.md`.
 
-External facts: this file states no new external fact. The Meshy facts come from `docs/research/technology-and-art-pipeline.md`, which the session checked on 2026-09-26. PR-18 checks them again, with a date.
+External facts: this file states no new external fact. The Meshy facts come from `docs/research/technology-and-art-pipeline.md`, which the session checked on 2026-09-26. PR-18 checked them again on 2026-09-29, in section 6 of `docs/game/provenance.md`.
 
 Labels: each claim of a plan is evidence (with a link), a recommendation, an assumption, or an unknown.
 
@@ -138,7 +138,7 @@ An exit test is a check that the PR must pass before the merge. The PR gate of `
 
 **Questions.** OQ-12, the Meshy choice. It needs the pick of PR-17 first.
 
-**State.** 🔧 planned.
+**State.** ✅ done in PR #19. The owner picked Meshy on a paid plan, for focal props alone (D-118). The owner also gave the rules of the policy (D-119 to D-121).
 
 > *In plain English:* The game has no rules yet for where its art and sound come from. This change writes those rules, so that each file has a record of its source and its license.
 
@@ -214,4 +214,4 @@ The register is `docs/questions.md`. These questions block an item of phase 2. E
 |---|---|---|
 | OQ-10 | The combat loop with limited resources. Resolved 2026-09-29: D-115 | PR-16, and the gate of phase 2 |
 | OQ-9 | Setting, tone, and art direction. Resolved 2026-09-29: D-117 | PR-17, and the gate of phase 2 |
-| OQ-12 | Meshy and its plan | PR-18. It waits for the pick of PR-17 |
+| OQ-12 | Meshy and its plan. Resolved 2026-09-29: D-118 | PR-18 |

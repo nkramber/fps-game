@@ -73,7 +73,7 @@ Find a question with `grep -n -E '^[0-9]+\. \*\*OQ-(1|18)\.' docs/questions.md`.
 11. **OQ-11. Level scope and replay value.** How long is the level, how many fights and roster types does it have, and why do players replay it? Raised 2026-09-26 (PR-1). Blocks phase 2, phase 6, and phase 8. Resolved 2026-09-27: D-37, 30 minutes or more, and replay value is not a primary goal.
     - Options for replay value: levels of difficulty, a score or a rank, a timer, secrets, other routes, or changed fights.
     - Recommendation: 15 to 25 minutes for a first clear, and 4 to 6 combat spaces. Use a small roster. Give replay value through difficulty and a score or time rank. These numbers are assumptions for phase 2 to test.
-12. **OQ-12. Meshy and its plan.** Does the project use Meshy? If yes, on which plan and for which assets? Raised 2026-09-26 (PR-1). Blocks each Meshy asset (D-8). The owner deferred it on 2026-09-27: decide after the art direction of phase 2.
+12. **OQ-12. Meshy and its plan.** Does the project use Meshy? If yes, on which plan and for which assets? Raised 2026-09-26 (PR-1). Blocks each Meshy asset (D-8). The owner deferred it on 2026-09-27: decide after the art direction of phase 2. Resolved 2026-09-29: D-118. Option C, for focal props alone.
     - Option A: no Meshy.
     - Option B: the free plan. Meshy owns the output under CC BY 4.0. The models are public, and credits need attribution.
     - Option C: a paid plan. The customer owns the output and can keep it private. Meshy can still use it to train its models.
