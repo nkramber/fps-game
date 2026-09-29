@@ -87,15 +87,16 @@ public sealed class PackageRunCommandTests : IDisposable
     }
 
     [Fact]
-    public void ThePackageGetsTheTimedRunOptionAndTheLogPath()
+    public void ThePackageGetsTheTestMapTheTimedRunOptionAndTheLogPath()
     {
+        // Exit test 4 of PR-21: the gym is the default map, so the first argument names the test map.
         string argumentsFile = Path.Combine(this.folder, "arguments.txt");
         this.WritePackage(new StubProgram().RecordsArgumentsTo(argumentsFile), exitCode: 0);
 
         this.Run(Limit);
 
         Assert.Equal(
-            ["-TimedRunSeconds=10", "-unattended", "-windowed", "-ResX=1280", "-ResY=720", $"-abslog={this.logPath}"],
+            ["/Game/Maps/L_Test", "-TimedRunSeconds=10", "-unattended", "-windowed", "-ResX=1280", "-ResY=720", $"-abslog={this.logPath}"],
             File.ReadAllLines(argumentsFile));
     }
 

@@ -158,6 +158,7 @@ Gitar is a documented plan only (D-7). Add no gitar step, wait, script, template
 - `run.ps1 toolchain-check`: the pins of the Windows toolchain: Visual Studio, MSVC, the Windows SDK, the engine, and Git LFS (D-28, D-74, D-79). `docs/runbooks/engine-setup.md` gives the install.
 - `run.ps1 editor-build`: build the editor target of the Unreal project (D-72).
 - `run.ps1 editor-test`: run each automation test headless. A pass needs the exit code 0, a test report, and the success line of the log.
+- `run.ps1 content-build`: make the scripted content from `Game/Scripts/build_content.py` with a headless editor (D-134).
 - `run.ps1 package-build`: make a packaged Development build of the game (D-72).
 - `run.ps1 package-run`: start the package for a timed run of the test map. A pass needs the exit code 0 and the success line of the log (D-89). It opens a game window (D-96).
 

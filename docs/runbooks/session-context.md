@@ -136,6 +136,17 @@ Build the editor target, then run the automation tests headless. Neither command
 - `editor-test` writes the log of the editor to `Game/Saved/Logs/editor-test.log`, and the test report to `Game/Saved/Automation/editor-test/index.json`.
 - The evidence form of the PR takes both logs (D-31, D-80).
 
+The script `Game/Scripts/build_content.py` makes the input actions, the mapping context, the tuning, the player Blueprints, and the gym (D-134). Run it after a change of the script, with no window. Build the editor target first, because the script reads the C++ classes.
+
+```
+.
+un.ps1 content-build
+```
+
+- `content-build` writes the log of the editor to `Game/Saved/Logs/content-build.log`. The last line of the script says `build_content: pass.`
+- Commit each changed asset with the change of the script. The script is the source of each asset that it makes, so a change in the editor alone goes away at the next run.
+- Each run writes the gym and the mapping context again with new internal ids, so their bytes change with no change of the script. When the script did not change, restore those two files with `git restore`, so Git LFS keeps no copy that has no new content.
+
 Make the packaged Development build, then start the package for its timed run (D-89). The package opens a game window, so ask the owner before `package-run`, and wait for the confirmation (D-96).
 
 ```

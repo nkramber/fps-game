@@ -114,11 +114,14 @@ public static class PackageRunCommand
     /// <returns>The arguments, in order.</returns>
     public static IReadOnlyList<string> PackageArguments(string logPath)
     {
+        // The first argument names the map. The default map of the game is the gym (PR-21), and
+        // the success line names the test map, so the run must not start on the default map.
         // The game is a program of the Windows subsystem, so its stdout is not its log. The game
         // writes its log to the path of `-abslog`, and the Windows package has no sandbox that
         // stops that write. A window keeps the desktop free during the run.
         return
         [
+            PackageRunRules.TestMapPackage,
             $"-TimedRunSeconds={PackageRunRules.RunSeconds}",
             "-unattended",
             "-windowed",

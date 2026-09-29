@@ -11,13 +11,15 @@ namespace IronAbsolution.Tests;
 /// <summary>
 /// The text files of the Unreal project that the hosted runners can read (D-31): the Git LFS
 /// rules (D-30, D-86), the ignore rules of the Unreal folders (D-9), and the plugin list of the
-/// project file (F-6, D-88), and the map list of the packaging settings (D-89). Git reads each rule,
+/// project file (F-6, D-88, D-134), and the map list of the packaging settings (D-89). Git reads each rule,
 /// so the tests see what git does, not a copy of a rule.
 /// </summary>
 public sealed class GameFilesTests
 {
     private const string ProjectFile = "Game/IronAbsolution.uproject";
     private const string TestMap = "Game/Content/Maps/L_Test.umap";
+    private const string GymMap = "Game/Content/Maps/L_Gym.umap";
+    private const string ContentScript = "Game/Scripts/build_content.py";
 
     /// <summary>Each file type that Git LFS stores (D-86). A new rule needs a new line here.</summary>
     private static readonly string[] LfsTypes =
@@ -65,6 +67,7 @@ public sealed class GameFilesTests
     [InlineData("Game/Source/IronAbsolution/IronAbsolution.Build.cs")]
     [InlineData("Game/Source/IronAbsolution/IronAbsolution.cpp")]
     [InlineData("Game/Source/IronAbsolution/IronAbsolution.h")]
+    [InlineData(ContentScript)]
     public void EachTextFileOfTheProjectStaysOutOfLfs(string path)
     {
         IReadOnlyDictionary<string, string> attributes = CheckAttributes(path);
@@ -73,11 +76,16 @@ public sealed class GameFilesTests
         Assert.Equal("auto", attributes["text"]);
     }
 
-    [Fact]
-    public void TheCommittedTestMapIsAnLfsPointer()
+    [Theory]
+    [InlineData(TestMap)]
+    [InlineData(GymMap)]
+    [InlineData("Game/Content/Input/IMC_KeyboardMouse.uasset")]
+    [InlineData("Game/Content/Player/BP_PlayerCharacter.uasset")]
+    [InlineData("Game/Content/Player/DA_PlayerMovement.uasset")]
+    public void EachCommittedBinaryOfTheProjectIsAnLfsPointer(string path)
     {
-        // The index holds the pointer that the LFS filter wrote. A map that bypassed LFS holds the binary itself.
-        ProcessResult result = ExternalProcess.Run("git", ["cat-file", "-p", $":{TestMap}"], RepositoryRoot.Find(), []);
+        // The index holds the pointer that the LFS filter wrote. A file that bypassed LFS holds the binary itself.
+        ProcessResult result = ExternalProcess.Run("git", ["cat-file", "-p", $":{path}"], RepositoryRoot.Find(), []);
 
         string pointer = result.RequireSuccess();
         Assert.StartsWith("version https://git-lfs.github.com/spec/v1\n", pointer, StringComparison.Ordinal);
@@ -110,6 +118,8 @@ public sealed class GameFilesTests
     [InlineData("Game/Source/IronAbsolution/Private/TimedRunSubsystem.cpp")]
     [InlineData("Game/Config/DefaultGame.ini")]
     [InlineData(TestMap)]
+    [InlineData(GymMap)]
+    [InlineData(ContentScript)]
     [InlineData("Game/Plugins/Sample/Sample.uplugin")]
     [InlineData("Game/Plugins/Sample/Content/Sample.uasset")]
     public void GitKeepsEachSourceFileOfTheProject(string path)
@@ -118,7 +128,7 @@ public sealed class GameFilesTests
     }
 
     [Fact]
-    public void TheProjectFileTurnsOnEnhancedInputAndTheModelingToolsAndTurnsOffTheAndroidFileServer()
+    public void TheProjectFileTurnsOnEnhancedInputTheModelingToolsAndPythonAndTurnsOffTheAndroidFileServer()
     {
         using JsonDocument project = JsonDocument.Parse(File.ReadAllText(RepositoryRoot.PathTo(ProjectFile)));
         JsonElement root = project.RootElement;
@@ -128,8 +138,24 @@ public sealed class GameFilesTests
             .ToList();
 
         // The list is explicit, so a new plugin needs a new line here (T-1). The Android File Server
-        // writes a security token into the config, and Android is not a target (D-32, D-88).
-        Assert.Equal([("AndroidFileServer", false), ("EnhancedInput", true), ("ModelingToolsEditorMode", true)], plugins);
+        // writes a security token into the config, and Android is not a target (D-32, D-88). The
+        // content script runs in the editor alone through the Python plugin (D-134).
+        Assert.Equal([("AndroidFileServer", false), ("EnhancedInput", true), ("ModelingToolsEditorMode", true), ("PythonScriptPlugin", true)], plugins);
+    }
+
+    [Theory]
+    [InlineData("ModelingToolsEditorMode")]
+    [InlineData("PythonScriptPlugin")]
+    public void AnEditorPluginLoadsInTheEditorTargetAlone(string name)
+    {
+        // Python never runs in a package (D-134), so the game target must not load the plugin.
+        using JsonDocument project = JsonDocument.Parse(File.ReadAllText(RepositoryRoot.PathTo(ProjectFile)));
+        JsonElement plugin = project.RootElement.GetProperty("Plugins").EnumerateArray()
+            .Single(entry => entry.GetProperty("Name").GetString() == name);
+
+        List<string?> targets = plugin.GetProperty("TargetAllowList").EnumerateArray().Select(target => target.GetString()).ToList();
+
+        Assert.Equal(["Editor"], targets);
     }
 
     [Fact]
@@ -145,10 +171,10 @@ public sealed class GameFilesTests
     }
 
     [Fact]
-    public void ThePackagingSettingsCookTheTestMapAlone()
+    public void ThePackagingSettingsCookTheTestMapAndTheGym()
     {
-        // The package loads the test map for the timed run of PR-10 (D-89). The list is explicit,
-        // so a new map needs a new line here (T-1).
+        // The package loads the test map for the timed run of PR-10 (D-89), and the gym is the
+        // default map (PR-21). The list is explicit, so a new map needs a new line here (T-1).
         string[] lines = File.ReadAllLines(RepositoryRoot.PathTo("Game/Config/DefaultGame.ini"));
         int section = Array.IndexOf(lines, "[/Script/UnrealEd.ProjectPackagingSettings]");
         Assert.True(section >= 0, "DefaultGame.ini has no section of the packaging settings.");
@@ -159,7 +185,7 @@ public sealed class GameFilesTests
             .Where(line => line.Contains("MapsToCook", StringComparison.Ordinal))
             .ToList();
 
-        Assert.Equal(["+MapsToCook=(FilePath=\"/Game/Maps/L_Test\")"], maps);
+        Assert.Equal(["+MapsToCook=(FilePath=\"/Game/Maps/L_Test\")", "+MapsToCook=(FilePath=\"/Game/Maps/L_Gym\")"], maps);
     }
 
     [Theory]

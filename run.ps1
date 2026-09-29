@@ -13,6 +13,7 @@
 # The engine targets read the engine folder from IRON_ABSOLUTION_ENGINE_DIR, so no commit holds a
 # path of one machine (D-9, D-79). `verify` runs no engine target, because the hosted runners have
 # no engine (D-31). `package-run` opens a game window, so a session asks the owner first (D-96).
+# `content-build` runs the editor with no window.
 
 [CmdletBinding()]
 param(
@@ -47,6 +48,7 @@ $Targets = [ordered]@{
     'toolchain-check' = 'the pins of the Windows toolchain: Visual Studio, MSVC, the Windows SDK, the engine, and Git LFS (D-28, D-74).'
     'editor-build'    = 'build the editor target of the Unreal project. The log is Game\Saved\Logs\editor-build.log (D-72).'
     'editor-test'     = 'run each automation test of the project headless. Run `editor-build` first (D-71).'
+    'content-build'   = 'make the scripted content with a headless editor. Run `editor-build` first. The log is Game\Saved\Logs\content-build.log (D-134).'
     'package-build'   = 'make a packaged Development build of the game. The log is Game\Saved\Logs\package-build.log (D-72).'
     'package-run'     = 'start the package for a timed run of the test map. It opens a game window (D-89, D-96).'
     'help'            = 'print this list.'
@@ -79,8 +81,8 @@ function Invoke-Step {
     }
 }
 
-function Get-EngineBatch {
-    param([string] $Name)
+function Get-EngineFile {
+    param([string[]] $Parts)
 
     # The engine folder comes from the variable, so no commit holds its path (D-79).
     $engine = [System.Environment]::GetEnvironmentVariable('IRON_ABSOLUTION_ENGINE_DIR')
@@ -90,13 +92,13 @@ function Get-EngineBatch {
     }
 
     # Path.Combine keeps the separator of the platform, so the hosted tests run the target on Linux.
-    $batch = [System.IO.Path]::Combine($engine, 'Engine', 'Build', 'BatchFiles', $Name)
-    if (-not (Test-Path -LiteralPath $batch)) {
-        Write-Fault "${Target}: no file '$batch'. IRON_ABSOLUTION_ENGINE_DIR names the folder that holds 'Engine' (D-79)."
+    $file = [System.IO.Path]::Combine([string[]] (@($engine, 'Engine') + $Parts))
+    if (-not (Test-Path -LiteralPath $file)) {
+        Write-Fault "${Target}: no file '$file'. IRON_ABSOLUTION_ENGINE_DIR names the folder that holds 'Engine' (D-79)."
         exit 1
     }
 
-    return $batch
+    return $file
 }
 
 function Get-CodexEntry {
@@ -126,7 +128,7 @@ if ($Target -eq 'help') {
 }
 
 # Each target of the tools project needs the .NET SDK of global.json (D-40).
-if ($Target -notin @('where', 'hooks', 'editor-build', 'package-build')) {
+if ($Target -notin @('where', 'hooks', 'editor-build', 'content-build', 'package-build')) {
     Assert-Program 'dotnet' 'Install the .NET SDK of global.json. docs/runbooks/session-context.md gives the step.'
 }
 
@@ -187,7 +189,7 @@ switch ($Target) {
     }
     'editor-build' {
         # Build.bat gives 0 for the result "up to date", and so does this target.
-        $buildBatch = Get-EngineBatch 'Build.bat'
+        $buildBatch = Get-EngineFile @('Build', 'BatchFiles', 'Build.bat')
         $project = [System.IO.Path]::Combine($Root, 'Game', 'IronAbsolution.uproject')
         $log = [System.IO.Path]::Combine($Root, 'Game', 'Saved', 'Logs', 'editor-build.log')
         Write-Output "run.ps1: editor-build: build IronAbsolutionEditor Win64 Development. The log goes to '$log'."
@@ -199,11 +201,31 @@ switch ($Target) {
         # with no failed test, and the success line of the log (D-71).
         Invoke-Step 'editor-test' 'dotnet' @('run', '--project', $ToolsProject, '--', 'editor-test', '--root', $Root)
     }
+    'content-build' {
+        # The Python commandlet runs the content script with no window (D-96, D-134). The script
+        # raises on each fault, and the commandlet then gives a nonzero exit code. The editor
+        # program of the console subsystem writes its log to stdout.
+        $editor = Get-EngineFile @('Binaries', 'Win64', 'UnrealEditor-Cmd.exe')
+        $project = [System.IO.Path]::Combine($Root, 'Game', 'IronAbsolution.uproject')
+        $script = [System.IO.Path]::Combine($Root, 'Game', 'Scripts', 'build_content.py')
+        $log = [System.IO.Path]::Combine($Root, 'Game', 'Saved', 'Logs', 'content-build.log')
+        New-Item -ItemType Directory -Force -Path (Split-Path -Parent $log) | Out-Null
+
+        Write-Output "run.ps1: content-build: run '$script' in a headless editor. The log goes to '$log'."
+        & $editor $project -run=pythonscript "-script=$script" -unattended -nullrhi -nosplash -nosound -stdout -FullStdOutLogOutput | Out-File -FilePath $log
+        $code = $LASTEXITCODE
+        if ($code -ne 0) {
+            Write-Fault "content-build failed with the exit code $code. Read the log '$log'."
+            exit $code
+        }
+
+        Write-Output 'run.ps1: content-build passed.'
+    }
     'package-build' {
         # RunUAT builds the game target, cooks the test map, and puts the package in
         # Game\Saved\Packages\Windows. The target first removes the last package, so a failed build
         # leaves no old package for `package-run` (T-2).
-        $runUat = Get-EngineBatch 'RunUAT.bat'
+        $runUat = Get-EngineFile @('Build', 'BatchFiles', 'RunUAT.bat')
         $project = [System.IO.Path]::Combine($Root, 'Game', 'IronAbsolution.uproject')
         $archive = [System.IO.Path]::Combine($Root, 'Game', 'Saved', 'Packages')
         $package = [System.IO.Path]::Combine($archive, 'Windows')

@@ -81,7 +81,7 @@ Each engine PR of this phase also passes these checks, with the logs in the evid
 
 **Questions.** None open. D-132 answers the run speed.
 
-**State.** 🔧 planned.
+**State.** ✅ done in PR #22. The owner named the gym `L_Gym` (D-133), picked a script for the content (D-134), the first pace (D-135), and the keys (D-136). `docs/research/movement-test-method.md` gives the Epic pages and the test method. Exit test 1 passes. On 2026-09-29, the owner played the gym in the package and in the editor. The player moves, jumps, and aims.
 
 > *In plain English:* The game has no player today, only an empty map. This change adds a room of measured blocks and a player who runs, jumps, and looks around. Tests check the speed and the height of the jump.
 

@@ -27,6 +27,8 @@ How to read this file:
 - The owner gave D-117 on 2026-09-29 in PR-17, the setting, the tone, and the art direction.
 - The owner gave D-118 to D-121 on 2026-09-29 in PR-18, the provenance policy and the Meshy choice.
 - The owner gave D-122 to D-125 on 2026-09-29 in PR-19, the level brief.
+- The owner gave D-126 to D-132 on 2026-09-29 in PR-20, the focused roadmap of phase 3.
+- The owner gave D-133 to D-136 on 2026-09-29 in PR-21, the gym, the character, and the movement.
 - For D-15, the owner asked for the best fit, and the session recommended it. The owner then chose it.
 
 How to add a decision:
@@ -76,6 +78,9 @@ Find a row with `grep -n -E '^\| D-(12|14) \|' docs/decisions.md`.
 | D-130 | 2026-09-29 | Hit method of phase 3 | The weapon of phase 3 is hitscan: a line trace from the view hits at once. | The owner gave this answer in PR-20. Applies the pillar "Fast and exact" of `docs/game/pillars.md`. Phase 4 can add a projectile rule for another weapon. |
 | D-131 | 2026-09-29 | Feel changes | When the owner plays the gym in PR-27 and asks for changes, a change of data-asset values stays in PR-27, and the owner plays again. When the list needs a change of C++ rules, PR-27 records the list as a decision row. Each rule change then gets its own PR, and a new gate PR asks for the sign-off. | The owner gave this answer in PR-20. Applies D-29: data assets hold tuning, and C++ holds the rules. |
 | D-132 | 2026-09-29 | Run speed | The player moves at full speed by default, with no run key. A slower walk key comes only if the feel pass of PR-27 asks for it. | The owner gave this answer in PR-20. Applies the pillar "Fast and exact". Binds PR-21. The verb "move" of D-116 stands. |
+| D-133 | 2026-09-29 | Gym map | The gym map is `L_Gym`, with the package path /Game/Maps/L_Gym. | The owner gave this answer in PR-21. Section 7.1 of `docs/roadmaps/phase-3-core-feel.md` left the name to the session. `L_Test` stays for the automation tests and the timed run (D-89). |
+| D-135 | 2026-09-29 | First movement values | The first pace of the player is "fast": a run speed of 900 cm/s, a jump height of 120 cm, and a high acceleration. `docs/game/movement-metrics.md` gives each value. | The owner gave this answer in PR-21. Applies D-132 and the pillar "Fast and exact". The feel pass of PR-27 tunes the values (D-131). |
+| D-136 | 2026-09-29 | Keyboard and mouse keys | The mapping context of the keyboard and the mouse binds W, A, S, and D to "move", the space bar to "jump", and the movement of the mouse to "aim". | The owner gave this answer in PR-21. No C++ names a key, so a later gamepad adds a mapping context alone (OQ-21). The aim settings of PR-23 can change the mouse part. |
 
 ## Process, review, and tools
 
@@ -172,6 +177,7 @@ Find a row with `grep -n -E '^\| D-(12|14) \|' docs/decisions.md`.
 | D-102 | 2026-09-28 | Program of the platform | The `editor-test` and `package-run` commands read the program path of the platform. Windows gets `UnrealEditor-Cmd.exe` and `IronAbsolution.exe`, and the Mac keeps its application bundle. | The owner gave this answer in PR-13. The two commands held a Mac path alone, so they could not run on the Windows PC (D-92). PR-14 removes the Mac path of each one (D-97). |
 | D-105 | 2026-09-28 | Other platform settings | PR-14 removes the Linux section of `DefaultEngine.ini` with the Mac sections. A hosted test refuses a section or a setting of another platform in each config file of the project. | The owner gave this answer in PR-14. The editor wrote the Linux section, and the project supports Windows alone (D-91). Widens D-97 to Linux. |
 | D-109 | 2026-09-28 | Enhanced Input evidence | Headless evidence on the Windows PC proves line 5 of the gate of phase 1. The evidence is the plugin descriptor of the engine, the plugin list of the project, and a pass of the test `IronAbsolution.Project.Settings`. | The owner gave this answer in PR-11. The Plugins window of the editor reads the same descriptor, so a look at the window adds no fact. No window opens (D-96). |
+| D-134 | 2026-09-29 | Scripted content | A committed Python script, `Game/Scripts/build_content.py`, makes the content of PR-21 in a headless editor through `run.ps1 content-build`: the input actions, the mapping context, the tuning, the player Blueprints, and the gym. The Python Editor Script Plugin loads in the editor target alone. The script is the source of each asset that it makes. | The owner gave this answer in PR-21. The review reads the script, because a binary asset has no text diff. Python runs in the editor alone, never in a package, so D-15 stands. A change in the editor alone to one of these assets goes away at the next run. The feel pass of PR-27 changes a tuning value in the script (D-131). |
 
 ## Content, assets, and the repository
 
