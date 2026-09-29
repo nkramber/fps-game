@@ -1,3 +1,38 @@
+## Session 62: 2026-09-29, Codex
+
+Author: Codex
+Session: reviewer PR-21, round 3. Repository: iron-absolution. Branch: `feat/pr-21-gym-movement`. PR: #22. Role: reviewer. Base: `ce25cfd4982d5d4be2c0eee0a0a2658f419b182f`.
+
+### What this session did, and why
+
+- Reviewed PR #22 at effective head `7e2e3f73c1c17b50c34505d7c5ce6d6c0cfc7408`.
+- Verified the owner play test in the package and editor from the PR comment. The owner reports movement, jump, and aim pass.
+- Findings P2-1 and P2-2 remain fixed. The review record now gives `Ready for owner merge`.
+- Current CI passes `ste-check`, `doc-gate`, build, test, format, and coverage. The old `review-gate` result fails on the prior Blocked record.
+
+### The state of the build
+
+- The remote PR tip is `40a64015a9c16c7b1a6ff0f673ff3408e32129dd` on `feat/pr-21-gym-movement`.
+- The effective code head remains `7e2e3f73c1c17b50c34505d7c5ce6d6c0cfc7408`.
+
+### What is in flight
+
+- The metadata commit for review round 3, then the new `review-gate` result.
+- The owner merge summary and merge decision.
+
+### Traps and gotchas
+
+- `review-gate` failed before this record approved the effective head. Check its new result after the metadata push.
+- OQ-25 blocks roadmap PR-22, not GitHub PR #22.
+
+### The questions that block progress
+
+- No open question affects GitHub PR #22. The owner play test now passes.
+
+### The next concrete action
+
+- Push the review record and this entry together. Read the new checks, then give the owner the merge summary.
+
 ## Session 61: 2026-09-29, Codex
 
 Author: Codex
@@ -357,39 +392,3 @@ Session: author PR-16, round 1. Repository: iron-absolution. Branch: `docs/pr-16
 ### The next concrete action
 
 - After the merge, write the transitional prompt of PR-17 from section 8 of the phase 2 file.
-
-## Session 52: 2026-09-29, Claude Code
-
-Author: Claude Code
-Session: author PR-15, round 1. Repository: iron-absolution. Branch: `docs/pr-15-phase-2-roadmap`. PR: #16. Role: author. Base: `708dbf14c573db8fc4e5fc78a74fcd189f8e84f6`.
-
-### What this session did, and why
-
-- `run.ps1 verify` passed at the base `708dbf1`: 539 tests and 0 STE findings.
-- The session added `docs/roadmaps/phase-2-direction-brief.md`, the focused roadmap of phase 2 (D-70). It holds PR-16 to PR-19, the gate, and the order.
-- The owner gave D-111 to D-114: four PRs, the order PR-16 to PR-19, the pick in the proposal PR, and the folder `docs/game/`.
-- The design doc gets the eleventh pass line, the focused roadmap of phase 2, and a dated correction. No PR of phase 2 ran beside phase 1.
-- OQ-9, OQ-10, and OQ-12 each get a plan line that names its PR.
-
-### The state of the build
-
-- The remote head is the commit of this entry on `docs/pr-15-phase-2-roadmap`, pending merge.
-- The PR changes documents alone, so it has no effective head. The `review-override` label replaces the Codex review (D-35, D-66, D-76).
-
-### What is in flight
-
-- The checks of PR #16, then the merge summary and the owner confirmation.
-
-### Traps and gotchas
-
-- GitHub PR #16 is roadmap item PR-15. Roadmap item PR-16 gets a later GitHub number. Write "PR #n" for GitHub and "PR-n" for the roadmap.
-- `run.ps1 ste-check` reads tracked files alone. Stage a new phase file before the check, or its PR headings define no id.
-- A line that names a path under `docs/game/` must also name a PR id until PR-16 creates the folder (REF 2).
-
-### The questions that block progress
-
-- None for PR-15. OQ-10 blocks PR-16, and the owner answers it during PR-16 (D-113). OQ-16 still holds the gitar pass (D-7).
-
-### The next concrete action
-
-- After the merge, write the transitional prompt of PR-16 from section 8 of the phase 2 file.

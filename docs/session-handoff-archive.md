@@ -2,6 +2,42 @@
 
 This file holds the entries that the rotation moves out of `docs/session-handoff.md`, newest first.
 
+## Session 52: 2026-09-29, Claude Code
+
+Author: Claude Code
+Session: author PR-15, round 1. Repository: iron-absolution. Branch: `docs/pr-15-phase-2-roadmap`. PR: #16. Role: author. Base: `708dbf14c573db8fc4e5fc78a74fcd189f8e84f6`.
+
+### What this session did, and why
+
+- `run.ps1 verify` passed at the base `708dbf1`: 539 tests and 0 STE findings.
+- The session added `docs/roadmaps/phase-2-direction-brief.md`, the focused roadmap of phase 2 (D-70). It holds PR-16 to PR-19, the gate, and the order.
+- The owner gave D-111 to D-114: four PRs, the order PR-16 to PR-19, the pick in the proposal PR, and the folder `docs/game/`.
+- The design doc gets the eleventh pass line, the focused roadmap of phase 2, and a dated correction. No PR of phase 2 ran beside phase 1.
+- OQ-9, OQ-10, and OQ-12 each get a plan line that names its PR.
+
+### The state of the build
+
+- The remote head is the commit of this entry on `docs/pr-15-phase-2-roadmap`, pending merge.
+- The PR changes documents alone, so it has no effective head. The `review-override` label replaces the Codex review (D-35, D-66, D-76).
+
+### What is in flight
+
+- The checks of PR #16, then the merge summary and the owner confirmation.
+
+### Traps and gotchas
+
+- GitHub PR #16 is roadmap item PR-15. Roadmap item PR-16 gets a later GitHub number. Write "PR #n" for GitHub and "PR-n" for the roadmap.
+- `run.ps1 ste-check` reads tracked files alone. Stage a new phase file before the check, or its PR headings define no id.
+- A line that names a path under `docs/game/` must also name a PR id until PR-16 creates the folder (REF 2).
+
+### The questions that block progress
+
+- None for PR-15. OQ-10 blocks PR-16, and the owner answers it during PR-16 (D-113). OQ-16 still holds the gitar pass (D-7).
+
+### The next concrete action
+
+- After the merge, write the transitional prompt of PR-16 from section 8 of the phase 2 file.
+
 ## Session 51: 2026-09-28, Claude Code
 
 Author: Claude Code
