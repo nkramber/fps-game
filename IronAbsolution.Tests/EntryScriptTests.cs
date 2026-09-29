@@ -20,7 +20,7 @@ public sealed class EntryScriptTests : IDisposable
     [
         "verify", "build", "test", "format", "ste-check",
         "handoff-rotate", "codex-review", "hooks", "where", "clean",
-        "toolchain-check", "editor-build", "editor-test", "package-build", "package-run", "help",
+        "toolchain-check", "editor-build", "editor-test", "content-build", "package-build", "package-run", "help",
     ];
 
     private const string EngineVariable = "IRON_ABSOLUTION_ENGINE_DIR";
@@ -133,6 +133,7 @@ public sealed class EntryScriptTests : IDisposable
 
     [Theory]
     [InlineData("editor-build")]
+    [InlineData("content-build")]
     [InlineData("package-build")]
     public void ABuildTargetFailsAndNamesTheVariableWhenItIsNotSet(string target)
     {
@@ -151,6 +152,54 @@ public sealed class EntryScriptTests : IDisposable
 
         Assert.Equal(1, exitCode);
         Assert.Contains($"run.ps1: {target}: no file '{this.BatchFile(batchFile)}'.", output, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void TheContentBuildFailsWithThePathWhenTheEditorIsAbsent()
+    {
+        (int exitCode, string output) = this.RunEngineTarget("content-build", this.engine);
+
+        Assert.Equal(1, exitCode);
+        Assert.Contains($"run.ps1: content-build: no file '{this.EditorProgram()}'.", output, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void TheContentBuildGivesTheExitCodeTheArgumentsAndTheLogOfTheEditor()
+    {
+        // A fault of the script gives a nonzero exit code, and the target names the log (D-134, T-2).
+        string argumentsFile = Path.Combine(this.folder, "arguments.txt");
+        new StubProgram().RecordsArgumentsTo(argumentsFile).WritesLine("LogPython: Error: Traceback").ExitsWith(this.EditorProgram(), exitCode: 7);
+
+        (int exitCode, string output) = this.RunEngineTarget("content-build", this.engine);
+
+        Assert.Equal(7, exitCode);
+        string log = Path.Combine(this.root, "Game", "Saved", "Logs", "content-build.log");
+        Assert.Contains($"run.ps1: content-build failed with the exit code 7. Read the log '{log}'.", output, StringComparison.Ordinal);
+        Assert.Contains("LogPython: Error: Traceback", File.ReadAllText(log), StringComparison.Ordinal);
+        Assert.Equal(
+            [
+                Path.Combine(this.root, "Game", "IronAbsolution.uproject"),
+                "-run=pythonscript",
+                $"-script={Path.Combine(this.root, "Game", "Scripts", "build_content.py")}",
+                "-unattended",
+                "-nullrhi",
+                "-nosplash",
+                "-nosound",
+                "-stdout",
+                "-FullStdOutLogOutput",
+            ],
+            File.ReadAllLines(argumentsFile));
+    }
+
+    [Fact]
+    public void TheContentBuildPassesWhenTheEditorGivesZero()
+    {
+        new StubProgram().WritesLine("LogPython: build_content: pass.").ExitsWith(this.EditorProgram(), exitCode: 0);
+
+        (int exitCode, string output) = this.RunEngineTarget("content-build", this.engine);
+
+        Assert.Equal(0, exitCode);
+        Assert.Contains("run.ps1: content-build passed.", output, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -232,6 +281,12 @@ public sealed class EntryScriptTests : IDisposable
 
         Assert.Equal(0, exitCode);
         Assert.Contains("run.ps1: package-build passed.", output, StringComparison.Ordinal);
+    }
+
+    /// <summary>Gives the path of the console editor of the engine, under the temporary engine folder.</summary>
+    private string EditorProgram()
+    {
+        return Path.Combine(this.engine, "Engine", "Binaries", "Win64", "UnrealEditor-Cmd.exe");
     }
 
     /// <summary>Gives the path of one batch file of the engine, under the temporary engine folder.</summary>

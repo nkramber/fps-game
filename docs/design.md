@@ -20,6 +20,7 @@ Status: the owner accepts it on the condition of D-27. Written in ASD-STE100 (D-
 - 2026-09-29 thirteenth pass: PR-18 adds the provenance policy in `docs/game/provenance.md`, and checks the Meshy facts again (F-7). The owner gave D-118 to D-121. Meshy is for focal props on a paid plan (D-118).
 - 2026-09-29 fourteenth pass: PR-19 adds the level brief in `docs/game/level-brief.md`. It records the gate of phase 2 and the value of M-8 at the end of phase 2. The owner gave D-122 to D-125. An original harvest tool replaces the chainsaw (D-125).
 - 2026-09-29 fifteenth pass: PR-20 adds the focused roadmap of phase 3. The owner gave D-126 to D-132. Phase 5 now starts after the gate of phase 3, beside phase 4 (D-129).
+- 2026-09-29 sixteenth pass: PR-21 adds the gym, the player character, and the movement metrics in `docs/game/movement-metrics.md`. The owner gave D-133 to D-136. A Python script in the editor makes the content (D-134).
 
 ## 1. Thesis
 
@@ -66,6 +67,7 @@ The owner decides the product. Approved facts cite a D-# id. Open choices cite a
 | CI workflows (PR-2 onward) | the PR head | check runs | High. They gate the merge. |
 | Codex review (PR-3) | the PR diff | `docs/reviews/pr-<n>.md` | High |
 | Unreal project `IronAbsolution` (phase 1) | source, content, config | builds and packages for Windows (D-91). PR #14 removed the Mac targets (D-97). | High |
+| Content script `Game/Scripts/build_content.py` (PR-21) | the C++ classes, the values of the script | the input, the player Blueprints, the tuning, and the gym, through LFS (D-134) | Medium. It is the source of each asset that it makes. |
 | Content pipeline (phase 5) | DCC exports, generated assets | Unreal assets through LFS | Medium. Each asset needs terms that allow redistribution (D-24). |
 
 ## 4. Cost model (what we pay, what we do not know)
@@ -297,7 +299,7 @@ When the owner confirms that gitar works here, one PR ports the gitar-wait scrip
 - Objective: make movement, aim, and fire feel fast and exact in a graybox gym before other systems.
 - Dependencies: phase 1, the verbs of phase 2, and the budgets and input of D-32.
 - Work: player movement and camera, with metric markers. Keyboard and mouse input through Enhanced Input, ready for a later gamepad (OQ-21). Sensitivity, invert, and field of view. One weapon from fire to hit feedback and ammo. Automated tests of movement and the weapon, and a frame-time capture. Correction of 2026-09-29: the one weapon is one hitscan rule with two data assets, so the verb "change weapon" has a test (D-128, D-130, F-30).
-- Focused roadmap: `docs/roadmaps/phase-3-core-feel.md` holds PR-21 to PR-27 and the gate (D-126, D-127). PR-20 adds it. Status: ✅ done in PR #21.
+- Focused roadmap: `docs/roadmaps/phase-3-core-feel.md` holds PR-21 to PR-27 and the gate (D-126, D-127). PR-20 adds it. Status: ✅ done in PR #21. PR-21 status: ✅ done in PR #22. The owner gave the gym map, the content script, the first pace, and the keys (D-133 to D-136).
 - Exit evidence: the owner plays the packaged gym and records a sign-off or a list of changes as a D-# row. M-3 has a profile on Windows. Correction of 2026-09-28: M-9 is out of scope (D-95). The movement metrics have values, because the layout rules of phase 6 use them. The tests pass headless.
 
 > *In plain English:* We make moving and shooting feel right in the gym, an empty room of test blocks, before we build anything on top.

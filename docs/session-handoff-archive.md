@@ -2,6 +2,38 @@
 
 This file holds the entries that the rotation moves out of `docs/session-handoff.md`, newest first.
 
+## Session 48: 2026-09-28, Claude Code
+
+Author: Claude Code
+Session: author PR-14, round 2 close. Repository: iron-absolution. Branch: `feat/pr-14-windows-engine-commands`. PR: #14. Role: author. Base: `0351bbba52a4fddd91b559ad7ace9f1bb020b2f0`.
+
+### What this session did, and why
+
+- Round 2 approved the effective head `aed74bb`, and the five checks passed at `9e426cb`.
+- The owner read the merge summary and confirmed the merge.
+- One hosted test failed one time before a clean rerun. This PR adds it to the design doc as F-28, on the choice of the owner. Its fix is a separate concern (G-7).
+
+### The state of the build
+
+- The effective head stays `aed74bb`, because this commit changes `docs/` alone (D-49).
+- The remote head is the commit of this entry, pending merge through auto-merge.
+
+### What is in flight
+
+- The auto-merge of #14 after the checks of this commit.
+
+### Traps and gotchas
+
+- F-28: the stub of D-103 can fail to start on the hosted runner. The assert on the exit code hides the error text, so a fix first proves the cause.
+
+### The questions that block progress
+
+- None. OQ-16 still holds the gitar pass (D-7).
+
+### The next concrete action
+
+- After the merge, write the transitional prompt for PR-11, the gate record. Name F-28 as work for a later PR.
+
 ## Session 47: 2026-09-28, Codex
 
 Author: Codex

@@ -1,0 +1,343 @@
+# Copyright (c) 2026 nkramber. Licensed under the MIT License. See LICENSE.
+"""Makes the scripted content of the project in a headless editor (D-133, D-134).
+
+`run.ps1 content-build` runs this script through the Python commandlet of the editor, with no
+window. The script is the source of each asset that it makes: the input actions, the mapping
+context, the movement tuning, the player Blueprints, and the gym map `L_Gym`. A change to one of
+these assets is a change to this script, then a new run. A change in the editor alone goes away at
+the next run.
+
+The script makes an asset when it is absent, and writes each value again when it is present. Each
+fault raises an exception, so the commandlet gives a nonzero exit code (T-2).
+"""
+
+import math
+
+import unreal
+
+INPUT_FOLDER = "/Game/Input"
+PLAYER_FOLDER = "/Game/Player"
+GYM_MAP = "/Game/Maps/L_Gym"
+
+# The first values of the movement (D-135). `docs/game/movement-metrics.md` gives each reason.
+MOVEMENT_TUNING = {
+    "run_speed": 900.0,
+    "acceleration": 8000.0,
+    "braking_deceleration": 8000.0,
+    "ground_friction": 8.0,
+    "jump_height": 120.0,
+    "gravity_scale": 1.5,
+    "air_control": 0.5,
+    "step_height": 45.0,
+    "walkable_slope": 45.0,
+    "eye_height": 160.0,
+    "field_of_view": 100.0,
+}
+
+# The engine meshes of the gym. Each file of the gym is original, or a basic shape of the engine.
+CUBE = "/Engine/BasicShapes/Cube.Cube"
+FLOOR_MATERIAL = "/Engine/EngineMaterials/WorldGridMaterial.WorldGridMaterial"
+
+# The cube of the engine is 100 cm on each side, with its pivot at the center.
+CUBE_SIZE = 100.0
+
+# The station rows of the gym run along +X. The player starts at the -X end and looks along +X.
+PLAYER_START = unreal.Vector(-2400.0, 0.0, 100.0)
+ROW_START_X = -1800.0
+GAP_ROW_Y = -1500.0
+LEDGE_ROW_Y = -600.0
+DISTANCE_ROW_Y = 0.0
+STEP_ROW_Y = 600.0
+HALL_ROW_Y = 1500.0
+
+LABEL_HEIGHT = 30.0
+LABEL_COLOR = unreal.Color(r=255, g=200, b=40, a=255)
+
+
+class ContentError(Exception):
+    """A fault of the script, with the asset or the step that failed."""
+
+
+def asset_tools():
+    return unreal.AssetToolsHelpers.get_asset_tools()
+
+
+def asset_subsystem():
+    return unreal.get_editor_subsystem(unreal.EditorAssetSubsystem)
+
+
+def load_or_create(folder, name, asset_class, factory):
+    """Loads the asset at folder/name, or makes it with the factory when it is absent."""
+    path = f"{folder}/{name}"
+    if asset_subsystem().does_asset_exist(path):
+        asset = asset_subsystem().load_asset(path)
+        if asset is None or not isinstance(asset, asset_class):
+            raise ContentError(f"The asset {path} exists, but it is not a {asset_class.__name__}.")
+        return asset
+
+    asset = asset_tools().create_asset(name, folder, asset_class, factory)
+    if asset is None:
+        raise ContentError(f"The asset {path} did not come from the factory {type(factory).__name__}.")
+    return asset
+
+
+def save(asset):
+    if not asset_subsystem().save_loaded_asset(asset, only_if_is_dirty=False):
+        raise ContentError(f"The asset {asset.get_path_name()} did not save.")
+
+
+def input_action(name, value_type):
+    action = load_or_create(INPUT_FOLDER, name, unreal.InputAction, unreal.InputAction_Factory())
+    action.set_editor_property("value_type", value_type)
+    save(action)
+    return action
+
+
+def negate(owner, x, y):
+    modifier = unreal.new_object(unreal.InputModifierNegate, outer=owner)
+    modifier.set_editor_property("x", x)
+    modifier.set_editor_property("y", y)
+    modifier.set_editor_property("z", False)
+    return modifier
+
+
+def swizzle(owner):
+    # The order YXZ moves the value of a 1D key to the Y axis, the axis of "forward".
+    modifier = unreal.new_object(unreal.InputModifierSwizzleAxis, outer=owner)
+    modifier.set_editor_property("order", unreal.InputAxisSwizzle.YXZ)
+    return modifier
+
+
+def key_mapping(action, key_name, modifiers):
+    mapping = unreal.EnhancedActionKeyMapping()
+    mapping.set_editor_property("action", action)
+    key = unreal.Key()
+    key.set_editor_property("key_name", key_name)
+    mapping.set_editor_property("key", key)
+    mapping.set_editor_property("modifiers", modifiers)
+    return mapping
+
+
+def keyboard_mouse_context(move, look, jump):
+    """The mapping context of the keyboard and the mouse (D-136). No C++ names a key (OQ-21)."""
+    context = load_or_create(INPUT_FOLDER, "IMC_KeyboardMouse", unreal.InputMappingContext, unreal.InputMappingContext_Factory())
+    mappings = [
+        # The move action has X to the right and Y forward.
+        key_mapping(move, "W", [swizzle(context)]),
+        key_mapping(move, "S", [swizzle(context), negate(context, True, True)]),
+        key_mapping(move, "A", [negate(context, True, True)]),
+        key_mapping(move, "D", []),
+        key_mapping(jump, "SpaceBar", []),
+        # The mouse gives a positive Y when it moves forward. The engine turns the view up for a
+        # negative pitch input, so the Y axis is negated, as in the first-person template.
+        key_mapping(look, "Mouse2D", [negate(context, False, True)]),
+    ]
+    data = unreal.InputMappingContextMappingData()
+    data.set_editor_property("mappings", mappings)
+    context.set_editor_property("default_key_mappings", data)
+    save(context)
+    return context
+
+
+def movement_tuning():
+    factory = unreal.DataAssetFactory()
+    factory.set_editor_property("data_asset_class", unreal.IronMovementTuning)
+    tuning = load_or_create(PLAYER_FOLDER, "DA_PlayerMovement", unreal.IronMovementTuning, factory)
+    for name, value in MOVEMENT_TUNING.items():
+        tuning.set_editor_property(name, value)
+    save(tuning)
+    return tuning
+
+
+def blueprint(name, parent_class):
+    """Loads or makes a Blueprint subclass, and gives its default object."""
+    factory = unreal.BlueprintFactory()
+    factory.set_editor_property("parent_class", parent_class)
+    asset = load_or_create(PLAYER_FOLDER, name, unreal.Blueprint, factory)
+    generated = asset.generated_class()
+    if generated is None:
+        raise ContentError(f"The Blueprint {asset.get_path_name()} has no generated class.")
+    return asset, unreal.get_default_object(generated)
+
+
+def player_blueprints(tuning, move, look, jump, context):
+    character, character_defaults = blueprint("BP_PlayerCharacter", unreal.IronPlayerCharacter)
+    character_defaults.set_editor_property("movement_tuning", tuning)
+    character_defaults.set_editor_property("move_action", move)
+    character_defaults.set_editor_property("look_action", look)
+    character_defaults.set_editor_property("jump_action", jump)
+    save(character)
+
+    controller, controller_defaults = blueprint("BP_PlayerController", unreal.IronPlayerController)
+    controller_defaults.set_editor_property("mapping_contexts", [context])
+    save(controller)
+
+    game_mode, game_mode_defaults = blueprint("BP_PlayerGameMode", unreal.GameModeBase)
+    game_mode_defaults.set_editor_property("default_pawn_class", character.generated_class())
+    game_mode_defaults.set_editor_property("player_controller_class", controller.generated_class())
+    save(game_mode)
+    return game_mode
+
+
+def open_empty_gym():
+    """Opens the gym map, or makes it, and removes each actor that an earlier run placed."""
+    levels = unreal.get_editor_subsystem(unreal.LevelEditorSubsystem)
+    if asset_subsystem().does_asset_exist(GYM_MAP):
+        if not levels.load_level(GYM_MAP):
+            raise ContentError(f"The map {GYM_MAP} did not load.")
+    elif not levels.new_level(GYM_MAP, False):
+        # A plain level with no World Partition, as the test map (D-84).
+        raise ContentError(f"The map {GYM_MAP} did not come from new_level.")
+
+    actors = unreal.get_editor_subsystem(unreal.EditorActorSubsystem)
+    old = [actor for actor in actors.get_all_level_actors() if not isinstance(actor, (unreal.WorldSettings, unreal.Brush))]
+    if old and not actors.destroy_actors(old):
+        raise ContentError(f"The old actors of {GYM_MAP} did not go away.")
+    return actors
+
+
+def spawn(actors, actor_class, location, rotation=None, label=None):
+    actor = actors.spawn_actor_from_class(actor_class, location, rotation or unreal.Rotator(0.0, 0.0, 0.0))
+    if actor is None:
+        raise ContentError(f"The actor {actor_class.__name__} did not spawn at {location}.")
+    if label is not None:
+        actor.set_actor_label(label)
+    return actor
+
+
+def block(actors, label, center, size, rotation=None, material=None):
+    """Places a cube of the engine with its center and its size in centimeters."""
+    mesh = unreal.load_asset(CUBE)
+    if mesh is None:
+        raise ContentError(f"The mesh {CUBE} did not load.")
+    actor = spawn(actors, unreal.StaticMeshActor, center, rotation, label)
+    component = actor.get_editor_property("static_mesh_component")
+    component.set_static_mesh(mesh)
+    if material is not None:
+        component.set_material(0, material)
+    actor.set_actor_scale3d(unreal.Vector(size.x / CUBE_SIZE, size.y / CUBE_SIZE, size.z / CUBE_SIZE))
+    return actor
+
+
+def text(actors, words, location):
+    """Places a label that faces the player at the start, who looks along +X."""
+    actor = spawn(actors, unreal.TextRenderActor, location, unreal.Rotator(0.0, 0.0, 180.0), f"Label {words}")
+    component = actor.get_editor_property("text_render")
+    component.set_text(words)
+    component.set_world_size(LABEL_HEIGHT)
+    component.set_horizontal_alignment(unreal.HorizTextAligment.EHTA_CENTER)
+    component.set_text_render_color(LABEL_COLOR)
+    return actor
+
+
+def floor_and_light(actors):
+    material = unreal.load_asset(FLOOR_MATERIAL)
+    if material is None:
+        raise ContentError(f"The material {FLOOR_MATERIAL} did not load.")
+    # The top of the floor is at Z 0, so each height of a station is its height above the floor.
+    # The floor runs from X -3200 to 6800, past the end of the longest row, the gap row.
+    block(actors, "Floor", unreal.Vector(1800.0, 0.0, -50.0), unreal.Vector(10000.0, 4000.0, 100.0), material=material)
+
+    sun = spawn(actors, unreal.DirectionalLight, unreal.Vector(0.0, 0.0, 1000.0), unreal.Rotator(0.0, -50.0, 30.0), "Sun")
+    sun.get_editor_property("light_component").set_editor_property("atmosphere_sun_light", True)
+    sky_light = spawn(actors, unreal.SkyLight, unreal.Vector(0.0, 0.0, 800.0), label="Sky light")
+    sky_light.get_editor_property("light_component").set_editor_property("real_time_capture", True)
+    spawn(actors, unreal.SkyAtmosphere, unreal.Vector(0.0, 0.0, 0.0), label="Sky atmosphere")
+    spawn(actors, unreal.ExponentialHeightFog, unreal.Vector(0.0, 0.0, 0.0), label="Height fog")
+    spawn(actors, unreal.PlayerStart, PLAYER_START, label="Player start")
+
+
+def gap_row(actors):
+    """Pairs of platforms 40 cm high, with a gap between them. The player jumps each gap."""
+    x = ROW_START_X
+    for gap in (200, 300, 400, 500, 600, 700, 800):
+        size = unreal.Vector(200.0, 300.0, 40.0)
+        block(actors, f"Gap {gap} take-off", unreal.Vector(x + 100.0, GAP_ROW_Y, 20.0), size)
+        block(actors, f"Gap {gap} landing", unreal.Vector(x + 200.0 + gap + 100.0, GAP_ROW_Y, 20.0), size)
+        text(actors, f"Gap {gap} cm", unreal.Vector(x, GAP_ROW_Y, 150.0))
+        x += 400.0 + gap + 200.0
+
+
+def ledge_row(actors):
+    """Blocks of set heights. The player jumps up onto each one."""
+    x = ROW_START_X
+    for height in (50, 75, 100, 125, 150, 200):
+        block(actors, f"Ledge {height}", unreal.Vector(x + 100.0, LEDGE_ROW_Y, height / 2.0), unreal.Vector(200.0, 300.0, float(height)))
+        text(actors, f"Ledge {height} cm", unreal.Vector(x - 10.0, LEDGE_ROW_Y, height + 40.0))
+        x += 600.0
+
+
+def distance_row(actors):
+    """Thin lines on the floor each 500 cm along +X, to read the run speed."""
+    for index in range(1, 11):
+        distance = index * 500
+        x = PLAYER_START.x + distance
+        block(actors, f"Distance {distance}", unreal.Vector(x, DISTANCE_ROW_Y, 0.5), unreal.Vector(10.0, 300.0, 1.0))
+        text(actors, f"{distance // 100} m", unreal.Vector(x - 10.0, DISTANCE_ROW_Y, 60.0))
+
+
+def step_row(actors):
+    """Stairs of five steps with set step heights, then ramps with set slopes."""
+    x = ROW_START_X
+    depth = 40.0
+    for rise in (15, 30, 45, 60):
+        for step in range(1, 6):
+            height = float(rise * step)
+            block(actors, f"Step {rise} number {step}", unreal.Vector(x + depth * (step - 0.5), STEP_ROW_Y, height / 2.0), unreal.Vector(depth, 300.0, height))
+        text(actors, f"Step {rise} cm", unreal.Vector(x - 10.0, STEP_ROW_Y, rise * 5 + 60.0))
+        x += 600.0
+
+    length = 400.0
+    thickness = 20.0
+    for slope in (30, 40, 45, 50):
+        # The ramp turns about Y, so its low end touches the floor at x and it rises along +X.
+        cos = math.cos(math.radians(slope))
+        sin = math.sin(math.radians(slope))
+        center = unreal.Vector(x + cos * length / 2.0, STEP_ROW_Y, sin * length / 2.0 - cos * thickness / 2.0)
+        block(actors, f"Ramp {slope}", center, unreal.Vector(length, 300.0, thickness), unreal.Rotator(0.0, float(slope), 0.0))
+        text(actors, f"Ramp {slope} deg", unreal.Vector(x - 10.0, STEP_ROW_Y, 120.0))
+        x += 600.0
+
+
+def hall_row(actors):
+    """Pairs of walls 300 cm high and 600 cm long, with a set width between them."""
+    x = ROW_START_X
+    wall = unreal.Vector(600.0, 20.0, 300.0)
+    for width in (100, 150, 200, 300, 400):
+        half = width / 2.0 + wall.y / 2.0
+        block(actors, f"Hall {width} left", unreal.Vector(x + 300.0, HALL_ROW_Y - half, 150.0), wall)
+        block(actors, f"Hall {width} right", unreal.Vector(x + 300.0, HALL_ROW_Y + half, 150.0), wall)
+        text(actors, f"Hall {width} cm", unreal.Vector(x - 10.0, HALL_ROW_Y, 340.0))
+        x += 900.0
+
+
+def gym(game_mode):
+    actors = open_empty_gym()
+    floor_and_light(actors)
+    gap_row(actors)
+    ledge_row(actors)
+    distance_row(actors)
+    step_row(actors)
+    hall_row(actors)
+
+    world = unreal.get_editor_subsystem(unreal.UnrealEditorSubsystem).get_editor_world()
+    if world is None:
+        raise ContentError(f"The map {GYM_MAP} has no editor world.")
+    world.get_world_settings().set_editor_property("default_game_mode", game_mode.generated_class())
+
+    if not unreal.get_editor_subsystem(unreal.LevelEditorSubsystem).save_current_level():
+        raise ContentError(f"The map {GYM_MAP} did not save.")
+
+
+def main():
+    move = input_action("IA_Move", unreal.InputActionValueType.AXIS2D)
+    look = input_action("IA_Look", unreal.InputActionValueType.AXIS2D)
+    jump = input_action("IA_Jump", unreal.InputActionValueType.BOOLEAN)
+    context = keyboard_mouse_context(move, look, jump)
+    tuning = movement_tuning()
+    game_mode = player_blueprints(tuning, move, look, jump, context)
+    gym(game_mode)
+    unreal.log("build_content: pass. The input, the player, and the gym map saved.")
+
+
+main()

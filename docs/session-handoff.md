@@ -1,3 +1,44 @@
+## Session 58: 2026-09-29, Claude Code
+
+Author: Claude Code
+Session: author PR-21, round 1. Repository: iron-absolution. Branch: `feat/pr-21-gym-movement`. PR: #22. Role: author. Base: `ce25cfd4982d5d4be2c0eee0a0a2658f419b182f`.
+
+### What this session did, and why
+
+- At the base, `run.ps1 verify` passed with 539 tests, and `run.ps1 toolchain-check` held each of the 5 pins.
+- The owner gave D-133 to D-136: the map `L_Gym`, a Python script for the content, the first pace of 900 cm/s, and the keys W, A, S, D, Space, and the mouse.
+- C++: `UIronMovementTuning` (each default 0, so the asset holds each value), `AIronPlayerCharacter`, and `AIronPlayerController`. Each absent asset or invalid value writes an error line (T-2).
+- `Game/Scripts/build_content.py` makes the input, the tuning, the Blueprints, and the gym. `run.ps1 content-build` runs it headless (D-134).
+- Five new automation tests. The run test measures 900.0 cm/s and the jump test 120.0 cm. A wrong jump formula fails both jump tests.
+- `package-run` names the test map as its first argument, because the gym is now the default map.
+- New files: `docs/game/movement-metrics.md` and `docs/research/movement-test-method.md`.
+
+### The state of the build
+
+- The remote head is the commit of this entry on `feat/pr-21-gym-movement`, pending merge.
+- `run.ps1 verify` passes with 552 tests. `editor-test` passes 8 automation tests. `package-build` passes, and `package-run` passes on `L_Test`, with owner consent (D-96).
+
+### What is in flight
+
+- The Codex review of PR #22.
+- Exit test 1: the owner plays the gym in the editor and in the package. The owner chose to do it later, so it waits before the merge.
+
+### Traps and gotchas
+
+- The script is the source of each asset that it makes. A change in the editor alone goes away at the next `content-build`.
+- A test world has no local player. The movement tests set `bRunPhysicsWithNoController`, then `SetDefaultMovementMode`, or the character never moves.
+- The project has `bEnableLegacyInputScales` on, so a positive pitch input turns the view down. The mapping context negates the Y axis of the mouse.
+- The C++ copies the ranges of the tuning from the clamps of the header, because a package has no metadata. Change both together.
+- F-28 can fail the `coverage report` job. Run the job again one time, and record the failure.
+
+### The questions that block progress
+
+- None for PR-21. OQ-25 blocks PR-22, and OQ-26 blocks the sound part of PR-25. OQ-21 blocks phase 8. OQ-16 still holds the gitar pass (D-7).
+
+### The next concrete action
+
+- Answer the Codex review, then ask the owner for the play test of exit test 1, then give the merge summary.
+
 ## Session 57: 2026-09-29, Claude Code
 
 Author: Claude Code
@@ -352,35 +393,3 @@ Session: author PR-11, round 1. Repository: iron-absolution. Branch: `docs/pr-11
 
 - Answer the Codex review of #15. After approval, give the owner the merge summary.
 - After the merge, the next PR comes from section 8 of `docs/design.md`: the gate of phase 2, or F-28.
-
-## Session 48: 2026-09-28, Claude Code
-
-Author: Claude Code
-Session: author PR-14, round 2 close. Repository: iron-absolution. Branch: `feat/pr-14-windows-engine-commands`. PR: #14. Role: author. Base: `0351bbba52a4fddd91b559ad7ace9f1bb020b2f0`.
-
-### What this session did, and why
-
-- Round 2 approved the effective head `aed74bb`, and the five checks passed at `9e426cb`.
-- The owner read the merge summary and confirmed the merge.
-- One hosted test failed one time before a clean rerun. This PR adds it to the design doc as F-28, on the choice of the owner. Its fix is a separate concern (G-7).
-
-### The state of the build
-
-- The effective head stays `aed74bb`, because this commit changes `docs/` alone (D-49).
-- The remote head is the commit of this entry, pending merge through auto-merge.
-
-### What is in flight
-
-- The auto-merge of #14 after the checks of this commit.
-
-### Traps and gotchas
-
-- F-28: the stub of D-103 can fail to start on the hosted runner. The assert on the exit code hides the error text, so a fix first proves the cause.
-
-### The questions that block progress
-
-- None. OQ-16 still holds the gitar pass (D-7).
-
-### The next concrete action
-
-- After the merge, write the transitional prompt for PR-11, the gate record. Name F-28 as work for a later PR.
