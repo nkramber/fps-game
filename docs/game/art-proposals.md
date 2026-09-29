@@ -214,3 +214,5 @@ The pick binds these later items:
 - PR-19 sizes the level brief for one kit and three zones: the cloister, the scriptorium, and the vaults.
 - Phase 5 sets the kit grid, the light method (M-5), and the final palette values.
 - Phase 4 gives the stunned cue an original look and sound: the white-violet crack (D-115).
+
+Correction of 2026-09-29: an original harvest tool replaces the chainsaw, with the same rule (PR-19, D-125). The proposal text above keeps the word chainsaw as history. The fit with the fiction stays: a kill of an iron body gives ammo.

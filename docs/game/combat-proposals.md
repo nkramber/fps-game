@@ -227,6 +227,8 @@ Recommendation: proposal D, Press.
 
 The owner picked during PR-16 (D-113). The pick is none of the four proposals. The combat rules follow Doom (2016) (D-115). D-115 resolves OQ-10.
 
+Correction of 2026-09-29: an original harvest tool replaces the chainsaw, with the same rule (PR-19, D-125). This section keeps the word chainsaw as history. The first test for the sandbox uses the harvest tool. Phase 4 proposes its kind (OQ-24).
+
 The owner gave three answers in turn:
 
 1. "Same rules as Doom 2016". The session then showed the conflict with D-2 and G-1.

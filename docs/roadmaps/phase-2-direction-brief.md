@@ -6,6 +6,8 @@ The design doc holds the thesis of the game, the system map (section 3), and the
 
 External facts: this file states no new external fact. The Meshy facts come from `docs/research/technology-and-art-pipeline.md`, which the session checked on 2026-09-26. PR-18 checked them again on 2026-09-29, in section 6 of `docs/game/provenance.md`.
 
+Correction of 2026-09-29: PR-19 gives the level brief and the evidence of the gate. The owner replaced the chainsaw with an original harvest tool (D-125).
+
 Labels: each claim of a plan is evidence (with a link), a recommendation, an assumption, or an unknown.
 
 ## 1. Thesis
@@ -173,7 +175,7 @@ An exit test is a check that the PR must pass before the merge. The PR gate of `
 
 **Questions.** None open now. The brief needs the decision rows of PR-16 and PR-17. The owner confirms the numbers of the brief during the PR.
 
-**State.** 🔧 planned.
+**State.** ✅ done in PR #20. The owner gave the targets of the brief (D-122 to D-124). The owner also replaced the chainsaw with an original harvest tool, with the same rule (D-125). Phase 4 proposes its kind (OQ-24).
 
 > *In plain English:* The level has no size yet. This change sets its length, its number of fights, and its number of weapons and enemies. It also collects the proof that phase 2 is complete.
 
@@ -189,7 +191,19 @@ An exit test is a check that the PR must pass before the merge. The PR gate of `
 6. M-8 has a value at the end of phase 2 (PR-19, D-108).
 7. The five required checks of `main` are green on each PR of the phase (D-61, D-64).
 
-**State.** 🔧 planned. PR-19 records the evidence of each line.
+**The evidence.** PR-19 records the evidence of each line on 2026-09-29:
+
+| Line | Evidence |
+|---|---|
+| 1 | D-116 records the player verbs, in PR #17. D-125 revises the last verb in PR #20. |
+| 2 | D-115 records the pick for OQ-10, in PR #17. |
+| 3 | D-117 records the pick for OQ-9, in PR #18. |
+| 4 | The section "The targets" of `docs/game/level-brief.md` gives each target with a unit (D-122 to D-124). |
+| 5 | The section "The content cost of the length" of `docs/game/level-brief.md` gives the spaces, the PRs, the kit pieces, and the props. |
+| 6 | M-8 in section 4 of `docs/design.md`: 8,404 bytes in one LFS object, from a fresh clone of `main` at `4c1dce4` (D-108). |
+| 7 | `gh pr checks` shows the five checks green on PR #16 to PR #19. The ruleset of `main` holds PR #20 until its five checks pass (D-61, D-64). |
+
+**State.** ✅ passes in PR #20 (PR-19).
 
 **What the gate does not ask.** No play, no code, and no asset. An answer to OQ-12 is not a line, because the owner can defer it again (PR-18). The provenance policy is complete when PR-18 merges.
 
