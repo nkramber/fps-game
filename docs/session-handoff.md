@@ -25,6 +25,7 @@ Session: author PR-17, round 1. Repository: iron-absolution. Branch: `docs/pr-17
 - GitHub PR #18 is roadmap item PR-17.
 - The Wikipedia article on Doom (2016) does not state the color of the stunned cue. The proposals label the blue and orange glow as an assumption.
 - Doom (2016) has a foundry. Penitent Iron keeps no molten metal and no fire as a theme.
+- The first `coverage report` job of PR #18 failed in `ToolchainCheckCommandTests.AnInstallWithNoToolsetFolderGivesAnAbsentMsvcThatNamesTheFolder`, and its rerun passed. It is one more case of F-28.
 
 ### The questions that block progress
 
