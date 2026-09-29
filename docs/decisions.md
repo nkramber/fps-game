@@ -22,6 +22,7 @@ How to read this file:
 - The owner gave D-89 and D-90 on 2026-09-28 in PR-10, the packaged build.
 - The owner gave D-91 to D-93 on 2026-09-28 in PR-10. PR-12 records them.
 - The owner gave D-94 to D-100 on 2026-09-28 in PR-12, the plan of the move to Windows alone.
+- The owner gave D-111 to D-114 on 2026-09-29 in PR-15, the focused roadmap of phase 2.
 - For D-15, the owner asked for the best fit, and the session recommended it. The owner then chose it.
 
 How to add a decision:
@@ -54,6 +55,9 @@ Find a row with `grep -n -E '^\| D-(12|14) \|' docs/decisions.md`.
 | D-91 | 2026-09-28 | Windows alone | The first level ships on Windows alone. The project does not support macOS. The owner said: "We will ONLY support Windows, not Mac." | The owner gave this answer in PR-10. Revises in part D-32: the macOS platform and its budget of 60 fps at 4K output. The Windows budget and the input of D-32 stand. PR-12 plans the change. |
 | D-93 | 2026-09-28 | PR-12 before PR-11 | PR-12, the move to Windows alone, comes before PR-11. | The owner gave this answer in PR-10. Revises in part D-71: phase 1 gets PR-12, and the order of section 8 of the phase file changes. |
 | D-94 | 2026-09-28 | Windows PR split | The move to Windows alone has three PRs. PR-12 records the decisions and the plan. PR-13 moves the development tools to the Windows PC. PR-14 moves the engine commands to Windows alone and removes the Mac parts. PR-11 comes after PR-14. | The owner gave this answer in PR-12. Applies D-93 and G-7. The sessions of PR-13 and later run on the Windows PC (D-92). |
+| D-111 | 2026-09-29 | Phase 2 split | Phase 2 has four PRs. PR-16 gives the pillars, the core loop, the list of player verbs, and the proposals of the recovery mechanic. PR-17 gives the proposals of the setting, the tone, and the art. PR-18 gives the provenance policy and the Meshy choice. PR-19 gives the level brief and the gate record. | The owner gave this answer in PR-15. Applies D-36 and G-7. PR-16 records the player verbs, because phase 3 builds them. PR-19 also records the value of M-8 at the end of phase 2 (D-108). |
+| D-112 | 2026-09-29 | Phase 2 order | The PRs of phase 2 go in this order: PR-16, PR-17, PR-18, and PR-19. | The owner gave this answer in PR-15. Phase 3 needs the player verbs first. The Meshy choice waits for the art direction (OQ-12). The brief needs both picks. |
+| D-113 | 2026-09-29 | Pick in the proposal PR | The owner picks from the proposals during the PR that gives them. That PR records the pick as a decision row and marks its question resolved. | The owner gave this answer in PR-15. Binds PR-16 for OQ-10 and PR-17 for OQ-9. No PR exists only to record a pick (D-5). |
 
 ## Process, review, and tools
 
@@ -121,6 +125,7 @@ Find a row with `grep -n -E '^\| D-(12|14) \|' docs/decisions.md`.
 | D-106 | 2026-09-28 | Worktree path on Windows | The worktree check of `codex-review` reads each path of `git worktree list` as a Windows path: forward slashes become backslashes, and the case of a letter does not count. The macOS path form goes. | The owner gave this answer in PR-14. Git on Windows gives each path with forward slashes, so the check refused an old review folder in a second round. Applies T-2 and D-97. |
 | D-107 | 2026-09-28 | Scope of the window rule | D-96 covers only a command that opens a game window or the editor window. A session, the author or the reviewer, runs `run.ps1 verify` and each headless check with no question. | The owner gave this answer in PR-14, after the first review of #14 read D-96 as a rule for each build and test. Applies D-96, and D-96 stands. |
 | D-110 | 2026-09-28 | Leftovers of the removal | PR-11 removes the Makefile section of `.editorconfig`, and it corrects the comment of `IronAbsolution.Tests/PowerShellScript.cs` that named the scripts folder. A hosted test refuses a section of `.editorconfig` for a file that git does not track. | The owner gave this answer in PR-11, as a second concern of the PR (G-7). PR-14 left both after the removal of D-97 and D-104. The code change needs the Codex review, so the `review-override` label does not apply (D-35). F-29 holds the finding. |
+| D-114 | 2026-09-29 | Game documents | The documents of the game direction go in the folder `docs/game/`, with one file for each subject: the pillars, each set of proposals, the provenance policy, and the level brief. | The owner gave this answer in PR-15. PR-16 creates the folder. The design doc keeps the roadmap, and `docs/research/` keeps the dated evidence. |
 
 ## Engine and technology
 

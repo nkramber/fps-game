@@ -15,6 +15,7 @@ Status: the owner accepts it on the condition of D-27. Written in ASD-STE100 (D-
 - 2026-09-28 eighth pass: the owner gave D-91 to D-100 in PR-10 and PR-12. The game ships on Windows alone (D-91), and the sessions run on the Windows PC (D-92). PR-12 to PR-14 move the project to Windows before PR-11 (D-93, D-94). M-9 goes out of scope (D-95). Each earlier Mac claim stays, with this dated correction.
 - 2026-09-28 ninth pass: PR-14 moves the engine commands to `run.ps1` on the Windows PC and removes each Mac part (D-97). The owner gave D-104 to D-106. The C# commands are the one copy of each engine command (D-104).
 - 2026-09-28 tenth pass: PR-11 records the gate of phase 1 and the first value of M-8. The owner gave D-108 to D-110.
+- 2026-09-29 eleventh pass: PR-15 adds the focused roadmap of phase 2. The owner gave D-111 to D-114. Phase 2 starts after the gate of phase 1.
 
 ## 1. Thesis
 
@@ -277,8 +278,9 @@ When the owner confirms that gitar works here, one PR ports the gitar-wait scrip
 ### Phase 2: Game direction and the level brief (gate: the owner picks for OQ-9 and OQ-10, and a brief with numeric targets)
 
 - Objective: turn the intent of the owner into a short brief that a test can check.
-- Dependencies: PR-1. It runs beside phase 1.
+- Dependencies: PR-1. It runs beside phase 1. Correction of 2026-09-29: no PR of phase 2 started before the gate of phase 1. PR-15 starts phase 2 after that gate.
 - Work: pillars and the core loop. Two or three original proposals for the recovery mechanic (OQ-10) and for setting, tone, and art (OQ-9), as D-36 sets. The level brief for 30 minutes or more (D-37). The provenance policy for art and audio (D-24, D-38). The Meshy choice after the art direction (OQ-12).
+- Focused roadmap: `docs/roadmaps/phase-2-direction-brief.md` holds PR-16 to PR-19 and the gate (D-111, D-112). PR-15 adds it. Status: ✅ done in PR #16. The game documents go in `docs/game/`, and PR-16 creates the folder (D-114).
 - Exit evidence: decision rows for the picks of OQ-9 and OQ-10. The brief gives numbers: clear time, combat spaces, and roster sizes. F-15 applies: the brief states the content cost of the length.
 
 > *In plain English:* The owner decides what the game feels like, looks like, and how long the level is.
@@ -368,8 +370,8 @@ After that, each phase gets a focused roadmap just before it starts. `docs/roadm
 8. Gate of phase 0.
 9. PR-7: the focused roadmap of phase 1. Its PR ids continue after PR-6.
 10. PR-8: the engine toolchain. Then the owner installs the engine and Xcode on the Mac, and the engine on the Windows PC (D-28, D-33). Correction of 2026-09-27: the install was step 9, before its runbook (F-19, D-69). Second correction of 2026-09-27: the owner installs during PR-8, before its merge (D-78).
-11. PR-9 to PR-14 in the order of section 8 of the phase file. Correction of 2026-09-28: PR-12 to PR-14 come before PR-11, and they move the project to Windows alone (D-93, D-94). Phase 2 starts beside phase 1. The owner picks for OQ-9 and OQ-10, then answers OQ-12.
-12. Gate of phase 1, then gate of phase 2. The gate of phase 1 passes in PR #15 (PR-11).
+11. PR-9 to PR-14 in the order of section 8 of the phase file. Correction of 2026-09-28: PR-12 to PR-14 come before PR-11, and they move the project to Windows alone (D-93, D-94). Phase 2 starts beside phase 1. The owner picks for OQ-9 and OQ-10, then answers OQ-12. Correction of 2026-09-29: no PR of phase 2 started beside phase 1.
+12. Gate of phase 1, then gate of phase 2. The gate of phase 1 passes in PR #15 (PR-11). Phase 2 holds PR-15 to PR-19, in the order of section 8 of its phase file (D-111, D-112).
 13. Phase 3, then its gate. Phase 5 starts beside it.
 14. Phase 4, then its gate.
 15. Gate of phase 5.
