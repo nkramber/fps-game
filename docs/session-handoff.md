@@ -1,3 +1,47 @@
+## Session 57: 2026-09-29, Claude Code
+
+Author: Claude Code
+Session: author PR-20, round 1. Repository: iron-absolution. Branch: `docs/pr-20-phase-3-roadmap`. PR: #21. Role: author. Base: `de3143ea61b5ab5caa08f792b5b8e63469657e2a`.
+
+### What this session did, and why
+
+- `run.ps1 verify` passed at the base `de3143e`: 539 tests and 0 STE findings.
+- The session wrote `docs/roadmaps/phase-3-core-feel.md`: PR-21 to PR-27, the gate of phase 3, the order, and the questions.
+- The owner gave D-126 to D-132 in this PR:
+  - D-126 and D-127: seven PRs after the phase file, with the frame-time capture right after the movement.
+  - D-128: one weapon rule and two data assets, so "change weapon" has a test. It resolves F-30.
+  - D-129: the phase file of phase 5 comes after the gate of phase 3. Phase 5 runs beside phase 4.
+  - D-130: the weapon of phase 3 is hitscan.
+  - D-131: the feel pass keeps data-asset changes in PR-27. A rule change gets its own PR.
+  - D-132: the player runs at full speed by default, with no run key.
+- OQ-25 asks the method of M-3, and blocks PR-22. OQ-26 asks the sound of the gym, and blocks the sound part of PR-25.
+- The design doc: the fifteenth pass, F-30, the phase 3 entry, the start of phase 5, M-3, and section 8. The readme lists the new file.
+- The glossary of the ste-writing skill adds "gym" and "sandbox".
+
+### The state of the build
+
+- The remote head is the commit of this entry on `docs/pr-20-phase-3-roadmap`, pending merge.
+- The PR changes documents alone, so the `review-override` label replaces the Codex review (D-35, D-66, D-76).
+
+### What is in flight
+
+- The checks of PR #21, then the merge summary and the owner confirmation.
+
+### Traps and gotchas
+
+- GitHub PR #21 is roadmap item PR-20. The ids of phase 3 continue from PR-20.
+- PR-21 makes the gym the default map. `PackageRunRules` expects the test map in the success line, so the start command of `run.ps1 package-run` must name the test map.
+- `ste-check` reads tracked files alone. Stage a new file before you run it, or its PR headings and paths fail the reference check.
+- F-28 can fail the `coverage report` job of any PR. Run the job again one time, and record the failure.
+
+### The questions that block progress
+
+- None for PR-20. OQ-25 blocks PR-22, and OQ-26 blocks the sound part of PR-25. OQ-21 blocks phase 8, and OQ-24 blocks the harvest tool in phase 4. OQ-16 still holds the gitar pass (D-7).
+
+### The next concrete action
+
+- After the merge, write the transitional prompt of PR-21: the gym, the character, and the movement.
+
 ## Session 56: 2026-09-29, Claude Code
 
 Author: Claude Code
@@ -340,38 +384,3 @@ Session: author PR-14, round 2 close. Repository: iron-absolution. Branch: `feat
 ### The next concrete action
 
 - After the merge, write the transitional prompt for PR-11, the gate record. Name F-28 as work for a later PR.
-
-## Session 47: 2026-09-28, Codex
-
-Author: Codex
-Session: reviewer PR-14, round 2. Repository: iron-absolution. Branch: `feat/pr-14-windows-engine-commands`. PR: #14. Role: reviewer. Base: `0351bbba52a4fddd91b559ad7ace9f1bb020b2f0`.
-
-### What this session did, and why
-
-- The review checked the response to round 1, D-107, and the final effective head, `aed74bb`.
-- The provider gate passed. The review found no defect in scope.
-- The local verification passed. The hosted test rerun passed after one test failed in the first attempt.
-
-### The state of the build
-
-- `run.ps1 verify` passed with 538 tests, no skips, format, and ste-check.
-- The hosted build, test, and format, coverage, doc-gate, and ste-check jobs passed. `review-gate` awaits this record.
-- The work head is `aed74bb2c76d0840a555772b86f82696d175c59f`. The remote head before this metadata commit is `efcf922d9034dea504f415bce68a269051439219`.
-- This review record and handoff entry are pending push as one metadata commit.
-
-### What is in flight
-
-- The review approves effective head `aed74bb`. The PR is ready for the owner merge step after the checks read this record.
-
-### Traps and gotchas
-
-- The first hosted attempt had one failed test. The rerun passed, and local verification passed.
-- `review/pr-14` has no upstream. Check the remote head with `gh pr view` after the push.
-
-### The questions that block progress
-
-- None. OQ-16 still holds the separate gitar pass (D-7).
-
-### The next concrete action
-
-- Push this metadata commit, check the remote head and `review-gate`, then give the owner the merge summary.
