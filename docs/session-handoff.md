@@ -45,6 +45,8 @@ Session: author PR-21, round 2. Repository: iron-absolution. Branch: `feat/pr-21
 - P2-2: `FindInvalidValues` now rejects each value that is not finite.
 - The new test `IronAbsolution.Player.Movement.RefusedTuning` fails on the old code and passes with the correction.
 - The `coverage report` job failed one time in a test of `ToolchainCheckCommandTests`, and its rerun passed. F-28 has a dated line for it.
+- Round 2 of the review marked P2-1 and P2-2 fixed at `7e2e3f7`. It stayed `Blocked` for exit test 1 alone.
+- Exit test 1 passes. With owner consent, the package at `7e2e3f7` opened in `L_Gym`, then the editor. The owner played both and reported "All good".
 
 ### The state of the build
 
@@ -53,8 +55,7 @@ Session: author PR-21, round 2. Repository: iron-absolution. Branch: `feat/pr-21
 
 ### What is in flight
 
-- Round 2 of the Codex review of PR #22.
-- Exit test 1: the play test of the owner in the editor and in the package. It waits before the merge.
+- Round 3 of the Codex review of PR #22, with the evidence of exit test 1.
 
 ### Traps and gotchas
 
@@ -67,7 +68,7 @@ Session: author PR-21, round 2. Repository: iron-absolution. Branch: `feat/pr-21
 
 ### The next concrete action
 
-- Read the verdict of round 2. Then ask the owner for the play test of exit test 1, then give the merge summary.
+- Read the verdict of round 3, then give the merge summary.
 
 ## Session 59: 2026-09-29, Codex
 
