@@ -138,6 +138,29 @@ public sealed class FrameCaptureRulesTests
             settings.Line());
     }
 
+    [Theory]
+    [InlineData(null, "The key 'IronAbsolution.ViewCount' is absent, and D-137 needs the number of views")]
+    [InlineData("0", "The key 'IronAbsolution.ViewCount' has '0', and D-137 needs a whole number of views of 1 or more")]
+    [InlineData("-3", "The key 'IronAbsolution.ViewCount' has '-3', and D-137 needs a whole number of views of 1 or more")]
+    [InlineData("four", "The key 'IronAbsolution.ViewCount' has 'four', and D-137 needs a whole number of views of 1 or more")]
+    public void AnAbsentOrInvalidViewCountFailsTheSettings(string? count, string expected)
+    {
+        // Finding P2-2 of the review of PR #23: the old rule wrote "an unknown number of" views and
+        // passed. The content script and the automation test of the gym views set the number (D-134).
+        List<(string Key, string Value)> metadata = FrameCaptureFixtures.GoodMetadata()
+            .Where(pair => pair.Key != "ironabsolution.viewcount")
+            .ToList();
+        if (count is not null)
+        {
+            metadata.Add(("ironabsolution.viewcount", count));
+        }
+
+        IReadOnlyList<CheckResult> results = FrameCaptureRules.Evaluate(Facts(0, PassedLog, FrameCaptureFixtures.Capture(FrameCaptureFixtures.Frames(200, 4.0), metadata)));
+
+        CheckResult settings = results.Single(result => result.Check == "Capture settings");
+        Assert.Equal($"Capture settings: fail. The metadata of '{CsvPath}' does not match D-137. {expected}.", settings.Line());
+    }
+
     [Fact]
     public void AnExitCodeOfZeroWithNoSuccessLineFailsAndNamesTheLog()
     {

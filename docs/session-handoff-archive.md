@@ -2,6 +2,49 @@
 
 This file holds the entries that the rotation moves out of `docs/session-handoff.md`, newest first.
 
+## Session 55: 2026-09-29, Claude Code
+
+Author: Claude Code
+Session: author PR-18, round 1. Repository: iron-absolution. Branch: `docs/pr-18-provenance-meshy`. PR: #19. Role: author. Base: `e9f34481c6d269e985d9cbc46b20143475862555`.
+
+### What this session did, and why
+
+- `run.ps1 verify` passed at the base `e9f3448`: 539 tests and 0 STE findings.
+- The session checked the Meshy facts again on 2026-09-29, with a source for each. They stand. The credit costs now depend on the model version, and Pro gives 1,000 credits.
+- The session wrote `docs/game/provenance.md`: the record fields, the rule for each kind of source, the rule of F-16, the manifest place, and the Meshy choice.
+- The owner answered four questions with the recommendation each time:
+  - D-118: Meshy on a paid plan, for focal props alone, with a manual FBX export. It resolves OQ-12.
+  - D-119: a third-party asset enters only under CC0 1.0 or CC BY 4.0. It revises D-24 and D-38 in part.
+  - D-120: AI art follows the rule of D-38.
+  - D-121: one JSON manifest beside the project file.
+- The design doc (header, section 1, F-7, F-16, phase 5), the phase 2 file (7.3, section 9), and the research file cite the new rows.
+
+### The state of the build
+
+- The remote head is the commit of this entry on `docs/pr-18-provenance-meshy`, pending merge.
+- The PR changes documents alone, so the `review-override` label replaces the Codex review (D-35, D-66, D-76).
+
+### What is in flight
+
+- The checks of PR #19, then the merge summary and the owner confirmation.
+
+### Traps and gotchas
+
+- GitHub PR #19 is roadmap item PR-18.
+- The repository is public. The Fab Standard License allows a private repository alone, so no Fab asset fits (D-119).
+- The manifest path has no backticks in the docs, because the file does not exist yet and the reference check reads backticked paths (REF 2).
+- PR-17 did not add its status to the phase 2 entry of `docs/design.md`. This PR adds it beside the status of PR-18.
+- The Meshy pricing page shows its prices in cards that a fetch does not read. The price of each paid plan stays unknown.
+- An untracked new file fails REF 2 in `ste-check`. Stage it first.
+
+### The questions that block progress
+
+- None for PR-18. OQ-16 still holds the gitar pass (D-7).
+
+### The next concrete action
+
+- After the merge, write the transitional prompt of PR-19 from section 8 of the phase 2 file.
+
 ## Session 54: 2026-09-29, Claude Code
 
 Author: Claude Code

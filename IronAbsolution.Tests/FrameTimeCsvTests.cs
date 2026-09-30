@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using IronAbsolution.Tools.FrameCapture;
 using Xunit;
 
@@ -153,6 +155,22 @@ public sealed class FrameTimeCsvTests
         FormatException fault = Assert.Throws<FormatException>(() => FrameTimeCsv.Read(Source, text));
 
         Assert.Equal($"the file '{Source}' has no metadata key '[HasHeaderRowAtEnd]' on line 4. The capture did not end", fault.Message);
+    }
+
+    [Theory]
+    [InlineData("0")]
+    [InlineData("")]
+    public void AMarkOfTheFinishedFileOtherThanOneFails(string value)
+    {
+        // Finding P2-1 of the review of PR #23: the old reader checked the key alone.
+        List<(string Key, string Value)> metadata = FrameCaptureFixtures.GoodMetadata()
+            .Select(pair => pair.Key == FrameTimeCsv.CompleteFileKey ? (pair.Key, value) : pair)
+            .ToList();
+        string text = FrameCaptureFixtures.Capture([4.0], metadata);
+
+        FormatException fault = Assert.Throws<FormatException>(() => FrameTimeCsv.Read(Source, text));
+
+        Assert.Equal($"the file '{Source}' has the value '{value}' for the metadata key '[HasHeaderRowAtEnd]' on line 4, and a finished file has '1'. The capture did not end", fault.Message);
     }
 
     [Fact]

@@ -203,12 +203,24 @@ public static class FrameCaptureRules
             }
         }
 
+        // The content script is the source of the set of views, and the automation test of the gym
+        // views checks it (D-134). This rule needs a count, so no capture passes with no views.
+        const string viewCountKey = "IronAbsolution.ViewCount";
+        int views = 0;
+        if (!metadata.TryGetValue(viewCountKey, out string? count))
+        {
+            wrong.Add($"The key '{viewCountKey}' is absent, and D-137 needs the number of views");
+        }
+        else if (!int.TryParse(count, NumberStyles.None, CultureInfo.InvariantCulture, out views) || views < 1)
+        {
+            wrong.Add($"The key '{viewCountKey}' has '{count}', and D-137 needs a whole number of views of 1 or more");
+        }
+
         if (wrong.Count > 0)
         {
             return new CheckResult(check, false, $"The metadata of '{csvPath}' does not match D-137. {string.Join(". ", wrong)}");
         }
 
-        string views = metadata.TryGetValue("IronAbsolution.ViewCount", out string? count) ? count : "an unknown number of";
         return new CheckResult(check, true, $"A {Configuration} package, {WindowMode} at {ViewportWidth}x{ViewportHeight}, with VSync off and no frame-rate cap, over {views} views");
     }
 

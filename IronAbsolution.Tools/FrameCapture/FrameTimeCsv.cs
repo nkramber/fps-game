@@ -81,9 +81,14 @@ public sealed record FrameTimeCsv(IReadOnlyList<double> FrameTimes, IReadOnlyDic
         }
 
         Dictionary<string, string> metadata = ReadMetadata(source, metadataIndex + 1, lines[metadataIndex]);
-        if (!metadata.ContainsKey(CompleteFileKey))
+        if (!metadata.TryGetValue(CompleteFileKey, out string? complete))
         {
             throw new FormatException($"the file '{source}' has no metadata key '[{CompleteFileKey}]' on line {metadataIndex + 1}. The capture did not end");
+        }
+
+        if (complete != "1")
+        {
+            throw new FormatException($"the file '{source}' has the value '{complete}' for the metadata key '[{CompleteFileKey}]' on line {metadataIndex + 1}, and a finished file has '1'. The capture did not end");
         }
 
         return new FrameTimeCsv(frameTimes, metadata);
