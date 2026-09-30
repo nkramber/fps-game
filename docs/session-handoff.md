@@ -1,3 +1,146 @@
+## Session 66: 2026-09-30, Codex
+
+Author: Codex
+Session: reviewer PR-22, round 2. Repository: iron-absolution. Branch: `feat/pr-22-frame-time-capture`. PR: #23. Role: reviewer. Base: `09633599fc73f3c93e52535830c78b852a120cf4`.
+
+### What this session did, and why
+
+- Reviewed PR #23 at work head `09ac7904991b5c6cb301e5cfd82605bbbd011a1c`.
+- Verified the two fixes and their regression tests. P2-1 and P2-2 are fixed. The Linux CI issue is F-28, and its required rerun passed.
+- Updated the test count in the PR description to 46 C# tests.
+- `run.ps1 verify` passes on Windows with 598 tests, format, and STE checks.
+- The review record gives `Ready for owner merge` for the current work head.
+
+### The state of the build
+
+- The reviewed work head is `09ac7904991b5c6cb301e5cfd82605bbbd011a1c`.
+- The metadata commit of this entry and the review record is the remote head on `feat/pr-22-frame-time-capture`.
+- The current GitHub CI code checks pass. The review-gate check awaits this record.
+
+### What is in flight
+
+- PR #23, pending merge: the merge summary and owner confirmation.
+
+### Traps and gotchas
+
+- Do not run `frame-capture` without owner confirmation. It opens a game window (D-96).
+- F-28 caused three short CI failures on this PR. Each failed job passed on its required rerun.
+
+### The questions that block progress
+
+- None.
+
+### The next concrete action
+
+- Give the owner the merge summary for PR #23 after the review-gate check passes.
+
+## Session 65: 2026-09-30, Claude Code
+
+Author: Claude Code
+Session: author PR-22, round 2. Repository: iron-absolution. Branch: `feat/pr-22-frame-time-capture`. PR: #23. Role: author. Base: `09633599fc73f3c93e52535830c78b852a120cf4`.
+
+### What this session did, and why
+
+- Answered the review of `13bdbb1` in `docs/reviews/pr-23-response.md`.
+- P1-1, partial merit: the Linux failure is F-28. The rerun passed. The F-28 row of `docs/design.md` records each failure of PR #23.
+- P2-1, full merit: the reader needs `[HasHeaderRowAtEnd],1`.
+- P2-2, partial merit: an absent or invalid view count now fails. The session refuted a second copy of "4" in C#, because the content script and the gym views test hold the set (D-134).
+- Six new test cases fail on the old code and pass on the new code.
+
+### The state of the build
+
+- The new work head is the commit of this entry on `feat/pr-22-frame-time-capture`. `verify` passes on Windows with 598 tests.
+- The game code, the content, and the value of M-3 do not change. The change is in the C# rules alone.
+
+### What is in flight
+
+- PR #23, pending merge: round 2 of the Codex review, then the merge summary.
+
+### Traps and gotchas
+
+- F-28 hit PR #23 three times, the third in the `coverage report` job of `09ac790`. Run each failed job again one time, and record it here.
+
+### The questions that block progress
+
+- None for PR-22.
+
+### The next concrete action
+
+- When each check is green, run `run.ps1 codex-review -PR 23`.
+
+## Session 64: 2026-09-30, Codex
+
+Author: Codex
+Session: reviewer PR-22, round 1. Repository: iron-absolution. Branch: `feat/pr-22-frame-time-capture`. PR: #23. Role: reviewer. Base: `09633599fc73f3c93e52535830c78b852a120cf4`.
+
+### What this session did, and why
+
+- Reviewed PR #23 at effective head `13bdbb1c6cd187e867b644be9afaf5c4ec95db2c`.
+- Recorded P1-1 for a failing Linux CI test, P2-1 for an incomplete CSV marker, and P2-2 for the missing four-view check.
+- `run.ps1 verify` passed with 592 tests, format, and STE checks.
+- The review record gives `Changes required`. A metadata update records the post-push CI failure.
+
+### The state of the build
+
+- The effective work head is `13bdbb1c6cd187e867b644be9afaf5c4ec95db2c`.
+- The remote PR tip is the metadata commit on `feat/pr-22-frame-time-capture`.
+- GitHub build, coverage, doc-gate, and ste-check pass after a rerun. Review-gate rejects the verdict `Changes required`.
+
+### What is in flight
+
+- The author must answer both findings.
+- The author must fix the Linux CI test failure.
+
+### Traps and gotchas
+
+- Do not run `frame-capture` without owner confirmation. It opens a game window (D-96).
+
+### The questions that block progress
+
+- None.
+
+### The next concrete action
+
+- The author answers P1-1, P2-1, and P2-2, then requests a repeat review.
+
+## Session 63: 2026-09-30, Claude Code
+
+Author: Claude Code
+Session: author PR-22, round 1. Repository: iron-absolution. Branch: `feat/pr-22-frame-time-capture`. PR: #23. Role: author. Base: `09633599fc73f3c93e52535830c78b852a120cf4`.
+
+### What this session did, and why
+
+- Ran `verify` (552 tests) and `toolchain-check` (5 pins) on `main` before any change.
+- Asked OQ-25. The owner picked the Development package, a fixed set of views, the mean and the 99th percentile, and borderless fullscreen with no cap (D-137).
+- The owner wants the game borderless fullscreen (D-138). The engine default already gives it, so the owner asked for no change.
+- Added `AFrameTimeView`, `UFrameTimeCaptureSubsystem`, 4 views in the content script, 4 automation tests, the `frame-capture` command with 40 new C# tests, and `run.ps1 frame-capture`.
+- First value of M-3: a mean of 3.33 ms and a 99th percentile of 3.67 ms, inside 8.33 ms. Section 4 of `docs/design.md` and `docs/research/frame-time-method.md` give the settings.
+
+### The state of the build
+
+- The effective head is `13bdbb1`. A documents commit follows it. The remote head is the tip of `feat/pr-22-frame-time-capture`.
+- On the Windows PC: `verify` passes with 592 tests. `editor-build`, `editor-test` (13 tests), `content-build`, `package-build`, `frame-capture`, and `package-run` pass.
+
+### What is in flight
+
+- PR #23, pending merge: the Codex review, then the merge summary.
+
+### Traps and gotchas
+
+- Close each other game before `frame-capture`. A game in the background gave a mean of 7.36 ms, and that capture is void.
+- The CSV profiler adds columns during a capture, and the place of `FrameTime` changes between captures. The reader uses the closing header and the column name.
+- `content-build` writes `IMC_KeyboardMouse` again with new ids. This PR restored it.
+- F-28 on the first push: `EditorTestCommandTests.AStubRunThatWritesTheReportAndTheSuccessLinePasses` failed after 9 ms in the `coverage report` job. The session ran the failed job again one time.
+- A Python heredoc through the Bash tool halves each backslash. Check each Windows path after such an edit.
+
+### The questions that block progress
+
+- None for PR-22. OQ-16 stays out of each PR (D-7).
+
+### The next concrete action
+
+- Run `run.ps1 codex-review -PR 23`, answer the findings, then give the owner the merge summary.
+
 ## Session 62: 2026-09-29, Codex
 
 Author: Codex
@@ -226,168 +369,3 @@ Session: author PR-20, round 1. Repository: iron-absolution. Branch: `docs/pr-20
 ### The next concrete action
 
 - After the merge, write the transitional prompt of PR-21: the gym, the character, and the movement.
-
-## Session 56: 2026-09-29, Claude Code
-
-Author: Claude Code
-Session: author PR-19, round 1. Repository: iron-absolution. Branch: `docs/pr-19-level-brief`. PR: #20. Role: author. Base: `4c1dce4200caec2d34b4d9fe4fa59a0b9a8bcd12`.
-
-### What this session did, and why
-
-- `run.ps1 verify` passed at the base `4c1dce4`: 539 tests and 0 STE findings.
-- The session wrote `docs/game/level-brief.md`: the terms, the targets, the spaces of each zone, a time estimate, the rosters, and the content cost of the length (F-15).
-- The owner confirmed the targets:
-  - D-122: a first clear of 30 to 45 minutes, 10 combat spaces, and 6 other spaces.
-  - D-123: 6 secrets and 10 checkpoints.
-  - D-124: three guns and the harvest tool, and four enemy types with no boss.
-  - D-125: an original harvest tool replaces the chainsaw, with the same rule. It revises D-115 and D-116 in part.
-- OQ-24 asks the kind of the harvest tool. It blocks the tool in phase 4.
-- M-8 at the end of phase 2: 8,404 bytes in one LFS object, from a fresh clone at `4c1dce4` (D-108).
-- Section 7.5 of the phase 2 file gives the evidence of each line of the gate. The five checks passed on PR #16 to PR #19.
-- The design doc, the pillars, the two proposal files, and the glossary of the ste-writing skill name the harvest tool.
-
-### The state of the build
-
-- The remote head is the commit of this entry on `docs/pr-19-level-brief`, pending merge.
-- The PR changes documents alone, so the `review-override` label replaces the Codex review (D-35, D-66, D-76).
-
-### What is in flight
-
-- The checks of PR #20, then the merge summary and the owner confirmation.
-
-### Traps and gotchas
-
-- GitHub PR #20 is roadmap item PR-19.
-- The owner first answered "3 guns + something other than a chainsaw". That conflicted with D-115 and D-116, so the session asked again. The answer: the same rule, with a new tool.
-- The docs of PR-16 and PR-17 keep the word chainsaw as history, with a dated correction.
-- The time estimate of the brief gives 30 to 48 minutes. It is an assumption, and M-7 measures it in phase 6.
-- The `coverage report` job of PR #20 failed two times on a stub test, one in `ToolchainCheckCommandTests` and one in `EditorTestCommandTests`. Each rerun passed. This is F-28, and the design doc now records the two runs.
-
-### The questions that block progress
-
-- None for PR-19. OQ-24 blocks the harvest tool in phase 4. OQ-16 still holds the gitar pass (D-7).
-
-### The next concrete action
-
-- After the merge, write the transitional prompt of the first PR of phase 3. Phase 3 has no focused roadmap yet, so that PR adds it.
-- F-28 now fails more often. A later PR proves its cause and fixes the start of the stub (T-2, T-3). The owner chooses when.
-
-## Session 55: 2026-09-29, Claude Code
-
-Author: Claude Code
-Session: author PR-18, round 1. Repository: iron-absolution. Branch: `docs/pr-18-provenance-meshy`. PR: #19. Role: author. Base: `e9f34481c6d269e985d9cbc46b20143475862555`.
-
-### What this session did, and why
-
-- `run.ps1 verify` passed at the base `e9f3448`: 539 tests and 0 STE findings.
-- The session checked the Meshy facts again on 2026-09-29, with a source for each. They stand. The credit costs now depend on the model version, and Pro gives 1,000 credits.
-- The session wrote `docs/game/provenance.md`: the record fields, the rule for each kind of source, the rule of F-16, the manifest place, and the Meshy choice.
-- The owner answered four questions with the recommendation each time:
-  - D-118: Meshy on a paid plan, for focal props alone, with a manual FBX export. It resolves OQ-12.
-  - D-119: a third-party asset enters only under CC0 1.0 or CC BY 4.0. It revises D-24 and D-38 in part.
-  - D-120: AI art follows the rule of D-38.
-  - D-121: one JSON manifest beside the project file.
-- The design doc (header, section 1, F-7, F-16, phase 5), the phase 2 file (7.3, section 9), and the research file cite the new rows.
-
-### The state of the build
-
-- The remote head is the commit of this entry on `docs/pr-18-provenance-meshy`, pending merge.
-- The PR changes documents alone, so the `review-override` label replaces the Codex review (D-35, D-66, D-76).
-
-### What is in flight
-
-- The checks of PR #19, then the merge summary and the owner confirmation.
-
-### Traps and gotchas
-
-- GitHub PR #19 is roadmap item PR-18.
-- The repository is public. The Fab Standard License allows a private repository alone, so no Fab asset fits (D-119).
-- The manifest path has no backticks in the docs, because the file does not exist yet and the reference check reads backticked paths (REF 2).
-- PR-17 did not add its status to the phase 2 entry of `docs/design.md`. This PR adds it beside the status of PR-18.
-- The Meshy pricing page shows its prices in cards that a fetch does not read. The price of each paid plan stays unknown.
-- An untracked new file fails REF 2 in `ste-check`. Stage it first.
-
-### The questions that block progress
-
-- None for PR-18. OQ-16 still holds the gitar pass (D-7).
-
-### The next concrete action
-
-- After the merge, write the transitional prompt of PR-19 from section 8 of the phase 2 file.
-
-## Session 54: 2026-09-29, Claude Code
-
-Author: Claude Code
-Session: author PR-17, round 1. Repository: iron-absolution. Branch: `docs/pr-17-art-direction`. PR: #18. Role: author. Base: `bdf7ec5a53bbac25c9e24744612be963be16b73e`.
-
-### What this session did, and why
-
-- `run.ps1 verify` passed at the base `bdf7ec5`: 539 tests and 0 STE findings.
-- The session wrote `docs/game/art-proposals.md` with three original proposals for OQ-9: Penitent Iron, Spillway, and Tribunal.
-- Each proposal gives the setting and the tone, the visual style with a palette, the content cost, the budget fit, Meshy, and originality.
-- The owner picked proposal A, Penitent Iron, the recommendation. D-117 records it and resolves OQ-9.
-- The design doc (section 1) and section 7.2 of the phase 2 file cite D-117.
-
-### The state of the build
-
-- The remote head is the commit of this entry on `docs/pr-17-art-direction`, pending merge.
-- The PR changes documents alone, so the `review-override` label replaces the Codex review (D-35, D-66, D-76).
-
-### What is in flight
-
-- The checks of PR #18, then the merge summary and the owner confirmation.
-
-### Traps and gotchas
-
-- GitHub PR #18 is roadmap item PR-17.
-- The Wikipedia article on Doom (2016) does not state the color of the stunned cue. The proposals label the blue and orange glow as an assumption.
-- Doom (2016) has a foundry. Penitent Iron keeps no molten metal and no fire as a theme.
-- The first `coverage report` job of PR #18 failed in `ToolchainCheckCommandTests.AnInstallWithNoToolsetFolderGivesAnAbsentMsvcThatNamesTheFolder`, and its rerun passed. It is one more case of F-28.
-
-### The questions that block progress
-
-- None for PR-17. OQ-12 (Meshy) is next, in PR-18. OQ-16 still holds the gitar pass (D-7).
-
-### The next concrete action
-
-- After the merge, write the transitional prompt of PR-18 from section 8 of the phase 2 file.
-
-## Session 53: 2026-09-29, Claude Code
-
-Author: Claude Code
-Session: author PR-16, round 1. Repository: iron-absolution. Branch: `docs/pr-16-pillars-and-recovery`. PR: #17. Role: author. Base: `c1a2f9f8181b91c08933210f68928d8c18662911`.
-
-### What this session did, and why
-
-- `run.ps1 verify` passed at the base `c1a2f9f`: 539 tests and 0 STE findings.
-- The session created `docs/game/` (D-114) with `pillars.md` and `combat-proposals.md`.
-- The session wrote three original proposals for OQ-10: Reclaim, Relay, and Iron. The owner answered "Same rules as Doom 2016".
-- The session showed the conflict with D-2, G-1, D-1, and D-36. The owner chose to keep D-2, so the session wrote proposal D, Press.
-- The owner then said "Nah, back to Doom 2016. Use those mechanics." The owner confirmed the text of D-115.
-- D-115: the combat rules follow Doom (2016). Names, art, audio, layouts, and cues stay original. It resolves OQ-10 and revises D-1, D-2, D-36, and G-1 in part.
-- D-116: the player verbs. The owner accepted the four pillars as written.
-- The design doc, the phase 2 file, and the glossary of the ste-writing skill cite the new rows.
-
-### The state of the build
-
-- The remote head is the commit of this entry on `docs/pr-16-pillars-and-recovery`, pending merge.
-- The PR changes documents alone, so the `review-override` label replaces the Codex review (D-35, D-66, D-76).
-
-### What is in flight
-
-- The checks of PR #17, then the merge summary and the owner confirmation.
-
-### Traps and gotchas
-
-- GitHub PR #17 is roadmap item PR-16.
-- A new branch from `origin/main` tracks `main`. Remove the upstream, and push with `-u origin <branch>`.
-- doomwiki.org and the Fandom wiki refuse WebFetch. The Wikipedia article is the one source of D-115.
-- D-115 copies rules alone. Each PR of phase 4 checks that no name, art, sound, or cue of Doom (2016) enters the game.
-
-### The questions that block progress
-
-- None for PR-16. OQ-9 blocks PR-17. OQ-16 still holds the gitar pass (D-7).
-
-### The next concrete action
-
-- After the merge, write the transitional prompt of PR-17 from section 8 of the phase 2 file.

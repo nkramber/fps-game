@@ -149,6 +149,21 @@ The package is a Development build of the game, with the test map (D-89).
 
 The package runs the test map for 10 seconds, and stops. The start command gives the exit code 1 when a check fails. A pass needs the exit code 0 of the package and the success line of the timed run in `Game\Saved\Logs\package-run.log`.
 
+## The frame-time capture
+
+The capture measures M-3 in the package of the section above (D-137).
+
+1. Close each other game and each heavy program. A game in the background makes the capture slower.
+2. Start the capture. The package opens a borderless fullscreen window, so a session asks the owner first (D-96).
+
+   ```
+   .\run.ps1 frame-capture
+   ```
+
+3. Attach `Game\Saved\Logs\frame-capture.log` and `Game\Saved\Logs\frame-capture.csv` to the evidence form of the PR (D-31).
+
+The package shows each view of the gym, and the CSV profiler records each frame. A pass needs the success line and the settings of D-137. It also needs a mean and a 99th percentile of the frame time at 8.33 ms or less (D-32).
+
 ## Traps
 
 - The name of an MSVC toolset folder does not change after a servicing update. The folder 14.50.35717 can hold `cl.exe` 14.50.35739. The check reads `cl.exe`, as UnrealBuildTool does (F-22).

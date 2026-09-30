@@ -156,3 +156,13 @@ Make the packaged Development build, then start the package for its timed run (D
 
 - `package-build` puts the package in `Game/Saved/Packages/Windows`, and it writes its output to `Game/Saved/Logs/package-build.log`.
 - `package-run` runs the test map for 10 seconds. The game writes its log to `Game/Saved/Logs/package-run.log`.
+
+Capture the frame time of the gym for M-3 (D-137). The package opens a game window, so ask the owner before `frame-capture`, and wait for the confirmation (D-96).
+
+```
+.\run.ps1 frame-capture
+```
+
+- Ask the owner to close each other game and each heavy program first. A game in the background made the first capture of PR-22 more than two times slower.
+- `frame-capture` runs the gym borderless fullscreen for about 30 seconds. It writes `Game/Saved/Logs/frame-capture.csv` and `Game/Saved/Logs/frame-capture.log`.
+- A value over the budget gives the exit code 1, and the message names the value and the budget.

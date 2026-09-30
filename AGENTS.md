@@ -161,6 +161,7 @@ Gitar is a documented plan only (D-7). Add no gitar step, wait, script, template
 - `run.ps1 content-build`: make the scripted content from `Game/Scripts/build_content.py` with a headless editor (D-134).
 - `run.ps1 package-build`: make a packaged Development build of the game (D-72).
 - `run.ps1 package-run`: start the package for a timed run of the test map. A pass needs the exit code 0 and the success line of the log (D-89). It opens a game window (D-96).
+- `run.ps1 frame-capture`: capture the frame time of the gym in the package for M-3. A pass needs the settings of D-137, and a mean and a 99th percentile inside the budget of D-32. It opens a game window (D-96).
 
 The CI of each PR runs the `ste-check`, `build, test, and format`, and `coverage report` jobs (D-42, D-45). The `doc-gate` workflow runs on each push and on each edit of the description (D-56). The `review-gate` workflow runs from the base branch on each push and on each label change (D-64). The ruleset of `main` requires these five checks (D-61, D-64). `docs/runbooks/main-ruleset.md` gives its steps.
 

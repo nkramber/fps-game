@@ -58,6 +58,14 @@ public sealed class StubProgram
         return this.With("abslog", line);
     }
 
+    /// <summary>Writes the CSV file of a frame-time capture at the path of the argument `-FrameTimeCsv=`.</summary>
+    /// <param name="text">The whole text of the file.</param>
+    /// <returns>This stub, so the calls chain.</returns>
+    public StubProgram WritesCsv(string text)
+    {
+        return this.With("csv", text);
+    }
+
     /// <summary>Waits before the stub stops, so a test can reach a time limit.</summary>
     /// <param name="seconds">The number of seconds of the wait.</param>
     /// <returns>This stub, so the calls chain.</returns>

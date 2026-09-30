@@ -12,8 +12,8 @@
 #
 # The engine targets read the engine folder from IRON_ABSOLUTION_ENGINE_DIR, so no commit holds a
 # path of one machine (D-9, D-79). `verify` runs no engine target, because the hosted runners have
-# no engine (D-31). `package-run` opens a game window, so a session asks the owner first (D-96).
-# `content-build` runs the editor with no window.
+# no engine (D-31). `package-run` and `frame-capture` open a game window, so a session asks the
+# owner first (D-96). `content-build` runs the editor with no window.
 
 [CmdletBinding()]
 param(
@@ -51,6 +51,7 @@ $Targets = [ordered]@{
     'content-build'   = 'make the scripted content with a headless editor. Run `editor-build` first. The log is Game\Saved\Logs\content-build.log (D-134).'
     'package-build'   = 'make a packaged Development build of the game. The log is Game\Saved\Logs\package-build.log (D-72).'
     'package-run'     = 'start the package for a timed run of the test map. It opens a game window (D-89, D-96).'
+    'frame-capture'   = 'capture the frame time of the gym in the package, against the budget of D-32. It opens a game window (D-96, D-137).'
     'help'            = 'print this list.'
 }
 
@@ -251,5 +252,11 @@ switch ($Target) {
         # The package runs the test map for 10 seconds and stops. A pass needs the exit code 0 and
         # the success line of the log (D-89).
         Invoke-Step 'package-run' 'dotnet' @('run', '--project', $ToolsProject, '--', 'package-run', '--root', $Root)
+    }
+    'frame-capture' {
+        # The package shows each view of the gym, and the CSV profiler records each frame. A pass
+        # needs the success line, the settings of D-137, and a mean and a 99th percentile of the
+        # frame time inside the budget of D-32. The package runs borderless fullscreen (D-138).
+        Invoke-Step 'frame-capture' 'dotnet' @('run', '--project', $ToolsProject, '--', 'frame-capture', '--root', $Root)
     }
 }
