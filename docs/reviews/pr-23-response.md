@@ -5,7 +5,7 @@ The author answers the review of work head `13bdbb1c6cd187e867b644be9afaf5c4ec95
 ### P1-1
 - Disposition: partial merit.
 - Evidence: the CI failure is real. The cause is F-28, not a fault of this PR. The test failed after 9 ms, and its error starts with the path of the stub. So the stub program did not start, and the command did not run its checks. The rerun of the same job passed at run 36660139514. The same failure, at 9 ms, hit a test of `EditorTestCommandTests` on the first push of this PR, and that PR does not change that test. Section 5 of `docs/roadmaps/phase-3-core-feel.md` binds each PR of phase 3 to F-28: "run the failed job again one time, and record each failure in the handoff entry. A later PR fixes the cause". A fix of the start of the stub in this PR is a second concern (G-7).
-- Correction: the F-28 row of section 5 of `docs/design.md` records both failures of PR #23 with a dated correction and the run ids. The handoff entry records both reruns.
+- Correction: the F-28 row of section 5 of `docs/design.md` records each failure of PR #23 with a dated correction and the run ids. The third failure came in the `coverage report` job of `09ac790`, and its rerun passed. The handoff entry records each rerun.
 - Regression check: none in this PR, because F-28 holds the cause. `run.ps1 verify` passes on Windows with 598 tests.
 
 ### P2-1
