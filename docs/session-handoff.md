@@ -1,3 +1,39 @@
+## Session 66: 2026-09-30, Codex
+
+Author: Codex
+Session: reviewer PR-22, round 2. Repository: iron-absolution. Branch: `feat/pr-22-frame-time-capture`. PR: #23. Role: reviewer. Base: `09633599fc73f3c93e52535830c78b852a120cf4`.
+
+### What this session did, and why
+
+- Reviewed PR #23 at work head `09ac7904991b5c6cb301e5cfd82605bbbd011a1c`.
+- Verified the two fixes and their regression tests. P2-1 and P2-2 are fixed. The Linux CI issue is F-28, and its required rerun passed.
+- Updated the test count in the PR description to 46 C# tests.
+- `run.ps1 verify` passes on Windows with 598 tests, format, and STE checks.
+- The review record gives `Ready for owner merge` for the current work head.
+
+### The state of the build
+
+- The reviewed work head is `09ac7904991b5c6cb301e5cfd82605bbbd011a1c`.
+- The metadata commit of this entry and the review record is the remote head on `feat/pr-22-frame-time-capture`.
+- The current GitHub CI code checks pass. The review-gate check awaits this record.
+
+### What is in flight
+
+- PR #23, pending merge: the merge summary and owner confirmation.
+
+### Traps and gotchas
+
+- Do not run `frame-capture` without owner confirmation. It opens a game window (D-96).
+- F-28 caused three short CI failures on this PR. Each failed job passed on its required rerun.
+
+### The questions that block progress
+
+- None.
+
+### The next concrete action
+
+- Give the owner the merge summary for PR #23 after the review-gate check passes.
+
 ## Session 65: 2026-09-30, Claude Code
 
 Author: Claude Code
@@ -333,48 +369,3 @@ Session: author PR-20, round 1. Repository: iron-absolution. Branch: `docs/pr-20
 ### The next concrete action
 
 - After the merge, write the transitional prompt of PR-21: the gym, the character, and the movement.
-
-## Session 56: 2026-09-29, Claude Code
-
-Author: Claude Code
-Session: author PR-19, round 1. Repository: iron-absolution. Branch: `docs/pr-19-level-brief`. PR: #20. Role: author. Base: `4c1dce4200caec2d34b4d9fe4fa59a0b9a8bcd12`.
-
-### What this session did, and why
-
-- `run.ps1 verify` passed at the base `4c1dce4`: 539 tests and 0 STE findings.
-- The session wrote `docs/game/level-brief.md`: the terms, the targets, the spaces of each zone, a time estimate, the rosters, and the content cost of the length (F-15).
-- The owner confirmed the targets:
-  - D-122: a first clear of 30 to 45 minutes, 10 combat spaces, and 6 other spaces.
-  - D-123: 6 secrets and 10 checkpoints.
-  - D-124: three guns and the harvest tool, and four enemy types with no boss.
-  - D-125: an original harvest tool replaces the chainsaw, with the same rule. It revises D-115 and D-116 in part.
-- OQ-24 asks the kind of the harvest tool. It blocks the tool in phase 4.
-- M-8 at the end of phase 2: 8,404 bytes in one LFS object, from a fresh clone at `4c1dce4` (D-108).
-- Section 7.5 of the phase 2 file gives the evidence of each line of the gate. The five checks passed on PR #16 to PR #19.
-- The design doc, the pillars, the two proposal files, and the glossary of the ste-writing skill name the harvest tool.
-
-### The state of the build
-
-- The remote head is the commit of this entry on `docs/pr-19-level-brief`, pending merge.
-- The PR changes documents alone, so the `review-override` label replaces the Codex review (D-35, D-66, D-76).
-
-### What is in flight
-
-- The checks of PR #20, then the merge summary and the owner confirmation.
-
-### Traps and gotchas
-
-- GitHub PR #20 is roadmap item PR-19.
-- The owner first answered "3 guns + something other than a chainsaw". That conflicted with D-115 and D-116, so the session asked again. The answer: the same rule, with a new tool.
-- The docs of PR-16 and PR-17 keep the word chainsaw as history, with a dated correction.
-- The time estimate of the brief gives 30 to 48 minutes. It is an assumption, and M-7 measures it in phase 6.
-- The `coverage report` job of PR #20 failed two times on a stub test, one in `ToolchainCheckCommandTests` and one in `EditorTestCommandTests`. Each rerun passed. This is F-28, and the design doc now records the two runs.
-
-### The questions that block progress
-
-- None for PR-19. OQ-24 blocks the harvest tool in phase 4. OQ-16 still holds the gitar pass (D-7).
-
-### The next concrete action
-
-- After the merge, write the transitional prompt of the first PR of phase 3. Phase 3 has no focused roadmap yet, so that PR adds it.
-- F-28 now fails more often. A later PR proves its cause and fixes the start of the stub (T-2, T-3). The owner chooses when.
