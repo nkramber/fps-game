@@ -14,7 +14,7 @@ Session: reviewer PR-22, round 1. Repository: iron-absolution. Branch: `feat/pr-
 
 - The effective work head is `13bdbb1c6cd187e867b644be9afaf5c4ec95db2c`.
 - The remote PR tip is the metadata commit on `feat/pr-22-frame-time-capture`.
-- GitHub coverage, doc-gate, and ste-check pass. One Linux test fails, and review-gate rejects the verdict `Changes required`.
+- GitHub build, coverage, doc-gate, and ste-check pass after a rerun. Review-gate rejects the verdict `Changes required`.
 
 ### What is in flight
 
