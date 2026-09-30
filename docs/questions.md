@@ -117,7 +117,7 @@ Find a question with `grep -n -E '^[0-9]+\. \*\*OQ-(1|18)\.' docs/questions.md`.
     - Option B: a heavy two-hand weapon, for example a warden's hammer.
     - Option C: another original tool that phase 4 proposes.
     - Recommendation: phase 4 gives two or three original proposals that fit Penitent Iron (D-36, D-117). The owner picks in that PR (D-113).
-25. **OQ-25. The method of M-3.** Which build configuration, which scene, and which statistic of the frame time does M-3 read against the budget of D-32? Raised 2026-09-29 (PR-20). Blocks PR-22.
+25. **OQ-25. The method of M-3.** Which build configuration, which scene, and which statistic of the frame time does M-3 read against the budget of D-32? Raised 2026-09-29 (PR-20). Blocks PR-22. Resolved 2026-09-29: D-137.
     - The configuration: the Development package of phase 1, or a Test package. Epic removes more overhead in a Test build. PR-22 checks this fact with a date.
     - The scene: a fixed set of views in the gym, or a scripted path through the gym.
     - The statistic: for example the mean and the 99th percentile of the frame time, each at 8.33 ms or less for 120 fps.

@@ -1,3 +1,40 @@
+## Session 63: 2026-09-30, Claude Code
+
+Author: Claude Code
+Session: author PR-22, round 1. Repository: iron-absolution. Branch: `feat/pr-22-frame-time-capture`. PR: #23. Role: author. Base: `09633599fc73f3c93e52535830c78b852a120cf4`.
+
+### What this session did, and why
+
+- Ran `verify` (552 tests) and `toolchain-check` (5 pins) on `main` before any change.
+- Asked OQ-25. The owner picked the Development package, a fixed set of views, the mean and the 99th percentile, and borderless fullscreen with no cap (D-137).
+- The owner wants the game borderless fullscreen (D-138). The engine default already gives it, so the owner asked for no change.
+- Added `AFrameTimeView`, `UFrameTimeCaptureSubsystem`, 4 views in the content script, 4 automation tests, the `frame-capture` command with 40 new C# tests, and `run.ps1 frame-capture`.
+- First value of M-3: a mean of 3.33 ms and a 99th percentile of 3.67 ms, inside 8.33 ms. Section 4 of `docs/design.md` and `docs/research/frame-time-method.md` give the settings.
+
+### The state of the build
+
+- The effective head is `13bdbb1`. A documents commit follows it. The remote head is the tip of `feat/pr-22-frame-time-capture`.
+- On the Windows PC: `verify` passes with 592 tests. `editor-build`, `editor-test` (13 tests), `content-build`, `package-build`, `frame-capture`, and `package-run` pass.
+
+### What is in flight
+
+- PR #23, pending merge: the Codex review, then the merge summary.
+
+### Traps and gotchas
+
+- Close each other game before `frame-capture`. A game in the background gave a mean of 7.36 ms, and that capture is void.
+- The CSV profiler adds columns during a capture, and the place of `FrameTime` changes between captures. The reader uses the closing header and the column name.
+- `content-build` writes `IMC_KeyboardMouse` again with new ids. This PR restored it.
+- A Python heredoc through the Bash tool halves each backslash. Check each Windows path after such an edit.
+
+### The questions that block progress
+
+- None for PR-22. OQ-16 stays out of each PR (D-7).
+
+### The next concrete action
+
+- Run `run.ps1 codex-review -PR 23`, answer the findings, then give the owner the merge summary.
+
 ## Session 62: 2026-09-29, Codex
 
 Author: Codex
@@ -351,43 +388,3 @@ Session: author PR-17, round 1. Repository: iron-absolution. Branch: `docs/pr-17
 ### The next concrete action
 
 - After the merge, write the transitional prompt of PR-18 from section 8 of the phase 2 file.
-
-## Session 53: 2026-09-29, Claude Code
-
-Author: Claude Code
-Session: author PR-16, round 1. Repository: iron-absolution. Branch: `docs/pr-16-pillars-and-recovery`. PR: #17. Role: author. Base: `c1a2f9f8181b91c08933210f68928d8c18662911`.
-
-### What this session did, and why
-
-- `run.ps1 verify` passed at the base `c1a2f9f`: 539 tests and 0 STE findings.
-- The session created `docs/game/` (D-114) with `pillars.md` and `combat-proposals.md`.
-- The session wrote three original proposals for OQ-10: Reclaim, Relay, and Iron. The owner answered "Same rules as Doom 2016".
-- The session showed the conflict with D-2, G-1, D-1, and D-36. The owner chose to keep D-2, so the session wrote proposal D, Press.
-- The owner then said "Nah, back to Doom 2016. Use those mechanics." The owner confirmed the text of D-115.
-- D-115: the combat rules follow Doom (2016). Names, art, audio, layouts, and cues stay original. It resolves OQ-10 and revises D-1, D-2, D-36, and G-1 in part.
-- D-116: the player verbs. The owner accepted the four pillars as written.
-- The design doc, the phase 2 file, and the glossary of the ste-writing skill cite the new rows.
-
-### The state of the build
-
-- The remote head is the commit of this entry on `docs/pr-16-pillars-and-recovery`, pending merge.
-- The PR changes documents alone, so the `review-override` label replaces the Codex review (D-35, D-66, D-76).
-
-### What is in flight
-
-- The checks of PR #17, then the merge summary and the owner confirmation.
-
-### Traps and gotchas
-
-- GitHub PR #17 is roadmap item PR-16.
-- A new branch from `origin/main` tracks `main`. Remove the upstream, and push with `-u origin <branch>`.
-- doomwiki.org and the Fandom wiki refuse WebFetch. The Wikipedia article is the one source of D-115.
-- D-115 copies rules alone. Each PR of phase 4 checks that no name, art, sound, or cue of Doom (2016) enters the game.
-
-### The questions that block progress
-
-- None for PR-16. OQ-9 blocks PR-17. OQ-16 still holds the gitar pass (D-7).
-
-### The next concrete action
-
-- After the merge, write the transitional prompt of PR-17 from section 8 of the phase 2 file.

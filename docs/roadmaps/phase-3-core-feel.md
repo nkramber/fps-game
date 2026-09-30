@@ -113,9 +113,9 @@ Each engine PR of this phase also passes these checks, with the logs in the evid
 
 **Review focus.** The method against the Epic pages, with dates. The statistic against D-32. The error messages against T-2.
 
-**Questions.** OQ-25, the method of M-3. The owner picks at the start of the PR.
+**Questions.** OQ-25, the method of M-3. The owner picks at the start of the PR. Resolved 2026-09-29: D-137.
 
-**State.** 🔧 planned.
+**State.** ✅ done in PR #23. The owner picked the method of M-3 (D-137) and the window mode (D-138). `docs/research/frame-time-method.md` gives the Epic pages and the engine facts. The first value of M-3 is a mean of 3.33 ms and a 99th percentile of 3.67 ms, inside the budget of D-32. Section 4 of `docs/design.md` gives the settings of the run.
 
 > *In plain English:* We do not know yet how fast the game runs. This change adds one command that plays the gym and records the time of each frame. It compares that time with the target of 120 frames each second.
 
@@ -317,6 +317,6 @@ The register is `docs/questions.md`. These questions block an item of phase 3. E
 
 | Question | Subject | Blocks |
 |---|---|---|
-| OQ-25 | The method of M-3 | PR-22 |
+| OQ-25 | The method of M-3. Resolved 2026-09-29: D-137 | PR-22 |
 | OQ-26 | The sound of the gym | The sound part of PR-25 |
 | OQ-21 | Gamepad support | Phase 8. PR-21 keeps the input ready for it |

@@ -2,6 +2,46 @@
 
 This file holds the entries that the rotation moves out of `docs/session-handoff.md`, newest first.
 
+## Session 53: 2026-09-29, Claude Code
+
+Author: Claude Code
+Session: author PR-16, round 1. Repository: iron-absolution. Branch: `docs/pr-16-pillars-and-recovery`. PR: #17. Role: author. Base: `c1a2f9f8181b91c08933210f68928d8c18662911`.
+
+### What this session did, and why
+
+- `run.ps1 verify` passed at the base `c1a2f9f`: 539 tests and 0 STE findings.
+- The session created `docs/game/` (D-114) with `pillars.md` and `combat-proposals.md`.
+- The session wrote three original proposals for OQ-10: Reclaim, Relay, and Iron. The owner answered "Same rules as Doom 2016".
+- The session showed the conflict with D-2, G-1, D-1, and D-36. The owner chose to keep D-2, so the session wrote proposal D, Press.
+- The owner then said "Nah, back to Doom 2016. Use those mechanics." The owner confirmed the text of D-115.
+- D-115: the combat rules follow Doom (2016). Names, art, audio, layouts, and cues stay original. It resolves OQ-10 and revises D-1, D-2, D-36, and G-1 in part.
+- D-116: the player verbs. The owner accepted the four pillars as written.
+- The design doc, the phase 2 file, and the glossary of the ste-writing skill cite the new rows.
+
+### The state of the build
+
+- The remote head is the commit of this entry on `docs/pr-16-pillars-and-recovery`, pending merge.
+- The PR changes documents alone, so the `review-override` label replaces the Codex review (D-35, D-66, D-76).
+
+### What is in flight
+
+- The checks of PR #17, then the merge summary and the owner confirmation.
+
+### Traps and gotchas
+
+- GitHub PR #17 is roadmap item PR-16.
+- A new branch from `origin/main` tracks `main`. Remove the upstream, and push with `-u origin <branch>`.
+- doomwiki.org and the Fandom wiki refuse WebFetch. The Wikipedia article is the one source of D-115.
+- D-115 copies rules alone. Each PR of phase 4 checks that no name, art, sound, or cue of Doom (2016) enters the game.
+
+### The questions that block progress
+
+- None for PR-16. OQ-9 blocks PR-17. OQ-16 still holds the gitar pass (D-7).
+
+### The next concrete action
+
+- After the merge, write the transitional prompt of PR-17 from section 8 of the phase 2 file.
+
 ## Session 52: 2026-09-29, Claude Code
 
 Author: Claude Code

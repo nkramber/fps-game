@@ -21,6 +21,7 @@ Status: the owner accepts it on the condition of D-27. Written in ASD-STE100 (D-
 - 2026-09-29 fourteenth pass: PR-19 adds the level brief in `docs/game/level-brief.md`. It records the gate of phase 2 and the value of M-8 at the end of phase 2. The owner gave D-122 to D-125. An original harvest tool replaces the chainsaw (D-125).
 - 2026-09-29 fifteenth pass: PR-20 adds the focused roadmap of phase 3. The owner gave D-126 to D-132. Phase 5 now starts after the gate of phase 3, beside phase 4 (D-129).
 - 2026-09-29 sixteenth pass: PR-21 adds the gym, the player character, and the movement metrics in `docs/game/movement-metrics.md`. The owner gave D-133 to D-136. A Python script in the editor makes the content (D-134).
+- 2026-09-29 seventeenth pass: PR-22 adds the frame-time capture and the first value of M-3. The owner gave D-137 and D-138. `docs/research/frame-time-method.md` gives the facts of Epic and of the engine source.
 
 ## 1. Thesis
 
@@ -68,6 +69,7 @@ The owner decides the product. Approved facts cite a D-# id. Open choices cite a
 | Codex review (PR-3) | the PR diff | `docs/reviews/pr-<n>.md` | High |
 | Unreal project `IronAbsolution` (phase 1) | source, content, config | builds and packages for Windows (D-91). PR #14 removed the Mac targets (D-97). | High |
 | Content script `Game/Scripts/build_content.py` (PR-21) | the C++ classes, the values of the script | the input, the player Blueprints, the tuning, and the gym, through LFS (D-134) | Medium. It is the source of each asset that it makes. |
+| Frame-time capture `run.ps1 frame-capture` (PR-22) | the package, the views of the gym | a CSV file of the CSV profiler, the log, and the checks of D-137 | Medium. It gives each value of M-3. |
 | Content pipeline (phase 5) | DCC exports, generated assets | Unreal assets through LFS | Medium. Each asset needs terms that allow redistribution (D-24). |
 
 ## 4. Cost model (what we pay, what we do not know)
@@ -84,7 +86,7 @@ What we do not know, and the measurement that answers it:
 
 - M-1: Peak memory of the Unreal Editor on the 16 GB Mac. Phase 1. First value on 2026-09-28 in PR-9: a peak memory footprint of 6.42 GB, with the empty test map open (`/usr/bin/time -l`). Correction of 2026-09-28: PR-14 records a first value on the Windows PC. The Mac value stays as history (D-98). First Windows value on 2026-09-28 in PR-14: a peak working set of 3.53 GB, and a peak of 4.18 GB of private bytes. The editor had the empty test map open for 30 seconds. The PC has 32 GB of memory, and the `Process` counters of .NET gave the values.
 - M-2: Time of a clean build of the editor target and of a packaged build, on both platforms. Phase 1. First values of the editor target from a fresh clone, on 2026-09-28 in PR-9: 35.5 seconds on the Mac, and 45.3 seconds on Windows. First values of the packaged Development build on 2026-09-28 in PR-10: 136.5 seconds on the Mac, and 105.6 seconds on Windows. The Mac value comes from a fresh clone with a warm engine cache. The Windows value comes from the checkout of the owner, with a full cook. Each value is the `BuildCookRun time` of RunUAT. Correction of 2026-09-28: the Windows values count, and the Mac values stay as history (D-91). Values from a fresh clone on Windows through `run.ps1`, on 2026-09-28 in PR-14: 41.6 seconds for the editor target. The package took 101.25 seconds of `BuildCookRun time`.
-- M-3: Frame time in the test gym on Windows, against the budget of D-32. Phase 3. Correction of 2026-09-28: the Mac goes (D-91). PR-22 gives the first value, and PR-27 gives the value at the gate (D-126). OQ-25 holds the method.
+- M-3: Frame time in the test gym on Windows, against the budget of D-32. Phase 3. Correction of 2026-09-28: the Mac goes (D-91). PR-22 gives the first value, and PR-27 gives the value at the gate (D-126). D-137 gives the method, and it resolves OQ-25. First value on 2026-09-29 in PR-22: a mean of 3.33 ms and a 99th percentile of 3.67 ms, over 6,004 frames in 20.0 seconds. Both values are inside the budget of 8.33 ms. The run used the Development package of commit `13bdbb1`, borderless fullscreen at 2560x1440, with VSync off and no frame-rate cap. The PC has an Intel Core i9-13900K, an NVIDIA GeForce RTX 4090 with the driver 616.92, and 32 GB of memory. The render thread sets the pace, and the mean time of the GPU is 1.96 ms. An earlier capture ran with another game open, and it gave a mean of 7.36 ms. That capture is void.
 - M-4: Frame time in the combat sandbox at the maximum enemy count. Phase 4.
 - M-5: Frame time and memory of the vertical-slice room. Phase 5.
 - M-6: Time to change one kit piece and see the change in each space. Phase 5.
@@ -299,7 +301,7 @@ When the owner confirms that gitar works here, one PR ports the gitar-wait scrip
 - Objective: make movement, aim, and fire feel fast and exact in a graybox gym before other systems.
 - Dependencies: phase 1, the verbs of phase 2, and the budgets and input of D-32.
 - Work: player movement and camera, with metric markers. Keyboard and mouse input through Enhanced Input, ready for a later gamepad (OQ-21). Sensitivity, invert, and field of view. One weapon from fire to hit feedback and ammo. Automated tests of movement and the weapon, and a frame-time capture. Correction of 2026-09-29: the one weapon is one hitscan rule with two data assets, so the verb "change weapon" has a test (D-128, D-130, F-30).
-- Focused roadmap: `docs/roadmaps/phase-3-core-feel.md` holds PR-21 to PR-27 and the gate (D-126, D-127). PR-20 adds it. Status: ✅ done in PR #21. PR-21 status: ✅ done in PR #22. The owner gave the gym map, the content script, the first pace, and the keys (D-133 to D-136).
+- Focused roadmap: `docs/roadmaps/phase-3-core-feel.md` holds PR-21 to PR-27 and the gate (D-126, D-127). PR-20 adds it. Status: ✅ done in PR #21. PR-21 status: ✅ done in PR #22. The owner gave the gym map, the content script, the first pace, and the keys (D-133 to D-136). PR-22 status: ✅ done in PR #23. The owner gave the method of M-3 (D-137) and the window mode (D-138).
 - Exit evidence: the owner plays the packaged gym and records a sign-off or a list of changes as a D-# row. M-3 has a profile on Windows. Correction of 2026-09-28: M-9 is out of scope (D-95). The movement metrics have values, because the layout rules of phase 6 use them. The tests pass headless.
 
 > *In plain English:* We make moving and shooting feel right in the gym, an empty room of test blocks, before we build anything on top.

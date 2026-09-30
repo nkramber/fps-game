@@ -29,6 +29,7 @@ How to read this file:
 - The owner gave D-122 to D-125 on 2026-09-29 in PR-19, the level brief.
 - The owner gave D-126 to D-132 on 2026-09-29 in PR-20, the focused roadmap of phase 3.
 - The owner gave D-133 to D-136 on 2026-09-29 in PR-21, the gym, the character, and the movement.
+- The owner gave D-137 and D-138 on 2026-09-29 in PR-22, the frame-time capture.
 - For D-15, the owner asked for the best fit, and the session recommended it. The owner then chose it.
 
 How to add a decision:
@@ -178,6 +179,8 @@ Find a row with `grep -n -E '^\| D-(12|14) \|' docs/decisions.md`.
 | D-105 | 2026-09-28 | Other platform settings | PR-14 removes the Linux section of `DefaultEngine.ini` with the Mac sections. A hosted test refuses a section or a setting of another platform in each config file of the project. | The owner gave this answer in PR-14. The editor wrote the Linux section, and the project supports Windows alone (D-91). Widens D-97 to Linux. |
 | D-109 | 2026-09-28 | Enhanced Input evidence | Headless evidence on the Windows PC proves line 5 of the gate of phase 1. The evidence is the plugin descriptor of the engine, the plugin list of the project, and a pass of the test `IronAbsolution.Project.Settings`. | The owner gave this answer in PR-11. The Plugins window of the editor reads the same descriptor, so a look at the window adds no fact. No window opens (D-96). |
 | D-134 | 2026-09-29 | Scripted content | A committed Python script, `Game/Scripts/build_content.py`, makes the content of PR-21 in a headless editor through `run.ps1 content-build`: the input actions, the mapping context, the tuning, the player Blueprints, and the gym. The Python Editor Script Plugin loads in the editor target alone. The script is the source of each asset that it makes. | The owner gave this answer in PR-21. The review reads the script, because a binary asset has no text diff. Python runs in the editor alone, never in a package, so D-15 stands. A change in the editor alone to one of these assets goes away at the next run. The feel pass of PR-27 changes a tuning value in the script (D-131). |
+| D-137 | 2026-09-29 | M-3 method | M-3 reads the Development package of `run.ps1 package-build` through the CSV profiler of the engine. The package shows a fixed set of views in the gym, and holds each view for a set time. The capture runs borderless fullscreen at 2560x1440, with VSync off and no frame-rate cap. A pass needs the mean and the 99th percentile of the frame time, each at 8.33 ms or less. | Resolves OQ-25. The owner gave this answer in PR-22, from the options of the session. The engine of D-28 has no Test configuration for the game, and the CSV profiler is not in a Shipping build. Applies D-32. `docs/research/frame-time-method.md` gives the facts of Epic and of the engine source. |
+| D-138 | 2026-09-29 | Window mode | The game runs borderless fullscreen at the resolution of the desktop. | The owner gave this answer in PR-22. The default of Unreal Engine 5.8.3 already gives this mode, so PR-22 changes no file for it. `docs/research/frame-time-method.md` gives the source. |
 
 ## Content, assets, and the repository
 
