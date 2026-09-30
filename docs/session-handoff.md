@@ -24,7 +24,7 @@ Session: author PR-23, round 1. Repository: iron-absolution. Branch: `feat/pr-23
 
 - Run one `run.ps1` target at a time. Two targets at the same time lock the tools DLL.
 - The aim tests write the settings file of the editor, and put back the values at the end.
-- The package settings file of the owner can still hold play-test values, so the default of 2.0 applies only without a saved value.
+- `package-build` removes the `Saved` folder of the package, with its logs and its settings file. Copy a play-test log before a rebuild.
 
 ### The questions that block progress
 
