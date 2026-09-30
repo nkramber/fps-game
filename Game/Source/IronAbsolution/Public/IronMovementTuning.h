@@ -8,7 +8,8 @@
 #include "IronMovementTuning.generated.h"
 
 /**
- * The tuning of the movement and the camera of the player (D-29). The player character reads each
+ * The tuning of the movement and the camera of the player (D-29). The field of view is a setting of
+ * the player, not a value of the tuning (D-141). The player character reads each
  * value when play starts, so a new value changes the movement with no change of C++.
  * `docs/game/movement-metrics.md` gives the first values and the reasons.
  *
@@ -60,10 +61,6 @@ public:
 	/** The height of the camera above the feet. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Camera", meta = (ClampMin = "1", Units = "cm"))
 	float EyeHeight = 0.0f;
-
-	/** The horizontal field of view of the camera. */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Camera", meta = (ClampMin = "60", ClampMax = "130", Units = "deg"))
-	float FieldOfView = 0.0f;
 
 	/**
 	 * Finds each value that is not finite or is outside its range. The ranges are the same as the

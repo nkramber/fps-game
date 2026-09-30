@@ -11,7 +11,9 @@ The script makes an asset when it is absent, and writes each value again when it
 fault raises an exception, so the commandlet gives a nonzero exit code (T-2).
 """
 
+import configparser
 import math
+import os
 
 import unreal
 
@@ -31,8 +33,12 @@ MOVEMENT_TUNING = {
     "step_height": 45.0,
     "walkable_slope": 45.0,
     "eye_height": 160.0,
-    "field_of_view": 100.0,
 }
+
+# The project defaults of the aim settings (D-141). The views of the frame-time capture take the
+# default field of view from this file, so M-3 does not depend on the setting of one player.
+AIM_DEFAULTS_FILE = "DefaultGameUserSettings.ini"
+AIM_DEFAULTS_SECTION = "/Script/IronAbsolution.IronGameUserSettings"
 
 # The engine meshes of the gym. Each file of the gym is original, or a basic shape of the engine.
 CUBE = "/Engine/BasicShapes/Cube.Cube"
@@ -138,9 +144,9 @@ def keyboard_mouse_context(move, look, jump):
         key_mapping(move, "A", [negate(context, True, True)]),
         key_mapping(move, "D", []),
         key_mapping(jump, "SpaceBar", []),
-        # The mouse gives a positive Y when it moves forward. The engine turns the view up for a
-        # negative pitch input, so the Y axis is negated, as in the first-person template.
-        key_mapping(look, "Mouse2D", [negate(context, False, True)]),
+        # The mouse gives a positive Y when it moves forward. The project turns off the input
+        # scales of the engine, so a positive pitch input turns the view up with no modifier (D-139).
+        key_mapping(look, "Mouse2D", []),
     ]
     data = unreal.InputMappingContextMappingData()
     data.set_editor_property("mappings", mappings)
@@ -321,12 +327,24 @@ def hall_row(actors):
         x += 900.0
 
 
+def default_field_of_view():
+    """Reads the default field of view of the project from its config file (D-141)."""
+    path = os.path.join(unreal.Paths.convert_relative_path_to_full(unreal.Paths.project_config_dir()), AIM_DEFAULTS_FILE)
+    parser = configparser.ConfigParser(interpolation=None)
+    if not parser.read(path, encoding="utf-8"):
+        raise ContentError(f"The config file {path} is absent, so the views have no field of view.")
+    if not parser.has_option(AIM_DEFAULTS_SECTION, "FieldOfView"):
+        raise ContentError(f"The config file {path} has no FieldOfView in the section [{AIM_DEFAULTS_SECTION}].")
+    return parser.getfloat(AIM_DEFAULTS_SECTION, "FieldOfView")
+
+
 def frame_time_views(actors):
-    """Places the views of the frame-time capture, with the field of view of the player."""
+    """Places the views of the frame-time capture, with the default field of view of the player."""
+    field_of_view = default_field_of_view()
     for order, (name, location, rotation) in enumerate(FRAME_TIME_VIEWS, start=1):
         view = spawn(actors, unreal.FrameTimeView, location, rotation, f"Frame-time view {order}: {name}")
         view.set_editor_property("order", order)
-        view.get_editor_property("camera_component").set_editor_property("field_of_view", MOVEMENT_TUNING["field_of_view"])
+        view.get_editor_property("camera_component").set_editor_property("field_of_view", field_of_view)
 
 
 def gym(game_mode):

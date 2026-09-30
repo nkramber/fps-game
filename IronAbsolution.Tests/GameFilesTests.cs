@@ -117,6 +117,7 @@ public sealed class GameFilesTests
     [InlineData("Game/Source/IronAbsolution/Public/TimedRunSubsystem.h")]
     [InlineData("Game/Source/IronAbsolution/Private/TimedRunSubsystem.cpp")]
     [InlineData("Game/Config/DefaultGame.ini")]
+    [InlineData("Game/Config/DefaultGameUserSettings.ini")]
     [InlineData(TestMap)]
     [InlineData(GymMap)]
     [InlineData(ContentScript)]
@@ -192,6 +193,7 @@ public sealed class GameFilesTests
     [InlineData("Game/Config/DefaultEngine.ini")]
     [InlineData("Game/Config/DefaultGame.ini")]
     [InlineData("Game/Config/DefaultInput.ini")]
+    [InlineData("Game/Config/DefaultGameUserSettings.ini")]
     public void EachConfigFileHoldsTheSettingsOfWindowsAlone(string path)
     {
         // The project supports Windows alone (D-91). Exit test 6 of PR-14: no Mac section, no Linux

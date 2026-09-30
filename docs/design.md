@@ -22,6 +22,7 @@ Status: the owner accepts it on the condition of D-27. Written in ASD-STE100 (D-
 - 2026-09-29 fifteenth pass: PR-20 adds the focused roadmap of phase 3. The owner gave D-126 to D-132. Phase 5 now starts after the gate of phase 3, beside phase 4 (D-129).
 - 2026-09-29 sixteenth pass: PR-21 adds the gym, the player character, and the movement metrics in `docs/game/movement-metrics.md`. The owner gave D-133 to D-136. A Python script in the editor makes the content (D-134).
 - 2026-09-29 seventeenth pass: PR-22 adds the frame-time capture and the first value of M-3. The owner gave D-137 and D-138. `docs/research/frame-time-method.md` gives the facts of Epic and of the engine source.
+- 2026-09-30 eighteenth pass: PR-23 adds the aim settings. The owner gave D-139 to D-142. The game has no vertical invert (D-140).
 
 ## 1. Thesis
 
@@ -69,6 +70,7 @@ The owner decides the product. Approved facts cite a D-# id. Open choices cite a
 | Codex review (PR-3) | the PR diff | `docs/reviews/pr-<n>.md` | High |
 | Unreal project `IronAbsolution` (phase 1) | source, content, config | builds and packages for Windows (D-91). PR #14 removed the Mac targets (D-97). | High |
 | Content script `Game/Scripts/build_content.py` (PR-21) | the C++ classes, the values of the script | the input, the player Blueprints, the tuning, and the gym, through LFS (D-134) | Medium. It is the source of each asset that it makes. |
+| Aim settings `UIronGameUserSettings` (PR-23) | the project defaults in `Game/Config/DefaultGameUserSettings.ini`, the settings file of the user, the console commands | the settings file of the user, the turn and the field of view of the player | Medium. A bad value gives an error line (D-139, D-141). |
 | Frame-time capture `run.ps1 frame-capture` (PR-22) | the package, the views of the gym | a CSV file of the CSV profiler, the log, and the checks of D-137 | Medium. It gives each value of M-3. |
 | Content pipeline (phase 5) | DCC exports, generated assets | Unreal assets through LFS | Medium. Each asset needs terms that allow redistribution (D-24). |
 
@@ -300,8 +302,8 @@ When the owner confirms that gitar works here, one PR ports the gitar-wait scrip
 
 - Objective: make movement, aim, and fire feel fast and exact in a graybox gym before other systems.
 - Dependencies: phase 1, the verbs of phase 2, and the budgets and input of D-32.
-- Work: player movement and camera, with metric markers. Keyboard and mouse input through Enhanced Input, ready for a later gamepad (OQ-21). Sensitivity, invert, and field of view. One weapon from fire to hit feedback and ammo. Automated tests of movement and the weapon, and a frame-time capture. Correction of 2026-09-29: the one weapon is one hitscan rule with two data assets, so the verb "change weapon" has a test (D-128, D-130, F-30).
-- Focused roadmap: `docs/roadmaps/phase-3-core-feel.md` holds PR-21 to PR-27 and the gate (D-126, D-127). PR-20 adds it. Status: ✅ done in PR #21. PR-21 status: ✅ done in PR #22. The owner gave the gym map, the content script, the first pace, and the keys (D-133 to D-136). PR-22 status: ✅ done in PR #23. The owner gave the method of M-3 (D-137) and the window mode (D-138).
+- Work: player movement and camera, with metric markers. Keyboard and mouse input through Enhanced Input, ready for a later gamepad (OQ-21). Sensitivity, invert, and field of view. Correction of 2026-09-30: the game has no invert (D-140). One weapon from fire to hit feedback and ammo. Automated tests of movement and the weapon, and a frame-time capture. Correction of 2026-09-29: the one weapon is one hitscan rule with two data assets, so the verb "change weapon" has a test (D-128, D-130, F-30).
+- Focused roadmap: `docs/roadmaps/phase-3-core-feel.md` holds PR-21 to PR-27 and the gate (D-126, D-127). PR-20 adds it. Status: ✅ done in PR #21. PR-21 status: ✅ done in PR #22. The owner gave the gym map, the content script, the first pace, and the keys (D-133 to D-136). PR-22 status: ✅ done in PR #23. The owner gave the method of M-3 (D-137) and the window mode (D-138). PR-23 status: ✅ done in PR #24. The owner gave the aim settings (D-139 to D-142).
 - Exit evidence: the owner plays the packaged gym and records a sign-off or a list of changes as a D-# row. M-3 has a profile on Windows. Correction of 2026-09-28: M-9 is out of scope (D-95). The movement metrics have values, because the layout rules of phase 6 use them. The tests pass headless.
 
 > *In plain English:* We make moving and shooting feel right in the gym, an empty room of test blocks, before we build anything on top.

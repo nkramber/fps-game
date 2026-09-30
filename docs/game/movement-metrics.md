@@ -24,7 +24,6 @@ This file gives each metric of the movement with a value and a unit. Phase 5 rea
 | Step height | 45 | cm | `StepHeight` | The default of the engine. The player climbs a step of this height with no jump. |
 | Walkable slope | 45 | degrees | `WalkableSlope` | Recommendation: close to the default of the engine, 44.765 degrees. |
 | Eye height | 160 | cm | `EyeHeight` | Recommendation: the height of the camera above the feet. |
-| Field of view | 100 | degrees, horizontal | `FieldOfView` | Recommendation: wider than the default of 90, for a fast game. The aim settings of PR-23 can expose it. |
 
 ## The rules of the class
 
@@ -68,6 +67,17 @@ The gym `L_Gym` has five rows of stations along the view at the start (D-133). A
 | Steps and ramps | Stairs with steps of 15, 30, 45, and 60 cm, and ramps of 30, 40, 45, and 50 degrees | The step height and the walkable slope |
 | Halls | Halls 100, 150, 200, 300, and 400 cm wide, with walls 300 cm high | The width that feels right for a fight or a path |
 
-## The mouse
+## The aim settings
 
-The mouse turns the view with the input scales of the engine. The mapping context gives the sign of each axis (D-136). The aim settings of PR-23 set the sensitivity and the invert option.
+PR-23 moves the field of view out of the tuning. The settings file of the user holds the aim settings, and `Game/Config/DefaultGameUserSettings.ini` holds the defaults of the project. The class `UIronGameUserSettings` holds the bounds.
+
+| Setting | Default | Bounds | Unit | Console command | Label |
+|---|---|---|---|---|---|
+| Mouse sensitivity | 2.0 | 0.1 to 20 | 0.022 degrees for each mouse count | `Iron.MouseSensitivity` | Owner pick (D-139, D-142) |
+| Field of view | 100 | 80 to 120 | degrees, horizontal | `Iron.FieldOfView` | Owner pick (D-141) |
+
+The game has no vertical invert (D-140). A forward move of the mouse turns the view up.
+
+To change a setting in the package, open the console with the tilde key, and type the command and a number. The game saves the value in the settings file of the user. A command with no number prints the value and the bounds. A value out of bounds gives an error line, and the game keeps the last good value.
+
+The views of the frame-time capture use the default of the project file, so a change of the setting does not change M-3. `docs/research/aim-settings.md` gives the facts of the engine.

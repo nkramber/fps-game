@@ -1,3 +1,72 @@
+## Session 68: 2026-09-30, Codex
+
+Author: Codex
+Session: reviewer PR-24, round 1. Repository: iron-absolution. Branch: `feat/pr-23-aim-settings`. PR: #24. Role: reviewer. Base: `aa9fc2a2556815dc4ef2f6b55f1f17abd1892940`.
+
+### What this session did, and why
+
+- Reviewed the aim settings of PR-24, from the implementation head `f2a27b2` (D-139 to D-142).
+- Found no defect. Wrote `docs/reviews/pr-24.md` with the verdict and the evidence.
+
+### The state of the build
+
+- The reviewed work head is `f2a27b220ab0e96646a7a27ae6313a127fd38f96`. The remote head is the metadata commit of this entry on `feat/pr-23-aim-settings`.
+- `run.ps1 verify`, `editor-build`, `editor-test`, and `content-build` pass. The package and play-test evidence comes from the owner comment.
+- The coverage job failed once in `PackageRunCommandTests.TheSuccessLineOnStdoutAloneDoesNotPass`: it saw the package path, not the expected error line. Its one rerun passed (F-28).
+
+### What is in flight
+
+- PR #24 is pending merge. The review record approves the implementation head.
+
+### Traps and gotchas
+
+- `content-build` rewrites the input mapping and gym assets. The review restored those generated changes.
+- `package-run` and `frame-capture` open a game window. D-96 needs owner confirmation before a session runs them.
+
+### The questions that block progress
+
+- None.
+
+### The next concrete action
+
+- Complete the PR gate with the review record and the five green required checks.
+
+## Session 67: 2026-09-30, Claude Code
+
+Author: Claude Code
+Session: author PR-23, round 1. Repository: iron-absolution. Branch: `feat/pr-23-aim-settings`. PR: #24. Role: author. Base: `aa9fc2a2556815dc4ef2f6b55f1f17abd1892940`.
+
+### What this session did, and why
+
+- Added the aim settings of section 7.3 of the phase 3 roadmap: the class `UIronGameUserSettings`, the mouse sensitivity, the field of view, and two console commands.
+- The owner gave D-139 to D-142. The sensitivity uses the Quake scale, with a default of 2.0 and bounds of 0.1 to 20. The field of view has a default of 100 and bounds of 80 to 120. The game has no vertical invert (D-140).
+- Turned off the input scales of the engine, and set the mouse axis sensitivity to 1. The mapping context has no Negate on the mouse now.
+- Removed the field of view from the movement tuning. The views of the capture read the project default.
+- Added 6 automation tests. The owner played the package: each command worked, 25 gave the error, and each value came back after a restart.
+
+### The state of the build
+
+- The remote head is the commit of this entry on `feat/pr-23-aim-settings`, pending merge.
+- On Windows: verify, editor-build, content-build, 19 editor tests, package-build, package-run, and frame-capture pass. M-3: mean 3.33 ms, 99th percentile 3.66 ms.
+
+### What is in flight
+
+- PR #24, pending merge: the Codex review.
+
+### Traps and gotchas
+
+- Run one `run.ps1` target at a time. Two targets at the same time lock the tools DLL.
+- The aim tests write the settings file of the editor, and put back the values at the end.
+- `package-build` removes the `Saved` folder of the package, with its logs and its settings file. Copy a play-test log before a rebuild.
+
+### The questions that block progress
+
+- None.
+
+### The next concrete action
+
+- Run `run.ps1 codex-review -PR 24`, and answer the findings.
+
 ## Session 66: 2026-09-30, Codex
 
 Author: Codex
@@ -283,89 +352,3 @@ Session: reviewer PR-21, round 1. Repository: iron-absolution. Branch: `feat/pr-
 ### The next concrete action
 
 - Verify the `doc-gate` check for this corrected entry.
-
-## Session 58: 2026-09-29, Claude Code
-
-Author: Claude Code
-Session: author PR-21, round 1. Repository: iron-absolution. Branch: `feat/pr-21-gym-movement`. PR: #22. Role: author. Base: `ce25cfd4982d5d4be2c0eee0a0a2658f419b182f`.
-
-### What this session did, and why
-
-- At the base, `run.ps1 verify` passed with 539 tests, and `run.ps1 toolchain-check` held each of the 5 pins.
-- The owner gave D-133 to D-136: the map `L_Gym`, a Python script for the content, the first pace of 900 cm/s, and the keys W, A, S, D, Space, and the mouse.
-- C++: `UIronMovementTuning` (each default 0, so the asset holds each value), `AIronPlayerCharacter`, and `AIronPlayerController`. Each absent asset or invalid value writes an error line (T-2).
-- `Game/Scripts/build_content.py` makes the input, the tuning, the Blueprints, and the gym. `run.ps1 content-build` runs it headless (D-134).
-- Five new automation tests. The run test measures 900.0 cm/s and the jump test 120.0 cm. A wrong jump formula fails both jump tests.
-- `package-run` names the test map as its first argument, because the gym is now the default map.
-- New files: `docs/game/movement-metrics.md` and `docs/research/movement-test-method.md`.
-
-### The state of the build
-
-- The remote head is the commit of this entry on `feat/pr-21-gym-movement`, pending merge.
-- `run.ps1 verify` passes with 552 tests. `editor-test` passes 8 automation tests. `package-build` passes, and `package-run` passes on `L_Test`, with owner consent (D-96).
-
-### What is in flight
-
-- The Codex review of PR #22.
-- Exit test 1: the owner plays the gym in the editor and in the package. The owner chose to do it later, so it waits before the merge.
-
-### Traps and gotchas
-
-- The script is the source of each asset that it makes. A change in the editor alone goes away at the next `content-build`.
-- Each `content-build` writes `L_Gym` and `IMC_KeyboardMouse` again with new internal ids. Restore them when the script did not change.
-- A test world has no local player. The movement tests set `bRunPhysicsWithNoController`, then `SetDefaultMovementMode`, or the character never moves.
-- The project has `bEnableLegacyInputScales` on, so a positive pitch input turns the view down. The mapping context negates the Y axis of the mouse.
-- The C++ copies the ranges of the tuning from the clamps of the header, because a package has no metadata. Change both together.
-- F-28 can fail the `coverage report` job. Run the job again one time, and record the failure.
-
-### The questions that block progress
-
-- None for PR-21. OQ-25 blocks PR-22, and OQ-26 blocks the sound part of PR-25. OQ-21 blocks phase 8. OQ-16 still holds the gitar pass (D-7).
-
-### The next concrete action
-
-- Answer the Codex review, then ask the owner for the play test of exit test 1, then give the merge summary.
-
-## Session 57: 2026-09-29, Claude Code
-
-Author: Claude Code
-Session: author PR-20, round 1. Repository: iron-absolution. Branch: `docs/pr-20-phase-3-roadmap`. PR: #21. Role: author. Base: `de3143ea61b5ab5caa08f792b5b8e63469657e2a`.
-
-### What this session did, and why
-
-- `run.ps1 verify` passed at the base `de3143e`: 539 tests and 0 STE findings.
-- The session wrote `docs/roadmaps/phase-3-core-feel.md`: PR-21 to PR-27, the gate of phase 3, the order, and the questions.
-- The owner gave D-126 to D-132 in this PR:
-  - D-126 and D-127: seven PRs after the phase file, with the frame-time capture right after the movement.
-  - D-128: one weapon rule and two data assets, so "change weapon" has a test. It resolves F-30.
-  - D-129: the phase file of phase 5 comes after the gate of phase 3. Phase 5 runs beside phase 4.
-  - D-130: the weapon of phase 3 is hitscan.
-  - D-131: the feel pass keeps data-asset changes in PR-27. A rule change gets its own PR.
-  - D-132: the player runs at full speed by default, with no run key.
-- OQ-25 asks the method of M-3, and blocks PR-22. OQ-26 asks the sound of the gym, and blocks the sound part of PR-25.
-- The design doc: the fifteenth pass, F-30, the phase 3 entry, the start of phase 5, M-3, and section 8. The readme lists the new file.
-- The glossary of the ste-writing skill adds "gym" and "sandbox".
-
-### The state of the build
-
-- The remote head is the commit of this entry on `docs/pr-20-phase-3-roadmap`, pending merge.
-- The PR changes documents alone, so the `review-override` label replaces the Codex review (D-35, D-66, D-76).
-
-### What is in flight
-
-- The checks of PR #21, then the merge summary and the owner confirmation.
-
-### Traps and gotchas
-
-- GitHub PR #21 is roadmap item PR-20. The ids of phase 3 continue from PR-20.
-- PR-21 makes the gym the default map. `PackageRunRules` expects the test map in the success line, so the start command of `run.ps1 package-run` must name the test map.
-- `ste-check` reads tracked files alone. Stage a new file before you run it, or its PR headings and paths fail the reference check.
-- F-28 can fail the `coverage report` job of any PR. Run the job again one time, and record the failure.
-
-### The questions that block progress
-
-- None for PR-20. OQ-25 blocks PR-22, and OQ-26 blocks the sound part of PR-25. OQ-21 blocks phase 8, and OQ-24 blocks the harvest tool in phase 4. OQ-16 still holds the gitar pass (D-7).
-
-### The next concrete action
-
-- After the merge, write the transitional prompt of PR-21: the gym, the character, and the movement.
