@@ -28,7 +28,7 @@ Session: reviewer PR-24, round 1. Repository: iron-absolution. Branch: `feat/pr-
 
 ### The next concrete action
 
-- Check that the metadata push makes `review-gate` green, then complete the PR gate.
+- Complete the PR gate with the review record and the five green required checks.
 
 ## Session 67: 2026-09-30, Claude Code
 
