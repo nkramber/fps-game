@@ -4,6 +4,7 @@ using System.IO;
 using IronAbsolution.Tools.CodexReview;
 using IronAbsolution.Tools.DocGate;
 using IronAbsolution.Tools.EditorTest;
+using IronAbsolution.Tools.FrameCapture;
 using IronAbsolution.Tools.HandoffRotate;
 using IronAbsolution.Tools.PackageRun;
 using IronAbsolution.Tools.ReviewGate;
@@ -92,6 +93,11 @@ public static class Program
             return PackageRunCommand.Run(args[1..], output, errors);
         }
 
+        if (command == FrameCaptureCommand.Name)
+        {
+            return FrameCaptureCommand.Run(args[1..], output, errors);
+        }
+
         if (PlannedCommands.TryGetValue(command, out string? pullRequest))
         {
             errors.WriteLine(
@@ -115,6 +121,7 @@ public static class Program
         errors.WriteLine($"  {ToolchainCheckCommand.Name}: ready");
         errors.WriteLine($"  {EditorTestCommand.Name}: ready");
         errors.WriteLine($"  {PackageRunCommand.Name}: ready");
+        errors.WriteLine($"  {FrameCaptureCommand.Name}: ready");
         if (PlannedCommands.Count == 0)
         {
             errors.WriteLine("The planned commands: none.");

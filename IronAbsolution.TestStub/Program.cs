@@ -79,6 +79,9 @@ public static class Program
                 case "abslog":
                     File.AppendAllText(ValueOfOption(args, "-abslog="), value + Environment.NewLine);
                     break;
+                case "csv":
+                    File.WriteAllText(ValueOfOption(args, "-FrameTimeCsv="), value);
+                    break;
                 case "seconds":
                     waitSeconds = Number(key, value);
                     break;

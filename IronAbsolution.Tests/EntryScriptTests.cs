@@ -20,7 +20,7 @@ public sealed class EntryScriptTests : IDisposable
     [
         "verify", "build", "test", "format", "ste-check",
         "handoff-rotate", "codex-review", "hooks", "where", "clean",
-        "toolchain-check", "editor-build", "editor-test", "content-build", "package-build", "package-run", "help",
+        "toolchain-check", "editor-build", "editor-test", "content-build", "package-build", "package-run", "frame-capture", "help",
     ];
 
     private const string EngineVariable = "IRON_ABSOLUTION_ENGINE_DIR";
@@ -88,6 +88,7 @@ public sealed class EntryScriptTests : IDisposable
     [InlineData("toolchain-check")]
     [InlineData("editor-test")]
     [InlineData("package-run")]
+    [InlineData("frame-capture")]
     public void ATargetOfTheToolsFailsWithThePathWhenTheDotnetSdkIsAbsent(string target)
     {
         (int exitCode, string output) = this.Run([target], path: this.folder);
@@ -129,6 +130,15 @@ public sealed class EntryScriptTests : IDisposable
         (_, string output) = this.Run(["help"], path: null);
 
         Assert.Contains("start the package for a timed run of the test map. It opens a game window (D-89, D-96).", output, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void TheHelpLineOfTheFrameCaptureSaysThatItOpensAGameWindow()
+    {
+        // D-96: a session asks the owner before a command that opens a game window.
+        (_, string output) = this.Run(["help"], path: null);
+
+        Assert.Contains("capture the frame time of the gym in the package, against the budget of D-32. It opens a game window (D-96, D-137).", output, StringComparison.Ordinal);
     }
 
     [Theory]

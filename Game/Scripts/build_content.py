@@ -3,9 +3,9 @@
 
 `run.ps1 content-build` runs this script through the Python commandlet of the editor, with no
 window. The script is the source of each asset that it makes: the input actions, the mapping
-context, the movement tuning, the player Blueprints, and the gym map `L_Gym`. A change to one of
-these assets is a change to this script, then a new run. A change in the editor alone goes away at
-the next run.
+context, the movement tuning, the player Blueprints, and the gym map `L_Gym` with the views of the
+frame-time capture. A change to one of these assets is a change to this script, then a new run. A
+change in the editor alone goes away at the next run.
 
 The script makes an asset when it is absent, and writes each value again when it is present. Each
 fault raises an exception, so the commandlet gives a nonzero exit code (T-2).
@@ -49,6 +49,16 @@ LEDGE_ROW_Y = -600.0
 DISTANCE_ROW_Y = 0.0
 STEP_ROW_Y = 600.0
 HALL_ROW_Y = 1500.0
+
+# The views of the frame-time capture of M-3 (D-137): the place of the camera, then the roll, the
+# pitch, and the yaw. The capture shows them in this order. The height of each low view is the eye
+# height of the player above the floor.
+FRAME_TIME_VIEWS = [
+    ("the spawn, along the rows", unreal.Vector(-2400.0, 0.0, 160.0), unreal.Rotator(0.0, 0.0, 0.0)),
+    ("the high corner, over each row", unreal.Vector(-3100.0, -1950.0, 900.0), unreal.Rotator(0.0, -15.0, 22.0)),
+    ("the far end, back to the spawn", unreal.Vector(6600.0, 0.0, 160.0), unreal.Rotator(0.0, 0.0, 180.0)),
+    ("the hall row, between the walls", unreal.Vector(-2400.0, HALL_ROW_Y, 160.0), unreal.Rotator(0.0, 0.0, 0.0)),
+]
 
 LABEL_HEIGHT = 30.0
 LABEL_COLOR = unreal.Color(r=255, g=200, b=40, a=255)
@@ -311,6 +321,14 @@ def hall_row(actors):
         x += 900.0
 
 
+def frame_time_views(actors):
+    """Places the views of the frame-time capture, with the field of view of the player."""
+    for order, (name, location, rotation) in enumerate(FRAME_TIME_VIEWS, start=1):
+        view = spawn(actors, unreal.FrameTimeView, location, rotation, f"Frame-time view {order}: {name}")
+        view.set_editor_property("order", order)
+        view.get_editor_property("camera_component").set_editor_property("field_of_view", MOVEMENT_TUNING["field_of_view"])
+
+
 def gym(game_mode):
     actors = open_empty_gym()
     floor_and_light(actors)
@@ -319,6 +337,7 @@ def gym(game_mode):
     distance_row(actors)
     step_row(actors)
     hall_row(actors)
+    frame_time_views(actors)
 
     world = unreal.get_editor_subsystem(unreal.UnrealEditorSubsystem).get_editor_world()
     if world is None:
