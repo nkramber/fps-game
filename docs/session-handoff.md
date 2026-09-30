@@ -25,6 +25,7 @@ Session: author PR-22, round 1. Repository: iron-absolution. Branch: `feat/pr-22
 - Close each other game before `frame-capture`. A game in the background gave a mean of 7.36 ms, and that capture is void.
 - The CSV profiler adds columns during a capture, and the place of `FrameTime` changes between captures. The reader uses the closing header and the column name.
 - `content-build` writes `IMC_KeyboardMouse` again with new ids. This PR restored it.
+- F-28 on the first push: `EditorTestCommandTests.AStubRunThatWritesTheReportAndTheSuccessLinePasses` failed after 9 ms in the `coverage report` job. The session ran the failed job again one time.
 - A Python heredoc through the Bash tool halves each backslash. Check each Windows path after such an edit.
 
 ### The questions that block progress
