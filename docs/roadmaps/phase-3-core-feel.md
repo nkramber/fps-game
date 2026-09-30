@@ -123,17 +123,20 @@ Each engine PR of this phase also passes these checks, with the logs in the evid
 
 **Scope.**
 
-- The mouse sensitivity, the invert of the vertical aim, and the field of view (section 7 of `docs/design.md`).
+- The mouse sensitivity, the invert of the vertical aim, and the field of view (section 7 of `docs/design.md`). Correction of 2026-09-30: the game has no vertical invert (D-140). The owner set the scale, the defaults, and the bounds (D-139, D-141, D-142).
 - The game keeps each value in the settings file of the user, and reads it at the start (D-34). Recommendation: a subclass of the user settings class of the engine.
 - A console command for each value, so that the owner can change it in the package. Phase 8 adds the menu.
 - Bounds for each value. A value out of bounds gives an error in the log with the name, the value, and the bounds (T-2).
 - The default values come from the config of the project, not from a literal in the code (D-29, D-34).
 - Tests of each value: it changes the aim or the view, and it comes back after a restart.
 - A test of the bounds: a value out of bounds gives the error.
+- Added 2026-09-30: the field of view leaves the movement tuning, so the setting is the one source (D-141). The views of the frame-time capture take the default of the project.
+- Added 2026-09-30: a value out of bounds in the settings file of the user gives the error at load. The game then uses the nearest bound, because it has no earlier good value.
 
 **Out of scope.**
 
 - The menu, the key remap, and the graphics options. Phase 8 holds them.
+- A vertical invert (D-140).
 - The gamepad sensitivity (OQ-21).
 
 **Exit tests.**
@@ -146,9 +149,16 @@ Each engine PR of this phase also passes these checks, with the logs in the evid
 
 **Questions.** None open.
 
-**State.** 🔧 planned.
+**State.** ✅ done in PR #24. The owner set the mouse sensitivity (D-139, D-142), removed the vertical invert (D-140), and set the field of view (D-141). `docs/research/aim-settings.md` gives the Epic pages and the engine facts. `docs/game/movement-metrics.md` gives each value and each console command.
 
-> *In plain English:* Each player aims in a different way. This change lets the player set how fast the view turns, turn the vertical aim upside down, and set the width of the view.
+Exit tests, on 2026-09-30:
+
+- The owner played the package. Each console command changed the aim or the view, and each value came back after a restart (exit test 1).
+- The 19 automation tests pass headless (exit test 2).
+- In the package, the value 25 gave the error, and the game kept the last good value (exit test 3).
+- The frame-time capture gives a mean of 3.33 ms and a 99th percentile of 3.66 ms, inside the budget of D-32.
+
+> *In plain English:* Each player aims in a different way. This change lets the player set how fast the view turns and how wide the view is. Correction of 2026-09-30: the view has no upside-down option (D-140).
 
 ### 7.4 PR-24: mantle and interact
 

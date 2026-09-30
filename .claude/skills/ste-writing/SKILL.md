@@ -140,6 +140,7 @@ One term per concept. Add a row for each term that the owner sets, with the refu
 | harvest tool | the original tool that uses fuel, kills an enemy at once, and gives ammo (D-125) | chainsaw, when the text means the tool of this game |
 | gym | the graybox map of phase 3 for the movement, the aim, and the weapon, with metric markers (D-126) | test room, test level |
 | sandbox | the arena of phase 4 for the combat rules and the encounters | gym, when the text means the arena |
+| aim settings | the mouse sensitivity and the field of view of the player, in the settings file of the user (D-139, D-141) | view options, look settings |
 
 Process terms:
 

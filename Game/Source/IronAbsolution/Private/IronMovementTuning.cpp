@@ -31,7 +31,6 @@ TArray<FString> UIronMovementTuning::FindInvalidValues() const
 		{TEXT("StepHeight"), StepHeight, 1.0f, NoMax},
 		{TEXT("WalkableSlope"), WalkableSlope, 1.0f, 89.0f},
 		{TEXT("EyeHeight"), EyeHeight, 1.0f, NoMax},
-		{TEXT("FieldOfView"), FieldOfView, 60.0f, 130.0f},
 	};
 
 	TArray<FString> Errors;

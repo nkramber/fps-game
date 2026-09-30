@@ -136,10 +136,10 @@ namespace IronAbsolution::Tests::Movement
 		const UCharacterMovementComponent* Movement = Character.GetCharacterMovement();
 		const UCameraComponent* Camera = Character.GetFirstPersonCamera();
 		return FString::Printf(
-			TEXT("speed %f, acceleration %f, braking %f, friction %f, gravity scale %f, air control %f, step %f, slope %f, jump %f, eye %f, camera Z %f, field of view %f"),
+			TEXT("speed %f, acceleration %f, braking %f, friction %f, gravity scale %f, air control %f, step %f, slope %f, jump %f, eye %f, camera Z %f"),
 			Movement->MaxWalkSpeed, Movement->MaxAcceleration, Movement->BrakingDecelerationWalking, Movement->GroundFriction,
 			Movement->GravityScale, Movement->AirControl, Movement->MaxStepHeight, Movement->GetWalkableFloorAngle(),
-			Movement->JumpZVelocity, Character.BaseEyeHeight, Camera->GetRelativeLocation().Z, Camera->FieldOfView);
+			Movement->JumpZVelocity, Character.BaseEyeHeight, Camera->GetRelativeLocation().Z);
 	}
 
 	/** Compares a measured value with the value of the tuning, with the tolerance of the pass rule. */
@@ -238,7 +238,7 @@ bool FIronAbsolutionInvalidTuningTest::RunTest(const FString& Parameters)
 	// A new tuning has each value at 0, the state of an asset that sets no value.
 	const UIronMovementTuning* Empty = NewObject<UIronMovementTuning>(GetTransientPackage());
 	const TArray<FString> Errors = Empty->FindInvalidValues();
-	TestEqual(TEXT("A new tuning has one error for each of the 11 values"), Errors.Num(), 11);
+	TestEqual(TEXT("A new tuning has one error for each of the 10 values"), Errors.Num(), 10);
 	if (Errors.Num() > 0)
 	{
 		TestTrue(FString::Printf(TEXT("The first error names the value and the range: %s"), *Errors[0]), Errors[0].StartsWith(TEXT("RunSpeed of ")) && Errors[0].EndsWith(TEXT(" is 0.0. The range is 1.0 to no maximum.")));
@@ -253,7 +253,7 @@ bool FIronAbsolutionInvalidTuningTest::RunTest(const FString& Parameters)
 	TestTrue(TEXT("The asset of the player has no invalid value"), Character->GetMovementTuning()->FindInvalidValues().IsEmpty());
 
 	const float RunSpeedBefore = Character->GetCharacterMovement()->MaxWalkSpeed;
-	AddExpectedMessagePlain(TEXT("did not take the tuning"), ELogVerbosity::Error, EAutomationExpectedMessageFlags::Contains, 11);
+	AddExpectedMessagePlain(TEXT("did not take the tuning"), ELogVerbosity::Error, EAutomationExpectedMessageFlags::Contains, 10);
 	TestFalse(TEXT("The character refuses the empty tuning"), Character->ApplyMovementTuning(*Empty));
 	TestEqual(TEXT("The run speed does not change"), Character->GetCharacterMovement()->MaxWalkSpeed, RunSpeedBefore);
 	return !HasAnyErrors();
@@ -293,7 +293,6 @@ bool FIronAbsolutionRefusedTuningTest::RunTest(const FString& Parameters)
 	// A valid tuning in a world with no gravity: the character refuses it before any write.
 	UIronMovementTuning* Changed = DuplicateObject<UIronMovementTuning>(Character->GetMovementTuning(), GetTransientPackage());
 	Changed->RunSpeed *= 1.5f;
-	Changed->FieldOfView = 110.0f;
 	AWorldSettings* Settings = Character->GetWorld()->GetWorldSettings();
 	Settings->WorldGravityZ = 0.0f;
 	Settings->bWorldGravitySet = true;

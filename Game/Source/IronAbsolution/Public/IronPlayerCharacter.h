@@ -45,12 +45,12 @@ public:
 	void Move(const FVector2D& Axis);
 
 	/**
-	 * Adds one frame of view input. The player controller turns the view with the input scales of
-	 * the project settings. The mapping context sets the sign of each axis, so an invert option of
-	 * PR-23 changes content alone.
-	 * @param Axis The yaw input in X and the pitch input in Y.
+	 * Turns the view by one frame of mouse movement. Each mouse count turns the view by the degrees
+	 * of the mouse sensitivity (D-139). The project turns off the input scales of the engine, so the
+	 * controller takes the degrees as they are.
+	 * @param MouseCounts The mouse movement in counts: to the right in X, and forward in Y. A positive Y turns the view up.
 	 */
-	void Look(const FVector2D& Axis);
+	void Look(const FVector2D& MouseCounts);
 
 	/** Gives the tuning that the Blueprint subclass sets, or null when it sets none. */
 	const UIronMovementTuning* GetMovementTuning() const;
@@ -60,11 +60,15 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
 private:
 	void HandleMove(const FInputActionValue& Value);
 	void HandleLook(const FInputActionValue& Value);
+
+	/** Sets the field of view of the camera from the settings of the player (D-141). */
+	void ApplyFieldOfView();
 
 	/** The camera at the eye height of the tuning. The view follows the control rotation. */
 	UPROPERTY(VisibleAnywhere, Category = "Camera")

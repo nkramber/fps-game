@@ -112,7 +112,8 @@ bool FIronAbsolutionPlayerAssetsTest::RunTest(const FString& Parameters)
 		TestEqual(TEXT("The mapping context of the controller"), GetPathNameSafe(Contexts[0]), FString(MappingContext));
 	}
 
-	// The keys of D-136. The move action has X to the right and Y forward.
+	// The keys of D-136. The move action has X to the right and Y forward. The mouse has no
+	// modifier, because a mouse count reaches the character as it is (D-139).
 	TArray<FString> Mappings;
 	for (const FEnhancedActionKeyMapping& Mapping : Context->GetMappings())
 	{
@@ -125,7 +126,7 @@ bool FIronAbsolutionPlayerAssetsTest::RunTest(const FString& Parameters)
 		TEXT("A IA_Move Negate(XY)"),
 		TEXT("D IA_Move"),
 		TEXT("SpaceBar IA_Jump"),
-		TEXT("Mouse2D IA_Look Negate(Y)"),
+		TEXT("Mouse2D IA_Look"),
 	};
 	Expected.Sort();
 	TestEqual(TEXT("The key mappings of the keyboard and the mouse"), FString::Join(Mappings, TEXT(", ")), FString::Join(Expected, TEXT(", ")));
