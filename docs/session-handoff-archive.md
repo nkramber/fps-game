@@ -2,6 +2,40 @@
 
 This file holds the entries that the rotation moves out of `docs/session-handoff.md`, newest first.
 
+## Session 62: 2026-09-29, Codex
+
+Author: Codex
+Session: reviewer PR-21, round 3. Repository: iron-absolution. Branch: `feat/pr-21-gym-movement`. PR: #22. Role: reviewer. Base: `ce25cfd4982d5d4be2c0eee0a0a2658f419b182f`.
+
+### What this session did, and why
+
+- Reviewed PR #22 at effective head `7e2e3f73c1c17b50c34505d7c5ce6d6c0cfc7408`.
+- Verified the owner play test in the package and editor from the PR comment. The owner reports movement, jump, and aim pass.
+- Findings P2-1 and P2-2 remain fixed. The review record now gives `Ready for owner merge`.
+- The metadata commit is pushed. All five required checks pass, including `review-gate`.
+
+### The state of the build
+
+- The remote PR tip is `40a64015a9c16c7b1a6ff0f673ff3408e32129dd` on `feat/pr-21-gym-movement`.
+- The effective code head remains `7e2e3f73c1c17b50c34505d7c5ce6d6c0cfc7408`.
+
+### What is in flight
+
+- The owner merge summary and merge decision.
+
+### Traps and gotchas
+
+- The `review-gate` result before the metadata push reflects the prior Blocked record.
+- OQ-25 blocks roadmap PR-22, not GitHub PR #22.
+
+### The questions that block progress
+
+- No open question affects GitHub PR #22. The owner play test now passes.
+
+### The next concrete action
+
+- Give the owner the merge summary, then wait for the merge decision.
+
 ## Session 61: 2026-09-29, Codex
 
 Author: Codex

@@ -1,3 +1,39 @@
+## Session 72: 2026-10-01, Codex
+
+Author: Codex
+Session: reviewer PR-25, round 2. Repository: iron-absolution. Branch: `feat/pr-24-mantle-interact`. PR: #25. Role: reviewer. Base: `a32d9904eb465f81946988a0c08272a70b656b84`.
+
+### What this session did, and why
+
+- Reviewed PR #25 at effective head `97ca8eea7de8013ea196c563c9cd3482248bea65`.
+- Verified that the door rejects NaN and infinite offsets before state or transform changes (T-2).
+- Verified the regression test checks both offsets and their error and state results.
+- Updated P2-1 to fixed and set the verdict to Ready for owner merge.
+
+### The state of the build
+
+- The effective head is `97ca8eea7de8013ea196c563c9cd3482248bea65` on `feat/pr-24-mantle-interact`.
+- The author reports that `verify`, editor build, 29 headless tests, and package build pass at that head.
+- CI passes `ste-check`, `doc-gate`, build, test, format, and coverage. `review-gate` must rerun after this metadata commit.
+- This session did not run a build or test. Owner confirmation was not present (D-96).
+
+### What is in flight
+
+- Confirm the remote metadata commit and check that `review-gate` passes.
+- Give the owner the merge summary after the required checks pass.
+
+### Traps and gotchas
+
+- The prior review-gate failure reads the earlier review verdict. The workflow must rerun after this update.
+
+### The questions that block progress
+
+- None.
+
+### The next concrete action
+
+- Read the PR check results, then give the owner the merge summary.
+
 ## Session 71: 2026-10-01, Claude Code
 
 Author: Claude Code
@@ -322,36 +358,3 @@ Session: author PR-22, round 1. Repository: iron-absolution. Branch: `feat/pr-22
 
 - Run `run.ps1 codex-review -PR 23`, answer the findings, then give the owner the merge summary.
 
-## Session 62: 2026-09-29, Codex
-
-Author: Codex
-Session: reviewer PR-21, round 3. Repository: iron-absolution. Branch: `feat/pr-21-gym-movement`. PR: #22. Role: reviewer. Base: `ce25cfd4982d5d4be2c0eee0a0a2658f419b182f`.
-
-### What this session did, and why
-
-- Reviewed PR #22 at effective head `7e2e3f73c1c17b50c34505d7c5ce6d6c0cfc7408`.
-- Verified the owner play test in the package and editor from the PR comment. The owner reports movement, jump, and aim pass.
-- Findings P2-1 and P2-2 remain fixed. The review record now gives `Ready for owner merge`.
-- The metadata commit is pushed. All five required checks pass, including `review-gate`.
-
-### The state of the build
-
-- The remote PR tip is `40a64015a9c16c7b1a6ff0f673ff3408e32129dd` on `feat/pr-21-gym-movement`.
-- The effective code head remains `7e2e3f73c1c17b50c34505d7c5ce6d6c0cfc7408`.
-
-### What is in flight
-
-- The owner merge summary and merge decision.
-
-### Traps and gotchas
-
-- The `review-gate` result before the metadata push reflects the prior Blocked record.
-- OQ-25 blocks roadmap PR-22, not GitHub PR #22.
-
-### The questions that block progress
-
-- No open question affects GitHub PR #22. The owner play test now passes.
-
-### The next concrete action
-
-- Give the owner the merge summary, then wait for the merge decision.
