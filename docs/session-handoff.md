@@ -1,7 +1,7 @@
 ## Session 70: 2026-10-01, Codex
 
 Author: Codex
-Session: reviewer PR-25, round 1. Repository: iron-absolution. Branch: `review/pr-25`. PR: #25. Role: reviewer. Base: `a32d9904eb465f81946988a0c08272a70b656b84`.
+Session: reviewer PR-25, round 1. Repository: iron-absolution. Branch: `feat/pr-24-mantle-interact`. PR: #25. Role: reviewer. Base: `a32d9904eb465f81946988a0c08272a70b656b84`.
 
 ### What this session did, and why
 
@@ -11,7 +11,7 @@ Session: reviewer PR-25, round 1. Repository: iron-absolution. Branch: `review/p
 
 ### The state of the build
 
-- The PR branch remote head was `6f9f91b7dafa4509196c2bf836d0a22ab181ceca` before the metadata push.
+- The effective head is `6f9f91b7dafa4509196c2bf836d0a22ab181ceca`. The remote branch holds this session's metadata commit.
 - The owner reports successful Windows build, content build, 29 automation tests, package checks, and frame-time capture at that head.
 - CI passes `ste-check`, `doc-gate`, build, test, and format, and coverage. `review-gate` failed before the review record existed.
 - Local `run.ps1 verify` did not run. Owner confirmation is pending (D-96).
@@ -19,11 +19,11 @@ Session: reviewer PR-25, round 1. Repository: iron-absolution. Branch: `review/p
 ### What is in flight
 
 - P2-1 needs a finite-offset check and a regression test.
-- The review record and this entry need one metadata commit and a push to `feat/pr-24-mantle-interact`.
+- The corrected review record and this entry need one metadata commit and a push to `feat/pr-24-mantle-interact`.
 
 ### Traps and gotchas
 
-- The review worktree is on `review/pr-25`, with no upstream. Verify the pushed head with `gh pr view`.
+- The local review worktree is `review/pr-25`, with no upstream. Verify the pushed head with `gh pr view`.
 - The PR number is 25. Its roadmap id is PR-24.
 
 ### The questions that block progress
@@ -32,7 +32,7 @@ Session: reviewer PR-25, round 1. Repository: iron-absolution. Branch: `review/p
 
 ### The next concrete action
 
-- Run `run.ps1 ste-check`, rotate the handoff, commit the record and entry, then push the metadata commit.
+- Commit the correction to the record and entry, then push it to the PR branch.
 
 ## Session 69: 2026-10-01, Claude Code
 
