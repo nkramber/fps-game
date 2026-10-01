@@ -2,6 +2,41 @@
 
 This file holds the entries that the rotation moves out of `docs/session-handoff.md`, newest first.
 
+## Session 61: 2026-09-29, Codex
+
+Author: Codex
+Session: reviewer PR-21, round 2. Repository: iron-absolution. Branch: `feat/pr-21-gym-movement`. PR: #22. Role: reviewer. Base: `ce25cfd4982d5d4be2c0eee0a0a2658f419b182f`.
+
+### What this session did, and why
+
+- Reviewed PR #22 at work head `7e2e3f73c1c17b50c34505d7c5ce6d6c0cfc7408`.
+- Verified that P2-1 and P2-2 pass the new regression test. The review record keeps both findings and their first-round evidence.
+- Ran `run.ps1 verify`, `run.ps1 editor-build`, and `run.ps1 editor-test`. Each passed. All 9 editor tests passed.
+- The review record gives the verdict `Blocked`. The owner's play test in the gym still waits for exit test 1.
+
+### The state of the build
+
+- The remote work head is `7e2e3f73c1c17b50c34505d7c5ce6d6c0cfc7408` on `feat/pr-21-gym-movement`.
+- The local .NET gates, editor build, and editor tests pass.
+
+### What is in flight
+
+- The metadata commit for review round 2.
+- The owner play test of the gym in the editor and package.
+
+### Traps and gotchas
+
+- The first editor test failed because the worktree had no compiled editor module. Build the editor target before the test.
+- The `review-gate` fails until the review record approves the effective head.
+
+### The questions that block progress
+
+- No open question affects this PR. The owner play test remains required exit evidence.
+
+### The next concrete action
+
+- Push the review record and this entry together. The owner runs the play test before the merge.
+
 ## Session 60: 2026-09-29, Claude Code
 
 Author: Claude Code

@@ -1,3 +1,38 @@
+## Session 71: 2026-10-01, Claude Code
+
+Author: Claude Code
+Session: author PR-24, round 2. Repository: iron-absolution. Branch: `feat/pr-24-mantle-interact`. PR: #25. Role: author. Base: `a32d9904eb465f81946988a0c08272a70b656b84`.
+
+### What this session did, and why
+
+- Answered round 1 of the review of PR #25 in `docs/reviews/pr-25-response.md`. P2-1 has full merit.
+- `AIronDoor::Toggle` now refuses an open offset that is not finite, before any change of state (T-2).
+- `IronAbsolution.Player.Interact.Errors` now checks a NaN and an infinite offset. It failed on the old code and passes now.
+- Session 69 holds the rest of the work of this PR.
+
+### The state of the build
+
+- The remote head is the commit of this entry on `feat/pr-24-mantle-interact`, pending merge.
+- `verify`, `editor-build`, and `package-build` pass. `editor-test` passes 29 tests headless.
+- The fix changes an error path alone, so the play test and the frame-time capture of session 69 still hold. The session did not run `package-run` or `frame-capture` again, because each opens a game window (D-96).
+
+### What is in flight
+
+- Round 2 of the Codex review of PR #25.
+
+### Traps and gotchas
+
+- `FVector::IsNearlyZero` is false for a NaN or an infinity. Check `ContainsNaN` first, which tests `FMath::IsFinite` on each component.
+- `frame-capture` needs a desktop at 2560x1440 (D-137, D-138).
+
+### The questions that block progress
+
+- None.
+
+### The next concrete action
+
+- Read the verdict of round 2. On approval, give the owner the merge summary and ask for the merge.
+
 ## Session 70: 2026-10-01, Codex
 
 Author: Codex
@@ -320,38 +355,3 @@ Session: reviewer PR-21, round 3. Repository: iron-absolution. Branch: `feat/pr-
 ### The next concrete action
 
 - Give the owner the merge summary, then wait for the merge decision.
-
-## Session 61: 2026-09-29, Codex
-
-Author: Codex
-Session: reviewer PR-21, round 2. Repository: iron-absolution. Branch: `feat/pr-21-gym-movement`. PR: #22. Role: reviewer. Base: `ce25cfd4982d5d4be2c0eee0a0a2658f419b182f`.
-
-### What this session did, and why
-
-- Reviewed PR #22 at work head `7e2e3f73c1c17b50c34505d7c5ce6d6c0cfc7408`.
-- Verified that P2-1 and P2-2 pass the new regression test. The review record keeps both findings and their first-round evidence.
-- Ran `run.ps1 verify`, `run.ps1 editor-build`, and `run.ps1 editor-test`. Each passed. All 9 editor tests passed.
-- The review record gives the verdict `Blocked`. The owner's play test in the gym still waits for exit test 1.
-
-### The state of the build
-
-- The remote work head is `7e2e3f73c1c17b50c34505d7c5ce6d6c0cfc7408` on `feat/pr-21-gym-movement`.
-- The local .NET gates, editor build, and editor tests pass.
-
-### What is in flight
-
-- The metadata commit for review round 2.
-- The owner play test of the gym in the editor and package.
-
-### Traps and gotchas
-
-- The first editor test failed because the worktree had no compiled editor module. Build the editor target before the test.
-- The `review-gate` fails until the review record approves the effective head.
-
-### The questions that block progress
-
-- No open question affects this PR. The owner play test remains required exit evidence.
-
-### The next concrete action
-
-- Push the review record and this entry together. The owner runs the play test before the merge.

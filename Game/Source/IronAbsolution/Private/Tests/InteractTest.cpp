@@ -10,6 +10,8 @@
 #include "Misc/AutomationTest.h"
 #include "PlayerTestWorld.h"
 
+#include <limits>
+
 #if WITH_DEV_AUTOMATION_TESTS
 
 // The interact tests of PR-24 (D-144 to D-146). Each test places a switch on the line of the view
@@ -213,6 +215,17 @@ bool FIronAbsolutionInteractErrorsTest::RunTest(const FString& Parameters)
 	AddExpectedMessagePlain(TEXT("OpenOffset is zero"), ELogVerbosity::Error, EAutomationExpectedMessageFlags::Contains, 1);
 	TestTrue(TEXT("The switch with a door takes the use"), Character->Interact());
 	TestFalse(TEXT("A door with no open offset stays closed"), Door->IsOpen());
+
+	// A NaN or an infinity is not near zero, so the check of a zero offset alone lets it pass.
+	const double NotFinite[] = {std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::infinity()};
+	for (const double Value : NotFinite)
+	{
+		Door->SetOpenOffset(FVector(0.0, 0.0, Value));
+		AddExpectedMessagePlain(TEXT("OpenOffset is not finite"), ELogVerbosity::Error, EAutomationExpectedMessageFlags::Contains, 1);
+		TestTrue(FString::Printf(TEXT("The switch with a door takes the use, with the offset Z %f"), Value), Character->Interact());
+		TestFalse(FString::Printf(TEXT("A door with the offset Z %f stays closed"), Value), Door->IsOpen());
+		TestEqual(FString::Printf(TEXT("The panel of a door with the offset Z %f stays at the closed place"), Value), Door->GetPanel()->GetRelativeLocation(), FVector::ZeroVector);
+	}
 
 	return !HasAnyErrors();
 }

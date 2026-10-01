@@ -23,6 +23,14 @@ void AIronDoor::Interact(AActor& User)
 
 bool AIronDoor::Toggle()
 {
+	// A NaN or an infinity is not near zero, so this check comes first. The door then keeps its
+	// state and its panel (T-2).
+	if (OpenOffset.ContainsNaN())
+	{
+		UE_LOG(LogIronDoor, Error, TEXT("%s did not move: its OpenOffset is not finite, %s. Set it on the placed door."), *GetPathName(), *OpenOffset.ToString());
+		return false;
+	}
+
 	// A door with no open offset does not move, so a use of it must say why (T-2).
 	if (OpenOffset.IsNearlyZero())
 	{
