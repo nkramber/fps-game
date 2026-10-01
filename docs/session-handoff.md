@@ -14,17 +14,17 @@ Session: reviewer PR-25, round 2. Repository: iron-absolution. Branch: `feat/pr-
 
 - The effective head is `97ca8eea7de8013ea196c563c9cd3482248bea65` on `feat/pr-24-mantle-interact`.
 - The author reports that `verify`, editor build, 29 headless tests, and package build pass at that head.
-- CI passes `ste-check`, `doc-gate`, build, test, format, and coverage. `review-gate` must rerun after this metadata commit.
+- CI passes all five required checks after the metadata push. The first coverage run lost its NuGet connection. The rerun passed.
 - This session did not run a build or test. Owner confirmation was not present (D-96).
 
 ### What is in flight
 
-- Confirm the remote metadata commit and check that `review-gate` passes.
+- Give the owner the merge summary after the required checks pass.
 - Give the owner the merge summary after the required checks pass.
 
 ### Traps and gotchas
 
-- The prior review-gate failure reads the earlier review verdict. The workflow must rerun after this update.
+- The prior `review-gate` failure read the earlier verdict. The check passes after the record update.
 
 ### The questions that block progress
 
@@ -32,7 +32,7 @@ Session: reviewer PR-25, round 2. Repository: iron-absolution. Branch: `feat/pr-
 
 ### The next concrete action
 
-- Read the PR check results, then give the owner the merge summary.
+- Give the owner the merge summary after the required checks pass.
 
 ## Session 71: 2026-10-01, Claude Code
 
@@ -357,4 +357,5 @@ Session: author PR-22, round 1. Repository: iron-absolution. Branch: `feat/pr-22
 ### The next concrete action
 
 - Run `run.ps1 codex-review -PR 23`, answer the findings, then give the owner the merge summary.
+
 
