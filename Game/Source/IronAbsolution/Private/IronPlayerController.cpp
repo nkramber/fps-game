@@ -3,14 +3,29 @@
 #include "IronPlayerController.h"
 
 #include "Engine/LocalPlayer.h"
+#include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "InputActionValue.h"
 #include "InputMappingContext.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogIronPlayerController, Log, All);
 
 const TArray<TObjectPtr<UInputMappingContext>>& AIronPlayerController::GetMappingContexts() const
 {
 	return MappingContexts;
+}
+
+bool AIronPlayerController::BindQuitAction(UEnhancedInputComponent& EnhancedInput)
+{
+	if (QuitAction == nullptr)
+	{
+		UE_LOG(LogIronPlayerController, Error, TEXT("%s has no QuitAction, so no key closes the game. Set it in the Blueprint subclass (D-150)."), *GetPathName());
+		return false;
+	}
+
+	EnhancedInput.BindAction(QuitAction, ETriggerEvent::Started, this, &AIronPlayerController::HandleQuit);
+	return true;
 }
 
 void AIronPlayerController::SetupInputComponent()
@@ -47,4 +62,18 @@ void AIronPlayerController::SetupInputComponent()
 
 		InputSubsystem->AddMappingContext(Context, 0);
 	}
+
+	UEnhancedInputComponent* EnhancedInput = Cast<UEnhancedInputComponent>(InputComponent);
+	if (EnhancedInput == nullptr)
+	{
+		UE_LOG(LogIronPlayerController, Error, TEXT("%s got the input component %s, not an Enhanced Input component, so no key closes the game (F-6)."), *GetPathName(), *GetPathNameSafe(InputComponent));
+		return;
+	}
+	BindQuitAction(*EnhancedInput);
+}
+
+void AIronPlayerController::HandleQuit(const FInputActionValue& Value)
+{
+	// A quit with no menu, until phase 8 gives one (D-150).
+	UKismetSystemLibrary::QuitGame(this, this, EQuitPreference::Quit, false);
 }

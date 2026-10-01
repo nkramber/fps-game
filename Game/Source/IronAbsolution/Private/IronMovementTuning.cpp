@@ -31,6 +31,10 @@ TArray<FString> UIronMovementTuning::FindInvalidValues() const
 		{TEXT("StepHeight"), StepHeight, 1.0f, NoMax},
 		{TEXT("WalkableSlope"), WalkableSlope, 1.0f, 89.0f},
 		{TEXT("EyeHeight"), EyeHeight, 1.0f, NoMax},
+		{TEXT("MantleMinHeight"), MantleMinHeight, 1.0f, NoMax},
+		{TEXT("MantleMaxHeight"), MantleMaxHeight, 1.0f, NoMax},
+		{TEXT("MantleTime"), MantleTime, 0.01f, NoMax},
+		{TEXT("InteractReach"), InteractReach, 1.0f, NoMax},
 	};
 
 	TArray<FString> Errors;
@@ -42,6 +46,12 @@ TArray<FString> UIronMovementTuning::FindInvalidValues() const
 			const FString MaxText = Range.Max == NoMax ? FString(TEXT("no maximum")) : FString::SanitizeFloat(Range.Max);
 			Errors.Add(FString::Printf(TEXT("%s of %s is %s. The range is %s to %s."), Range.Name, *GetPathName(), *FString::SanitizeFloat(Range.Value), *FString::SanitizeFloat(Range.Min), *MaxText));
 		}
+	}
+
+	// An empty band finds no ledge, so the mantle never starts and no other line tells why.
+	if (!(MantleMinHeight < MantleMaxHeight))
+	{
+		Errors.Add(FString::Printf(TEXT("MantleMinHeight of %s is %s, and MantleMaxHeight is %s. The lowest mantle height must be below the highest."), *GetPathName(), *FString::SanitizeFloat(MantleMinHeight), *FString::SanitizeFloat(MantleMaxHeight)));
 	}
 
 	return Errors;

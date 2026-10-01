@@ -2,6 +2,43 @@
 
 This file holds the entries that the rotation moves out of `docs/session-handoff.md`, newest first.
 
+## Session 59: 2026-09-29, Codex
+
+Author: Codex
+Session: reviewer PR-21, round 1. Repository: iron-absolution. Branch: `feat/pr-21-gym-movement`. PR: #22. Role: reviewer. Base: `ce25cfd4982d5d4be2c0eee0a0a2658f419b182f`.
+
+### What this session did, and why
+
+- Reviewed work head `e1d5667ccd6e7e5ac3534390dcb2beea1b1a7dac` for PR #22.
+- Recorded two P2 findings in `docs/reviews/pr-22.md`: a zero-gravity failure leaves partial tuning, and NaN values pass range checks.
+- The review verdict is Blocked. Exit test 1 still needs the owner play test of the gym in the editor and package.
+- CI passed `ste-check`, `doc-gate`, and build, test, and format. The first coverage run failed two package-run tests. Its required rerun passed. `review-gate` failed before this review record existed.
+- The owner-reported Windows checks pass at `e1d5667`. No local build or test ran because this session had no owner confirmation.
+
+### The state of the build
+
+- The remote PR head is `923f0ddbfa3c7801b761056af93fe5c0060118d7` on `feat/pr-21-gym-movement`. The work head remains `e1d5667ccd6e7e5ac3534390dcb2beea1b1a7dac`.
+
+### What is in flight
+
+- The author must answer the two findings.
+- The owner must run the play test for exit test 1 before merge.
+- The `doc-gate` check failed because this entry named the local review branch. This correction names the PR branch.
+- The `review-gate` check fails while the verdict is Blocked. It needs an approval after the author answers the findings and the owner completes the play test.
+
+### Traps and gotchas
+
+- `run.ps1 content-build` rewrites `L_Gym` and `IMC_KeyboardMouse` with new internal ids. Restore them if the script did not change.
+- The gym play test remains open even though the owner reported that package-run passes on `L_Test`.
+
+### The questions that block progress
+
+- None for GitHub PR #22. OQ-25 applies to the later roadmap PR-22.
+
+### The next concrete action
+
+- Verify the `doc-gate` check for this corrected entry.
+
 ## Session 58: 2026-09-29, Claude Code
 
 Author: Claude Code

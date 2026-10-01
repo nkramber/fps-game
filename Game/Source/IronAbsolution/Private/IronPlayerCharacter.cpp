@@ -4,11 +4,17 @@
 
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/MeshComponent.h"
+#include "Components/PrimitiveComponent.h"
 #include "EnhancedInputComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Engine/World.h"
 #include "InputActionValue.h"
+#include "IronCharacterMovementComponent.h"
 #include "IronGameUserSettings.h"
+#include "IronInteractable.h"
 #include "IronMovementTuning.h"
+#include "Materials/MaterialInterface.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogIronPlayer, Log, All);
 
@@ -20,7 +26,9 @@ namespace IronAbsolution::PlayerCharacter
 	constexpr float CapsuleHalfHeight = 90.0f;
 }
 
-AIronPlayerCharacter::AIronPlayerCharacter()
+AIronPlayerCharacter::AIronPlayerCharacter(const FObjectInitializer& ObjectInitializer)
+	// The movement component of the player adds the mantle (D-143).
+	: Super(ObjectInitializer.SetDefaultSubobjectClass<UIronCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
 	GetCapsuleComponent()->InitCapsuleSize(IronAbsolution::PlayerCharacter::CapsuleRadius, IronAbsolution::PlayerCharacter::CapsuleHalfHeight);
 
@@ -77,6 +85,8 @@ bool AIronPlayerCharacter::ApplyMovementTuning(const UIronMovementTuning& Tuning
 	// The tuning gives the height of the jump, so a new gravity keeps the height. The start speed
 	// of a jump to the height h under the gravity g is sqrt(2 * g * h).
 	Movement->JumpZVelocity = FMath::Sqrt(2.0f * Gravity * Tuning.JumpHeight);
+	GetIronMovement()->SetMantleTuning(Tuning.MantleMinHeight, Tuning.MantleMaxHeight, Tuning.MantleTime);
+	InteractReach = Tuning.InteractReach;
 
 	// The tuning gives the eye height above the feet. The camera is relative to the center of the capsule.
 	const float EyeOffset = Tuning.EyeHeight - GetCapsuleComponent()->GetUnscaledCapsuleHalfHeight();
@@ -100,6 +110,49 @@ void AIronPlayerCharacter::Look(const FVector2D& MouseCounts)
 	AddControllerPitchInput(MouseCounts.Y * DegreesPerCount);
 }
 
+AActor* AIronPlayerCharacter::FindInteractTarget() const
+{
+	UWorld* World = GetWorld();
+	if (World == nullptr)
+	{
+		return nullptr;
+	}
+
+	// The eye point of the pawn is the place and the turn of the camera, with or without a controller.
+	FVector EyeLocation;
+	FRotator EyeRotation;
+	GetActorEyesViewPoint(EyeLocation, EyeRotation);
+	const FVector End = EyeLocation + EyeRotation.Vector() * InteractReach;
+
+	// A wall between the eye and a switch blocks the use, so the first blocking hit decides.
+	const FCollisionQueryParams Params(SCENE_QUERY_STAT(IronInteract), false, this);
+	FHitResult Hit;
+	if (!World->LineTraceSingleByChannel(Hit, EyeLocation, End, ECC_Visibility, Params))
+	{
+		return nullptr;
+	}
+
+	AActor* HitActor = Hit.GetActor();
+	return HitActor != nullptr && HitActor->Implements<UIronInteractable>() ? HitActor : nullptr;
+}
+
+bool AIronPlayerCharacter::Interact()
+{
+	IIronInteractable* Target = Cast<IIronInteractable>(FindInteractTarget());
+	if (Target == nullptr)
+	{
+		return false;
+	}
+
+	Target->Interact(*this);
+	return true;
+}
+
+AActor* AIronPlayerCharacter::GetOutlinedTarget() const
+{
+	return OutlinedTarget.Get();
+}
+
 const UIronMovementTuning* AIronPlayerCharacter::GetMovementTuning() const
 {
 	return MovementTuning;
@@ -110,6 +163,18 @@ UCameraComponent* AIronPlayerCharacter::GetFirstPersonCamera() const
 	return FirstPersonCamera;
 }
 
+UIronCharacterMovementComponent* AIronPlayerCharacter::GetIronMovement() const
+{
+	// The constructor sets the class of the movement component, so the cast cannot fail.
+	return CastChecked<UIronCharacterMovementComponent>(GetCharacterMovement());
+}
+
+void AIronPlayerCharacter::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+	UpdateInteractCue();
+}
+
 void AIronPlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
@@ -117,6 +182,20 @@ void AIronPlayerCharacter::BeginPlay()
 	// The field of view comes from the settings of the player, not from the tuning (D-141).
 	ApplyFieldOfView();
 	UIronGameUserSettings::Get().OnAimSettingsChanged.AddUObject(this, &AIronPlayerCharacter::ApplyFieldOfView);
+
+	// The outline material waits on the camera with no weight, so it costs nothing until a target is in reach.
+	if (InteractOutlineMaterial == nullptr)
+	{
+		UE_LOG(LogIronPlayer, Error, TEXT("%s has no InteractOutlineMaterial, so no cue shows the target in reach. Set it in the Blueprint subclass (D-145)."), *GetPathName());
+	}
+	else
+	{
+		FirstPersonCamera->PostProcessSettings.AddBlendable(InteractOutlineMaterial, 0.0f);
+	}
+	if (InteractGlowMaterial == nullptr)
+	{
+		UE_LOG(LogIronPlayer, Error, TEXT("%s has no InteractGlowMaterial, so the target in reach has no glow. Set it in the Blueprint subclass (D-148)."), *GetPathName());
+	}
 
 	if (MovementTuning == nullptr)
 	{
@@ -130,6 +209,8 @@ void AIronPlayerCharacter::BeginPlay()
 void AIronPlayerCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	UIronGameUserSettings::Get().OnAimSettingsChanged.RemoveAll(this);
+	ShowInteractCue(OutlinedTarget.Get(), false);
+	OutlinedTarget.Reset();
 	Super::EndPlay(EndPlayReason);
 }
 
@@ -172,6 +253,15 @@ void AIronPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 		EnhancedInput->BindAction(JumpAction, ETriggerEvent::Started, this, &ACharacter::Jump);
 		EnhancedInput->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
 	}
+
+	if (InteractAction == nullptr)
+	{
+		UE_LOG(LogIronPlayer, Error, TEXT("%s has no InteractAction, so the player cannot use a switch or a door. Set it in the Blueprint subclass."), *GetPathName());
+	}
+	else
+	{
+		EnhancedInput->BindAction(InteractAction, ETriggerEvent::Started, this, &AIronPlayerCharacter::HandleInteract);
+	}
 }
 
 void AIronPlayerCharacter::HandleMove(const FInputActionValue& Value)
@@ -182,6 +272,48 @@ void AIronPlayerCharacter::HandleMove(const FInputActionValue& Value)
 void AIronPlayerCharacter::HandleLook(const FInputActionValue& Value)
 {
 	Look(Value.Get<FVector2D>());
+}
+
+void AIronPlayerCharacter::HandleInteract(const FInputActionValue& Value)
+{
+	Interact();
+}
+
+void AIronPlayerCharacter::UpdateInteractCue()
+{
+	AActor* Target = FindInteractTarget();
+	if (Target == OutlinedTarget.Get())
+	{
+		return;
+	}
+
+	ShowInteractCue(OutlinedTarget.Get(), false);
+	ShowInteractCue(Target, true);
+	OutlinedTarget = Target;
+	if (InteractOutlineMaterial != nullptr)
+	{
+		// A blendable with no weight adds no pass to the frame.
+		FirstPersonCamera->PostProcessSettings.AddBlendable(InteractOutlineMaterial, Target != nullptr ? 1.0f : 0.0f);
+	}
+}
+
+void AIronPlayerCharacter::ShowInteractCue(AActor* Target, bool bShown) const
+{
+	if (Target == nullptr)
+	{
+		return;
+	}
+
+	// The glow takes the overlay slot of each mesh. No target of phase 3 has an overlay of its own.
+	UMaterialInterface* Glow = bShown ? InteractGlowMaterial.Get() : nullptr;
+	Target->ForEachComponent<UPrimitiveComponent>(false, [bShown, Glow](UPrimitiveComponent* Component)
+	{
+		Component->SetRenderCustomDepth(bShown);
+		if (UMeshComponent* Mesh = Cast<UMeshComponent>(Component))
+		{
+			Mesh->SetOverlayMaterial(Glow);
+		}
+	});
 }
 
 void AIronPlayerCharacter::ApplyFieldOfView()

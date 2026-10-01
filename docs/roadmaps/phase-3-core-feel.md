@@ -171,9 +171,13 @@ Exit tests, on 2026-09-30:
 - A test switch and a test door in the gym. A cue shows when a target is in reach.
 - The movement metrics file gets the band of the mantle.
 - Tests: a mantle at each bound, no mantle above the band, and an interact in reach and out of reach.
+- Added 2026-09-30: the owner set the mantle (D-143), the key and the reach of interact (D-144), the cue (D-145), and the test door (D-146).
+- Added 2026-10-01: the cue also glows (D-148).
+- Added 2026-10-01: the owner put two changes outside this concern in this PR, and set G-7 aside for them. The game has no motion blur (D-149), and the Escape key closes the game (D-150).
 
 **Out of scope.**
 
+- The arms of the player in an animation of the mantle (D-147). The PR that adds the arms adds it.
 - Keys, locked doors, and pickups. Phase 4 and phase 6 hold them.
 - The finish of a stunned enemy (D-116). Phase 4 holds it.
 - The art of each door and switch. Phase 5 and phase 7 hold it.
@@ -189,9 +193,17 @@ Exit tests, on 2026-09-30:
 
 **Questions.** None open.
 
-**State.** 🔧 planned.
+**State.** ✅ done in PR #25. The owner set the mantle (D-143, D-147), interact and its cue (D-144, D-145, D-148), and the test door (D-146). The owner also put the end of the motion blur (D-149) and the Escape key (D-150) in this PR. `docs/research/mantle-and-interact.md` gives the Epic pages, the engine facts, and the method. `docs/game/movement-metrics.md` gives the band of the mantle.
 
-> *In plain English:* The player cannot climb or use a switch yet. This change lets the player climb onto a ledge at chest height and use a switch that opens a door.
+Exit tests, on 2026-10-01:
+
+- The owner played the package. The player climbed each ledge from 50 cm to 245 cm, and not the ledge of 255 cm (exit test 1).
+- In the package, the switch opened and closed the door, and the cue showed the switch in reach (exit test 2).
+- The 29 automation tests pass headless (exit test 3).
+- `docs/game/movement-metrics.md` gives the band of the mantle in cm, above the feet (exit test 4).
+- The frame-time capture gives a mean of 3.33 ms and a 99th percentile of 3.64 ms, inside the budget of D-32.
+
+> *In plain English:* The player cannot climb or use a switch yet. This change lets the player climb onto a ledge at chest height and use a switch that opens a door. Correction of 2026-10-01: the target in reach also glows, the blur of fast motion goes away, and the Escape key closes the game.
 
 ### 7.5 PR-25: the weapon, the ammo, and change weapon
 

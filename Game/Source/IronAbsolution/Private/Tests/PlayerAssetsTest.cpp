@@ -6,9 +6,12 @@
 #include "InputAction.h"
 #include "InputMappingContext.h"
 #include "InputModifiers.h"
+#include "IronDoor.h"
 #include "IronMovementTuning.h"
 #include "IronPlayerCharacter.h"
 #include "IronPlayerController.h"
+#include "IronSwitch.h"
+#include "Materials/Material.h"
 #include "Misc/AutomationTest.h"
 
 #if WITH_DEV_AUTOMATION_TESTS
@@ -93,6 +96,7 @@ bool FIronAbsolutionPlayerAssetsTest::RunTest(const FString& Parameters)
 		{TEXT("MoveAction"), TEXT("/Game/Input/IA_Move.IA_Move"), EInputActionValueType::Axis2D},
 		{TEXT("LookAction"), TEXT("/Game/Input/IA_Look.IA_Look"), EInputActionValueType::Axis2D},
 		{TEXT("JumpAction"), TEXT("/Game/Input/IA_Jump.IA_Jump"), EInputActionValueType::Boolean},
+		{TEXT("InteractAction"), TEXT("/Game/Input/IA_Interact.IA_Interact"), EInputActionValueType::Boolean},
 	};
 	for (const FActionCase& Case : Actions)
 	{
@@ -104,6 +108,31 @@ bool FIronAbsolutionPlayerAssetsTest::RunTest(const FString& Parameters)
 		}
 	}
 
+	// The outline of the cue of interact: a post-process material before the bloom (D-145, D-148).
+	const UMaterialInterface* Outline = ReadObjectProperty<UMaterialInterface>(*CharacterDefaults, TEXT("InteractOutlineMaterial"));
+	TestEqual(TEXT("The outline material of the character"), GetPathNameSafe(Outline), FString(TEXT("/Game/Player/M_InteractOutline.M_InteractOutline")));
+	if (Outline != nullptr)
+	{
+		const UMaterial* OutlineBase = Outline->GetMaterial();
+		TestTrue(TEXT("The outline material is a post-process material"), OutlineBase->MaterialDomain == MD_PostProcess);
+		TestTrue(TEXT("The outline material runs before the bloom, so the bloom makes it glow"), OutlineBase->BlendableLocation == BL_SceneColorBeforeBloom);
+#if WITH_EDITORONLY_DATA
+		// The graph of a material is editor-only data. The game target builds this test with no graph.
+		TestTrue(TEXT("The outline material writes the emissive color"), OutlineBase->GetEditorOnlyData()->EmissiveColor.IsConnected());
+#endif
+	}
+
+	// The fill glow of the cue: an additive unlit overlay (D-148).
+	const UMaterialInterface* Glow = ReadObjectProperty<UMaterialInterface>(*CharacterDefaults, TEXT("InteractGlowMaterial"));
+	TestEqual(TEXT("The glow material of the character"), GetPathNameSafe(Glow), FString(TEXT("/Game/Player/M_InteractGlow.M_InteractGlow")));
+	if (Glow != nullptr)
+	{
+		const UMaterial* GlowBase = Glow->GetMaterial();
+		TestTrue(TEXT("The glow material is a surface material"), GlowBase->MaterialDomain == MD_Surface);
+		TestTrue(TEXT("The glow material adds its color"), GlowBase->BlendMode == BLEND_Additive);
+		TestTrue(TEXT("The glow material is unlit"), GlowBase->GetShadingModels().HasOnlyShadingModel(MSM_Unlit));
+	}
+
 	// The controller: the mapping context of the keyboard and the mouse, alone (OQ-21).
 	const TArray<TObjectPtr<UInputMappingContext>>& Contexts = GetDefault<AIronPlayerController>(Controller)->GetMappingContexts();
 	TestEqual(TEXT("The controller has one mapping context"), Contexts.Num(), 1);
@@ -111,6 +140,10 @@ bool FIronAbsolutionPlayerAssetsTest::RunTest(const FString& Parameters)
 	{
 		TestEqual(TEXT("The mapping context of the controller"), GetPathNameSafe(Contexts[0]), FString(MappingContext));
 	}
+
+	// The quit action of the controller (D-150).
+	const UInputAction* Quit = ReadObjectProperty<UInputAction>(*GetDefault<AIronPlayerController>(Controller), TEXT("QuitAction"));
+	TestEqual(TEXT("The QuitAction of the controller"), GetPathNameSafe(Quit), FString(TEXT("/Game/Input/IA_Quit.IA_Quit")));
 
 	// The keys of D-136. The move action has X to the right and Y forward. The mouse has no
 	// modifier, because a mouse count reaches the character as it is (D-139).
@@ -126,6 +159,8 @@ bool FIronAbsolutionPlayerAssetsTest::RunTest(const FString& Parameters)
 		TEXT("A IA_Move Negate(XY)"),
 		TEXT("D IA_Move"),
 		TEXT("SpaceBar IA_Jump"),
+		TEXT("E IA_Interact"),
+		TEXT("Escape IA_Quit"),
 		TEXT("Mouse2D IA_Look"),
 	};
 	Expected.Sort();
@@ -138,6 +173,28 @@ bool FIronAbsolutionPlayerAssetsTest::RunTest(const FString& Parameters)
 		const AGameModeBase* GameModeDefaults = GameMode->GetDefaultObject<AGameModeBase>();
 		TestEqual(TEXT("The pawn of the game mode of the gym"), GetPathNameSafe(GameModeDefaults->DefaultPawnClass.Get()), FString(CharacterClass));
 		TestEqual(TEXT("The controller of the game mode of the gym"), GetPathNameSafe(GameModeDefaults->PlayerControllerClass.Get()), FString(ControllerClass));
+	}
+
+	// The gym has one test switch that names the one test door, and the door moves when it opens (D-146).
+	TArray<const AIronSwitch*> Switches;
+	TArray<const AIronDoor*> Doors;
+	for (const AActor* Actor : Gym->PersistentLevel->Actors)
+	{
+		if (const AIronSwitch* Switch = Cast<AIronSwitch>(Actor))
+		{
+			Switches.Add(Switch);
+		}
+		if (const AIronDoor* Door = Cast<AIronDoor>(Actor))
+		{
+			Doors.Add(Door);
+		}
+	}
+	if (TestEqual(TEXT("The gym has one test switch"), Switches.Num(), 1) && TestEqual(TEXT("The gym has one test door"), Doors.Num(), 1))
+	{
+		TestEqual(TEXT("The test switch names the test door"), static_cast<const AIronDoor*>(Switches[0]->GetDoor()), Doors[0]);
+		TestFalse(TEXT("The test door has an open offset"), Doors[0]->GetOpenOffset().IsNearlyZero());
+		TestNotNull(TEXT("The panel of the test door has a mesh"), Doors[0]->GetPanel()->GetStaticMesh().Get());
+		TestNotNull(TEXT("The button of the test switch has a mesh"), Switches[0]->GetButton()->GetStaticMesh().Get());
 	}
 
 	return !HasAnyErrors();

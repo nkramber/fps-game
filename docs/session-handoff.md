@@ -1,3 +1,44 @@
+## Session 69: 2026-10-01, Claude Code
+
+Author: Claude Code
+Session: author PR-24, round 1. Repository: iron-absolution. Branch: `feat/pr-24-mantle-interact`. PR: #25. Role: author. Base: `a32d9904eb465f81946988a0c08272a70b656b84`.
+
+### What this session did, and why
+
+- Built section 7.4 of `docs/roadmaps/phase-3-core-feel.md`: the mantle and interact. The owner gave D-143 to D-150.
+- The mantle: `UIronCharacterMovementComponent` adds a custom mode. In the air, a forward move into a ledge from 50 cm to 130 cm above the feet starts a climb of 0.4 s (D-143).
+- Interact: the interface `IIronInteractable`, with `AIronDoor` and `AIronSwitch`. The E key uses a target up to 200 cm from the eye (D-144, D-146).
+- The cue: an outline before the bloom and an overlay glow, only while a target is in reach (D-145, D-148).
+- The owner put two more changes in this PR and set G-7 aside: no motion blur (D-149), and Escape closes the game (D-150).
+- D-147 records the animation of the arms for a later PR.
+- The owner asked for a PowerShell command `iron-absolution` that starts the package. It is in the profile of the owner, not in the repository.
+
+### The state of the build
+
+- The remote head is the commit of this entry on `feat/pr-24-mantle-interact`, pending merge.
+- `verify`, `toolchain-check`, `editor-build`, `content-build`, and `package-build` pass. `editor-test` passes 29 tests headless.
+- `package-run` passes. `frame-capture` gives a mean of 3.33 ms and a 99th percentile of 3.64 ms at 2560x1440.
+- The owner played the package on 2026-10-01. Each exit test passed.
+
+### What is in flight
+
+- The Codex review of PR #25.
+
+### Traps and gotchas
+
+- `frame-capture` needs a desktop at 2560x1440 (D-137, D-138). The first capture of this session ran at 1920x1080 and failed its settings check.
+- The game target builds the automation tests with no editor-only data. A test that reads a material graph needs `WITH_EDITORONLY_DATA`.
+- The test of the quit key reads the binding alone, because a quit closes the editor that runs the tests.
+- `content-build` rewrites each scripted asset. Run it after each change of `Game/Scripts/build_content.py`, and commit the assets.
+
+### The questions that block progress
+
+- None.
+
+### The next concrete action
+
+- Run the review loop of PR #25 with `run.ps1 codex-review -PR 25`, and answer each finding.
+
 ## Session 68: 2026-09-30, Codex
 
 Author: Codex
@@ -315,40 +356,3 @@ Session: author PR-21, round 2. Repository: iron-absolution. Branch: `feat/pr-21
 ### The next concrete action
 
 - Read the verdict of round 3, then give the merge summary.
-
-## Session 59: 2026-09-29, Codex
-
-Author: Codex
-Session: reviewer PR-21, round 1. Repository: iron-absolution. Branch: `feat/pr-21-gym-movement`. PR: #22. Role: reviewer. Base: `ce25cfd4982d5d4be2c0eee0a0a2658f419b182f`.
-
-### What this session did, and why
-
-- Reviewed work head `e1d5667ccd6e7e5ac3534390dcb2beea1b1a7dac` for PR #22.
-- Recorded two P2 findings in `docs/reviews/pr-22.md`: a zero-gravity failure leaves partial tuning, and NaN values pass range checks.
-- The review verdict is Blocked. Exit test 1 still needs the owner play test of the gym in the editor and package.
-- CI passed `ste-check`, `doc-gate`, and build, test, and format. The first coverage run failed two package-run tests. Its required rerun passed. `review-gate` failed before this review record existed.
-- The owner-reported Windows checks pass at `e1d5667`. No local build or test ran because this session had no owner confirmation.
-
-### The state of the build
-
-- The remote PR head is `923f0ddbfa3c7801b761056af93fe5c0060118d7` on `feat/pr-21-gym-movement`. The work head remains `e1d5667ccd6e7e5ac3534390dcb2beea1b1a7dac`.
-
-### What is in flight
-
-- The author must answer the two findings.
-- The owner must run the play test for exit test 1 before merge.
-- The `doc-gate` check failed because this entry named the local review branch. This correction names the PR branch.
-- The `review-gate` check fails while the verdict is Blocked. It needs an approval after the author answers the findings and the owner completes the play test.
-
-### Traps and gotchas
-
-- `run.ps1 content-build` rewrites `L_Gym` and `IMC_KeyboardMouse` with new internal ids. Restore them if the script did not change.
-- The gym play test remains open even though the owner reported that package-run passes on `L_Test`.
-
-### The questions that block progress
-
-- None for GitHub PR #22. OQ-25 applies to the later roadmap PR-22.
-
-### The next concrete action
-
-- Verify the `doc-gate` check for this corrected entry.
