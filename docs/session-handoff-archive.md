@@ -2,6 +2,43 @@
 
 This file holds the entries that the rotation moves out of `docs/session-handoff.md`, newest first.
 
+## Session 60: 2026-09-29, Claude Code
+
+Author: Claude Code
+Session: author PR-21, round 2. Repository: iron-absolution. Branch: `feat/pr-21-gym-movement`. PR: #22. Role: author. Base: `ce25cfd4982d5d4be2c0eee0a0a2658f419b182f`.
+
+### What this session did, and why
+
+- The Codex review of round 1 gave `Blocked` with P2-1 and P2-2. Both have full merit. `docs/reviews/pr-22-response.md` gives each answer.
+- P2-1: `ApplyMovementTuning` now checks the gravity before any write, so a refused tuning changes nothing (T-2).
+- P2-2: `FindInvalidValues` now rejects each value that is not finite.
+- The new test `IronAbsolution.Player.Movement.RefusedTuning` fails on the old code and passes with the correction.
+- The `coverage report` job failed one time in a test of `ToolchainCheckCommandTests`, and its rerun passed. F-28 has a dated line for it.
+- Round 2 of the review marked P2-1 and P2-2 fixed at `7e2e3f7`. It stayed `Blocked` for exit test 1 alone.
+- Exit test 1 passes. With owner consent, the package at `7e2e3f7` opened in `L_Gym`, then the editor. The owner played both and reported "All good".
+
+### The state of the build
+
+- The remote head is the commit of this entry on `feat/pr-21-gym-movement`, pending merge.
+- `editor-test` passes 9 automation tests. `run.ps1 verify` passes.
+
+### What is in flight
+
+- Round 3 of the Codex review of PR #22, with the evidence of exit test 1.
+
+### Traps and gotchas
+
+- Session 58 lists the traps of this PR. They all still hold.
+- `TNumericLimits<float>` has no NaN in 5.8. The test uses `std::numeric_limits<float>::quiet_NaN()`.
+
+### The questions that block progress
+
+- None for PR-21. OQ-25 blocks PR-22, and OQ-26 blocks the sound part of PR-25. OQ-16 still holds the gitar pass (D-7).
+
+### The next concrete action
+
+- Read the verdict of round 3, then give the merge summary.
+
 ## Session 59: 2026-09-29, Codex
 
 Author: Codex

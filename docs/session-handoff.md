@@ -1,3 +1,39 @@
+## Session 70: 2026-10-01, Codex
+
+Author: Codex
+Session: reviewer PR-25, round 1. Repository: iron-absolution. Branch: `review/pr-25`. PR: #25. Role: reviewer. Base: `a32d9904eb465f81946988a0c08272a70b656b84`.
+
+### What this session did, and why
+
+- Reviewed PR #25 at effective head `6f9f91b7dafa4509196c2bf836d0a22ab181ceca`.
+- Added finding P2-1: a non-finite door offset corrupts the panel transform without an error (T-2).
+- Reviewed the mantle, interact, cue, quit binding, rendering settings, content script, tests, documents, owner evidence, and CI.
+
+### The state of the build
+
+- The PR branch remote head was `6f9f91b7dafa4509196c2bf836d0a22ab181ceca` before the metadata push.
+- The owner reports successful Windows build, content build, 29 automation tests, package checks, and frame-time capture at that head.
+- CI passes `ste-check`, `doc-gate`, build, test, and format, and coverage. `review-gate` failed before the review record existed.
+- Local `run.ps1 verify` did not run. Owner confirmation is pending (D-96).
+
+### What is in flight
+
+- P2-1 needs a finite-offset check and a regression test.
+- The review record and this entry need one metadata commit and a push to `feat/pr-24-mantle-interact`.
+
+### Traps and gotchas
+
+- The review worktree is on `review/pr-25`, with no upstream. Verify the pushed head with `gh pr view`.
+- The PR number is 25. Its roadmap id is PR-24.
+
+### The questions that block progress
+
+- Local build and test verification awaits owner confirmation under D-96.
+
+### The next concrete action
+
+- Run `run.ps1 ste-check`, rotate the handoff, commit the record and entry, then push the metadata commit.
+
 ## Session 69: 2026-10-01, Claude Code
 
 Author: Claude Code
@@ -319,40 +355,3 @@ Session: reviewer PR-21, round 2. Repository: iron-absolution. Branch: `feat/pr-
 ### The next concrete action
 
 - Push the review record and this entry together. The owner runs the play test before the merge.
-
-## Session 60: 2026-09-29, Claude Code
-
-Author: Claude Code
-Session: author PR-21, round 2. Repository: iron-absolution. Branch: `feat/pr-21-gym-movement`. PR: #22. Role: author. Base: `ce25cfd4982d5d4be2c0eee0a0a2658f419b182f`.
-
-### What this session did, and why
-
-- The Codex review of round 1 gave `Blocked` with P2-1 and P2-2. Both have full merit. `docs/reviews/pr-22-response.md` gives each answer.
-- P2-1: `ApplyMovementTuning` now checks the gravity before any write, so a refused tuning changes nothing (T-2).
-- P2-2: `FindInvalidValues` now rejects each value that is not finite.
-- The new test `IronAbsolution.Player.Movement.RefusedTuning` fails on the old code and passes with the correction.
-- The `coverage report` job failed one time in a test of `ToolchainCheckCommandTests`, and its rerun passed. F-28 has a dated line for it.
-- Round 2 of the review marked P2-1 and P2-2 fixed at `7e2e3f7`. It stayed `Blocked` for exit test 1 alone.
-- Exit test 1 passes. With owner consent, the package at `7e2e3f7` opened in `L_Gym`, then the editor. The owner played both and reported "All good".
-
-### The state of the build
-
-- The remote head is the commit of this entry on `feat/pr-21-gym-movement`, pending merge.
-- `editor-test` passes 9 automation tests. `run.ps1 verify` passes.
-
-### What is in flight
-
-- Round 3 of the Codex review of PR #22, with the evidence of exit test 1.
-
-### Traps and gotchas
-
-- Session 58 lists the traps of this PR. They all still hold.
-- `TNumericLimits<float>` has no NaN in 5.8. The test uses `std::numeric_limits<float>::quiet_NaN()`.
-
-### The questions that block progress
-
-- None for PR-21. OQ-25 blocks PR-22, and OQ-26 blocks the sound part of PR-25. OQ-16 still holds the gitar pass (D-7).
-
-### The next concrete action
-
-- Read the verdict of round 3, then give the merge summary.
