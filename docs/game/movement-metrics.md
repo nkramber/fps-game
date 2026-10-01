@@ -24,6 +24,10 @@ This file gives each metric of the movement with a value and a unit. Phase 5 rea
 | Step height | 45 | cm | `StepHeight` | The default of the engine. The player climbs a step of this height with no jump. |
 | Walkable slope | 45 | degrees | `WalkableSlope` | Recommendation: close to the default of the engine, 44.765 degrees. |
 | Eye height | 160 | cm | `EyeHeight` | Recommendation: the height of the camera above the feet. |
+| Lowest mantle height | 50 | cm, above the feet | `MantleMinHeight` | Owner pick (D-143). It is above the step height, so a step is never a mantle. |
+| Highest mantle height | 130 | cm, above the feet | `MantleMaxHeight` | Owner pick (D-143). Chest height (D-116). |
+| Mantle time | 0.4 | s | `MantleTime` | Owner pick (D-143). The player has no control in the climb. |
+| Interact reach | 200 | cm, from the eye along the view | `InteractReach` | Owner pick (D-144). |
 
 ## The rules of the class
 
@@ -42,6 +46,7 @@ The gravity of the world is 980 cm/s². The character computes the start speed o
 | Start speed of a jump | 594 | cm/s | The square root of 2 times 1470 times 120. |
 | Time in the air of a jump on flat ground | 0.81 | s | 2 times 594, divided by 1470. |
 | Longest gap on flat ground at full speed | 727 | cm | 900 times 0.81. |
+| Tallest ledge that a mantle climbs from the floor | 250 | cm | The jump height of 120 plus the highest mantle height of 130. |
 
 Assumption: the longest gap is a limit of the rules of motion. The gym has gaps from 200 cm to 800 cm, so the owner sees the real limit in play.
 
@@ -62,10 +67,27 @@ The gym `L_Gym` has five rows of stations along the view at the start (D-133). A
 | Row | Stations | What the player tests |
 |---|---|---|
 | Gaps | Gaps of 200, 300, 400, 500, 600, 700, and 800 cm between platforms 40 cm high | The longest jump |
-| Ledges | Blocks 50, 75, 100, 125, 150, and 200 cm high | The highest ledge that a jump reaches |
+| Ledges | Blocks 40, 50, 75, 100, 125, 150, 200, 245, and 255 cm high | The highest ledge that a jump reaches, and the band of the mantle |
 | Distance | A line on the floor each 500 cm, for 50 m | The run speed and the time to full speed |
 | Steps and ramps | Stairs with steps of 15, 30, 45, and 60 cm, and ramps of 30, 40, 45, and 50 degrees | The step height and the walkable slope |
 | Halls | Halls 100, 150, 200, 300, and 400 cm wide, with walls 300 cm high | The width that feels right for a fight or a path |
+| Door | A wall 300 cm high to the right of the start, with a door 200 cm wide and 250 cm high, and a switch | The verb "interact" and its reach (D-146) |
+
+## The mantle
+
+PR-24 adds the mantle (D-143). While the player is in the air and moves forward into a ledge, the player climbs onto it. The ledge top must be from 50 cm to 130 cm above the feet at that moment. The climb goes up, then forward, in 0.4 s.
+
+On the ground, a jump starts the mantle. The jump of 120 cm then climbs a ledge from 50 cm to 250 cm high. A ledge of 50 cm to 120 cm is also in reach of the jump alone.
+
+The top of a jump falls between two frames, so a ledge of exactly 250 cm can fail by a fraction of a centimeter. The gym has a station 5 cm inside the limit and one 5 cm outside it. The station of 40 cm is below the band: the player steps onto it.
+
+A thin wall is not a ledge. The capsule must fit on the top, 40 cm past the edge, with room above it.
+
+`docs/research/mantle-and-interact.md` gives the method and the evidence.
+
+## Interact
+
+The E key uses the switch or the door on the line of the view, up to 200 cm from the eye (D-144). A wall between the eye and the target blocks the use. An outline and a glow in the color of the labels show the target in reach (D-145, D-148).
 
 ## The aim settings
 

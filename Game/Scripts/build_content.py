@@ -3,8 +3,8 @@
 
 `run.ps1 content-build` runs this script through the Python commandlet of the editor, with no
 window. The script is the source of each asset that it makes: the input actions, the mapping
-context, the movement tuning, the player Blueprints, and the gym map `L_Gym` with the views of the
-frame-time capture. A change to one of these assets is a change to this script, then a new run. A
+context, the movement tuning, the outline and glow materials of interact, the player Blueprints,
+and the gym map `L_Gym` with the views of the frame-time capture. A change to one of these assets is a change to this script, then a new run. A
 change in the editor alone goes away at the next run.
 
 The script makes an asset when it is absent, and writes each value again when it is present. Each
@@ -33,6 +33,11 @@ MOVEMENT_TUNING = {
     "step_height": 45.0,
     "walkable_slope": 45.0,
     "eye_height": 160.0,
+    # The mantle (D-143) and the reach of interact (D-144).
+    "mantle_min_height": 50.0,
+    "mantle_max_height": 130.0,
+    "mantle_time": 0.4,
+    "interact_reach": 200.0,
 }
 
 # The project defaults of the aim settings (D-141). The views of the frame-time capture take the
@@ -65,6 +70,32 @@ FRAME_TIME_VIEWS = [
     ("the far end, back to the spawn", unreal.Vector(6600.0, 0.0, 160.0), unreal.Rotator(0.0, 0.0, 180.0)),
     ("the hall row, between the walls", unreal.Vector(-2400.0, HALL_ROW_Y, 160.0), unreal.Rotator(0.0, 0.0, 0.0)),
 ]
+
+# The ledge row. The band of the mantle is 50 cm to 130 cm above the feet (D-143). A jump of
+# 120 cm then climbs a ledge from 50 cm to 250 cm high. The top of the jump falls between two
+# frames, so the stations near the upper limit stand 5 cm inside and 5 cm outside it.
+LEDGE_HEIGHTS = (40, 50, 75, 100, 125, 150, 200, 245, 255)
+
+# The door station: a wall along X with a door and a switch, to the right of the start (D-146).
+DOOR_WALL_Y = 1000.0
+DOOR_CENTER_X = -2500.0
+DOOR_SIZE = unreal.Vector(200.0, 20.0, 250.0)
+DOOR_WALL_HEIGHT = 300.0
+# The open panel sinks into the floor, below the floor top at Z 0.
+DOOR_OPEN_OFFSET = unreal.Vector(0.0, 0.0, -260.0)
+SWITCH_SIZE = 20.0
+SWITCH_LOCATION = unreal.Vector(-2250.0, DOOR_WALL_Y - DOOR_SIZE.y / 2.0 - SWITCH_SIZE / 2.0, 120.0)
+
+# The cue of the target in reach (D-145, D-148), in the color of the labels. The outline is 3
+# pixels wide. The step of the custom depth, in cm, marks the edge of a target. Each brightness is a
+# multiple of the color above 1, so the bloom of the engine makes a glow around it.
+CUE_COLOR = unreal.LinearColor(r=1.0, g=0.78, b=0.16, a=1.0)
+OUTLINE_WIDTH = 3.0
+OUTLINE_DEPTH_STEP = 100.0
+OUTLINE_BRIGHTNESS = 12.0
+# The fill glow: dim at the center of a face, bright at the edges of the target.
+GLOW_CENTER_BRIGHTNESS = 0.6
+GLOW_EDGE_BRIGHTNESS = 4.0
 
 LABEL_HEIGHT = 30.0
 LABEL_COLOR = unreal.Color(r=255, g=200, b=40, a=255)
@@ -134,7 +165,7 @@ def key_mapping(action, key_name, modifiers):
     return mapping
 
 
-def keyboard_mouse_context(move, look, jump):
+def keyboard_mouse_context(move, look, jump, interact, quit_game):
     """The mapping context of the keyboard and the mouse (D-136). No C++ names a key (OQ-21)."""
     context = load_or_create(INPUT_FOLDER, "IMC_KeyboardMouse", unreal.InputMappingContext, unreal.InputMappingContext_Factory())
     mappings = [
@@ -144,6 +175,9 @@ def keyboard_mouse_context(move, look, jump):
         key_mapping(move, "A", [negate(context, True, True)]),
         key_mapping(move, "D", []),
         key_mapping(jump, "SpaceBar", []),
+        key_mapping(interact, "E", []),
+        # Escape closes the game until the menu of phase 8 (D-150).
+        key_mapping(quit_game, "Escape", []),
         # The mouse gives a positive Y when it moves forward. The project turns off the input
         # scales of the engine, so a positive pitch input turns the view up with no modifier (D-139).
         key_mapping(look, "Mouse2D", []),
@@ -165,6 +199,141 @@ def movement_tuning():
     return tuning
 
 
+def material_node(material, expression_class, x, y, **properties):
+    """Adds one node to a material graph, with the given properties."""
+    node = unreal.MaterialEditingLibrary.create_material_expression(material, expression_class, x, y)
+    if node is None:
+        raise ContentError(f"The node {expression_class.__name__} did not come into {material.get_path_name()}.")
+    for name, value in properties.items():
+        node.set_editor_property(name, value)
+    return node
+
+
+def material_link(source, output, target, target_input):
+    """Connects an output of one node to an input of another node. An empty name is the first pin."""
+    if not unreal.MaterialEditingLibrary.connect_material_expressions(source, output, target, target_input):
+        raise ContentError(f"The output '{output}' of {source.get_name()} did not connect to the input '{target_input}' of {target.get_name()}.")
+
+
+def custom_depth_at(material, viewport_uv, texel, dx, dy, y):
+    """Reads the custom depth one outline width away from the pixel, in the direction dx, dy."""
+    offset = material_node(material, unreal.MaterialExpressionConstant2Vector, -1400, y, r=dx * OUTLINE_WIDTH, g=dy * OUTLINE_WIDTH)
+    scaled = material_node(material, unreal.MaterialExpressionMultiply, -1200, y)
+    material_link(texel, "", scaled, "A")
+    material_link(offset, "", scaled, "B")
+    uv = material_node(material, unreal.MaterialExpressionAdd, -1000, y)
+    material_link(viewport_uv, "ViewportUV", uv, "A")
+    material_link(scaled, "", uv, "B")
+    depth = material_node(material, unreal.MaterialExpressionSceneTexture, -800, y, scene_texture_id=unreal.SceneTextureId.PPI_CUSTOM_DEPTH)
+    material_link(uv, "", depth, "UVs")
+    red = material_node(material, unreal.MaterialExpressionComponentMask, -600, y, r=True, g=False, b=False, a=False)
+    material_link(depth, "Color", red, "")
+    return red
+
+
+def outline_material():
+    """The post-process material of the outline of the cue of interact (D-145, D-148).
+
+    A pixel outside the target is on the outline when a pixel one outline width away holds the
+    target in the custom depth. The target is much nearer than the empty custom depth, so the step
+    of the depth marks the edge. The material runs before the bloom, with a color above 1, so the
+    bloom of the engine makes the outline glow.
+    """
+    material = load_or_create(PLAYER_FOLDER, "M_InteractOutline", unreal.Material, unreal.MaterialFactoryNew())
+    unreal.MaterialEditingLibrary.delete_all_material_expressions(material)
+    material.set_editor_property("material_domain", unreal.MaterialDomain.MD_POST_PROCESS)
+    material.set_editor_property("blendable_location", unreal.BlendableLocation.BL_SCENE_COLOR_BEFORE_BLOOM)
+
+    viewport_uv = material_node(material, unreal.MaterialExpressionScreenPosition, -1600, -200)
+    view_size = material_node(material, unreal.MaterialExpressionViewSize, -1800, 0)
+    one = material_node(material, unreal.MaterialExpressionConstant, -1800, 100, r=1.0)
+    texel = material_node(material, unreal.MaterialExpressionDivide, -1600, 0)
+    material_link(one, "", texel, "A")
+    material_link(view_size, "", texel, "B")
+
+    right = custom_depth_at(material, viewport_uv, texel, 1.0, 0.0, 200)
+    left = custom_depth_at(material, viewport_uv, texel, -1.0, 0.0, 400)
+    down = custom_depth_at(material, viewport_uv, texel, 0.0, 1.0, 600)
+    up = custom_depth_at(material, viewport_uv, texel, 0.0, -1.0, 800)
+    near_x = material_node(material, unreal.MaterialExpressionMin, -400, 300)
+    material_link(right, "", near_x, "A")
+    material_link(left, "", near_x, "B")
+    near_y = material_node(material, unreal.MaterialExpressionMin, -400, 700)
+    material_link(down, "", near_y, "A")
+    material_link(up, "", near_y, "B")
+    nearest = material_node(material, unreal.MaterialExpressionMin, -250, 500)
+    material_link(near_x, "", nearest, "A")
+    material_link(near_y, "", nearest, "B")
+
+    center = material_node(material, unreal.MaterialExpressionSceneTexture, -800, -400, scene_texture_id=unreal.SceneTextureId.PPI_CUSTOM_DEPTH)
+    center_red = material_node(material, unreal.MaterialExpressionComponentMask, -600, -400, r=True, g=False, b=False, a=False)
+    material_link(center, "Color", center_red, "")
+    step = material_node(material, unreal.MaterialExpressionSubtract, -100, 0)
+    material_link(center_red, "", step, "A")
+    material_link(nearest, "", step, "B")
+
+    threshold = material_node(material, unreal.MaterialExpressionConstant, -100, 150, r=OUTLINE_DEPTH_STEP)
+    on = material_node(material, unreal.MaterialExpressionConstant, -100, 250, r=1.0)
+    off = material_node(material, unreal.MaterialExpressionConstant, -100, 350, r=0.0)
+    edge = material_node(material, unreal.MaterialExpressionIf, 100, 0)
+    material_link(step, "", edge, "A")
+    material_link(threshold, "", edge, "B")
+    material_link(on, "", edge, "A > B")
+    material_link(off, "", edge, "A == B")
+    material_link(off, "", edge, "A < B")
+
+    scene = material_node(material, unreal.MaterialExpressionSceneTexture, -100, -300, scene_texture_id=unreal.SceneTextureId.PPI_POST_PROCESS_INPUT0)
+    scene_rgb = material_node(material, unreal.MaterialExpressionComponentMask, 100, -300, r=True, g=True, b=True, a=False)
+    material_link(scene, "Color", scene_rgb, "")
+    color = material_node(material, unreal.MaterialExpressionConstant3Vector, 100, -150, constant=bright(CUE_COLOR, OUTLINE_BRIGHTNESS))
+    mix = material_node(material, unreal.MaterialExpressionLinearInterpolate, 300, 0)
+    material_link(scene_rgb, "", mix, "A")
+    material_link(color, "", mix, "B")
+    material_link(edge, "", mix, "Alpha")
+    if not unreal.MaterialEditingLibrary.connect_material_property(mix, "", unreal.MaterialProperty.MP_EMISSIVE_COLOR):
+        raise ContentError(f"The outline of {material.get_path_name()} did not connect to the emissive color.")
+
+    unreal.MaterialEditingLibrary.recompile_material(material)
+    save(material)
+    return material
+
+
+def bright(color, brightness):
+    """Gives the color with each channel times the brightness, for a glow under the bloom."""
+    return unreal.LinearColor(r=color.r * brightness, g=color.g * brightness, b=color.b * brightness, a=1.0)
+
+
+def glow_material():
+    """The overlay material of the fill glow of the cue of interact (D-148).
+
+    The engine draws the target a second time with this material, while the target is in reach.
+    An additive unlit color adds light to the target, and the Fresnel term makes the edges bright.
+    """
+    material = load_or_create(PLAYER_FOLDER, "M_InteractGlow", unreal.Material, unreal.MaterialFactoryNew())
+    unreal.MaterialEditingLibrary.delete_all_material_expressions(material)
+    material.set_editor_property("material_domain", unreal.MaterialDomain.MD_SURFACE)
+    material.set_editor_property("blend_mode", unreal.BlendMode.BLEND_ADDITIVE)
+    material.set_editor_property("shading_model", unreal.MaterialShadingModel.MSM_UNLIT)
+
+    fresnel = material_node(material, unreal.MaterialExpressionFresnel, -600, 200)
+    center = material_node(material, unreal.MaterialExpressionConstant, -600, 0, r=GLOW_CENTER_BRIGHTNESS)
+    edge = material_node(material, unreal.MaterialExpressionConstant, -600, 100, r=GLOW_EDGE_BRIGHTNESS)
+    brightness = material_node(material, unreal.MaterialExpressionLinearInterpolate, -400, 100)
+    material_link(center, "", brightness, "A")
+    material_link(edge, "", brightness, "B")
+    material_link(fresnel, "", brightness, "Alpha")
+    color = material_node(material, unreal.MaterialExpressionConstant3Vector, -400, -100, constant=CUE_COLOR)
+    glow = material_node(material, unreal.MaterialExpressionMultiply, -200, 0)
+    material_link(color, "", glow, "A")
+    material_link(brightness, "", glow, "B")
+    if not unreal.MaterialEditingLibrary.connect_material_property(glow, "", unreal.MaterialProperty.MP_EMISSIVE_COLOR):
+        raise ContentError(f"The glow of {material.get_path_name()} did not connect to the emissive color.")
+
+    unreal.MaterialEditingLibrary.recompile_material(material)
+    save(material)
+    return material
+
+
 def blueprint(name, parent_class):
     """Loads or makes a Blueprint subclass, and gives its default object."""
     factory = unreal.BlueprintFactory()
@@ -176,16 +345,20 @@ def blueprint(name, parent_class):
     return asset, unreal.get_default_object(generated)
 
 
-def player_blueprints(tuning, move, look, jump, context):
+def player_blueprints(tuning, move, look, jump, interact, quit_game, outline, glow, context):
     character, character_defaults = blueprint("BP_PlayerCharacter", unreal.IronPlayerCharacter)
     character_defaults.set_editor_property("movement_tuning", tuning)
     character_defaults.set_editor_property("move_action", move)
     character_defaults.set_editor_property("look_action", look)
     character_defaults.set_editor_property("jump_action", jump)
+    character_defaults.set_editor_property("interact_action", interact)
+    character_defaults.set_editor_property("interact_outline_material", outline)
+    character_defaults.set_editor_property("interact_glow_material", glow)
     save(character)
 
     controller, controller_defaults = blueprint("BP_PlayerController", unreal.IronPlayerController)
     controller_defaults.set_editor_property("mapping_contexts", [context])
+    controller_defaults.set_editor_property("quit_action", quit_game)
     save(controller)
 
     game_mode, game_mode_defaults = blueprint("BP_PlayerGameMode", unreal.GameModeBase)
@@ -235,9 +408,9 @@ def block(actors, label, center, size, rotation=None, material=None):
     return actor
 
 
-def text(actors, words, location):
-    """Places a label that faces the player at the start, who looks along +X."""
-    actor = spawn(actors, unreal.TextRenderActor, location, unreal.Rotator(0.0, 0.0, 180.0), f"Label {words}")
+def text(actors, words, location, yaw=180.0):
+    """Places a label. The default yaw faces the player at the start, who looks along +X."""
+    actor = spawn(actors, unreal.TextRenderActor, location, unreal.Rotator(0.0, 0.0, yaw), f"Label {words}")
     component = actor.get_editor_property("text_render")
     component.set_text(words)
     component.set_world_size(LABEL_HEIGHT)
@@ -275,9 +448,9 @@ def gap_row(actors):
 
 
 def ledge_row(actors):
-    """Blocks of set heights. The player jumps up onto each one."""
+    """Blocks of set heights. The player jumps up onto each one, or jumps and climbs it (D-143)."""
     x = ROW_START_X
-    for height in (50, 75, 100, 125, 150, 200):
+    for height in LEDGE_HEIGHTS:
         block(actors, f"Ledge {height}", unreal.Vector(x + 100.0, LEDGE_ROW_Y, height / 2.0), unreal.Vector(200.0, 300.0, float(height)))
         text(actors, f"Ledge {height} cm", unreal.Vector(x - 10.0, LEDGE_ROW_Y, height + 40.0))
         x += 600.0
@@ -327,6 +500,35 @@ def hall_row(actors):
         x += 900.0
 
 
+def door_station(actors):
+    """A wall with a test door and a test switch. Each use of the switch toggles the door (D-146)."""
+    half_door = DOOR_SIZE.x / 2.0
+    wall_length = 400.0
+    for name, x in (("west", DOOR_CENTER_X - half_door - wall_length / 2.0), ("east", DOOR_CENTER_X + half_door + wall_length / 2.0)):
+        block(actors, f"Door wall {name}", unreal.Vector(x, DOOR_WALL_Y, DOOR_WALL_HEIGHT / 2.0), unreal.Vector(wall_length, DOOR_SIZE.y, DOOR_WALL_HEIGHT))
+    lintel_height = DOOR_WALL_HEIGHT - DOOR_SIZE.z
+    block(actors, "Door lintel", unreal.Vector(DOOR_CENTER_X, DOOR_WALL_Y, DOOR_SIZE.z + lintel_height / 2.0), unreal.Vector(DOOR_SIZE.x, DOOR_SIZE.y, lintel_height))
+
+    mesh = unreal.load_asset(CUBE)
+    if mesh is None:
+        raise ContentError(f"The mesh {CUBE} did not load.")
+    # The closed panel is at the place of the door, so the door stands at the center of the panel.
+    door = spawn(actors, unreal.IronDoor, unreal.Vector(DOOR_CENTER_X, DOOR_WALL_Y, DOOR_SIZE.z / 2.0), label="Test door")
+    door.set_editor_property("open_offset", DOOR_OPEN_OFFSET)
+    panel = door.get_editor_property("panel")
+    panel.set_static_mesh(mesh)
+    panel.set_relative_scale3d(unreal.Vector(DOOR_SIZE.x / CUBE_SIZE, DOOR_SIZE.y / CUBE_SIZE, DOOR_SIZE.z / CUBE_SIZE))
+
+    switch = spawn(actors, unreal.IronSwitch, SWITCH_LOCATION, label="Test switch")
+    switch.get_editor_property("button").set_static_mesh(mesh)
+    switch.set_actor_scale3d(unreal.Vector(SWITCH_SIZE / CUBE_SIZE, SWITCH_SIZE / CUBE_SIZE, SWITCH_SIZE / CUBE_SIZE))
+    switch.set_editor_property("door", door)
+
+    # The labels face the player, who comes from the start at Y 0 and looks along +Y.
+    text(actors, "Door", unreal.Vector(DOOR_CENTER_X, DOOR_WALL_Y - 20.0, DOOR_WALL_HEIGHT + 30.0), yaw=-90.0)
+    text(actors, "Switch: E", unreal.Vector(SWITCH_LOCATION.x, SWITCH_LOCATION.y - 10.0, SWITCH_LOCATION.z + 40.0), yaw=-90.0)
+
+
 def default_field_of_view():
     """Reads the default field of view of the project from its config file (D-141)."""
     path = os.path.join(unreal.Paths.convert_relative_path_to_full(unreal.Paths.project_config_dir()), AIM_DEFAULTS_FILE)
@@ -355,6 +557,7 @@ def gym(game_mode):
     distance_row(actors)
     step_row(actors)
     hall_row(actors)
+    door_station(actors)
     frame_time_views(actors)
 
     world = unreal.get_editor_subsystem(unreal.UnrealEditorSubsystem).get_editor_world()
@@ -370,9 +573,13 @@ def main():
     move = input_action("IA_Move", unreal.InputActionValueType.AXIS2D)
     look = input_action("IA_Look", unreal.InputActionValueType.AXIS2D)
     jump = input_action("IA_Jump", unreal.InputActionValueType.BOOLEAN)
-    context = keyboard_mouse_context(move, look, jump)
+    interact = input_action("IA_Interact", unreal.InputActionValueType.BOOLEAN)
+    quit_game = input_action("IA_Quit", unreal.InputActionValueType.BOOLEAN)
+    context = keyboard_mouse_context(move, look, jump, interact, quit_game)
     tuning = movement_tuning()
-    game_mode = player_blueprints(tuning, move, look, jump, context)
+    outline = outline_material()
+    glow = glow_material()
+    game_mode = player_blueprints(tuning, move, look, jump, interact, quit_game, outline, glow, context)
     gym(game_mode)
     unreal.log("build_content: pass. The input, the player, and the gym map saved.")
 

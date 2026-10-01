@@ -1,3 +1,151 @@
+## Session 72: 2026-10-01, Codex
+
+Author: Codex
+Session: reviewer PR-25, round 2. Repository: iron-absolution. Branch: `feat/pr-24-mantle-interact`. PR: #25. Role: reviewer. Base: `a32d9904eb465f81946988a0c08272a70b656b84`.
+
+### What this session did, and why
+
+- Reviewed PR #25 at effective head `97ca8eea7de8013ea196c563c9cd3482248bea65`.
+- Verified that the door rejects NaN and infinite offsets before state or transform changes (T-2).
+- Verified the regression test checks both offsets and their error and state results.
+- Updated P2-1 to fixed and set the verdict to Ready for owner merge.
+
+### The state of the build
+
+- The effective head is `97ca8eea7de8013ea196c563c9cd3482248bea65` on `feat/pr-24-mantle-interact`.
+- The author reports that `verify`, editor build, 29 headless tests, and package build pass at that head.
+- CI passes all five required checks after the metadata push. The first coverage run lost its NuGet connection. The rerun passed.
+- This session did not run a build or test. Owner confirmation was not present (D-96).
+
+### What is in flight
+
+- Give the owner the merge summary after the required checks pass.
+- Give the owner the merge summary after the required checks pass.
+
+### Traps and gotchas
+
+- The prior `review-gate` failure read the earlier verdict. The check passes after the record update.
+
+### The questions that block progress
+
+- None.
+
+### The next concrete action
+
+- Give the owner the merge summary after the required checks pass.
+
+## Session 71: 2026-10-01, Claude Code
+
+Author: Claude Code
+Session: author PR-24, round 2. Repository: iron-absolution. Branch: `feat/pr-24-mantle-interact`. PR: #25. Role: author. Base: `a32d9904eb465f81946988a0c08272a70b656b84`.
+
+### What this session did, and why
+
+- Answered round 1 of the review of PR #25 in `docs/reviews/pr-25-response.md`. P2-1 has full merit.
+- `AIronDoor::Toggle` now refuses an open offset that is not finite, before any change of state (T-2).
+- `IronAbsolution.Player.Interact.Errors` now checks a NaN and an infinite offset. It failed on the old code and passes now.
+- Session 69 holds the rest of the work of this PR.
+
+### The state of the build
+
+- The remote head is the commit of this entry on `feat/pr-24-mantle-interact`, pending merge.
+- `verify`, `editor-build`, and `package-build` pass. `editor-test` passes 29 tests headless.
+- The fix changes an error path alone, so the play test and the frame-time capture of session 69 still hold. The session did not run `package-run` or `frame-capture` again, because each opens a game window (D-96).
+
+### What is in flight
+
+- Round 2 of the Codex review of PR #25.
+
+### Traps and gotchas
+
+- `FVector::IsNearlyZero` is false for a NaN or an infinity. Check `ContainsNaN` first, which tests `FMath::IsFinite` on each component.
+- `frame-capture` needs a desktop at 2560x1440 (D-137, D-138).
+
+### The questions that block progress
+
+- None.
+
+### The next concrete action
+
+- Read the verdict of round 2. On approval, give the owner the merge summary and ask for the merge.
+
+## Session 70: 2026-10-01, Codex
+
+Author: Codex
+Session: reviewer PR-25, round 1. Repository: iron-absolution. Branch: `feat/pr-24-mantle-interact`. PR: #25. Role: reviewer. Base: `a32d9904eb465f81946988a0c08272a70b656b84`.
+
+### What this session did, and why
+
+- Reviewed PR #25 at effective head `6f9f91b7dafa4509196c2bf836d0a22ab181ceca`.
+- Added finding P2-1: a non-finite door offset corrupts the panel transform without an error (T-2).
+- Reviewed the mantle, interact, cue, quit binding, rendering settings, content script, tests, documents, owner evidence, and CI.
+
+### The state of the build
+
+- The effective head is `6f9f91b7dafa4509196c2bf836d0a22ab181ceca`. The remote branch holds this session's metadata commit.
+- The owner reports successful Windows build, content build, 29 automation tests, package checks, and frame-time capture at that head.
+- CI passes `ste-check`, `doc-gate`, build, test, and format, and coverage. `review-gate` failed before the review record existed.
+- Local `run.ps1 verify` did not run. Owner confirmation is pending (D-96).
+
+### What is in flight
+
+- P2-1 needs a finite-offset check and a regression test.
+- The corrected review record and this entry need one metadata commit and a push to `feat/pr-24-mantle-interact`.
+
+### Traps and gotchas
+
+- The local review worktree is `review/pr-25`, with no upstream. Verify the pushed head with `gh pr view`.
+- The PR number is 25. Its roadmap id is PR-24.
+
+### The questions that block progress
+
+- Local build and test verification awaits owner confirmation under D-96.
+
+### The next concrete action
+
+- Commit the correction to the record and entry, then push it to the PR branch.
+
+## Session 69: 2026-10-01, Claude Code
+
+Author: Claude Code
+Session: author PR-24, round 1. Repository: iron-absolution. Branch: `feat/pr-24-mantle-interact`. PR: #25. Role: author. Base: `a32d9904eb465f81946988a0c08272a70b656b84`.
+
+### What this session did, and why
+
+- Built section 7.4 of `docs/roadmaps/phase-3-core-feel.md`: the mantle and interact. The owner gave D-143 to D-150.
+- The mantle: `UIronCharacterMovementComponent` adds a custom mode. In the air, a forward move into a ledge from 50 cm to 130 cm above the feet starts a climb of 0.4 s (D-143).
+- Interact: the interface `IIronInteractable`, with `AIronDoor` and `AIronSwitch`. The E key uses a target up to 200 cm from the eye (D-144, D-146).
+- The cue: an outline before the bloom and an overlay glow, only while a target is in reach (D-145, D-148).
+- The owner put two more changes in this PR and set G-7 aside: no motion blur (D-149), and Escape closes the game (D-150).
+- D-147 records the animation of the arms for a later PR.
+- The owner asked for a PowerShell command `iron-absolution` that starts the package. It is in the profile of the owner, not in the repository.
+
+### The state of the build
+
+- The remote head is the commit of this entry on `feat/pr-24-mantle-interact`, pending merge.
+- `verify`, `toolchain-check`, `editor-build`, `content-build`, and `package-build` pass. `editor-test` passes 29 tests headless.
+- `package-run` passes. `frame-capture` gives a mean of 3.33 ms and a 99th percentile of 3.64 ms at 2560x1440.
+- The owner played the package on 2026-10-01. Each exit test passed.
+
+### What is in flight
+
+- The Codex review of PR #25.
+
+### Traps and gotchas
+
+- `frame-capture` needs a desktop at 2560x1440 (D-137, D-138). The first capture of this session ran at 1920x1080 and failed its settings check.
+- The game target builds the automation tests with no editor-only data. A test that reads a material graph needs `WITH_EDITORONLY_DATA`.
+- The test of the quit key reads the binding alone, because a quit closes the editor that runs the tests.
+- `content-build` rewrites each scripted asset. Run it after each change of `Game/Scripts/build_content.py`, and commit the assets.
+
+### The questions that block progress
+
+- None.
+
+### The next concrete action
+
+- Run the review loop of PR #25 with `run.ps1 codex-review -PR 25`, and answer each finding.
+
 ## Session 68: 2026-09-30, Codex
 
 Author: Codex
@@ -210,145 +358,4 @@ Session: author PR-22, round 1. Repository: iron-absolution. Branch: `feat/pr-22
 
 - Run `run.ps1 codex-review -PR 23`, answer the findings, then give the owner the merge summary.
 
-## Session 62: 2026-09-29, Codex
 
-Author: Codex
-Session: reviewer PR-21, round 3. Repository: iron-absolution. Branch: `feat/pr-21-gym-movement`. PR: #22. Role: reviewer. Base: `ce25cfd4982d5d4be2c0eee0a0a2658f419b182f`.
-
-### What this session did, and why
-
-- Reviewed PR #22 at effective head `7e2e3f73c1c17b50c34505d7c5ce6d6c0cfc7408`.
-- Verified the owner play test in the package and editor from the PR comment. The owner reports movement, jump, and aim pass.
-- Findings P2-1 and P2-2 remain fixed. The review record now gives `Ready for owner merge`.
-- The metadata commit is pushed. All five required checks pass, including `review-gate`.
-
-### The state of the build
-
-- The remote PR tip is `40a64015a9c16c7b1a6ff0f673ff3408e32129dd` on `feat/pr-21-gym-movement`.
-- The effective code head remains `7e2e3f73c1c17b50c34505d7c5ce6d6c0cfc7408`.
-
-### What is in flight
-
-- The owner merge summary and merge decision.
-
-### Traps and gotchas
-
-- The `review-gate` result before the metadata push reflects the prior Blocked record.
-- OQ-25 blocks roadmap PR-22, not GitHub PR #22.
-
-### The questions that block progress
-
-- No open question affects GitHub PR #22. The owner play test now passes.
-
-### The next concrete action
-
-- Give the owner the merge summary, then wait for the merge decision.
-
-## Session 61: 2026-09-29, Codex
-
-Author: Codex
-Session: reviewer PR-21, round 2. Repository: iron-absolution. Branch: `feat/pr-21-gym-movement`. PR: #22. Role: reviewer. Base: `ce25cfd4982d5d4be2c0eee0a0a2658f419b182f`.
-
-### What this session did, and why
-
-- Reviewed PR #22 at work head `7e2e3f73c1c17b50c34505d7c5ce6d6c0cfc7408`.
-- Verified that P2-1 and P2-2 pass the new regression test. The review record keeps both findings and their first-round evidence.
-- Ran `run.ps1 verify`, `run.ps1 editor-build`, and `run.ps1 editor-test`. Each passed. All 9 editor tests passed.
-- The review record gives the verdict `Blocked`. The owner's play test in the gym still waits for exit test 1.
-
-### The state of the build
-
-- The remote work head is `7e2e3f73c1c17b50c34505d7c5ce6d6c0cfc7408` on `feat/pr-21-gym-movement`.
-- The local .NET gates, editor build, and editor tests pass.
-
-### What is in flight
-
-- The metadata commit for review round 2.
-- The owner play test of the gym in the editor and package.
-
-### Traps and gotchas
-
-- The first editor test failed because the worktree had no compiled editor module. Build the editor target before the test.
-- The `review-gate` fails until the review record approves the effective head.
-
-### The questions that block progress
-
-- No open question affects this PR. The owner play test remains required exit evidence.
-
-### The next concrete action
-
-- Push the review record and this entry together. The owner runs the play test before the merge.
-
-## Session 60: 2026-09-29, Claude Code
-
-Author: Claude Code
-Session: author PR-21, round 2. Repository: iron-absolution. Branch: `feat/pr-21-gym-movement`. PR: #22. Role: author. Base: `ce25cfd4982d5d4be2c0eee0a0a2658f419b182f`.
-
-### What this session did, and why
-
-- The Codex review of round 1 gave `Blocked` with P2-1 and P2-2. Both have full merit. `docs/reviews/pr-22-response.md` gives each answer.
-- P2-1: `ApplyMovementTuning` now checks the gravity before any write, so a refused tuning changes nothing (T-2).
-- P2-2: `FindInvalidValues` now rejects each value that is not finite.
-- The new test `IronAbsolution.Player.Movement.RefusedTuning` fails on the old code and passes with the correction.
-- The `coverage report` job failed one time in a test of `ToolchainCheckCommandTests`, and its rerun passed. F-28 has a dated line for it.
-- Round 2 of the review marked P2-1 and P2-2 fixed at `7e2e3f7`. It stayed `Blocked` for exit test 1 alone.
-- Exit test 1 passes. With owner consent, the package at `7e2e3f7` opened in `L_Gym`, then the editor. The owner played both and reported "All good".
-
-### The state of the build
-
-- The remote head is the commit of this entry on `feat/pr-21-gym-movement`, pending merge.
-- `editor-test` passes 9 automation tests. `run.ps1 verify` passes.
-
-### What is in flight
-
-- Round 3 of the Codex review of PR #22, with the evidence of exit test 1.
-
-### Traps and gotchas
-
-- Session 58 lists the traps of this PR. They all still hold.
-- `TNumericLimits<float>` has no NaN in 5.8. The test uses `std::numeric_limits<float>::quiet_NaN()`.
-
-### The questions that block progress
-
-- None for PR-21. OQ-25 blocks PR-22, and OQ-26 blocks the sound part of PR-25. OQ-16 still holds the gitar pass (D-7).
-
-### The next concrete action
-
-- Read the verdict of round 3, then give the merge summary.
-
-## Session 59: 2026-09-29, Codex
-
-Author: Codex
-Session: reviewer PR-21, round 1. Repository: iron-absolution. Branch: `feat/pr-21-gym-movement`. PR: #22. Role: reviewer. Base: `ce25cfd4982d5d4be2c0eee0a0a2658f419b182f`.
-
-### What this session did, and why
-
-- Reviewed work head `e1d5667ccd6e7e5ac3534390dcb2beea1b1a7dac` for PR #22.
-- Recorded two P2 findings in `docs/reviews/pr-22.md`: a zero-gravity failure leaves partial tuning, and NaN values pass range checks.
-- The review verdict is Blocked. Exit test 1 still needs the owner play test of the gym in the editor and package.
-- CI passed `ste-check`, `doc-gate`, and build, test, and format. The first coverage run failed two package-run tests. Its required rerun passed. `review-gate` failed before this review record existed.
-- The owner-reported Windows checks pass at `e1d5667`. No local build or test ran because this session had no owner confirmation.
-
-### The state of the build
-
-- The remote PR head is `923f0ddbfa3c7801b761056af93fe5c0060118d7` on `feat/pr-21-gym-movement`. The work head remains `e1d5667ccd6e7e5ac3534390dcb2beea1b1a7dac`.
-
-### What is in flight
-
-- The author must answer the two findings.
-- The owner must run the play test for exit test 1 before merge.
-- The `doc-gate` check failed because this entry named the local review branch. This correction names the PR branch.
-- The `review-gate` check fails while the verdict is Blocked. It needs an approval after the author answers the findings and the owner completes the play test.
-
-### Traps and gotchas
-
-- `run.ps1 content-build` rewrites `L_Gym` and `IMC_KeyboardMouse` with new internal ids. Restore them if the script did not change.
-- The gym play test remains open even though the owner reported that package-run passes on `L_Test`.
-
-### The questions that block progress
-
-- None for GitHub PR #22. OQ-25 applies to the later roadmap PR-22.
-
-### The next concrete action
-
-- Verify the `doc-gate` check for this corrected entry.

@@ -10,13 +10,17 @@
 class UCameraComponent;
 class UInputAction;
 class UInputComponent;
+class UIronCharacterMovementComponent;
 class UIronMovementTuning;
+class UMaterialInterface;
 struct FInputActionValue;
 
 /**
  * The player of the game: a first-person character with the movement component of the engine
  * (D-29, D-34). The player moves at full speed with no run key (D-132), jumps, and turns the view
- * with the mouse for the verb "aim" (D-116).
+ * with the mouse for the verb "aim" (D-116). In the air, a forward move into a ledge starts a mantle
+ * (D-143). The interact key uses the switch or the door in reach, and an outline and a glow show
+ * the target in reach (D-144, D-145, D-148).
  *
  * The class holds the rules. A Blueprint subclass holds the content: the movement tuning and the
  * input actions. No C++ names a key, so a new device needs a new mapping context alone (OQ-21).
@@ -27,7 +31,7 @@ class IRONABSOLUTION_API AIronPlayerCharacter : public ACharacter
 	GENERATED_BODY()
 
 public:
-	AIronPlayerCharacter();
+	explicit AIronPlayerCharacter(const FObjectInitializer& ObjectInitializer);
 
 	/**
 	 * Writes each value of a tuning into the movement component and the camera. The character
@@ -52,11 +56,32 @@ public:
 	 */
 	void Look(const FVector2D& MouseCounts);
 
+	/**
+	 * Finds the target of the verb "interact": the first thing on the line of the view, in the
+	 * reach of the tuning, when it takes the verb (D-144).
+	 * @return The actor in reach, or null when no target is in reach.
+	 */
+	AActor* FindInteractTarget() const;
+
+	/**
+	 * Uses the target in reach, as the interact key does.
+	 * @return True when a target was in reach and took the use.
+	 */
+	bool Interact();
+
+	/** Gives the actor with the cue, or null when no target is in reach (D-145, D-148). */
+	AActor* GetOutlinedTarget() const;
+
 	/** Gives the tuning that the Blueprint subclass sets, or null when it sets none. */
 	const UIronMovementTuning* GetMovementTuning() const;
 
 	/** Gives the first-person camera. */
 	UCameraComponent* GetFirstPersonCamera() const;
+
+	/** Gives the movement component of the player, with the mantle. */
+	UIronCharacterMovementComponent* GetIronMovement() const;
+
+	virtual void Tick(float DeltaSeconds) override;
 
 protected:
 	virtual void BeginPlay() override;
@@ -66,6 +91,16 @@ protected:
 private:
 	void HandleMove(const FInputActionValue& Value);
 	void HandleLook(const FInputActionValue& Value);
+	void HandleInteract(const FInputActionValue& Value);
+
+	/** Moves the cue to the target in reach, or removes it (D-145, D-148). */
+	void UpdateInteractCue();
+
+	/**
+	 * Shows or hides the cue on an actor. The cue turns on the custom depth of each primitive, for
+	 * the outline material, and puts the glow material on each mesh as its overlay.
+	 */
+	void ShowInteractCue(AActor* Target, bool bShown) const;
 
 	/** Sets the field of view of the camera from the settings of the player (D-141). */
 	void ApplyFieldOfView();
@@ -89,4 +124,25 @@ private:
 	/** The input action of the verb "jump", with a true or false value. */
 	UPROPERTY(EditDefaultsOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputAction> JumpAction;
+
+	/** The input action of the verb "interact", with a true or false value. */
+	UPROPERTY(EditDefaultsOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputAction> InteractAction;
+
+	/**
+	 * The post-process material that draws the outline of the target in reach, from the custom
+	 * depth (D-145). The camera uses it only while a target is in reach.
+	 */
+	UPROPERTY(EditDefaultsOnly, Category = "Interact", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UMaterialInterface> InteractOutlineMaterial;
+
+	/** The overlay material that fills the target in reach with a glow (D-148). */
+	UPROPERTY(EditDefaultsOnly, Category = "Interact", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UMaterialInterface> InteractGlowMaterial;
+
+	/** The reach of interact from the tuning, in cm. ApplyMovementTuning writes it. */
+	float InteractReach = 0.0f;
+
+	/** The actor with the outline of the cue. A weak pointer, because a level can remove the actor. */
+	TWeakObjectPtr<AActor> OutlinedTarget;
 };

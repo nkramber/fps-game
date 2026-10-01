@@ -2,6 +2,149 @@
 
 This file holds the entries that the rotation moves out of `docs/session-handoff.md`, newest first.
 
+## Session 62: 2026-09-29, Codex
+
+Author: Codex
+Session: reviewer PR-21, round 3. Repository: iron-absolution. Branch: `feat/pr-21-gym-movement`. PR: #22. Role: reviewer. Base: `ce25cfd4982d5d4be2c0eee0a0a2658f419b182f`.
+
+### What this session did, and why
+
+- Reviewed PR #22 at effective head `7e2e3f73c1c17b50c34505d7c5ce6d6c0cfc7408`.
+- Verified the owner play test in the package and editor from the PR comment. The owner reports movement, jump, and aim pass.
+- Findings P2-1 and P2-2 remain fixed. The review record now gives `Ready for owner merge`.
+- The metadata commit is pushed. All five required checks pass, including `review-gate`.
+
+### The state of the build
+
+- The remote PR tip is `40a64015a9c16c7b1a6ff0f673ff3408e32129dd` on `feat/pr-21-gym-movement`.
+- The effective code head remains `7e2e3f73c1c17b50c34505d7c5ce6d6c0cfc7408`.
+
+### What is in flight
+
+- The owner merge summary and merge decision.
+
+### Traps and gotchas
+
+- The `review-gate` result before the metadata push reflects the prior Blocked record.
+- OQ-25 blocks roadmap PR-22, not GitHub PR #22.
+
+### The questions that block progress
+
+- No open question affects GitHub PR #22. The owner play test now passes.
+
+### The next concrete action
+
+- Give the owner the merge summary, then wait for the merge decision.
+
+## Session 61: 2026-09-29, Codex
+
+Author: Codex
+Session: reviewer PR-21, round 2. Repository: iron-absolution. Branch: `feat/pr-21-gym-movement`. PR: #22. Role: reviewer. Base: `ce25cfd4982d5d4be2c0eee0a0a2658f419b182f`.
+
+### What this session did, and why
+
+- Reviewed PR #22 at work head `7e2e3f73c1c17b50c34505d7c5ce6d6c0cfc7408`.
+- Verified that P2-1 and P2-2 pass the new regression test. The review record keeps both findings and their first-round evidence.
+- Ran `run.ps1 verify`, `run.ps1 editor-build`, and `run.ps1 editor-test`. Each passed. All 9 editor tests passed.
+- The review record gives the verdict `Blocked`. The owner's play test in the gym still waits for exit test 1.
+
+### The state of the build
+
+- The remote work head is `7e2e3f73c1c17b50c34505d7c5ce6d6c0cfc7408` on `feat/pr-21-gym-movement`.
+- The local .NET gates, editor build, and editor tests pass.
+
+### What is in flight
+
+- The metadata commit for review round 2.
+- The owner play test of the gym in the editor and package.
+
+### Traps and gotchas
+
+- The first editor test failed because the worktree had no compiled editor module. Build the editor target before the test.
+- The `review-gate` fails until the review record approves the effective head.
+
+### The questions that block progress
+
+- No open question affects this PR. The owner play test remains required exit evidence.
+
+### The next concrete action
+
+- Push the review record and this entry together. The owner runs the play test before the merge.
+
+## Session 60: 2026-09-29, Claude Code
+
+Author: Claude Code
+Session: author PR-21, round 2. Repository: iron-absolution. Branch: `feat/pr-21-gym-movement`. PR: #22. Role: author. Base: `ce25cfd4982d5d4be2c0eee0a0a2658f419b182f`.
+
+### What this session did, and why
+
+- The Codex review of round 1 gave `Blocked` with P2-1 and P2-2. Both have full merit. `docs/reviews/pr-22-response.md` gives each answer.
+- P2-1: `ApplyMovementTuning` now checks the gravity before any write, so a refused tuning changes nothing (T-2).
+- P2-2: `FindInvalidValues` now rejects each value that is not finite.
+- The new test `IronAbsolution.Player.Movement.RefusedTuning` fails on the old code and passes with the correction.
+- The `coverage report` job failed one time in a test of `ToolchainCheckCommandTests`, and its rerun passed. F-28 has a dated line for it.
+- Round 2 of the review marked P2-1 and P2-2 fixed at `7e2e3f7`. It stayed `Blocked` for exit test 1 alone.
+- Exit test 1 passes. With owner consent, the package at `7e2e3f7` opened in `L_Gym`, then the editor. The owner played both and reported "All good".
+
+### The state of the build
+
+- The remote head is the commit of this entry on `feat/pr-21-gym-movement`, pending merge.
+- `editor-test` passes 9 automation tests. `run.ps1 verify` passes.
+
+### What is in flight
+
+- Round 3 of the Codex review of PR #22, with the evidence of exit test 1.
+
+### Traps and gotchas
+
+- Session 58 lists the traps of this PR. They all still hold.
+- `TNumericLimits<float>` has no NaN in 5.8. The test uses `std::numeric_limits<float>::quiet_NaN()`.
+
+### The questions that block progress
+
+- None for PR-21. OQ-25 blocks PR-22, and OQ-26 blocks the sound part of PR-25. OQ-16 still holds the gitar pass (D-7).
+
+### The next concrete action
+
+- Read the verdict of round 3, then give the merge summary.
+
+## Session 59: 2026-09-29, Codex
+
+Author: Codex
+Session: reviewer PR-21, round 1. Repository: iron-absolution. Branch: `feat/pr-21-gym-movement`. PR: #22. Role: reviewer. Base: `ce25cfd4982d5d4be2c0eee0a0a2658f419b182f`.
+
+### What this session did, and why
+
+- Reviewed work head `e1d5667ccd6e7e5ac3534390dcb2beea1b1a7dac` for PR #22.
+- Recorded two P2 findings in `docs/reviews/pr-22.md`: a zero-gravity failure leaves partial tuning, and NaN values pass range checks.
+- The review verdict is Blocked. Exit test 1 still needs the owner play test of the gym in the editor and package.
+- CI passed `ste-check`, `doc-gate`, and build, test, and format. The first coverage run failed two package-run tests. Its required rerun passed. `review-gate` failed before this review record existed.
+- The owner-reported Windows checks pass at `e1d5667`. No local build or test ran because this session had no owner confirmation.
+
+### The state of the build
+
+- The remote PR head is `923f0ddbfa3c7801b761056af93fe5c0060118d7` on `feat/pr-21-gym-movement`. The work head remains `e1d5667ccd6e7e5ac3534390dcb2beea1b1a7dac`.
+
+### What is in flight
+
+- The author must answer the two findings.
+- The owner must run the play test for exit test 1 before merge.
+- The `doc-gate` check failed because this entry named the local review branch. This correction names the PR branch.
+- The `review-gate` check fails while the verdict is Blocked. It needs an approval after the author answers the findings and the owner completes the play test.
+
+### Traps and gotchas
+
+- `run.ps1 content-build` rewrites `L_Gym` and `IMC_KeyboardMouse` with new internal ids. Restore them if the script did not change.
+- The gym play test remains open even though the owner reported that package-run passes on `L_Test`.
+
+### The questions that block progress
+
+- None for GitHub PR #22. OQ-25 applies to the later roadmap PR-22.
+
+### The next concrete action
+
+- Verify the `doc-gate` check for this corrected entry.
+
 ## Session 58: 2026-09-29, Claude Code
 
 Author: Claude Code

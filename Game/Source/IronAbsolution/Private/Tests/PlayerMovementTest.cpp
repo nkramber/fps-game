@@ -1,16 +1,12 @@
 // Copyright (c) 2026 nkramber. Licensed under the MIT License. See LICENSE.
 
 #include "Camera/CameraComponent.h"
-#include "Components/StaticMeshComponent.h"
-#include "Engine/StaticMesh.h"
-#include "Engine/StaticMeshActor.h"
-#include "Engine/World.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/WorldSettings.h"
 #include "IronMovementTuning.h"
 #include "IronPlayerCharacter.h"
 #include "Misc/AutomationTest.h"
-#include "Tests/AutomationCommon.h"
+#include "PlayerTestWorld.h"
 #include "UObject/Package.h"
 
 #include <limits>
@@ -19,18 +15,10 @@
 
 // The movement tests of PR-21. Each test starts a game world with a floor and one player
 // character, gives the character input values, ticks the world at a fixed rate, and reads the
-// position of the character. The test world has no local player, so each test calls the move and
-// jump functions of the character, the functions that the input actions call.
+// position of the character.
 namespace IronAbsolution::Tests::Movement
 {
-	const TCHAR* const PlayerCharacterClass = TEXT("/Game/Player/BP_PlayerCharacter.BP_PlayerCharacter_C");
-	const TCHAR* const CubeMesh = TEXT("/Engine/BasicShapes/Cube.Cube");
-
-	// A fixed rate of 120 frames each second, the frame rate of the budget (D-32).
-	constexpr float FrameSeconds = 1.0f / 120.0f;
-
-	// The time from the spawn to a stand on the floor, and the time to reach the run speed.
-	constexpr float SettleSeconds = 0.5f;
+	// The time to reach the run speed, the time of the measure, and the longest jump.
 	constexpr float RunUpSeconds = 1.0f;
 	constexpr float MeasureSeconds = 0.5f;
 	constexpr float JumpLimitSeconds = 3.0f;
@@ -40,78 +28,8 @@ namespace IronAbsolution::Tests::Movement
 	// gives an error much larger than this.
 	constexpr float Tolerance = 0.02f;
 
-	// A game world with a floor of 100 m by 100 m, with its top at Z 0, and one player character on it.
-	class FMovementWorld
-	{
-	public:
-		~FMovementWorld()
-		{
-			if (Wrapper.GetTestWorld() != nullptr)
-			{
-				Wrapper.DestroyTestWorld(false);
-			}
-		}
-
-		/** Starts play, places the floor, and spawns the character. Gives null after a test error for each problem. */
-		AIronPlayerCharacter* Start(FAutomationTestBase& Test)
-		{
-			if (!Wrapper.CreateTestWorld(EWorldType::Game) || !Wrapper.BeginPlayInTestWorld())
-			{
-				Wrapper.ForwardErrorMessages(&Test);
-				return nullptr;
-			}
-
-			UWorld* World = Wrapper.GetTestWorld();
-			UStaticMesh* Cube = LoadObject<UStaticMesh>(nullptr, CubeMesh);
-			UClass* CharacterClass = LoadClass<AIronPlayerCharacter>(nullptr, PlayerCharacterClass);
-			if (!Test.TestNotNull(FString::Printf(TEXT("The mesh %s"), CubeMesh), Cube) || !Test.TestNotNull(FString::Printf(TEXT("The class %s"), PlayerCharacterClass), CharacterClass))
-			{
-				return nullptr;
-			}
-
-			AStaticMeshActor* Floor = World->SpawnActor<AStaticMeshActor>(FVector(0.0, 0.0, -50.0), FRotator::ZeroRotator);
-			// A static component takes no new mesh after play starts, so the floor is movable.
-			Floor->GetStaticMeshComponent()->SetMobility(EComponentMobility::Movable);
-			Floor->GetStaticMeshComponent()->SetStaticMesh(Cube);
-			Floor->SetActorScale3D(FVector(100.0, 100.0, 1.0));
-
-			AIronPlayerCharacter* Character = World->SpawnActor<AIronPlayerCharacter>(CharacterClass, FVector(0.0, 0.0, 100.0), FRotator::ZeroRotator);
-			if (!Test.TestNotNull(TEXT("The spawned player character"), Character))
-			{
-				return nullptr;
-			}
-
-			// With no controller, the movement component moves the character only with this flag. A
-			// character sets its first movement mode at spawn when the flag is on, or when a
-			// controller takes it. The flag comes after the spawn, so the test sets the mode.
-			UCharacterMovementComponent* Movement = Character->GetCharacterMovement();
-			Movement->bRunPhysicsWithNoController = true;
-			Movement->SetDefaultMovementMode();
-			Tick(SettleSeconds, [] {});
-			if (!Test.TestTrue(FString::Printf(TEXT("The character stands on the floor after the spawn, in the mode %s"), *Movement->GetMovementName()), Movement->IsMovingOnGround()))
-			{
-				return nullptr;
-			}
-			return Character;
-		}
-
-		/** Ticks the world for a time at the fixed rate, and calls BeforeFrame before each frame. */
-		void Tick(float Seconds, TFunctionRef<void()> BeforeFrame)
-		{
-			const int32 Frames = FMath::RoundToInt32(Seconds / FrameSeconds);
-			for (int32 Frame = 0; Frame < Frames; ++Frame)
-			{
-				BeforeFrame();
-				Wrapper.TickTestWorld(FrameSeconds);
-			}
-		}
-
-	private:
-		FTestWorldWrapper Wrapper;
-	};
-
 	/** Runs forward until the speed is steady, and gives the speed on the ground over the next half second, in cm/s. */
-	float MeasureRunSpeed(FMovementWorld& World, AIronPlayerCharacter& Character)
+	float MeasureRunSpeed(FPlayerTestWorld& World, AIronPlayerCharacter& Character)
 	{
 		const auto RunForward = [&Character] { Character.Move(FVector2D(0.0, 1.0)); };
 		World.Tick(RunUpSeconds, RunForward);
@@ -121,7 +39,7 @@ namespace IronAbsolution::Tests::Movement
 	}
 
 	/** Jumps from the floor, and gives the height of the top of the jump above the start, in cm. */
-	float MeasureJumpHeight(FMovementWorld& World, AIronPlayerCharacter& Character)
+	float MeasureJumpHeight(FPlayerTestWorld& World, AIronPlayerCharacter& Character)
 	{
 		const double StartZ = Character.GetActorLocation().Z;
 		double TopZ = StartZ;
@@ -159,9 +77,10 @@ IMPLEMENT_SIMPLE_AUTOMATION_TEST(
 
 bool FIronAbsolutionRunSpeedTest::RunTest(const FString& Parameters)
 {
+	using namespace IronAbsolution::Tests;
 	using namespace IronAbsolution::Tests::Movement;
 
-	FMovementWorld World;
+	FPlayerTestWorld World;
 	AIronPlayerCharacter* Character = World.Start(*this);
 	if (Character == nullptr || !TestNotNull(TEXT("The movement tuning of the player character"), Character->GetMovementTuning()))
 	{
@@ -180,9 +99,10 @@ IMPLEMENT_SIMPLE_AUTOMATION_TEST(
 
 bool FIronAbsolutionJumpHeightTest::RunTest(const FString& Parameters)
 {
+	using namespace IronAbsolution::Tests;
 	using namespace IronAbsolution::Tests::Movement;
 
-	FMovementWorld World;
+	FPlayerTestWorld World;
 	AIronPlayerCharacter* Character = World.Start(*this);
 	if (Character == nullptr || !TestNotNull(TEXT("The movement tuning of the player character"), Character->GetMovementTuning()))
 	{
@@ -201,9 +121,10 @@ IMPLEMENT_SIMPLE_AUTOMATION_TEST(
 
 bool FIronAbsolutionTuningChangeTest::RunTest(const FString& Parameters)
 {
+	using namespace IronAbsolution::Tests;
 	using namespace IronAbsolution::Tests::Movement;
 
-	FMovementWorld World;
+	FPlayerTestWorld World;
 	AIronPlayerCharacter* Character = World.Start(*this);
 	if (Character == nullptr || !TestNotNull(TEXT("The movement tuning of the player character"), Character->GetMovementTuning()))
 	{
@@ -233,18 +154,20 @@ IMPLEMENT_SIMPLE_AUTOMATION_TEST(
 
 bool FIronAbsolutionInvalidTuningTest::RunTest(const FString& Parameters)
 {
+	using namespace IronAbsolution::Tests;
 	using namespace IronAbsolution::Tests::Movement;
 
 	// A new tuning has each value at 0, the state of an asset that sets no value.
 	const UIronMovementTuning* Empty = NewObject<UIronMovementTuning>(GetTransientPackage());
 	const TArray<FString> Errors = Empty->FindInvalidValues();
-	TestEqual(TEXT("A new tuning has one error for each of the 10 values"), Errors.Num(), 10);
+	// 14 values with a range, and the band of the mantle, which is empty.
+	TestEqual(TEXT("A new tuning has one error for each of the 14 values, and one for the band of the mantle"), Errors.Num(), 15);
 	if (Errors.Num() > 0)
 	{
 		TestTrue(FString::Printf(TEXT("The first error names the value and the range: %s"), *Errors[0]), Errors[0].StartsWith(TEXT("RunSpeed of ")) && Errors[0].EndsWith(TEXT(" is 0.0. The range is 1.0 to no maximum.")));
 	}
 
-	FMovementWorld World;
+	FPlayerTestWorld World;
 	AIronPlayerCharacter* Character = World.Start(*this);
 	if (Character == nullptr || !TestNotNull(TEXT("The movement tuning of the player character"), Character->GetMovementTuning()))
 	{
@@ -253,7 +176,7 @@ bool FIronAbsolutionInvalidTuningTest::RunTest(const FString& Parameters)
 	TestTrue(TEXT("The asset of the player has no invalid value"), Character->GetMovementTuning()->FindInvalidValues().IsEmpty());
 
 	const float RunSpeedBefore = Character->GetCharacterMovement()->MaxWalkSpeed;
-	AddExpectedMessagePlain(TEXT("did not take the tuning"), ELogVerbosity::Error, EAutomationExpectedMessageFlags::Contains, 10);
+	AddExpectedMessagePlain(TEXT("did not take the tuning"), ELogVerbosity::Error, EAutomationExpectedMessageFlags::Contains, 15);
 	TestFalse(TEXT("The character refuses the empty tuning"), Character->ApplyMovementTuning(*Empty));
 	TestEqual(TEXT("The run speed does not change"), Character->GetCharacterMovement()->MaxWalkSpeed, RunSpeedBefore);
 	return !HasAnyErrors();
@@ -267,9 +190,10 @@ IMPLEMENT_SIMPLE_AUTOMATION_TEST(
 
 bool FIronAbsolutionRefusedTuningTest::RunTest(const FString& Parameters)
 {
+	using namespace IronAbsolution::Tests;
 	using namespace IronAbsolution::Tests::Movement;
 
-	FMovementWorld World;
+	FPlayerTestWorld World;
 	AIronPlayerCharacter* Character = World.Start(*this);
 	if (Character == nullptr || !TestNotNull(TEXT("The movement tuning of the player character"), Character->GetMovementTuning()))
 	{

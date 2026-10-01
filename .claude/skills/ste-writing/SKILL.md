@@ -141,6 +141,9 @@ One term per concept. Add a row for each term that the owner sets, with the refu
 | gym | the graybox map of phase 3 for the movement, the aim, and the weapon, with metric markers (D-126) | test room, test level |
 | sandbox | the arena of phase 4 for the combat rules and the encounters | gym, when the text means the arena |
 | aim settings | the mouse sensitivity and the field of view of the player, in the settings file of the user (D-139, D-141) | view options, look settings |
+| mantle | the verb: the player climbs onto a ledge from the air (D-143). The climb is the move inside a mantle | vault, ledge grab |
+| band of the mantle | the heights of a ledge top above the feet that start a mantle (D-143) | mantle range, climb range |
+| cue | the outline and the glow that show the switch or the door in reach (D-145, D-148) | highlight, prompt |
 
 Process terms:
 
