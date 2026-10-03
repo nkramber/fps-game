@@ -2,6 +2,41 @@
 
 This file holds the entries that the rotation moves out of `docs/session-handoff.md`, newest first.
 
+## Session 64: 2026-09-30, Codex
+
+Author: Codex
+Session: reviewer PR-22, round 1. Repository: iron-absolution. Branch: `feat/pr-22-frame-time-capture`. PR: #23. Role: reviewer. Base: `09633599fc73f3c93e52535830c78b852a120cf4`.
+
+### What this session did, and why
+
+- Reviewed PR #23 at effective head `13bdbb1c6cd187e867b644be9afaf5c4ec95db2c`.
+- Recorded P1-1 for a failing Linux CI test, P2-1 for an incomplete CSV marker, and P2-2 for the missing four-view check.
+- `run.ps1 verify` passed with 592 tests, format, and STE checks.
+- The review record gives `Changes required`. A metadata update records the post-push CI failure.
+
+### The state of the build
+
+- The effective work head is `13bdbb1c6cd187e867b644be9afaf5c4ec95db2c`.
+- The remote PR tip is the metadata commit on `feat/pr-22-frame-time-capture`.
+- GitHub build, coverage, doc-gate, and ste-check pass after a rerun. Review-gate rejects the verdict `Changes required`.
+
+### What is in flight
+
+- The author must answer both findings.
+- The author must fix the Linux CI test failure.
+
+### Traps and gotchas
+
+- Do not run `frame-capture` without owner confirmation. It opens a game window (D-96).
+
+### The questions that block progress
+
+- None.
+
+### The next concrete action
+
+- The author answers P1-1, P2-1, and P2-2, then requests a repeat review.
+
 ## Session 63: 2026-09-30, Claude Code
 
 Author: Claude Code

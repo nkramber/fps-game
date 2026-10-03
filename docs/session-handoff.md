@@ -1,3 +1,37 @@
+## Session 74: 2026-10-03, Codex
+Author: Codex
+Session: reviewer PR-25, round 1. Repository: iron-absolution. Branch: `feat/pr-25-weapon`. PR: #26. Role: reviewer. Base: `d2dfaa395dbeac6c5480da10fed6f881fe579d1b`.
+
+### What this session did, and why
+
+- Reviewed PR #26 at effective head `3becf704562b81a2a497e3b5738391ad8bb8333c`.
+- Added P2-1 for positive infinity in the flash lifetime and hit-marker duration (T-2, D-154).
+- `run.ps1 verify` passes with 600 tests, format, and STE checks.
+- The review record gives Changes required for the current work head.
+
+### The state of the build
+
+- The effective head is `3becf704562b81a2a497e3b5738391ad8bb8333c`. The remote branch holds this session's metadata commit.
+- The owner reports a Windows editor build, content build, 39 automation tests, package checks, play tests, and frame capture at this head.
+- CI passes `ste-check`, `doc-gate`, build, test, and format, and coverage. `review-gate` failed before the review record existed.
+
+### What is in flight
+
+- The author must answer finding P2-1 and add regression tests.
+
+### Traps and gotchas
+
+- The flash and the HUD reject zero and NaN, but accept positive infinity.
+- The Unreal assets are LFS files. The content script sets their generated values.
+
+### The questions that block progress
+
+- None.
+
+### The next concrete action
+
+- The author adds finite-value checks and regression tests for the flash and the hit marker.
+
 ## Session 73: 2026-10-03, Claude Code
 
 Author: Claude Code
@@ -322,38 +356,3 @@ Session: author PR-22, round 2. Repository: iron-absolution. Branch: `feat/pr-22
 ### The next concrete action
 
 - When each check is green, run `run.ps1 codex-review -PR 23`.
-
-## Session 64: 2026-09-30, Codex
-
-Author: Codex
-Session: reviewer PR-22, round 1. Repository: iron-absolution. Branch: `feat/pr-22-frame-time-capture`. PR: #23. Role: reviewer. Base: `09633599fc73f3c93e52535830c78b852a120cf4`.
-
-### What this session did, and why
-
-- Reviewed PR #23 at effective head `13bdbb1c6cd187e867b644be9afaf5c4ec95db2c`.
-- Recorded P1-1 for a failing Linux CI test, P2-1 for an incomplete CSV marker, and P2-2 for the missing four-view check.
-- `run.ps1 verify` passed with 592 tests, format, and STE checks.
-- The review record gives `Changes required`. A metadata update records the post-push CI failure.
-
-### The state of the build
-
-- The effective work head is `13bdbb1c6cd187e867b644be9afaf5c4ec95db2c`.
-- The remote PR tip is the metadata commit on `feat/pr-22-frame-time-capture`.
-- GitHub build, coverage, doc-gate, and ste-check pass after a rerun. Review-gate rejects the verdict `Changes required`.
-
-### What is in flight
-
-- The author must answer both findings.
-- The author must fix the Linux CI test failure.
-
-### Traps and gotchas
-
-- Do not run `frame-capture` without owner confirmation. It opens a game window (D-96).
-
-### The questions that block progress
-
-- None.
-
-### The next concrete action
-
-- The author answers P1-1, P2-1, and P2-2, then requests a repeat review.
