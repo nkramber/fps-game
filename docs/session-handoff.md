@@ -1,3 +1,107 @@
+## Session 79: 2026-10-03, Claude Code
+
+Author: Claude Code
+Session: author PR-26, round 1. Repository: iron-absolution. Branch: `feat/pr-26-melee`. PR: #27. Role: author. Base: `e7c29f9454f6ff2945702b2e864981d02ecd9e4b`.
+
+### What this session did, and why
+
+- Read the round 1 review record of PR #27. The verdict is Ready for owner merge for the effective head `59e546ab460d528c7834f0996e50f68557a0d6b9`, with no finding.
+- Gave the owner the merge summary, and asked for the merge confirmation (D-5).
+
+### The state of the build
+
+- The remote head is the head of `feat/pr-26-melee`, pending merge. The effective head stays `59e546a`.
+- Each of the five required checks passes, `review-gate` included.
+
+### What is in flight
+
+- The owner confirmation of the merge of PR #27.
+
+### Traps and gotchas
+
+- The jab is a placeholder. The feel pass of PR-27 can tune it (D-171).
+
+### The questions that block progress
+
+- None.
+
+### The next concrete action
+
+- On the owner confirmation, run `gh pr merge 27 --auto --squash`. After the merge, write the prompt of PR-27.
+
+## Session 78: 2026-10-03, Codex
+
+Author: Codex
+Session: reviewer PR-26, round 1. Repository: iron-absolution. Branch: `feat/pr-26-melee`. PR: #27. Role: reviewer. Base: `e7c29f9454f6ff2945702b2e864981d02ecd9e4b`.
+
+### What this session did, and why
+
+- Reviewed PR #27 at effective head `59e546ab460d528c7834f0996e50f68557a0d6b9`.
+- Found no defect in the melee attack, the fire hold, the feedback, or the gym target counts.
+- Added the round 1 review record and this entry as one metadata commit (D-14).
+
+### The state of the build
+
+- The work head is `59e546ab460d528c7834f0996e50f68557a0d6b9`. The remote branch holds the review metadata commit `0234cf2dcbf86b920b118b8fc2c1fd001377a2ef` and this correction will follow.
+- `run.ps1 verify`, `editor-build`, `content-build`, and all 44 headless editor tests pass.
+- The owner reports a package build, a passing timed run, and a melee hit in the package (exit test 1).
+- The first metadata push passed `review-gate`, but `doc-gate` found the wrong branch in this entry. The correction names the PR branch.
+- Local `doc-gate` and the rerun of all five required CI checks pass at metadata head `28b9aeece6de71aacbc87d4a2829b3af430a7f13`.
+
+### What is in flight
+
+- The final record and handoff status need one metadata commit and a push to `feat/pr-26-melee`.
+
+### Traps and gotchas
+
+- A fresh worktree needs `editor-build` before `content-build` can load the game module.
+- `content-build` rewrites generated assets. Restore that churn when the script did not change.
+
+### The questions that block progress
+
+- OQ-21 remains open for phase 8 gamepad support. It does not block this PR.
+
+### The next concrete action
+
+- Give the owner the review verdict. The author gives the four-part merge summary and gets merge confirmation.
+
+## Session 77: 2026-10-03, Claude Code
+
+Author: Claude Code
+Session: author PR-26, round 1. Repository: iron-absolution. Branch: `feat/pr-26-melee`. PR: #27. Role: author. Base: `e7c29f9454f6ff2945702b2e864981d02ecd9e4b`.
+
+### What this session did, and why
+
+- Added the melee attack of section 7.6 of the phase 3 roadmap (D-116). The owner gave D-169 to D-173.
+- `UIronMeleeComponent` holds the rule: a sphere sweep along the view, the time between two attacks, and the jab. `DA_MeleeAttack` holds the tuning (D-29).
+- Each gym target counts the hits of shots and of melee attacks apart, on two lines (D-172).
+- The weapon fires no shot during the jab (D-173). `HitActor` is the one place for the finish of phase 4.
+- Five new tests in `MeleeTest.cpp` check the hit, the time between two attacks, the jab, the hit marker, and the errors.
+- `docs/research/melee-attack.md` gives the Epic pages and the engine facts. `docs/game/weapon-tuning.md` gives each value.
+
+### The state of the build
+
+- The remote head is the head of `feat/pr-26-melee`, pending merge.
+- On the Windows PC: `verify`, `toolchain-check`, `editor-build`, and the 44 headless tests pass.
+- `package-build` and `package-run` pass. The owner hit the gym target with the melee attack in the package (exit test 1).
+
+### What is in flight
+
+- Round 1 of the cross-provider review of PR #27.
+
+### Traps and gotchas
+
+- The owner found the jab crude. The jab is a placeholder. The feel pass of PR-27 can tune it, and phase 5 and phase 7 hold the final animation (D-171).
+- The text of a gym target has two lines. Its default alignment puts more lines above the place of the text.
+
+### The questions that block progress
+
+- None.
+
+### The next concrete action
+
+- Run `run.ps1 codex-review -PR 27`. On an approval, give the owner the merge summary.
+
 ## Session 76: 2026-10-03, Codex
 
 Author: Codex
@@ -243,113 +347,3 @@ Session: reviewer PR-25, round 1. Repository: iron-absolution. Branch: `feat/pr-
 ### The next concrete action
 
 - Commit the correction to the record and entry, then push it to the PR branch.
-
-## Session 69: 2026-10-01, Claude Code
-
-Author: Claude Code
-Session: author PR-24, round 1. Repository: iron-absolution. Branch: `feat/pr-24-mantle-interact`. PR: #25. Role: author. Base: `a32d9904eb465f81946988a0c08272a70b656b84`.
-
-### What this session did, and why
-
-- Built section 7.4 of `docs/roadmaps/phase-3-core-feel.md`: the mantle and interact. The owner gave D-143 to D-150.
-- The mantle: `UIronCharacterMovementComponent` adds a custom mode. In the air, a forward move into a ledge from 50 cm to 130 cm above the feet starts a climb of 0.4 s (D-143).
-- Interact: the interface `IIronInteractable`, with `AIronDoor` and `AIronSwitch`. The E key uses a target up to 200 cm from the eye (D-144, D-146).
-- The cue: an outline before the bloom and an overlay glow, only while a target is in reach (D-145, D-148).
-- The owner put two more changes in this PR and set G-7 aside: no motion blur (D-149), and Escape closes the game (D-150).
-- D-147 records the animation of the arms for a later PR.
-- The owner asked for a PowerShell command `iron-absolution` that starts the package. It is in the profile of the owner, not in the repository.
-
-### The state of the build
-
-- The remote head is the commit of this entry on `feat/pr-24-mantle-interact`, pending merge.
-- `verify`, `toolchain-check`, `editor-build`, `content-build`, and `package-build` pass. `editor-test` passes 29 tests headless.
-- `package-run` passes. `frame-capture` gives a mean of 3.33 ms and a 99th percentile of 3.64 ms at 2560x1440.
-- The owner played the package on 2026-10-01. Each exit test passed.
-
-### What is in flight
-
-- The Codex review of PR #25.
-
-### Traps and gotchas
-
-- `frame-capture` needs a desktop at 2560x1440 (D-137, D-138). The first capture of this session ran at 1920x1080 and failed its settings check.
-- The game target builds the automation tests with no editor-only data. A test that reads a material graph needs `WITH_EDITORONLY_DATA`.
-- The test of the quit key reads the binding alone, because a quit closes the editor that runs the tests.
-- `content-build` rewrites each scripted asset. Run it after each change of `Game/Scripts/build_content.py`, and commit the assets.
-
-### The questions that block progress
-
-- None.
-
-### The next concrete action
-
-- Run the review loop of PR #25 with `run.ps1 codex-review -PR 25`, and answer each finding.
-
-## Session 68: 2026-09-30, Codex
-
-Author: Codex
-Session: reviewer PR-24, round 1. Repository: iron-absolution. Branch: `feat/pr-23-aim-settings`. PR: #24. Role: reviewer. Base: `aa9fc2a2556815dc4ef2f6b55f1f17abd1892940`.
-
-### What this session did, and why
-
-- Reviewed the aim settings of PR-24, from the implementation head `f2a27b2` (D-139 to D-142).
-- Found no defect. Wrote `docs/reviews/pr-24.md` with the verdict and the evidence.
-
-### The state of the build
-
-- The reviewed work head is `f2a27b220ab0e96646a7a27ae6313a127fd38f96`. The remote head is the metadata commit of this entry on `feat/pr-23-aim-settings`.
-- `run.ps1 verify`, `editor-build`, `editor-test`, and `content-build` pass. The package and play-test evidence comes from the owner comment.
-- The coverage job failed once in `PackageRunCommandTests.TheSuccessLineOnStdoutAloneDoesNotPass`: it saw the package path, not the expected error line. Its one rerun passed (F-28).
-
-### What is in flight
-
-- PR #24 is pending merge. The review record approves the implementation head.
-
-### Traps and gotchas
-
-- `content-build` rewrites the input mapping and gym assets. The review restored those generated changes.
-- `package-run` and `frame-capture` open a game window. D-96 needs owner confirmation before a session runs them.
-
-### The questions that block progress
-
-- None.
-
-### The next concrete action
-
-- Complete the PR gate with the review record and the five green required checks.
-
-## Session 67: 2026-09-30, Claude Code
-
-Author: Claude Code
-Session: author PR-23, round 1. Repository: iron-absolution. Branch: `feat/pr-23-aim-settings`. PR: #24. Role: author. Base: `aa9fc2a2556815dc4ef2f6b55f1f17abd1892940`.
-
-### What this session did, and why
-
-- Added the aim settings of section 7.3 of the phase 3 roadmap: the class `UIronGameUserSettings`, the mouse sensitivity, the field of view, and two console commands.
-- The owner gave D-139 to D-142. The sensitivity uses the Quake scale, with a default of 2.0 and bounds of 0.1 to 20. The field of view has a default of 100 and bounds of 80 to 120. The game has no vertical invert (D-140).
-- Turned off the input scales of the engine, and set the mouse axis sensitivity to 1. The mapping context has no Negate on the mouse now.
-- Removed the field of view from the movement tuning. The views of the capture read the project default.
-- Added 6 automation tests. The owner played the package: each command worked, 25 gave the error, and each value came back after a restart.
-
-### The state of the build
-
-- The remote head is the commit of this entry on `feat/pr-23-aim-settings`, pending merge.
-- On Windows: verify, editor-build, content-build, 19 editor tests, package-build, package-run, and frame-capture pass. M-3: mean 3.33 ms, 99th percentile 3.66 ms.
-
-### What is in flight
-
-- PR #24, pending merge: the Codex review.
-
-### Traps and gotchas
-
-- Run one `run.ps1` target at a time. Two targets at the same time lock the tools DLL.
-- The aim tests write the settings file of the editor, and put back the values at the end.
-- `package-build` removes the `Saved` folder of the package, with its logs and its settings file. Copy a play-test log before a rebuild.
-
-### The questions that block progress
-
-- None.
-
-### The next concrete action
-
-- Run `run.ps1 codex-review -PR 24`, and answer the findings.

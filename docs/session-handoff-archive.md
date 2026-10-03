@@ -2,6 +2,116 @@
 
 This file holds the entries that the rotation moves out of `docs/session-handoff.md`, newest first.
 
+## Session 69: 2026-10-01, Claude Code
+
+Author: Claude Code
+Session: author PR-24, round 1. Repository: iron-absolution. Branch: `feat/pr-24-mantle-interact`. PR: #25. Role: author. Base: `a32d9904eb465f81946988a0c08272a70b656b84`.
+
+### What this session did, and why
+
+- Built section 7.4 of `docs/roadmaps/phase-3-core-feel.md`: the mantle and interact. The owner gave D-143 to D-150.
+- The mantle: `UIronCharacterMovementComponent` adds a custom mode. In the air, a forward move into a ledge from 50 cm to 130 cm above the feet starts a climb of 0.4 s (D-143).
+- Interact: the interface `IIronInteractable`, with `AIronDoor` and `AIronSwitch`. The E key uses a target up to 200 cm from the eye (D-144, D-146).
+- The cue: an outline before the bloom and an overlay glow, only while a target is in reach (D-145, D-148).
+- The owner put two more changes in this PR and set G-7 aside: no motion blur (D-149), and Escape closes the game (D-150).
+- D-147 records the animation of the arms for a later PR.
+- The owner asked for a PowerShell command `iron-absolution` that starts the package. It is in the profile of the owner, not in the repository.
+
+### The state of the build
+
+- The remote head is the commit of this entry on `feat/pr-24-mantle-interact`, pending merge.
+- `verify`, `toolchain-check`, `editor-build`, `content-build`, and `package-build` pass. `editor-test` passes 29 tests headless.
+- `package-run` passes. `frame-capture` gives a mean of 3.33 ms and a 99th percentile of 3.64 ms at 2560x1440.
+- The owner played the package on 2026-10-01. Each exit test passed.
+
+### What is in flight
+
+- The Codex review of PR #25.
+
+### Traps and gotchas
+
+- `frame-capture` needs a desktop at 2560x1440 (D-137, D-138). The first capture of this session ran at 1920x1080 and failed its settings check.
+- The game target builds the automation tests with no editor-only data. A test that reads a material graph needs `WITH_EDITORONLY_DATA`.
+- The test of the quit key reads the binding alone, because a quit closes the editor that runs the tests.
+- `content-build` rewrites each scripted asset. Run it after each change of `Game/Scripts/build_content.py`, and commit the assets.
+
+### The questions that block progress
+
+- None.
+
+### The next concrete action
+
+- Run the review loop of PR #25 with `run.ps1 codex-review -PR 25`, and answer each finding.
+
+## Session 68: 2026-09-30, Codex
+
+Author: Codex
+Session: reviewer PR-24, round 1. Repository: iron-absolution. Branch: `feat/pr-23-aim-settings`. PR: #24. Role: reviewer. Base: `aa9fc2a2556815dc4ef2f6b55f1f17abd1892940`.
+
+### What this session did, and why
+
+- Reviewed the aim settings of PR-24, from the implementation head `f2a27b2` (D-139 to D-142).
+- Found no defect. Wrote `docs/reviews/pr-24.md` with the verdict and the evidence.
+
+### The state of the build
+
+- The reviewed work head is `f2a27b220ab0e96646a7a27ae6313a127fd38f96`. The remote head is the metadata commit of this entry on `feat/pr-23-aim-settings`.
+- `run.ps1 verify`, `editor-build`, `editor-test`, and `content-build` pass. The package and play-test evidence comes from the owner comment.
+- The coverage job failed once in `PackageRunCommandTests.TheSuccessLineOnStdoutAloneDoesNotPass`: it saw the package path, not the expected error line. Its one rerun passed (F-28).
+
+### What is in flight
+
+- PR #24 is pending merge. The review record approves the implementation head.
+
+### Traps and gotchas
+
+- `content-build` rewrites the input mapping and gym assets. The review restored those generated changes.
+- `package-run` and `frame-capture` open a game window. D-96 needs owner confirmation before a session runs them.
+
+### The questions that block progress
+
+- None.
+
+### The next concrete action
+
+- Complete the PR gate with the review record and the five green required checks.
+
+## Session 67: 2026-09-30, Claude Code
+
+Author: Claude Code
+Session: author PR-23, round 1. Repository: iron-absolution. Branch: `feat/pr-23-aim-settings`. PR: #24. Role: author. Base: `aa9fc2a2556815dc4ef2f6b55f1f17abd1892940`.
+
+### What this session did, and why
+
+- Added the aim settings of section 7.3 of the phase 3 roadmap: the class `UIronGameUserSettings`, the mouse sensitivity, the field of view, and two console commands.
+- The owner gave D-139 to D-142. The sensitivity uses the Quake scale, with a default of 2.0 and bounds of 0.1 to 20. The field of view has a default of 100 and bounds of 80 to 120. The game has no vertical invert (D-140).
+- Turned off the input scales of the engine, and set the mouse axis sensitivity to 1. The mapping context has no Negate on the mouse now.
+- Removed the field of view from the movement tuning. The views of the capture read the project default.
+- Added 6 automation tests. The owner played the package: each command worked, 25 gave the error, and each value came back after a restart.
+
+### The state of the build
+
+- The remote head is the commit of this entry on `feat/pr-23-aim-settings`, pending merge.
+- On Windows: verify, editor-build, content-build, 19 editor tests, package-build, package-run, and frame-capture pass. M-3: mean 3.33 ms, 99th percentile 3.66 ms.
+
+### What is in flight
+
+- PR #24, pending merge: the Codex review.
+
+### Traps and gotchas
+
+- Run one `run.ps1` target at a time. Two targets at the same time lock the tools DLL.
+- The aim tests write the settings file of the editor, and put back the values at the end.
+- `package-build` removes the `Saved` folder of the package, with its logs and its settings file. Copy a play-test log before a rebuild.
+
+### The questions that block progress
+
+- None.
+
+### The next concrete action
+
+- Run `run.ps1 codex-review -PR 24`, and answer the findings.
+
 ## Session 66: 2026-09-30, Codex
 
 Author: Codex

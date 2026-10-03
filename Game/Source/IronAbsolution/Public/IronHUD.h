@@ -10,6 +10,7 @@
 /**
  * The small HUD of phase 3: a crosshair, the name and the ammo of the weapon in hand, and the hit
  * marker (D-154, the pillar "Every round counts"). The ammo shows in the empty color at 0 (D-158).
+ * A shot and a melee attack that hit a gym target show the same hit marker (D-171).
  * Phase 8 holds the final interface.
  *
  * The class holds the rule. A Blueprint subclass holds each size, time, and color (D-29). Each size
@@ -23,12 +24,20 @@ class IRONABSOLUTION_API AIronHUD : public AHUD
 public:
 	/**
 	 * Tells if the hit marker shows.
-	 * @param LastTargetHitTime The time of the world of the last shot that hit a target, or no value before the first such shot.
+	 * @param LastTargetHitTime The time of the world of the last shot or melee attack that hit a target, or no value before the first such hit.
 	 * @param Now The time of the world now.
 	 * @param MarkerSeconds The time that the marker shows after a hit.
 	 * @return True from the hit until the end of the time of the marker.
 	 */
 	static bool IsHitMarkerShown(const TOptional<double>& LastTargetHitTime, double Now, float MarkerSeconds);
+
+	/**
+	 * Gives the later of two times of a hit.
+	 * @param ShotHitTime The time of the last shot that hit a target, or no value.
+	 * @param MeleeHitTime The time of the last melee attack that hit a target, or no value.
+	 * @return The later time, the one time that has a value, or no value when neither has one.
+	 */
+	static TOptional<double> GetLatestHitTime(const TOptional<double>& ShotHitTime, const TOptional<double>& MeleeHitTime);
 
 	/**
 	 * Finds each size and time that is not above 0.

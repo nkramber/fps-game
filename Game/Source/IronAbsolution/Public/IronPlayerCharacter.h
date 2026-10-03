@@ -11,6 +11,8 @@ class UCameraComponent;
 class UInputAction;
 class UInputComponent;
 class UIronCharacterMovementComponent;
+class UIronMeleeComponent;
+class UIronMeleeTuning;
 class UIronMovementTuning;
 class UIronWeaponComponent;
 class UIronWeaponTuning;
@@ -24,10 +26,11 @@ struct FInputActionValue;
  * with the mouse for the verb "aim" (D-116). In the air, a forward move into a ledge starts a mantle
  * (D-143). The interact key uses the switch or the door in reach, and an outline and a glow show
  * the target in reach (D-144, D-145, D-148). The fire key fires the weapon in hand, and the verb
- * "change weapon" takes another weapon in hand (D-128, D-151, D-152).
+ * "change weapon" takes another weapon in hand (D-128, D-151, D-152). The melee key makes a close
+ * attack, and the weapon in the view jabs forward with no fire for the jab (D-169 to D-173).
  *
  * The class holds the rules. A Blueprint subclass holds the content: the movement tuning, the data
- * assets of the weapons, and the input actions. No C++ names a key, so a new device needs a new
+ * assets of the weapons and the melee attack, and the input actions. No C++ names a key, so a new device needs a new
  * mapping context alone (OQ-21).
  */
 UCLASS(Abstract)
@@ -74,6 +77,13 @@ public:
 	 */
 	bool Interact();
 
+	/**
+	 * Makes a melee attack, as the melee key does. A new attack also holds the fire of the weapon for
+	 * the time of the jab (D-173).
+	 * @return True when the attack happened, a hit or a miss.
+	 */
+	bool MeleeAttack();
+
 	/** Gives the actor with the cue, or null when no target is in reach (D-145, D-148). */
 	AActor* GetOutlinedTarget() const;
 
@@ -88,6 +98,12 @@ public:
 
 	/** Gives the weapon rule of the player: the shot, the ammo, and change weapon. */
 	UIronWeaponComponent* GetWeapon() const;
+
+	/** Gives the melee attack of the player. */
+	UIronMeleeComponent* GetMelee() const;
+
+	/** Gives the data asset of the melee attack that the Blueprint subclass sets, or null when it sets none. */
+	const UIronMeleeTuning* GetMeleeTuning() const;
 
 	/** Gives the data assets of the weapons that the Blueprint subclass sets, one for each slot. */
 	const TArray<TObjectPtr<UIronWeaponTuning>>& GetWeapons() const;
@@ -116,11 +132,15 @@ private:
 	void HandleFireStarted(const FInputActionValue& Value);
 	void HandleFireCompleted(const FInputActionValue& Value);
 	void HandleChangeWeapon(const FInputActionValue& Value);
+	void HandleMelee(const FInputActionValue& Value);
 
 	/** Takes the weapon of a slot in hand. The value of the action is the number of the slot, from 1. */
 	void HandleSelectWeapon(const FInputActionValue& Value);
 
-	/** Shows the mesh of the weapon in hand in the view. A new weapon comes up from below during its raise. */
+	/**
+	 * Shows the mesh of the weapon in hand in the view. A new weapon comes up from below during its
+	 * raise, and the weapon moves forward during the jab of a melee attack.
+	 */
 	void UpdateWeaponView();
 
 	/** Moves the cue to the target in reach, or removes it (D-145, D-148). */
@@ -143,6 +163,10 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Weapon")
 	TObjectPtr<UIronWeaponComponent> Weapon;
 
+	/** The melee attack of the player. BeginPlay gives it the data asset of the attack. */
+	UPROPERTY(VisibleAnywhere, Category = "Melee")
+	TObjectPtr<UIronMeleeComponent> Melee;
+
 	/** The mesh of the weapon in hand, on the camera. The data asset of the weapon gives its mesh, scale, and place. */
 	UPROPERTY(VisibleAnywhere, Category = "Weapon")
 	TObjectPtr<UStaticMeshComponent> WeaponViewMesh;
@@ -150,6 +174,10 @@ private:
 	/** The data asset of each weapon, one for each slot, in the order of the slots. The Blueprint subclass sets them (D-128). */
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon", meta = (AllowPrivateAccess = "true"))
 	TArray<TObjectPtr<UIronWeaponTuning>> Weapons;
+
+	/** The data asset of the melee attack. The Blueprint subclass sets it (D-29). */
+	UPROPERTY(EditDefaultsOnly, Category = "Melee", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UIronMeleeTuning> MeleeTuning;
 
 	/** The tuning of the movement and the camera. The Blueprint subclass sets it (D-29). */
 	UPROPERTY(EditDefaultsOnly, Category = "Movement", meta = (AllowPrivateAccess = "true"))
@@ -182,6 +210,10 @@ private:
 	/** The input action that takes the weapon of one slot in hand. Its 1D value is the number of the slot, from 1 (D-152). */
 	UPROPERTY(EditDefaultsOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputAction> SelectWeaponAction;
+
+	/** The input action of the verb "melee", with a true or false value (D-169). */
+	UPROPERTY(EditDefaultsOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputAction> MeleeAction;
 
 	/**
 	 * The post-process material that draws the outline of the target in reach, from the custom

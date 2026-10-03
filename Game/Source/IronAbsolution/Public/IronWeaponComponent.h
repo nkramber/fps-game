@@ -18,7 +18,7 @@ class USoundBase;
  * (D-130). Each shot spends one round, and an empty weapon does not fire. No weapon needs a reload
  * (D-115). A change of weapon takes the raise time of the new weapon (D-157). Each shot kicks the
  * view up and to a random side, and the kick comes back by itself (D-159, D-161, D-162). The owner
- * adds GetRecoil to its view.
+ * adds GetRecoil to its view. The jab of a melee attack holds the fire with HoldFire (D-173).
  *
  * The owner gives the list of weapons with SetWeapons. The player character does this when play
  * starts, from its Blueprint subclass.
@@ -60,6 +60,13 @@ public:
 	 * @return True when the weapon in hand changed. False with one weapon, and false after an error line with no weapon.
 	 */
 	bool ChangeToNextWeapon();
+
+	/**
+	 * Stops the fire of each weapon for a time. A press in this time fires no shot. A held fire key
+	 * fires an automatic weapon again at the end of the time. The melee attack calls it for its jab.
+	 * @param Seconds The time from now. A shorter hold does not end a longer hold that is in progress.
+	 */
+	void HoldFire(float Seconds);
 
 	/** Fills each weapon to its capacity (D-156). */
 	void RefillAmmo();
@@ -140,6 +147,9 @@ private:
 
 	/** The time of the world at the end of the raise of the weapon in hand. */
 	double ReadyTime = 0.0;
+
+	/** The time of the world at the end of the hold of the fire. HoldFire sets it. */
+	double FireHeldUntil = 0.0;
 
 	TOptional<double> LastTargetHitTime;
 

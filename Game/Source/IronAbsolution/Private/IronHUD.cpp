@@ -6,6 +6,7 @@
 #include "Engine/Engine.h"
 #include "Engine/Font.h"
 #include "Engine/World.h"
+#include "IronMeleeComponent.h"
 #include "IronPlayerCharacter.h"
 #include "IronWeaponComponent.h"
 #include "IronWeaponTuning.h"
@@ -20,6 +21,19 @@ bool AIronHUD::IsHitMarkerShown(const TOptional<double>& LastTargetHitTime, doub
 	}
 	const double Age = Now - LastTargetHitTime.GetValue();
 	return Age >= 0.0 && Age < MarkerSeconds;
+}
+
+TOptional<double> AIronHUD::GetLatestHitTime(const TOptional<double>& ShotHitTime, const TOptional<double>& MeleeHitTime)
+{
+	if (!ShotHitTime.IsSet())
+	{
+		return MeleeHitTime;
+	}
+	if (!MeleeHitTime.IsSet())
+	{
+		return ShotHitTime;
+	}
+	return FMath::Max(ShotHitTime.GetValue(), MeleeHitTime.GetValue());
 }
 
 TArray<FString> AIronHUD::FindInvalidValues() const
@@ -78,15 +92,18 @@ void AIronHUD::DrawHUD()
 	const FVector2D Center(Canvas->ClipX / 2.0, Canvas->ClipY / 2.0);
 	DrawCrosshair(Center);
 
+	// The melee attack works with no weapon in hand, so its hit marker comes before the check of the weapon.
 	const UIronWeaponComponent* Weapon = Character->GetWeapon();
+	const TOptional<double> LastHitTime = GetLatestHitTime(Weapon->GetLastTargetHitTime(), Character->GetMelee()->GetLastTargetHitTime());
+	if (IsHitMarkerShown(LastHitTime, GetWorld()->GetTimeSeconds(), HitMarkerSeconds))
+	{
+		DrawHitMarker(Center);
+	}
+
 	const UIronWeaponTuning* Tuning = Weapon->GetCurrentWeapon();
 	if (Tuning == nullptr)
 	{
 		return;
-	}
-	if (IsHitMarkerShown(Weapon->GetLastTargetHitTime(), GetWorld()->GetTimeSeconds(), HitMarkerSeconds))
-	{
-		DrawHitMarker(Center);
 	}
 	DrawAmmo(Tuning->DisplayName.ToString(), Weapon->GetCurrentAmmo());
 }

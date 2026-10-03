@@ -25,15 +25,26 @@ void AIronTarget::BeginPlay()
 	ShowCount();
 }
 
-void AIronTarget::RegisterHit()
+void AIronTarget::RegisterShotHit()
 {
-	++HitCount;
+	++ShotHitCount;
 	ShowCount();
 }
 
-int32 AIronTarget::GetHitCount() const
+void AIronTarget::RegisterMeleeHit()
 {
-	return HitCount;
+	++MeleeHitCount;
+	ShowCount();
+}
+
+int32 AIronTarget::GetShotHitCount() const
+{
+	return ShotHitCount;
+}
+
+int32 AIronTarget::GetMeleeHitCount() const
+{
+	return MeleeHitCount;
 }
 
 UStaticMeshComponent* AIronTarget::GetBoard() const
@@ -48,5 +59,6 @@ UTextRenderComponent* AIronTarget::GetCountText() const
 
 void AIronTarget::ShowCount()
 {
-	CountText->SetText(FText::FromString(FString::Printf(TEXT("Hits: %d"), HitCount)));
+	// The text render component of the engine starts a new line at each newline character.
+	CountText->SetText(FText::FromString(FString::Printf(TEXT("Shots: %d\nMelee: %d"), ShotHitCount, MeleeHitCount)));
 }

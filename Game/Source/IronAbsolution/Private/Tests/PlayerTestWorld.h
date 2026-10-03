@@ -7,15 +7,18 @@
 #include "Engine/StaticMesh.h"
 #include "Engine/StaticMeshActor.h"
 #include "Engine/World.h"
+#include "EngineUtils.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "IronHitFlash.h"
 #include "IronPlayerCharacter.h"
+#include "IronTarget.h"
 #include "Misc/AutomationTest.h"
 #include "Tests/AutomationCommon.h"
 
 #if WITH_DEV_AUTOMATION_TESTS
 
 // The game world of the tests of the player: the movement of PR-21, the mantle and interact of
-// PR-24, and the weapon of PR-25. The test world has no local player, so each test calls the functions of the character
+// PR-24, the weapon of PR-25, and the melee attack of PR-26. The test world has no local player, so each test calls the functions of the character
 // that the input actions call.
 namespace IronAbsolution::Tests
 {
@@ -119,6 +122,37 @@ namespace IronAbsolution::Tests
 		FTestWorldWrapper Wrapper;
 		UStaticMesh* Cube = nullptr;
 	};
+
+	// The board of a gym target: 10 cm deep, 100 cm wide, and 180 cm high.
+	const FVector TargetSize(10.0, 100.0, 180.0);
+
+	/** Gives the point on the line of the view at a distance from the eye. */
+	inline FVector PointOnView(const AIronPlayerCharacter& Character, double Distance)
+	{
+		return Character.GetPawnViewLocation() + FVector::ForwardVector * Distance;
+	}
+
+	/** Places a test target with the center of its board at a distance from the eye, on the line of the view. */
+	inline AIronTarget* SpawnTarget(FPlayerTestWorld& World, const AIronPlayerCharacter& Character, double Distance)
+	{
+		AIronTarget* Target = World.GetWorld()->SpawnActor<AIronTarget>(PointOnView(Character, Distance), FRotator::ZeroRotator);
+		// A static component takes no new mesh after play starts, so the board is movable.
+		Target->GetBoard()->SetMobility(EComponentMobility::Movable);
+		Target->GetBoard()->SetStaticMesh(World.GetCube());
+		Target->GetBoard()->SetRelativeScale3D(TargetSize / CubeSize);
+		return Target;
+	}
+
+	/** Gives each hit flash of the world. */
+	inline TArray<AIronHitFlash*> FindFlashes(UWorld* World)
+	{
+		TArray<AIronHitFlash*> Flashes;
+		for (TActorIterator<AIronHitFlash> It(World); It; ++It)
+		{
+			Flashes.Add(*It);
+		}
+		return Flashes;
+	}
 }
 
 #endif // WITH_DEV_AUTOMATION_TESTS
