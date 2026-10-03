@@ -59,6 +59,7 @@ bool UIronWeaponComponent::SetWeapons(const TArray<TObjectPtr<UIronWeaponTuning>
 	bTriggerHeld = false;
 	NextShotTime = 0.0;
 	ReadyTime = 0.0;
+	FireHeldUntil = 0.0;
 	LastTargetHitTime.Reset();
 	RecoilPitch = 0.0f;
 	RecoilYaw = 0.0f;
@@ -105,6 +106,12 @@ bool UIronWeaponComponent::ChangeToNextWeapon()
 		return false;
 	}
 	return SelectWeapon((CurrentSlot + 1) % Weapons.Num());
+}
+
+void UIronWeaponComponent::HoldFire(float Seconds)
+{
+	// The hold has its own time, not the time of the raise, so the view mesh does not drop.
+	FireHeldUntil = FMath::Max(FireHeldUntil, GetWorld()->GetTimeSeconds() + Seconds);
 }
 
 void UIronWeaponComponent::RefillAmmo()
@@ -220,7 +227,7 @@ bool UIronWeaponComponent::TryFire(bool bNewPress)
 	}
 
 	const double Now = GetWorld()->GetTimeSeconds();
-	if (Now + IronAbsolution::Weapon::TimeMargin < ReadyTime || Now + IronAbsolution::Weapon::TimeMargin < NextShotTime)
+	if (Now + IronAbsolution::Weapon::TimeMargin < ReadyTime || Now + IronAbsolution::Weapon::TimeMargin < NextShotTime || Now + IronAbsolution::Weapon::TimeMargin < FireHeldUntil)
 	{
 		return false;
 	}
@@ -271,7 +278,7 @@ void UIronWeaponComponent::FireShot(const UIronWeaponTuning& Weapon)
 		World->SpawnActor<AIronHitFlash>(Weapon.HitFlashClass, Hit.ImpactPoint, FRotator::ZeroRotator);
 		if (AIronTarget* Target = Cast<AIronTarget>(Hit.GetActor()))
 		{
-			Target->RegisterHit();
+			Target->RegisterShotHit();
 			bHitTarget = true;
 		}
 	}

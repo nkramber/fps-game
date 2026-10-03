@@ -2,7 +2,7 @@
 
 Status: the first values of the weapon rule of phase 3. PR-25 adds this file (D-128). Written 2026-10-01 in ASD-STE100 (D-17).
 
-This file gives each value of the two data assets of the weapon rule, with a unit and a reason. The owner picked each value in PR-25 (D-151 to D-168). The feel pass of PR-27 tunes the values (D-131). Phase 4 builds the weapon roster of D-124 on the same rule.
+This file gives each value of the two data assets of the weapon rule, with a unit and a reason. The owner picked each value in PR-25 (D-151 to D-168). PR-26 adds the data asset of the melee attack (D-169 to D-173). The feel pass of PR-27 tunes the values (D-131). Phase 4 builds the weapon roster of D-124 on the same rule.
 
 ## Where each value lives
 
@@ -62,9 +62,26 @@ The Blueprint `BP_PlayerHUD` holds each value (D-29). Each size is in pixels.
 
 ## The hit feedback
 
-- A shot that hits a gym target shows the hit marker, and plays the sound of the hit, one time for each shot (D-154, D-155).
+- A shot that hits a gym target shows the hit marker, one time for each shot (D-154). The hit has no sound (D-167).
 - Each pellet that hits a surface makes a flash at the point of the hit. The flash is a sphere of 8 cm, and it fades from full brightness to 0 in 0.1 s (D-154). It has no collision.
 - The Blueprint `BP_HitFlash` holds the size, the life, the mesh, and the material of the flash.
+
+## The melee attack
+
+The data asset `DA_MeleeAttack` holds each value (D-29). The class `UIronMeleeComponent` holds the rule: the sphere sweep along the view, the time between two attacks, and the jab.
+
+| Value | Melee attack | Unit | Field of the tuning | Label |
+|---|---|---|---|---|
+| Range | 250 | cm, from the eye to the front of the sphere | `Range` | Owner pick (D-170). |
+| Radius of the sphere | 30 | cm | `SweepRadius` | Owner pick (D-170). A hit needs no exact aim. |
+| Time between two attacks | 0.8 | s | `AttackInterval` | Owner pick (D-170). |
+| Jab distance | 20 | cm forward, at the middle of the jab | `JabDistance` | Owner pick (D-171). |
+| Jab time | 0.2 | s, out and back | `JabTime` | Owner pick (D-171). The weapon fires no shot in this time (D-173). |
+
+- A melee attack that hits a gym target shows the hit marker of a shot. A melee attack that hits a surface makes the flash of a shot (D-171).
+- On each attack, a hit or a miss, the weapon in the view jabs forward and back. The jab follows half of a sine wave, so it has no jump at either end.
+- The melee attack has no sound (D-171).
+- The jab must not be longer than the time between two attacks, and the radius must be below the range. The data asset reports each break of these rules (T-2).
 
 ## The sounds
 
@@ -82,16 +99,16 @@ Each sound plays for the player alone, as a sound of the game. A pause of the ga
 
 | Station | Place | What the player tests |
 |---|---|---|
-| Targets | Three boards 100 cm wide and 180 cm high, between the distance row and the ledge row, at 10 m, 25 m, and 50 m from the start | The hit, the spread, and the recoil. Each target shows its count of hits. It has no health. |
+| Targets | Three boards 100 cm wide and 180 cm high, between the distance row and the ledge row, at 10 m, 25 m, and 50 m from the start | The hit, the spread, the recoil, and the melee attack. Each target shows its count of shot hits and its count of melee hits on two lines (D-172). It has no health. |
 | Ammo station | A box 50 cm wide and 100 cm high, 4 m to the left of the start | The verb "interact" fills each weapon (D-156). |
 
 ## Keys
 
-The left mouse button fires (D-151). Each step of the mouse wheel takes the next weapon, and the 1 and 2 keys take a slot (D-152). No C++ names a key (OQ-21).
+The left mouse button fires (D-151). Each step of the mouse wheel takes the next weapon, and the 1 and 2 keys take a slot (D-152). The F key makes the melee attack (D-169). No C++ names a key (OQ-21).
 
 ## Evidence
 
-The automation tests of PR-25 check each rule in a test world at 120 frames each second. The rule tests make their own tunings, so a new value in this file does not change them.
+The automation tests of PR-25 and PR-26 check each rule in a test world at 120 frames each second. The rule tests make their own tunings, so a new value in this file does not change them.
 
 | Test | What it checks |
 |---|---|
@@ -102,5 +119,10 @@ The automation tests of PR-25 check each rule in a test world at 120 frames each
 | `IronAbsolution.Player.Weapon.ThirdTuning` | A third data asset gives a third tuning with no change of C++ |
 | `IronAbsolution.Player.Weapon.Pellets` | Each pellet inside the cone, and an even spread over the cone |
 | `IronAbsolution.Player.Weapon.Recoil` | The kick up, the random side, the recovery, the return after a burst of 3 s, and the pitch limit |
+| `IronAbsolution.Player.Melee.Hit` | A melee hit in range and at the edge of the range, a hit 20 cm off the line of the view, a miss out of range, and a wall that takes the attack |
+| `IronAbsolution.Player.Melee.Interval` | No second attack before the end of the time between two attacks |
+| `IronAbsolution.Player.Melee.Jab` | The jab on a miss, no shot during the jab, and the fire of a held key after the jab |
+| `IronAbsolution.Player.Melee.HitMarker` | The hit marker shows for the later hit, of a shot or of a melee attack |
+| `IronAbsolution.Player.Melee.Errors` | Each invalid value of the melee tuning, and an attack with no tuning |
 
-`docs/research/weapon-and-sound.md` gives the facts of the engine and of freesound.org.
+`docs/research/weapon-and-sound.md` gives the facts of the engine and of freesound.org. `docs/research/melee-attack.md` gives the facts of the melee attack.

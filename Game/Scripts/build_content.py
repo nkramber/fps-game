@@ -4,7 +4,7 @@
 `run.ps1 content-build` runs this script through the Python commandlet of the editor, with no
 window. The script is the source of each asset that it makes: the input actions, the mapping
 context, the movement tuning, the outline and glow materials of interact, the weapons and their
-sounds, the player Blueprints and the HUD, and the gym map `L_Gym` with the views of the frame-time
+sounds, the melee attack, the player Blueprints and the HUD, and the gym map `L_Gym` with the views of the frame-time
 capture. A change to one of these assets is a change to this script, then a new run. A change in
 the editor alone goes away at the next run.
 
@@ -83,6 +83,18 @@ WEAPON_TUNING = {
         "view_scale": unreal.Vector(0.45, 0.12, 0.12),
         "view_offset": unreal.Vector(40.0, 18.0, -22.0),
     },
+}
+
+# The data asset of the melee attack (D-170, D-171). `docs/game/weapon-tuning.md` gives each reason.
+# The front of the sphere reaches 250 cm from the eye. The jab moves the weapon in the view 20 cm
+# forward and back in 0.2 s, and the weapon fires no shot in this time (D-173).
+MELEE_ASSET = "DA_MeleeAttack"
+MELEE_TUNING = {
+    "range": 250.0,
+    "sweep_radius": 30.0,
+    "attack_interval": 0.8,
+    "jab_distance": 20.0,
+    "jab_time": 0.2,
 }
 
 # The sounds of the weapon: the high-quality OGG previews of three CC0 files of freesound.org
@@ -269,7 +281,7 @@ def scalar(owner, value):
     return modifier
 
 
-def keyboard_mouse_context(move, look, jump, interact, quit_game, fire, change_weapon, select_weapon):
+def keyboard_mouse_context(move, look, jump, interact, quit_game, fire, change_weapon, select_weapon, melee):
     """The mapping context of the keyboard and the mouse (D-136). No C++ names a key (OQ-21)."""
     context = load_or_create(INPUT_FOLDER, "IMC_KeyboardMouse", unreal.InputMappingContext, unreal.InputMappingContext_Factory())
     mappings = [
@@ -292,6 +304,8 @@ def keyboard_mouse_context(move, look, jump, interact, quit_game, fire, change_w
         key_mapping(change_weapon, "MouseScrollDown", []),
         key_mapping(select_weapon, "One", []),
         key_mapping(select_weapon, "Two", [scalar(context, 2.0)]),
+        # The melee key (D-169).
+        key_mapping(melee, "F", []),
     ]
     data = unreal.InputMappingContextMappingData()
     data.set_editor_property("mappings", mappings)
@@ -538,6 +552,18 @@ def weapon_tunings(sounds, flash):
     return tunings
 
 
+def melee_tuning(flash):
+    """The data asset of the melee attack (D-170). The flash of a hit is the flash of a shot (D-171)."""
+    factory = unreal.DataAssetFactory()
+    factory.set_editor_property("data_asset_class", unreal.IronMeleeTuning)
+    tuning = load_or_create(WEAPON_FOLDER, MELEE_ASSET, unreal.IronMeleeTuning, factory)
+    for key, value in MELEE_TUNING.items():
+        tuning.set_editor_property(key, value)
+    tuning.set_editor_property("hit_flash_class", flash.generated_class())
+    save(tuning)
+    return tuning
+
+
 def blueprint(name, parent_class, folder=PLAYER_FOLDER):
     """Loads or makes a Blueprint subclass, and gives its default object."""
     factory = unreal.BlueprintFactory()
@@ -549,7 +575,7 @@ def blueprint(name, parent_class, folder=PLAYER_FOLDER):
     return asset, unreal.get_default_object(generated)
 
 
-def player_blueprints(tuning, actions, outline, glow, context, weapons):
+def player_blueprints(tuning, actions, outline, glow, context, weapons, melee):
     character, character_defaults = blueprint("BP_PlayerCharacter", unreal.IronPlayerCharacter)
     character_defaults.set_editor_property("movement_tuning", tuning)
     character_defaults.set_editor_property("move_action", actions["move"])
@@ -559,9 +585,11 @@ def player_blueprints(tuning, actions, outline, glow, context, weapons):
     character_defaults.set_editor_property("fire_action", actions["fire"])
     character_defaults.set_editor_property("change_weapon_action", actions["change_weapon"])
     character_defaults.set_editor_property("select_weapon_action", actions["select_weapon"])
+    character_defaults.set_editor_property("melee_action", actions["melee"])
     character_defaults.set_editor_property("interact_outline_material", outline)
     character_defaults.set_editor_property("interact_glow_material", glow)
     character_defaults.set_editor_property("weapons", weapons)
+    character_defaults.set_editor_property("melee_tuning", melee)
     save(character)
 
     hud, hud_defaults = blueprint("BP_PlayerHUD", unreal.IronHUD)
@@ -744,7 +772,7 @@ def door_station(actors):
 
 
 def target_station(actors):
-    """Three gym targets that count each hit, and the ammo station (D-154, D-156)."""
+    """Three gym targets that count the hits of shots and of melee attacks, and the ammo station (D-154, D-156, D-172)."""
     mesh = unreal.load_asset(CUBE)
     if mesh is None:
         raise ContentError(f"The mesh {CUBE} did not load.")
@@ -760,7 +788,8 @@ def target_station(actors):
         count.set_relative_location(unreal.Vector(0.0, 0.0, TARGET_SIZE.z + 20.0), False, False)
         count.set_world_size(LABEL_HEIGHT)
         count.set_text_render_color(LABEL_COLOR)
-        text(actors, f"Target {distance} m", unreal.Vector(x, TARGET_ROW_Y, TARGET_SIZE.z + 70.0))
+        # The two lines of the counts go up from their place, so the label is above the second line.
+        text(actors, f"Target {distance} m", unreal.Vector(x, TARGET_ROW_Y, TARGET_SIZE.z + 40.0 + 2.0 * LABEL_HEIGHT))
 
     station = spawn(actors, unreal.IronAmmoStation, AMMO_STATION_LOCATION, label="Ammo station")
     station.get_editor_property("body").set_static_mesh(mesh)
@@ -818,7 +847,8 @@ def main():
     fire = input_action("IA_Fire", unreal.InputActionValueType.BOOLEAN)
     change_weapon = input_action("IA_ChangeWeapon", unreal.InputActionValueType.BOOLEAN)
     select_weapon = input_action("IA_SelectWeapon", unreal.InputActionValueType.AXIS1D)
-    context = keyboard_mouse_context(move, look, jump, interact, quit_game, fire, change_weapon, select_weapon)
+    melee = input_action("IA_Melee", unreal.InputActionValueType.BOOLEAN)
+    context = keyboard_mouse_context(move, look, jump, interact, quit_game, fire, change_weapon, select_weapon, melee)
     actions = {
         "move": move,
         "look": look,
@@ -828,6 +858,7 @@ def main():
         "fire": fire,
         "change_weapon": change_weapon,
         "select_weapon": select_weapon,
+        "melee": melee,
     }
     tuning = movement_tuning()
     outline = outline_material()
@@ -835,9 +866,10 @@ def main():
     sounds = import_sounds()
     flash = hit_flash(hit_flash_material())
     weapons = weapon_tunings(sounds, flash)
-    game_mode = player_blueprints(tuning, actions, outline, glow, context, weapons)
+    melee_attack = melee_tuning(flash)
+    game_mode = player_blueprints(tuning, actions, outline, glow, context, weapons, melee_attack)
     gym(game_mode)
-    unreal.log("build_content: pass. The input, the player, the weapons, and the gym map saved.")
+    unreal.log("build_content: pass. The input, the player, the weapons, the melee attack, and the gym map saved.")
 
 
 main()

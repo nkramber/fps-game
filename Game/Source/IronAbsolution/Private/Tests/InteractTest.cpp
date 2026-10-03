@@ -29,12 +29,6 @@ namespace IronAbsolution::Tests::Interact
 	const FVector DoorSize(200.0, 20.0, 250.0);
 	const FVector DoorOpenOffset(0.0, 0.0, -260.0);
 
-	/** Gives the point on the line of the view at a distance from the eye. */
-	FVector PointOnView(const AIronPlayerCharacter& Character, double Distance)
-	{
-		return Character.GetPawnViewLocation() + FVector::ForwardVector * Distance;
-	}
-
 	/** Places a test door with a panel and an open offset. */
 	AIronDoor* SpawnDoor(FPlayerTestWorld& World)
 	{

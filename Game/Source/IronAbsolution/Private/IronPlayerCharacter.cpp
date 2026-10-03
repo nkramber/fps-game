@@ -15,6 +15,8 @@
 #include "IronCharacterMovementComponent.h"
 #include "IronGameUserSettings.h"
 #include "IronInteractable.h"
+#include "IronMeleeComponent.h"
+#include "IronMeleeTuning.h"
 #include "IronMovementTuning.h"
 #include "IronWeaponComponent.h"
 #include "IronWeaponTuning.h"
@@ -52,6 +54,7 @@ AIronPlayerCharacter::AIronPlayerCharacter(const FObjectInitializer& ObjectIniti
 	FirstPersonCamera->bUsePawnControlRotation = true;
 
 	Weapon = CreateDefaultSubobject<UIronWeaponComponent>(TEXT("Weapon"));
+	Melee = CreateDefaultSubobject<UIronMeleeComponent>(TEXT("Melee"));
 
 	// UpdateWeaponView sets the mesh and its place from the data asset of the weapon in hand.
 	WeaponViewMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WeaponViewMesh"));
@@ -168,6 +171,17 @@ bool AIronPlayerCharacter::Interact()
 	return true;
 }
 
+bool AIronPlayerCharacter::MeleeAttack()
+{
+	// The component writes an error line when it has no tuning.
+	if (!Melee->Attack())
+	{
+		return false;
+	}
+	Weapon->HoldFire(Melee->GetTuning()->JabTime);
+	return true;
+}
+
 AActor* AIronPlayerCharacter::GetOutlinedTarget() const
 {
 	return OutlinedTarget.Get();
@@ -192,6 +206,16 @@ UIronCharacterMovementComponent* AIronPlayerCharacter::GetIronMovement() const
 UIronWeaponComponent* AIronPlayerCharacter::GetWeapon() const
 {
 	return Weapon;
+}
+
+UIronMeleeComponent* AIronPlayerCharacter::GetMelee() const
+{
+	return Melee;
+}
+
+const UIronMeleeTuning* AIronPlayerCharacter::GetMeleeTuning() const
+{
+	return MeleeTuning;
 }
 
 const TArray<TObjectPtr<UIronWeaponTuning>>& AIronPlayerCharacter::GetWeapons() const
@@ -231,6 +255,16 @@ void AIronPlayerCharacter::BeginPlay()
 	if (Weapon->SetWeapons(Weapons))
 	{
 		UpdateWeaponView();
+	}
+
+	if (MeleeTuning == nullptr)
+	{
+		UE_LOG(LogIronPlayer, Error, TEXT("%s has no MeleeTuning, so the player cannot make a melee attack. Set it in the Blueprint subclass (D-29)."), *GetPathName());
+	}
+	else
+	{
+		// The component writes an error line for an invalid tuning.
+		Melee->SetTuning(MeleeTuning);
 	}
 
 	// The field of view comes from the settings of the player, not from the tuning (D-141).
@@ -344,6 +378,15 @@ void AIronPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 	{
 		EnhancedInput->BindAction(SelectWeaponAction, ETriggerEvent::Started, this, &AIronPlayerCharacter::HandleSelectWeapon);
 	}
+
+	if (MeleeAction == nullptr)
+	{
+		UE_LOG(LogIronPlayer, Error, TEXT("%s has no MeleeAction, so the player cannot make a melee attack. Set it in the Blueprint subclass."), *GetPathName());
+	}
+	else
+	{
+		EnhancedInput->BindAction(MeleeAction, ETriggerEvent::Started, this, &AIronPlayerCharacter::HandleMelee);
+	}
 }
 
 void AIronPlayerCharacter::HandleMove(const FInputActionValue& Value)
@@ -376,6 +419,11 @@ void AIronPlayerCharacter::HandleChangeWeapon(const FInputActionValue& Value)
 	Weapon->ChangeToNextWeapon();
 }
 
+void AIronPlayerCharacter::HandleMelee(const FInputActionValue& Value)
+{
+	MeleeAttack();
+}
+
 void AIronPlayerCharacter::HandleSelectWeapon(const FInputActionValue& Value)
 {
 	// The key of slot 1 gives 1, and a scalar modifier gives each other key its number (D-152).
@@ -396,7 +444,8 @@ void AIronPlayerCharacter::UpdateWeaponView()
 	WeaponViewMesh->SetStaticMesh(Tuning->ViewMesh);
 	WeaponViewMesh->SetRelativeScale3D(Tuning->ViewScale);
 	const float Drop = IronAbsolution::PlayerCharacter::WeaponRaiseDrop * (1.0f - Weapon->GetRaiseFraction());
-	WeaponViewMesh->SetRelativeLocation(Tuning->ViewOffset - FVector(0.0, 0.0, Drop));
+	const float Jab = Melee->GetJabDistance();
+	WeaponViewMesh->SetRelativeLocation(Tuning->ViewOffset + FVector(Jab, 0.0, -Drop));
 }
 
 void AIronPlayerCharacter::UpdateInteractCue()

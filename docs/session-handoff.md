@@ -1,3 +1,40 @@
+## Session 77: 2026-10-03, Claude Code
+
+Author: Claude Code
+Session: author PR-26, round 1. Repository: iron-absolution. Branch: `feat/pr-26-melee`. PR: #27. Role: author. Base: `e7c29f9454f6ff2945702b2e864981d02ecd9e4b`.
+
+### What this session did, and why
+
+- Added the melee attack of section 7.6 of the phase 3 roadmap (D-116). The owner gave D-169 to D-173.
+- `UIronMeleeComponent` holds the rule: a sphere sweep along the view, the time between two attacks, and the jab. `DA_MeleeAttack` holds the tuning (D-29).
+- Each gym target counts the hits of shots and of melee attacks apart, on two lines (D-172).
+- The weapon fires no shot during the jab (D-173). `HitActor` is the one place for the finish of phase 4.
+- Five new tests in `MeleeTest.cpp` check the hit, the time between two attacks, the jab, the hit marker, and the errors.
+- `docs/research/melee-attack.md` gives the Epic pages and the engine facts. `docs/game/weapon-tuning.md` gives each value.
+
+### The state of the build
+
+- The remote head is the head of `feat/pr-26-melee`, pending merge.
+- On the Windows PC: `verify`, `toolchain-check`, `editor-build`, and the 44 headless tests pass.
+- `package-build` and `package-run` pass. The owner hit the gym target with the melee attack in the package (exit test 1).
+
+### What is in flight
+
+- Round 1 of the cross-provider review of PR #27.
+
+### Traps and gotchas
+
+- The owner found the jab crude. The jab is a placeholder. The feel pass of PR-27 can tune it, and phase 5 and phase 7 hold the final animation (D-171).
+- The text of a gym target has two lines. Its default alignment puts more lines above the place of the text.
+
+### The questions that block progress
+
+- None.
+
+### The next concrete action
+
+- Run `run.ps1 codex-review -PR 27`. On an approval, give the owner the merge summary.
+
 ## Session 76: 2026-10-03, Codex
 
 Author: Codex
@@ -317,39 +354,3 @@ Session: reviewer PR-24, round 1. Repository: iron-absolution. Branch: `feat/pr-
 ### The next concrete action
 
 - Complete the PR gate with the review record and the five green required checks.
-
-## Session 67: 2026-09-30, Claude Code
-
-Author: Claude Code
-Session: author PR-23, round 1. Repository: iron-absolution. Branch: `feat/pr-23-aim-settings`. PR: #24. Role: author. Base: `aa9fc2a2556815dc4ef2f6b55f1f17abd1892940`.
-
-### What this session did, and why
-
-- Added the aim settings of section 7.3 of the phase 3 roadmap: the class `UIronGameUserSettings`, the mouse sensitivity, the field of view, and two console commands.
-- The owner gave D-139 to D-142. The sensitivity uses the Quake scale, with a default of 2.0 and bounds of 0.1 to 20. The field of view has a default of 100 and bounds of 80 to 120. The game has no vertical invert (D-140).
-- Turned off the input scales of the engine, and set the mouse axis sensitivity to 1. The mapping context has no Negate on the mouse now.
-- Removed the field of view from the movement tuning. The views of the capture read the project default.
-- Added 6 automation tests. The owner played the package: each command worked, 25 gave the error, and each value came back after a restart.
-
-### The state of the build
-
-- The remote head is the commit of this entry on `feat/pr-23-aim-settings`, pending merge.
-- On Windows: verify, editor-build, content-build, 19 editor tests, package-build, package-run, and frame-capture pass. M-3: mean 3.33 ms, 99th percentile 3.66 ms.
-
-### What is in flight
-
-- PR #24, pending merge: the Codex review.
-
-### Traps and gotchas
-
-- Run one `run.ps1` target at a time. Two targets at the same time lock the tools DLL.
-- The aim tests write the settings file of the editor, and put back the values at the end.
-- `package-build` removes the `Saved` folder of the package, with its logs and its settings file. Copy a play-test log before a rebuild.
-
-### The questions that block progress
-
-- None.
-
-### The next concrete action
-
-- Run `run.ps1 codex-review -PR 24`, and answer the findings.

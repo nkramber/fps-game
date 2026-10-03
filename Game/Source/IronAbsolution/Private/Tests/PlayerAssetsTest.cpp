@@ -8,7 +8,9 @@
 #include "InputModifiers.h"
 #include "IronAmmoStation.h"
 #include "IronDoor.h"
+#include "IronHitFlash.h"
 #include "IronHUD.h"
+#include "IronMeleeTuning.h"
 #include "IronMovementTuning.h"
 #include "IronPlayerCharacter.h"
 #include "IronPlayerController.h"
@@ -109,6 +111,7 @@ bool FIronAbsolutionPlayerAssetsTest::RunTest(const FString& Parameters)
 		{TEXT("FireAction"), TEXT("/Game/Input/IA_Fire.IA_Fire"), EInputActionValueType::Boolean},
 		{TEXT("ChangeWeaponAction"), TEXT("/Game/Input/IA_ChangeWeapon.IA_ChangeWeapon"), EInputActionValueType::Boolean},
 		{TEXT("SelectWeaponAction"), TEXT("/Game/Input/IA_SelectWeapon.IA_SelectWeapon"), EInputActionValueType::Axis1D},
+		{TEXT("MeleeAction"), TEXT("/Game/Input/IA_Melee.IA_Melee"), EInputActionValueType::Boolean},
 	};
 	for (const FActionCase& Case : Actions)
 	{
@@ -174,6 +177,18 @@ bool FIronAbsolutionPlayerAssetsTest::RunTest(const FString& Parameters)
 		}
 	}
 
+	// The data asset of the melee attack, valid, with the flash of a shot (D-170, D-171).
+	const UIronMeleeTuning* Melee = CharacterDefaults->GetMeleeTuning();
+	TestEqual(TEXT("The melee tuning of the character"), GetPathNameSafe(Melee), FString(TEXT("/Game/Weapons/DA_MeleeAttack.DA_MeleeAttack")));
+	if (Melee != nullptr)
+	{
+		TestEqual(FString::Printf(TEXT("The invalid values of %s: %s"), *Melee->GetPathName(), *FString::Join(Melee->FindInvalidValues(), TEXT(" | "))), Melee->FindInvalidValues().Num(), 0);
+		if (!Weapons.IsEmpty() && Weapons[0] != nullptr)
+		{
+			TestEqual(TEXT("A melee hit makes the flash of a shot"), GetPathNameSafe(Melee->HitFlashClass.Get()), GetPathNameSafe(Weapons[0]->HitFlashClass.Get()));
+		}
+	}
+
 	// The controller: the mapping context of the keyboard and the mouse, alone (OQ-21).
 	const TArray<TObjectPtr<UInputMappingContext>>& Contexts = GetDefault<AIronPlayerController>(Controller)->GetMappingContexts();
 	TestEqual(TEXT("The controller has one mapping context"), Contexts.Num(), 1);
@@ -209,6 +224,8 @@ bool FIronAbsolutionPlayerAssetsTest::RunTest(const FString& Parameters)
 		TEXT("MouseScrollDown IA_ChangeWeapon"),
 		TEXT("One IA_SelectWeapon"),
 		TEXT("Two IA_SelectWeapon Scalar(2.0)"),
+		// The melee key of D-169.
+		TEXT("F IA_Melee"),
 	};
 	Expected.Sort();
 	TestEqual(TEXT("The key mappings of the keyboard and the mouse"), FString::Join(Mappings, TEXT(", ")), FString::Join(Expected, TEXT(", ")));

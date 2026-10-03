@@ -43,28 +43,8 @@ namespace IronAbsolution::Tests::Weapon
 		return true;
 	}
 
-	// The board of a gym target: 10 cm deep, 100 cm wide, and 180 cm high.
-	const FVector TargetSize(10.0, 100.0, 180.0);
-
 	// A target this far to the side of the line of the view is out of the line.
 	constexpr double SideStep = 300.0;
-
-	/** Gives the point on the line of the view at a distance from the eye. */
-	FVector PointOnView(const AIronPlayerCharacter& Character, double Distance)
-	{
-		return Character.GetPawnViewLocation() + FVector::ForwardVector * Distance;
-	}
-
-	/** Places a test target with the center of its board at a distance from the eye, on the line of the view. */
-	AIronTarget* SpawnTarget(FPlayerTestWorld& World, const AIronPlayerCharacter& Character, double Distance)
-	{
-		AIronTarget* Target = World.GetWorld()->SpawnActor<AIronTarget>(PointOnView(Character, Distance), FRotator::ZeroRotator);
-		// A static component takes no new mesh after play starts, so the board is movable.
-		Target->GetBoard()->SetMobility(EComponentMobility::Movable);
-		Target->GetBoard()->SetStaticMesh(World.GetCube());
-		Target->GetBoard()->SetRelativeScale3D(TargetSize / CubeSize);
-		return Target;
-	}
 
 	/** Starts the world, and checks that the player character took the two weapons of its Blueprint. */
 	AIronPlayerCharacter* StartWithWeapons(FPlayerTestWorld& World, FAutomationTestBase& Test)
@@ -103,17 +83,6 @@ namespace IronAbsolution::Tests::Weapon
 		Character.GetWeapon()->PullTrigger();
 		Character.GetWeapon()->ReleaseTrigger();
 	}
-
-	/** Gives each hit flash of the world. */
-	TArray<AIronHitFlash*> FindFlashes(UWorld* World)
-	{
-		TArray<AIronHitFlash*> Flashes;
-		for (TActorIterator<AIronHitFlash> It(World); It; ++It)
-		{
-			Flashes.Add(*It);
-		}
-		return Flashes;
-	}
 }
 
 // Exit test 3 of PR-25: a hit on a target in the line, and a miss on a target out of the line. A
@@ -147,7 +116,8 @@ bool FIronAbsolutionWeaponHitTest::RunTest(const FString& Parameters)
 	World.Tick(FrameSeconds, [] {});
 	TestFalse(TEXT("No hit marker before the first hit"), Weapon->GetLastTargetHitTime().IsSet());
 	PressFire(*Character);
-	TestEqual(TEXT("A shot at a target in the line hits it once"), Target->GetHitCount(), 1);
+	TestEqual(TEXT("A shot at a target in the line hits it once"), Target->GetShotHitCount(), 1);
+	TestEqual(TEXT("A shot does not count as a melee hit"), Target->GetMeleeHitCount(), 0);
 	TestTrue(TEXT("The hit sets the time of the hit marker"), Weapon->GetLastTargetHitTime().IsSet());
 	const TArray<AIronHitFlash*> Flashes = FindFlashes(World.GetWorld());
 	if (TestEqual(TEXT("The hit makes one flash"), Flashes.Num(), 1))
@@ -162,7 +132,7 @@ bool FIronAbsolutionWeaponHitTest::RunTest(const FString& Parameters)
 	Target->SetActorLocation(PointOnView(*Character, Distance) + FVector(0.0, SideStep, 0.0));
 	World.Tick(0.2f, [] {});
 	PressFire(*Character);
-	TestEqual(TEXT("A shot at a target out of the line does not hit it"), Target->GetHitCount(), 1);
+	TestEqual(TEXT("A shot at a target out of the line does not hit it"), Target->GetShotHitCount(), 1);
 	TestEqual(TEXT("A miss does not move the time of the hit marker"), Weapon->GetLastTargetHitTime().GetValue(), HitTime);
 	TestEqual(TEXT("The miss spent one round too"), Weapon->GetCurrentAmmo(), 8);
 
@@ -171,7 +141,7 @@ bool FIronAbsolutionWeaponHitTest::RunTest(const FString& Parameters)
 	World.SpawnBlock(PointOnView(*Character, Distance / 2.0), FVector(10.0, 300.0, 300.0));
 	World.Tick(0.2f, [] {});
 	PressFire(*Character);
-	TestEqual(TEXT("A wall between the eye and the target takes the shot"), Target->GetHitCount(), 1);
+	TestEqual(TEXT("A wall between the eye and the target takes the shot"), Target->GetShotHitCount(), 1);
 
 	return !HasAnyErrors();
 }
@@ -312,20 +282,20 @@ bool FIronAbsolutionWeaponAmmoTest::RunTest(const FString& Parameters)
 	World.Tick(1.0f, [] {});
 	Weapon->ReleaseTrigger();
 	TestEqual(TEXT("The automatic weapon stops at 0 rounds"), Weapon->GetAmmo(0), 0);
-	TestEqual(TEXT("Each of the 3 rounds was one shot on the target"), Target->GetHitCount(), 3);
+	TestEqual(TEXT("Each of the 3 rounds was one shot on the target"), Target->GetShotHitCount(), 3);
 
 	// An empty weapon: no shot, and no change of the ammo.
 	World.Tick(0.2f, [] {});
 	PressFire(*Character);
 	TestEqual(TEXT("An empty weapon stays at 0 rounds"), Weapon->GetAmmo(0), 0);
-	TestEqual(TEXT("An empty weapon does not fire"), Target->GetHitCount(), 3);
+	TestEqual(TEXT("An empty weapon does not fire"), Target->GetShotHitCount(), 3);
 
 	// A shot of 4 pellets spends one round.
 	TestTrue(TEXT("The change to the weapon of 4 pellets"), Weapon->SelectWeapon(1));
 	World.Tick(0.2f, [] {});
 	PressFire(*Character);
 	TestEqual(TEXT("A shot of 4 pellets spends one round"), Weapon->GetAmmo(1), 1);
-	TestEqual(TEXT("Each of the 4 pellets hits the target"), Target->GetHitCount(), 7);
+	TestEqual(TEXT("Each of the 4 pellets hits the target"), Target->GetShotHitCount(), 7);
 	TestEqual(TEXT("The shot of the second weapon does not change the first"), Weapon->GetAmmo(0), 0);
 
 	// The ammo station in reach fills each weapon (D-156).
@@ -385,7 +355,7 @@ bool FIronAbsolutionWeaponChangeTest::RunTest(const FString& Parameters)
 	PressFire(*Character);
 	TestEqual(TEXT("A shot after the raise spends one round of the second weapon"), Weapon->GetAmmo(1), Second->AmmoCapacity - 1);
 	TestEqual(TEXT("The shot does not spend a round of the first weapon"), Weapon->GetAmmo(0), First->AmmoCapacity);
-	TestEqual(TEXT("Each pellet of the second data asset hits the target"), Target->GetHitCount(), Second->PelletCount);
+	TestEqual(TEXT("Each pellet of the second data asset hits the target"), Target->GetShotHitCount(), Second->PelletCount);
 
 	// The slot keys (D-152): slot 0 is the first weapon. A press of the slot in hand changes nothing.
 	TestTrue(TEXT("The key of slot 1 takes the first weapon"), Weapon->SelectWeapon(0));
@@ -431,14 +401,14 @@ bool FIronAbsolutionWeaponThirdTuningTest::RunTest(const FString& Parameters)
 	World.Tick(0.2f, [] {});
 	PressFire(*Character);
 	TestEqual(TEXT("A shot of the third weapon spends one of its 5 rounds"), Weapon->GetAmmo(2), 4);
-	TestEqual(TEXT("Each of its 3 pellets hits the target"), Target->GetHitCount(), 3);
+	TestEqual(TEXT("Each of its 3 pellets hits the target"), Target->GetShotHitCount(), 3);
 
 	// The range of the third weapon is 10 m, so a target at 11 m is out of reach.
 	Target->SetActorLocation(PointOnView(*Character, 1100.0));
 	World.Tick(0.3f, [] {});
 	PressFire(*Character);
 	TestEqual(TEXT("A shot spends a round on a target out of range"), Weapon->GetAmmo(2), 3);
-	TestEqual(TEXT("A target out of the range of the third weapon takes no hit"), Target->GetHitCount(), 3);
+	TestEqual(TEXT("A target out of the range of the third weapon takes no hit"), Target->GetShotHitCount(), 3);
 
 	return !HasAnyErrors();
 }

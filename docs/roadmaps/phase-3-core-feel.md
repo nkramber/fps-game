@@ -268,7 +268,11 @@ Exit tests, on 2026-10-01:
 
 **Questions.** None open.
 
-**State.** 🔧 planned.
+**State.** ✅ done in PR #27. The owner gave the key, the tuning, the feedback, the counts of the gym target, and the hold of the fire (D-169 to D-173). `docs/game/weapon-tuning.md` gives each value, and `docs/research/melee-attack.md` gives the facts.
+
+- The class `UIronMeleeComponent` holds the rule, and the data asset `DA_MeleeAttack` holds the tuning (D-29). Its function `HitActor` is the one place where phase 4 adds the finish.
+- The 44 automation tests pass headless (exit test 2).
+- On 2026-10-03, the owner hit the gym target with the melee attack in the package (exit test 1). `package-run` passes. The owner found the jab crude. The jab is a placeholder. The feel pass of PR-27 can tune it. Phase 5 plans the animation sources, and the gate of phase 7 permits no placeholder (D-171).
 
 > *In plain English:* The player can only shoot today. This change adds a close attack. In phase 4, the same attack finishes a stunned enemy for health.
 

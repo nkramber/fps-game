@@ -147,12 +147,14 @@ One term per concept. Add a row for each term that the owner sets, with the refu
 | weapon rule | the C++ rule of the shot, the ammo, and change weapon, with one data asset for each weapon (D-128) | weapon system, gun class |
 | round | one unit of ammo. Each shot spends one round (D-115) | bullet, when the text means ammo |
 | pellet | one trace of a shot. The scatter gun fires 8 pellets in each shot (D-153) | projectile, when the text means a trace |
-| gym target | a board of the gym that counts each hit and has no health | dummy, enemy |
+| gym target | a board of the gym that counts the hits of shots and of melee attacks apart, and has no health (D-172) | dummy, enemy |
 | ammo station | the gym station that fills each weapon through the verb "interact" (D-156) | refill station, ammo crate |
-| hit marker | the X around the crosshair after a shot hits a gym target (D-154) | hit indicator |
+| hit marker | the X around the crosshair after a shot or a melee attack hits a gym target (D-154, D-171) | hit indicator |
 | flash | the small bright sphere at the point of a hit (D-154) | impact effect, spark |
 | raise time | the time after a change of weapon before the new weapon fires (D-157) | equip time, swap time |
 | recoil | the kick of the view at each shot, up and to a random side, that comes back by itself (D-159, D-161, D-162) | view punch, camera shake |
+| melee attack | the close attack of the verb "melee": a sphere sweep along the view (D-116, D-170) | punch, bash, swing |
+| jab | the move of the weapon in the view, forward and back, at each melee attack (D-171) | swing, thrust, when the text means this move |
 
 Process terms:
 
