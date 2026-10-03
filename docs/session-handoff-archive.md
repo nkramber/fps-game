@@ -2,6 +2,42 @@
 
 This file holds the entries that the rotation moves out of `docs/session-handoff.md`, newest first.
 
+## Session 66: 2026-09-30, Codex
+
+Author: Codex
+Session: reviewer PR-22, round 2. Repository: iron-absolution. Branch: `feat/pr-22-frame-time-capture`. PR: #23. Role: reviewer. Base: `09633599fc73f3c93e52535830c78b852a120cf4`.
+
+### What this session did, and why
+
+- Reviewed PR #23 at work head `09ac7904991b5c6cb301e5cfd82605bbbd011a1c`.
+- Verified the two fixes and their regression tests. P2-1 and P2-2 are fixed. The Linux CI issue is F-28, and its required rerun passed.
+- Updated the test count in the PR description to 46 C# tests.
+- `run.ps1 verify` passes on Windows with 598 tests, format, and STE checks.
+- The review record gives `Ready for owner merge` for the current work head.
+
+### The state of the build
+
+- The reviewed work head is `09ac7904991b5c6cb301e5cfd82605bbbd011a1c`.
+- The metadata commit of this entry and the review record is the remote head on `feat/pr-22-frame-time-capture`.
+- The current GitHub CI code checks pass. The review-gate check awaits this record.
+
+### What is in flight
+
+- PR #23, pending merge: the merge summary and owner confirmation.
+
+### Traps and gotchas
+
+- Do not run `frame-capture` without owner confirmation. It opens a game window (D-96).
+- F-28 caused three short CI failures on this PR. Each failed job passed on its required rerun.
+
+### The questions that block progress
+
+- None.
+
+### The next concrete action
+
+- Give the owner the merge summary for PR #23 after the review-gate check passes.
+
 ## Session 65: 2026-09-30, Claude Code
 
 Author: Claude Code
