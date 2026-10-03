@@ -1,6 +1,6 @@
 # Pillars and the core loop
 
-Status: the pillars, the core loop, and the player verbs of the first level. PR-16 adds this file (D-111, D-114). Written 2026-09-29 in ASD-STE100 (D-17). Correction of 2026-09-29: an original harvest tool replaces the chainsaw, with the same rule (PR-19, D-125).
+Status: the pillars, the core loop, and the player verbs of the first level. PR-16 adds this file (D-111, D-114). Written 2026-09-29 in ASD-STE100 (D-17). Correction of 2026-09-29: an original harvest tool replaces the chainsaw, with the same rule (PR-19, D-125). Correction of 2026-10-01: the pillar "Fast and exact" allows a small random spread around the crosshair (PR-25, D-160).
 
 This file states what the game is, in terms that a design choice can test. The design doc holds the roadmap, and `docs/decisions.md` holds each pick of the owner. The proposals of the recovery mechanic are in `docs/game/combat-proposals.md`.
 
@@ -12,7 +12,7 @@ Each pillar is one sentence that a design choice can test. When a choice breaks 
 |---|---|---|
 | Attack pays | The player gets resources back by attack, never by retreat or a pause. | Cover or a pause is the best way to get health or ammo back. |
 | Every round counts | Each resource is scarce, and the player can read each one at a glance. | A resource that the player cannot see, or a supply so large that no choice matters. |
-| Fast and exact | Movement and aim are fast and precise, and each death has a cause that the player can see. | Slow movement, random spread that aim cannot control, or damage from an enemy off the screen with no cue. |
+| Fast and exact | Movement and aim are fast and precise, and each death has a cause that the player can see. | Slow movement, random spread that aim cannot control, or damage from an enemy off the screen with no cue. Correction of 2026-10-01: a small random spread around the crosshair, such as the cone of 2 degrees of the scatter gun, is allowed (D-160). |
 | One level, complete | One hand-made level of 30 minutes or more, with variety of spaces and enemies, polished before any new scope. | A second level, or a new system that the level does not need (D-1, D-37, G-4). |
 
 The owner accepted the pillars as written in PR-16. They come from D-1 and D-37. Doom (2016) informs the combat intensity, the pacing, and the combat rules (D-115). The names, the art, the audio, and the layouts stay original (D-2).

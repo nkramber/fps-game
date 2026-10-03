@@ -1,6 +1,6 @@
 # Provenance policy
 
-Status: the provenance policy for art and audio, and the Meshy choice. PR-18 adds this file (D-118 to D-121). Written 2026-09-29 in ASD-STE100 (D-17).
+Status: the provenance policy for art and audio, and the Meshy choice. PR-18 adds this file (D-118 to D-121). Written 2026-09-29 in ASD-STE100 (D-17). Correction of 2026-10-01: section 7 holds the records of the sounds of PR-25 until the manifest exists (D-155).
 
 This file gives the rules for the source and the license of each art file and each audio file. It also gives the Meshy choice of the owner and the Meshy facts behind it. The decisions are in `docs/decisions.md`. The art direction is in `docs/game/art-proposals.md` (D-117).
 
@@ -121,3 +121,18 @@ What the facts ask from each Meshy prop:
 - Export the output immediately after the generation, and put it in Git LFS (D-30). The API deletes its outputs after three days.
 - Record the model version in the generation field, because the costs and the tasks differ between versions.
 - Put no private data and no third-party image in a prompt or an input, because Meshy can train on each input.
+
+## 7. Records before the manifest
+
+Phase 5 builds the manifest of section 5 (D-121). Until then, this section holds the record of each file in the scope, with the fields of section 2. The PR of the manifest moves each record into it.
+
+PR-25 adds the sounds of the weapon (D-155). A hit on a gym target has no sound (D-167). Each source is a CC0 file of freesound.org. The repository holds its high-quality OGG preview, because the original file needs a login of OAuth2 (`docs/research/weapon-and-sound.md`). The two fields that section 2 marks "or empty" are empty here: no file is CC BY, and no file is AI generation.
+
+| path | kind | source | license | author | date | cleanup |
+|---|---|---|---|---|---|---|
+| `Game/SourceAssets/Sounds/rifle_shot.ogg` | `free-license` | https://freesound.org/s/212601/ | `CC0-1.0` | pgi | 2026-10-01 | None. The OGG preview as freesound.org gives it. |
+| `Game/SourceAssets/Sounds/scatter_shot.ogg` | `free-license` | https://freesound.org/s/427595/ | `CC0-1.0` | michorvath | 2026-10-01 | None. The OGG preview as freesound.org gives it. |
+| `Game/SourceAssets/Sounds/empty_click.ogg` | `free-license` | https://freesound.org/s/725402/ | `CC0-1.0` | serøutōnin--deprivəd | 2026-10-01 | None. The OGG preview as freesound.org gives it. |
+| `Game/Content/Weapons/Sounds/S_RifleShot.uasset` | `free-license` | https://freesound.org/s/212601/ | `CC0-1.0` | pgi | 2026-10-01 | Unreal Editor 5.8.3: an import of `rifle_shot.ogg` by `run.ps1 content-build`, with the volume 0.35 (D-168). |
+| `Game/Content/Weapons/Sounds/S_ScatterShot.uasset` | `free-license` | https://freesound.org/s/427595/ | `CC0-1.0` | michorvath | 2026-10-01 | Unreal Editor 5.8.3: an import of `scatter_shot.ogg` by `run.ps1 content-build`, with the volume 1.0 (D-168). |
+| `Game/Content/Weapons/Sounds/S_EmptyClick.uasset` | `free-license` | https://freesound.org/s/725402/ | `CC0-1.0` | serøutōnin--deprivəd | 2026-10-01 | Unreal Editor 5.8.3: an import of `empty_click.ogg` by `run.ps1 content-build`, with the volume 1.0. |

@@ -14,8 +14,8 @@
 
 #if WITH_DEV_AUTOMATION_TESTS
 
-// The game world of the tests of the player: the movement of PR-21, and the mantle and interact of
-// PR-24. The test world has no local player, so each test calls the functions of the character
+// The game world of the tests of the player: the movement of PR-21, the mantle and interact of
+// PR-24, and the weapon of PR-25. The test world has no local player, so each test calls the functions of the character
 // that the input actions call.
 namespace IronAbsolution::Tests
 {

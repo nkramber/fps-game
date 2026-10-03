@@ -2,6 +2,44 @@
 
 This file holds the entries that the rotation moves out of `docs/session-handoff.md`, newest first.
 
+## Session 63: 2026-09-30, Claude Code
+
+Author: Claude Code
+Session: author PR-22, round 1. Repository: iron-absolution. Branch: `feat/pr-22-frame-time-capture`. PR: #23. Role: author. Base: `09633599fc73f3c93e52535830c78b852a120cf4`.
+
+### What this session did, and why
+
+- Ran `verify` (552 tests) and `toolchain-check` (5 pins) on `main` before any change.
+- Asked OQ-25. The owner picked the Development package, a fixed set of views, the mean and the 99th percentile, and borderless fullscreen with no cap (D-137).
+- The owner wants the game borderless fullscreen (D-138). The engine default already gives it, so the owner asked for no change.
+- Added `AFrameTimeView`, `UFrameTimeCaptureSubsystem`, 4 views in the content script, 4 automation tests, the `frame-capture` command with 40 new C# tests, and `run.ps1 frame-capture`.
+- First value of M-3: a mean of 3.33 ms and a 99th percentile of 3.67 ms, inside 8.33 ms. Section 4 of `docs/design.md` and `docs/research/frame-time-method.md` give the settings.
+
+### The state of the build
+
+- The effective head is `13bdbb1`. A documents commit follows it. The remote head is the tip of `feat/pr-22-frame-time-capture`.
+- On the Windows PC: `verify` passes with 592 tests. `editor-build`, `editor-test` (13 tests), `content-build`, `package-build`, `frame-capture`, and `package-run` pass.
+
+### What is in flight
+
+- PR #23, pending merge: the Codex review, then the merge summary.
+
+### Traps and gotchas
+
+- Close each other game before `frame-capture`. A game in the background gave a mean of 7.36 ms, and that capture is void.
+- The CSV profiler adds columns during a capture, and the place of `FrameTime` changes between captures. The reader uses the closing header and the column name.
+- `content-build` writes `IMC_KeyboardMouse` again with new ids. This PR restored it.
+- F-28 on the first push: `EditorTestCommandTests.AStubRunThatWritesTheReportAndTheSuccessLinePasses` failed after 9 ms in the `coverage report` job. The session ran the failed job again one time.
+- A Python heredoc through the Bash tool halves each backslash. Check each Windows path after such an edit.
+
+### The questions that block progress
+
+- None for PR-22. OQ-16 stays out of each PR (D-7).
+
+### The next concrete action
+
+- Run `run.ps1 codex-review -PR 23`, answer the findings, then give the owner the merge summary.
+
 ## Session 62: 2026-09-29, Codex
 
 Author: Codex

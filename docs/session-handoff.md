@@ -1,3 +1,41 @@
+## Session 73: 2026-10-03, Claude Code
+
+Author: Claude Code
+Session: author PR-25, round 1. Repository: iron-absolution. Branch: `feat/pr-25-weapon`. PR: #26. Role: author. Base: `d2dfaa395dbeac6c5480da10fed6f881fe579d1b`.
+
+### What this session did, and why
+
+- Added the weapon rule, two data assets, the ammo, change weapon, the HUD, the gym target, the ammo station, the flash, the recoil, and the sounds of the gym (D-151 to D-168).
+- Five play tests of the package changed the recoil, the spread, the reach of interact, and the sounds (D-159 to D-168).
+- The owner removed the hit sound, because the hit marker is enough (D-167). The owner set the mix of the shots: the rifle 0.35, the scatter gun 1.0 (D-168).
+- A test keeps each rifle shot quieter than a scatter shot.
+
+### The state of the build
+
+- The remote head is the head of `feat/pr-25-weapon`, pending merge.
+- On the Windows PC: `verify`, `toolchain-check`, `editor-build`, `content-build`, 39 headless tests, `package-build`, and `package-run` pass.
+- The owner played the last package. Exit tests 1 and 2 pass.
+- M-3 on record: a mean of 3.33 ms and a 99th percentile of 3.65 ms, from the earlier package of this PR. The changes since then are sound alone. The last capture had another game open, and the owner kept the earlier values.
+
+### What is in flight
+
+- The cross-provider review of PR #26.
+
+### Traps and gotchas
+
+- Each sound asset holds its volume, and `Game/Scripts/build_content.py` sets it (D-29). Edit the script, not the asset.
+- The rifle file and the scatter file have about the same level. The tails of a rifle burst overlap, so the rifle sounds louder.
+- A frame capture with another program open is not a clean value of M-3.
+- The token of freesound.org stays out of the repository (G-6).
+
+### The questions that block progress
+
+- None.
+
+### The next concrete action
+
+- Run `run.ps1 codex-review -PR 26`, and answer the findings with the review-response skill.
+
 ## Session 72: 2026-10-01, Codex
 
 Author: Codex
@@ -319,43 +357,3 @@ Session: reviewer PR-22, round 1. Repository: iron-absolution. Branch: `feat/pr-
 ### The next concrete action
 
 - The author answers P1-1, P2-1, and P2-2, then requests a repeat review.
-
-## Session 63: 2026-09-30, Claude Code
-
-Author: Claude Code
-Session: author PR-22, round 1. Repository: iron-absolution. Branch: `feat/pr-22-frame-time-capture`. PR: #23. Role: author. Base: `09633599fc73f3c93e52535830c78b852a120cf4`.
-
-### What this session did, and why
-
-- Ran `verify` (552 tests) and `toolchain-check` (5 pins) on `main` before any change.
-- Asked OQ-25. The owner picked the Development package, a fixed set of views, the mean and the 99th percentile, and borderless fullscreen with no cap (D-137).
-- The owner wants the game borderless fullscreen (D-138). The engine default already gives it, so the owner asked for no change.
-- Added `AFrameTimeView`, `UFrameTimeCaptureSubsystem`, 4 views in the content script, 4 automation tests, the `frame-capture` command with 40 new C# tests, and `run.ps1 frame-capture`.
-- First value of M-3: a mean of 3.33 ms and a 99th percentile of 3.67 ms, inside 8.33 ms. Section 4 of `docs/design.md` and `docs/research/frame-time-method.md` give the settings.
-
-### The state of the build
-
-- The effective head is `13bdbb1`. A documents commit follows it. The remote head is the tip of `feat/pr-22-frame-time-capture`.
-- On the Windows PC: `verify` passes with 592 tests. `editor-build`, `editor-test` (13 tests), `content-build`, `package-build`, `frame-capture`, and `package-run` pass.
-
-### What is in flight
-
-- PR #23, pending merge: the Codex review, then the merge summary.
-
-### Traps and gotchas
-
-- Close each other game before `frame-capture`. A game in the background gave a mean of 7.36 ms, and that capture is void.
-- The CSV profiler adds columns during a capture, and the place of `FrameTime` changes between captures. The reader uses the closing header and the column name.
-- `content-build` writes `IMC_KeyboardMouse` again with new ids. This PR restored it.
-- F-28 on the first push: `EditorTestCommandTests.AStubRunThatWritesTheReportAndTheSuccessLinePasses` failed after 9 ms in the `coverage report` job. The session ran the failed job again one time.
-- A Python heredoc through the Bash tool halves each backslash. Check each Windows path after such an edit.
-
-### The questions that block progress
-
-- None for PR-22. OQ-16 stays out of each PR (D-7).
-
-### The next concrete action
-
-- Run `run.ps1 codex-review -PR 23`, answer the findings, then give the owner the merge summary.
-
-
