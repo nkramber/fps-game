@@ -2,6 +2,39 @@
 
 This file holds the entries that the rotation moves out of `docs/session-handoff.md`, newest first.
 
+## Session 68: 2026-09-30, Codex
+
+Author: Codex
+Session: reviewer PR-24, round 1. Repository: iron-absolution. Branch: `feat/pr-23-aim-settings`. PR: #24. Role: reviewer. Base: `aa9fc2a2556815dc4ef2f6b55f1f17abd1892940`.
+
+### What this session did, and why
+
+- Reviewed the aim settings of PR-24, from the implementation head `f2a27b2` (D-139 to D-142).
+- Found no defect. Wrote `docs/reviews/pr-24.md` with the verdict and the evidence.
+
+### The state of the build
+
+- The reviewed work head is `f2a27b220ab0e96646a7a27ae6313a127fd38f96`. The remote head is the metadata commit of this entry on `feat/pr-23-aim-settings`.
+- `run.ps1 verify`, `editor-build`, `editor-test`, and `content-build` pass. The package and play-test evidence comes from the owner comment.
+- The coverage job failed once in `PackageRunCommandTests.TheSuccessLineOnStdoutAloneDoesNotPass`: it saw the package path, not the expected error line. Its one rerun passed (F-28).
+
+### What is in flight
+
+- PR #24 is pending merge. The review record approves the implementation head.
+
+### Traps and gotchas
+
+- `content-build` rewrites the input mapping and gym assets. The review restored those generated changes.
+- `package-run` and `frame-capture` open a game window. D-96 needs owner confirmation before a session runs them.
+
+### The questions that block progress
+
+- None.
+
+### The next concrete action
+
+- Complete the PR gate with the review record and the five green required checks.
+
 ## Session 67: 2026-09-30, Claude Code
 
 Author: Claude Code

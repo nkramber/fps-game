@@ -1,3 +1,38 @@
+## Session 78: 2026-10-03, Codex
+
+Author: Codex
+Session: reviewer PR-26, round 1. Repository: iron-absolution. Branch: `review/pr-27`. PR: #27. Role: reviewer. Base: `e7c29f9454f6ff2945702b2e864981d02ecd9e4b`.
+
+### What this session did, and why
+
+- Reviewed PR #27 at effective head `59e546ab460d528c7834f0996e50f68557a0d6b9`.
+- Found no defect in the melee attack, the fire hold, the feedback, or the gym target counts.
+- Added the round 1 review record and this entry as one metadata commit (D-14).
+
+### The state of the build
+
+- The work head is `59e546ab460d528c7834f0996e50f68557a0d6b9`. The remote branch will hold this session's metadata commit.
+- `run.ps1 verify`, `editor-build`, `content-build`, and all 44 headless editor tests pass.
+- The owner reports a package build, a passing timed run, and a melee hit in the package (exit test 1).
+- CI passes four checks. `review-gate` waits for this record.
+
+### What is in flight
+
+- The review record and this entry need one metadata commit and a push to `feat/pr-26-melee`.
+
+### Traps and gotchas
+
+- A fresh worktree needs `editor-build` before `content-build` can load the game module.
+- `content-build` rewrites generated assets. Restore that churn when the script did not change.
+
+### The questions that block progress
+
+- OQ-21 remains open for phase 8 gamepad support. It does not block this PR.
+
+### The next concrete action
+
+- Give the owner the review verdict. The author gives the four-part merge summary and gets merge confirmation.
+
 ## Session 77: 2026-10-03, Claude Code
 
 Author: Claude Code
@@ -321,36 +356,3 @@ Session: author PR-24, round 1. Repository: iron-absolution. Branch: `feat/pr-24
 ### The next concrete action
 
 - Run the review loop of PR #25 with `run.ps1 codex-review -PR 25`, and answer each finding.
-
-## Session 68: 2026-09-30, Codex
-
-Author: Codex
-Session: reviewer PR-24, round 1. Repository: iron-absolution. Branch: `feat/pr-23-aim-settings`. PR: #24. Role: reviewer. Base: `aa9fc2a2556815dc4ef2f6b55f1f17abd1892940`.
-
-### What this session did, and why
-
-- Reviewed the aim settings of PR-24, from the implementation head `f2a27b2` (D-139 to D-142).
-- Found no defect. Wrote `docs/reviews/pr-24.md` with the verdict and the evidence.
-
-### The state of the build
-
-- The reviewed work head is `f2a27b220ab0e96646a7a27ae6313a127fd38f96`. The remote head is the metadata commit of this entry on `feat/pr-23-aim-settings`.
-- `run.ps1 verify`, `editor-build`, `editor-test`, and `content-build` pass. The package and play-test evidence comes from the owner comment.
-- The coverage job failed once in `PackageRunCommandTests.TheSuccessLineOnStdoutAloneDoesNotPass`: it saw the package path, not the expected error line. Its one rerun passed (F-28).
-
-### What is in flight
-
-- PR #24 is pending merge. The review record approves the implementation head.
-
-### Traps and gotchas
-
-- `content-build` rewrites the input mapping and gym assets. The review restored those generated changes.
-- `package-run` and `frame-capture` open a game window. D-96 needs owner confirmation before a session runs them.
-
-### The questions that block progress
-
-- None.
-
-### The next concrete action
-
-- Complete the PR gate with the review record and the five green required checks.
