@@ -14,11 +14,12 @@ Session: reviewer PR-26, round 1. Repository: iron-absolution. Branch: `feat/pr-
 - The work head is `59e546ab460d528c7834f0996e50f68557a0d6b9`. The remote branch holds the review metadata commit `0234cf2dcbf86b920b118b8fc2c1fd001377a2ef` and this correction will follow.
 - `run.ps1 verify`, `editor-build`, `content-build`, and all 44 headless editor tests pass.
 - The owner reports a package build, a passing timed run, and a melee hit in the package (exit test 1).
-- CI passes four checks. `review-gate` passes. `doc-gate` failed because this entry named the reviewer worktree branch.
+- The first metadata push passed `review-gate`, but `doc-gate` found the wrong branch in this entry. The correction names the PR branch.
+- Local `doc-gate` and the rerun of all five required CI checks pass at metadata head `28b9aeece6de71aacbc87d4a2829b3af430a7f13`.
 
 ### What is in flight
 
-- The review record and this entry need one metadata commit and a push to `feat/pr-26-melee`.
+- The final record and handoff status need one metadata commit and a push to `feat/pr-26-melee`.
 
 ### Traps and gotchas
 
