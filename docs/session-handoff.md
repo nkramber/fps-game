@@ -1,7 +1,7 @@
 ## Session 78: 2026-10-03, Codex
 
 Author: Codex
-Session: reviewer PR-26, round 1. Repository: iron-absolution. Branch: `review/pr-27`. PR: #27. Role: reviewer. Base: `e7c29f9454f6ff2945702b2e864981d02ecd9e4b`.
+Session: reviewer PR-26, round 1. Repository: iron-absolution. Branch: `feat/pr-26-melee`. PR: #27. Role: reviewer. Base: `e7c29f9454f6ff2945702b2e864981d02ecd9e4b`.
 
 ### What this session did, and why
 
@@ -11,10 +11,10 @@ Session: reviewer PR-26, round 1. Repository: iron-absolution. Branch: `review/p
 
 ### The state of the build
 
-- The work head is `59e546ab460d528c7834f0996e50f68557a0d6b9`. The remote branch will hold this session's metadata commit.
+- The work head is `59e546ab460d528c7834f0996e50f68557a0d6b9`. The remote branch holds the review metadata commit `0234cf2dcbf86b920b118b8fc2c1fd001377a2ef` and this correction will follow.
 - `run.ps1 verify`, `editor-build`, `content-build`, and all 44 headless editor tests pass.
 - The owner reports a package build, a passing timed run, and a melee hit in the package (exit test 1).
-- CI passes four checks. `review-gate` waits for this record.
+- CI passes four checks. `review-gate` passes. `doc-gate` failed because this entry named the reviewer worktree branch.
 
 ### What is in flight
 
