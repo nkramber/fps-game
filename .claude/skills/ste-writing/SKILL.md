@@ -144,6 +144,15 @@ One term per concept. Add a row for each term that the owner sets, with the refu
 | mantle | the verb: the player climbs onto a ledge from the air (D-143). The climb is the move inside a mantle | vault, ledge grab |
 | band of the mantle | the heights of a ledge top above the feet that start a mantle (D-143) | mantle range, climb range |
 | cue | the outline and the glow that show the switch or the door in reach (D-145, D-148) | highlight, prompt |
+| weapon rule | the C++ rule of the shot, the ammo, and change weapon, with one data asset for each weapon (D-128) | weapon system, gun class |
+| round | one unit of ammo. Each shot spends one round (D-115) | bullet, when the text means ammo |
+| pellet | one trace of a shot. The scatter gun fires 8 pellets in each shot (D-153) | projectile, when the text means a trace |
+| gym target | a board of the gym that counts each hit and has no health | dummy, enemy |
+| ammo station | the gym station that fills each weapon through the verb "interact" (D-156) | refill station, ammo crate |
+| hit marker | the X around the crosshair after a shot hits a gym target (D-154) | hit indicator |
+| flash | the small bright sphere at the point of a hit (D-154) | impact effect, spark |
+| raise time | the time after a change of weapon before the new weapon fires (D-157) | equip time, swap time |
+| recoil | the kick of the view at each shot, up and to a random side, that comes back by itself (D-159, D-161, D-162) | view punch, camera shake |
 
 Process terms:
 

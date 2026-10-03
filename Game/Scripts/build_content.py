@@ -3,9 +3,10 @@
 
 `run.ps1 content-build` runs this script through the Python commandlet of the editor, with no
 window. The script is the source of each asset that it makes: the input actions, the mapping
-context, the movement tuning, the outline and glow materials of interact, the player Blueprints,
-and the gym map `L_Gym` with the views of the frame-time capture. A change to one of these assets is a change to this script, then a new run. A
-change in the editor alone goes away at the next run.
+context, the movement tuning, the outline and glow materials of interact, the weapons and their
+sounds, the player Blueprints and the HUD, and the gym map `L_Gym` with the views of the frame-time
+capture. A change to one of these assets is a change to this script, then a new run. A change in
+the editor alone goes away at the next run.
 
 The script makes an asset when it is absent, and writes each value again when it is present. Each
 fault raises an exception, so the commandlet gives a nonzero exit code (T-2).
@@ -19,6 +20,8 @@ import unreal
 
 INPUT_FOLDER = "/Game/Input"
 PLAYER_FOLDER = "/Game/Player"
+WEAPON_FOLDER = "/Game/Weapons"
+SOUND_FOLDER = "/Game/Weapons/Sounds"
 GYM_MAP = "/Game/Maps/L_Gym"
 
 # The first values of the movement (D-135). `docs/game/movement-metrics.md` gives each reason.
@@ -33,11 +36,95 @@ MOVEMENT_TUNING = {
     "step_height": 45.0,
     "walkable_slope": 45.0,
     "eye_height": 160.0,
-    # The mantle (D-143) and the reach of interact (D-144).
+    # The mantle (D-143) and the reach of interact (D-144, D-163).
     "mantle_min_height": 50.0,
     "mantle_max_height": 130.0,
     "mantle_time": 0.4,
-    "interact_reach": 200.0,
+    "interact_reach": 400.0,
+}
+
+# The two data assets of the weapon rule (D-151, D-153, D-157, D-159 to D-162). `docs/game/weapon-tuning.md`
+# gives each reason. The range is 100 m, and each shot spends one round.
+WEAPON_TUNING = {
+    "DA_WeaponRifle": {
+        "display_name": "Rifle",
+        "automatic": True,
+        "shots_per_second": 10.0,
+        "ammo_capacity": 60,
+        "range": 10000.0,
+        "pellet_count": 1,
+        "spread_angle": 0.0,
+        "raise_time": 0.25,
+        "recoil_kick": 0.5,
+        "recoil_side_kick": 0.25,
+        "recoil_recovery_time": 0.15,
+        "shot_sound": "S_RifleShot",
+        "shot_sound_start_time": 0.0,
+        # A long thin box, low and to the right of the view.
+        "view_scale": unreal.Vector(0.6, 0.06, 0.08),
+        "view_offset": unreal.Vector(45.0, 18.0, -20.0),
+    },
+    "DA_WeaponScatter": {
+        "display_name": "Scatter",
+        "automatic": False,
+        "shots_per_second": 1.5,
+        "ammo_capacity": 12,
+        "range": 10000.0,
+        "pellet_count": 8,
+        "spread_angle": 2.0,
+        "raise_time": 0.35,
+        "recoil_kick": 3.0,
+        "recoil_side_kick": 1.0,
+        "recoil_recovery_time": 0.35,
+        "shot_sound": "S_ScatterShot",
+        # The file starts with 56 ms of silence, so the shot starts the sound 50 ms in (D-165).
+        "shot_sound_start_time": 0.05,
+        # A short thick box, low and to the right of the view.
+        "view_scale": unreal.Vector(0.45, 0.12, 0.12),
+        "view_offset": unreal.Vector(40.0, 18.0, -22.0),
+    },
+}
+
+# The sounds of the weapon: the high-quality OGG previews of three CC0 files of freesound.org
+# (D-155). A hit on a gym target has no sound (D-167). `docs/game/provenance.md` holds the record of
+# each file. The key is the name of the asset.
+SOUND_SOURCE_FOLDER = "SourceAssets/Sounds"
+SOUNDS = {
+    "S_RifleShot": "rifle_shot.ogg",
+    "S_ScatterShot": "scatter_shot.ogg",
+    "S_EmptyClick": "empty_click.ogg",
+}
+
+# The mix (D-168). The rifle fires 10 shots each second, and the tail of each shot lasts about 1 s,
+# so the shots of a burst overlap. Each shot of the rifle plays about 9 dB under a shot of the
+# scatter gun. Each value is the linear volume of the sound asset.
+SOUND_VOLUMES = {
+    "S_RifleShot": 0.35,
+    "S_ScatterShot": 1.0,
+    "S_EmptyClick": 1.0,
+}
+
+# The flash at the point of a hit (D-154): a small sphere that fades out. The parameter name is
+# `AIronHitFlash::BrightnessParameter`.
+SPHERE = "/Engine/BasicShapes/Sphere.Sphere"
+FLASH_DIAMETER = 8.0
+FLASH_LIFETIME = 0.1
+FLASH_COLOR = unreal.LinearColor(r=1.0, g=0.85, b=0.5, a=1.0)
+FLASH_BRIGHTNESS = 20.0
+FLASH_PARAMETER = "Brightness"
+
+# The HUD (D-154, D-158). Each size is in pixels.
+HUD_VALUES = {
+    "color": unreal.LinearColor(r=1.0, g=0.78, b=0.16, a=1.0),
+    "empty_color": unreal.LinearColor(r=1.0, g=0.1, b=0.1, a=1.0),
+    "crosshair_length": 8.0,
+    "crosshair_gap": 4.0,
+    "line_thickness": 2.0,
+    "hit_marker_gap": 8.0,
+    "hit_marker_length": 8.0,
+    "hit_marker_seconds": 0.15,
+    "text_scale": 2.0,
+    "text_margin": 40.0,
 }
 
 # The project defaults of the aim settings (D-141). The views of the frame-time capture take the
@@ -85,6 +172,16 @@ DOOR_WALL_HEIGHT = 300.0
 DOOR_OPEN_OFFSET = unreal.Vector(0.0, 0.0, -260.0)
 SWITCH_SIZE = 20.0
 SWITCH_LOCATION = unreal.Vector(-2250.0, DOOR_WALL_Y - DOOR_SIZE.y / 2.0 - SWITCH_SIZE / 2.0, 120.0)
+
+# The targets of the weapon, between the distance row and the ledge row, at 10 m, 25 m, and 50 m
+# from the start along +X. Each board is 10 cm deep, 100 cm wide, and 180 cm high.
+TARGET_ROW_Y = -300.0
+TARGET_DISTANCES = (10, 25, 50)
+TARGET_SIZE = unreal.Vector(10.0, 100.0, 180.0)
+
+# The ammo station, to the left of the start (D-156).
+AMMO_STATION_LOCATION = unreal.Vector(-2600.0, -400.0, 50.0)
+AMMO_STATION_SIZE = unreal.Vector(50.0, 50.0, 100.0)
 
 # The cue of the target in reach (D-145, D-148), in the color of the labels. The outline is 3
 # pixels wide. The step of the custom depth, in cm, marks the edge of a target. Each brightness is a
@@ -165,7 +262,14 @@ def key_mapping(action, key_name, modifiers):
     return mapping
 
 
-def keyboard_mouse_context(move, look, jump, interact, quit_game):
+def scalar(owner, value):
+    """Multiplies the value of a key, for example to give the key 2 the value of slot 2."""
+    modifier = unreal.new_object(unreal.InputModifierScalar, outer=owner)
+    modifier.set_editor_property("scalar", unreal.Vector(value, value, value))
+    return modifier
+
+
+def keyboard_mouse_context(move, look, jump, interact, quit_game, fire, change_weapon, select_weapon):
     """The mapping context of the keyboard and the mouse (D-136). No C++ names a key (OQ-21)."""
     context = load_or_create(INPUT_FOLDER, "IMC_KeyboardMouse", unreal.InputMappingContext, unreal.InputMappingContext_Factory())
     mappings = [
@@ -181,6 +285,13 @@ def keyboard_mouse_context(move, look, jump, interact, quit_game):
         # The mouse gives a positive Y when it moves forward. The project turns off the input
         # scales of the engine, so a positive pitch input turns the view up with no modifier (D-139).
         key_mapping(look, "Mouse2D", []),
+        # The fire key (D-151). Each step of the wheel takes the next weapon, and the number keys
+        # take a slot. The value of the select action is the number of the slot (D-152).
+        key_mapping(fire, "LeftMouseButton", []),
+        key_mapping(change_weapon, "MouseScrollUp", []),
+        key_mapping(change_weapon, "MouseScrollDown", []),
+        key_mapping(select_weapon, "One", []),
+        key_mapping(select_weapon, "Two", [scalar(context, 2.0)]),
     ]
     data = unreal.InputMappingContextMappingData()
     data.set_editor_property("mappings", mappings)
@@ -334,36 +445,139 @@ def glow_material():
     return material
 
 
-def blueprint(name, parent_class):
+def import_sounds():
+    """Imports each sound of the weapon from its source file, and gives the assets by name (D-155)."""
+    source = os.path.join(unreal.Paths.convert_relative_path_to_full(unreal.Paths.project_dir()), SOUND_SOURCE_FOLDER)
+    tasks = []
+    for name, file_name in SOUNDS.items():
+        path = os.path.join(source, file_name)
+        if not os.path.isfile(path):
+            raise ContentError(f"The source file {path} of the sound {name} is absent.")
+        task = unreal.AssetImportTask()
+        task.set_editor_property("filename", path)
+        task.set_editor_property("destination_path", SOUND_FOLDER)
+        task.set_editor_property("destination_name", name)
+        task.set_editor_property("replace_existing", True)
+        task.set_editor_property("automated", True)
+        task.set_editor_property("save", True)
+        tasks.append(task)
+    asset_tools().import_asset_tasks(tasks)
+
+    sounds = {}
+    for name in SOUNDS:
+        path = f"{SOUND_FOLDER}/{name}"
+        sound = unreal.load_asset(path)
+        if sound is None or not isinstance(sound, unreal.SoundWave):
+            raise ContentError(f"The import of {path} gave no sound wave. Read the log of the import.")
+        sound.set_editor_property("volume", SOUND_VOLUMES[name])
+        save(sound)
+        sounds[name] = sound
+    return sounds
+
+
+def hit_flash_material():
+    """The material of the flash at the point of a hit (D-154).
+
+    An additive unlit color, times the scalar parameter that the flash sets from 1 down to 0.
+    """
+    material = load_or_create(WEAPON_FOLDER, "M_HitFlash", unreal.Material, unreal.MaterialFactoryNew())
+    unreal.MaterialEditingLibrary.delete_all_material_expressions(material)
+    material.set_editor_property("material_domain", unreal.MaterialDomain.MD_SURFACE)
+    material.set_editor_property("blend_mode", unreal.BlendMode.BLEND_ADDITIVE)
+    material.set_editor_property("shading_model", unreal.MaterialShadingModel.MSM_UNLIT)
+
+    color = material_node(material, unreal.MaterialExpressionConstant3Vector, -400, -100, constant=bright(FLASH_COLOR, FLASH_BRIGHTNESS))
+    brightness = material_node(material, unreal.MaterialExpressionScalarParameter, -400, 100, parameter_name=FLASH_PARAMETER, default_value=1.0)
+    glow = material_node(material, unreal.MaterialExpressionMultiply, -200, 0)
+    material_link(color, "", glow, "A")
+    material_link(brightness, "", glow, "B")
+    if not unreal.MaterialEditingLibrary.connect_material_property(glow, "", unreal.MaterialProperty.MP_EMISSIVE_COLOR):
+        raise ContentError(f"The flash of {material.get_path_name()} did not connect to the emissive color.")
+
+    unreal.MaterialEditingLibrary.recompile_material(material)
+    save(material)
+    return material
+
+
+def hit_flash(material):
+    """The Blueprint of the flash at the point of a hit (D-154)."""
+    sphere = unreal.load_asset(SPHERE)
+    if sphere is None:
+        raise ContentError(f"The mesh {SPHERE} did not load.")
+    flash, flash_defaults = blueprint("BP_HitFlash", unreal.IronHitFlash, WEAPON_FOLDER)
+    flash_defaults.set_editor_property("flash_mesh", sphere)
+    flash_defaults.set_editor_property("flash_material", material)
+    flash_defaults.set_editor_property("diameter", FLASH_DIAMETER)
+    flash_defaults.set_editor_property("lifetime", FLASH_LIFETIME)
+    save(flash)
+    return flash
+
+
+def weapon_tunings(sounds, flash):
+    """The two data assets of the weapon rule, in the order of the slots (D-128, D-153)."""
+    mesh = unreal.load_asset(CUBE)
+    if mesh is None:
+        raise ContentError(f"The mesh {CUBE} did not load.")
+    factory = unreal.DataAssetFactory()
+    factory.set_editor_property("data_asset_class", unreal.IronWeaponTuning)
+    tunings = []
+    for name, values in WEAPON_TUNING.items():
+        tuning = load_or_create(WEAPON_FOLDER, name, unreal.IronWeaponTuning, factory)
+        for key, value in values.items():
+            if key == "display_name":
+                tuning.set_editor_property(key, unreal.Text(value))
+            elif key == "shot_sound":
+                tuning.set_editor_property(key, sounds[value])
+            else:
+                tuning.set_editor_property(key, value)
+        tuning.set_editor_property("empty_sound", sounds["S_EmptyClick"])
+        tuning.set_editor_property("hit_flash_class", flash.generated_class())
+        tuning.set_editor_property("view_mesh", mesh)
+        save(tuning)
+        tunings.append(tuning)
+    return tunings
+
+
+def blueprint(name, parent_class, folder=PLAYER_FOLDER):
     """Loads or makes a Blueprint subclass, and gives its default object."""
     factory = unreal.BlueprintFactory()
     factory.set_editor_property("parent_class", parent_class)
-    asset = load_or_create(PLAYER_FOLDER, name, unreal.Blueprint, factory)
+    asset = load_or_create(folder, name, unreal.Blueprint, factory)
     generated = asset.generated_class()
     if generated is None:
         raise ContentError(f"The Blueprint {asset.get_path_name()} has no generated class.")
     return asset, unreal.get_default_object(generated)
 
 
-def player_blueprints(tuning, move, look, jump, interact, quit_game, outline, glow, context):
+def player_blueprints(tuning, actions, outline, glow, context, weapons):
     character, character_defaults = blueprint("BP_PlayerCharacter", unreal.IronPlayerCharacter)
     character_defaults.set_editor_property("movement_tuning", tuning)
-    character_defaults.set_editor_property("move_action", move)
-    character_defaults.set_editor_property("look_action", look)
-    character_defaults.set_editor_property("jump_action", jump)
-    character_defaults.set_editor_property("interact_action", interact)
+    character_defaults.set_editor_property("move_action", actions["move"])
+    character_defaults.set_editor_property("look_action", actions["look"])
+    character_defaults.set_editor_property("jump_action", actions["jump"])
+    character_defaults.set_editor_property("interact_action", actions["interact"])
+    character_defaults.set_editor_property("fire_action", actions["fire"])
+    character_defaults.set_editor_property("change_weapon_action", actions["change_weapon"])
+    character_defaults.set_editor_property("select_weapon_action", actions["select_weapon"])
     character_defaults.set_editor_property("interact_outline_material", outline)
     character_defaults.set_editor_property("interact_glow_material", glow)
+    character_defaults.set_editor_property("weapons", weapons)
     save(character)
+
+    hud, hud_defaults = blueprint("BP_PlayerHUD", unreal.IronHUD)
+    for name, value in HUD_VALUES.items():
+        hud_defaults.set_editor_property(name, value)
+    save(hud)
 
     controller, controller_defaults = blueprint("BP_PlayerController", unreal.IronPlayerController)
     controller_defaults.set_editor_property("mapping_contexts", [context])
-    controller_defaults.set_editor_property("quit_action", quit_game)
+    controller_defaults.set_editor_property("quit_action", actions["quit"])
     save(controller)
 
     game_mode, game_mode_defaults = blueprint("BP_PlayerGameMode", unreal.GameModeBase)
     game_mode_defaults.set_editor_property("default_pawn_class", character.generated_class())
     game_mode_defaults.set_editor_property("player_controller_class", controller.generated_class())
+    game_mode_defaults.set_editor_property("hud_class", hud.generated_class())
     save(game_mode)
     return game_mode
 
@@ -529,6 +743,31 @@ def door_station(actors):
     text(actors, "Switch: E", unreal.Vector(SWITCH_LOCATION.x, SWITCH_LOCATION.y - 10.0, SWITCH_LOCATION.z + 40.0), yaw=-90.0)
 
 
+def target_station(actors):
+    """Three gym targets that count each hit, and the ammo station (D-154, D-156)."""
+    mesh = unreal.load_asset(CUBE)
+    if mesh is None:
+        raise ContentError(f"The mesh {CUBE} did not load.")
+    for distance in TARGET_DISTANCES:
+        x = PLAYER_START.x + distance * 100.0
+        # The root of the target is on the floor. The yaw faces the count to the player at the start.
+        target = spawn(actors, unreal.IronTarget, unreal.Vector(x, TARGET_ROW_Y, 0.0), unreal.Rotator(0.0, 0.0, 180.0), f"Target {distance} m")
+        board = target.get_editor_property("board")
+        board.set_static_mesh(mesh)
+        board.set_relative_scale3d(unreal.Vector(TARGET_SIZE.x / CUBE_SIZE, TARGET_SIZE.y / CUBE_SIZE, TARGET_SIZE.z / CUBE_SIZE))
+        board.set_relative_location(unreal.Vector(0.0, 0.0, TARGET_SIZE.z / 2.0), False, False)
+        count = target.get_editor_property("count_text")
+        count.set_relative_location(unreal.Vector(0.0, 0.0, TARGET_SIZE.z + 20.0), False, False)
+        count.set_world_size(LABEL_HEIGHT)
+        count.set_text_render_color(LABEL_COLOR)
+        text(actors, f"Target {distance} m", unreal.Vector(x, TARGET_ROW_Y, TARGET_SIZE.z + 70.0))
+
+    station = spawn(actors, unreal.IronAmmoStation, AMMO_STATION_LOCATION, label="Ammo station")
+    station.get_editor_property("body").set_static_mesh(mesh)
+    station.set_actor_scale3d(unreal.Vector(AMMO_STATION_SIZE.x / CUBE_SIZE, AMMO_STATION_SIZE.y / CUBE_SIZE, AMMO_STATION_SIZE.z / CUBE_SIZE))
+    text(actors, "Ammo: E", unreal.Vector(AMMO_STATION_LOCATION.x, AMMO_STATION_LOCATION.y, AMMO_STATION_SIZE.z + 40.0))
+
+
 def default_field_of_view():
     """Reads the default field of view of the project from its config file (D-141)."""
     path = os.path.join(unreal.Paths.convert_relative_path_to_full(unreal.Paths.project_config_dir()), AIM_DEFAULTS_FILE)
@@ -558,6 +797,7 @@ def gym(game_mode):
     step_row(actors)
     hall_row(actors)
     door_station(actors)
+    target_station(actors)
     frame_time_views(actors)
 
     world = unreal.get_editor_subsystem(unreal.UnrealEditorSubsystem).get_editor_world()
@@ -575,13 +815,29 @@ def main():
     jump = input_action("IA_Jump", unreal.InputActionValueType.BOOLEAN)
     interact = input_action("IA_Interact", unreal.InputActionValueType.BOOLEAN)
     quit_game = input_action("IA_Quit", unreal.InputActionValueType.BOOLEAN)
-    context = keyboard_mouse_context(move, look, jump, interact, quit_game)
+    fire = input_action("IA_Fire", unreal.InputActionValueType.BOOLEAN)
+    change_weapon = input_action("IA_ChangeWeapon", unreal.InputActionValueType.BOOLEAN)
+    select_weapon = input_action("IA_SelectWeapon", unreal.InputActionValueType.AXIS1D)
+    context = keyboard_mouse_context(move, look, jump, interact, quit_game, fire, change_weapon, select_weapon)
+    actions = {
+        "move": move,
+        "look": look,
+        "jump": jump,
+        "interact": interact,
+        "quit": quit_game,
+        "fire": fire,
+        "change_weapon": change_weapon,
+        "select_weapon": select_weapon,
+    }
     tuning = movement_tuning()
     outline = outline_material()
     glow = glow_material()
-    game_mode = player_blueprints(tuning, move, look, jump, interact, quit_game, outline, glow, context)
+    sounds = import_sounds()
+    flash = hit_flash(hit_flash_material())
+    weapons = weapon_tunings(sounds, flash)
+    game_mode = player_blueprints(tuning, actions, outline, glow, context, weapons)
     gym(game_mode)
-    unreal.log("build_content: pass. The input, the player, and the gym map saved.")
+    unreal.log("build_content: pass. The input, the player, the weapons, and the gym map saved.")
 
 
 main()

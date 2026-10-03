@@ -219,6 +219,7 @@ Exit tests, on 2026-10-01:
 - Tests of the hit: a hit on a target in the line, and a miss on a target out of the line.
 - Tests of the ammo: one round for each shot, and no shot from an empty weapon.
 - A test of change weapon: the other data asset gives its tuning after the change.
+- Correction of 2026-10-01: the owner added two rules after the play tests. Each shot kicks the view up and to a random side. The pellets of the scatter gun spread at random in a cone of 2 degrees (D-159 to D-162). The owner also set the mix of the shot sounds and removed the hit sound, because the hit marker is enough (D-167, D-168).
 
 **Out of scope.**
 
@@ -234,11 +235,14 @@ Exit tests, on 2026-10-01:
 
 **Review focus.** The trace against Unreal practice (D-34). The ammo rule against D-115. The split of the rule and the data assets (D-29, D-128).
 
-**Questions.** OQ-26, the sound of the gym. The owner answers at the start of the PR.
+**Questions.** OQ-26, the sound of the gym. Resolved 2026-10-01: D-155.
 
-**State.** 🔧 planned.
+**State.** ✅ done in PR #26. The owner gave D-151 to D-168. The owner also set G-7 aside for a reach of interact of 400 cm (D-163). `docs/game/weapon-tuning.md` gives each value, and `docs/research/weapon-and-sound.md` gives the facts.
 
-> *In plain English:* The player cannot shoot yet. This change adds one gun with two sets of values, a target that shows each hit, and a count of the ammo. The gun needs no reload.
+- The 39 automation tests pass headless (exit tests 3 and 4).
+- `package-run` passes. The frame-time capture gives a mean of 3.33 ms and a 99th percentile of 3.65 ms, inside the budget of D-32.
+
+> *In plain English:* The player cannot shoot yet. This change adds one gun with two sets of values, a target that shows each hit, and a count of the ammo. The gun needs no reload. Correction of 2026-10-01: each shot also kicks the view, and the second gun spreads its pellets at random in a small cone.
 
 ### 7.6 PR-26: the melee attack
 
@@ -340,5 +344,5 @@ The register is `docs/questions.md`. These questions block an item of phase 3. E
 | Question | Subject | Blocks |
 |---|---|---|
 | OQ-25 | The method of M-3. Resolved 2026-09-29: D-137 | PR-22 |
-| OQ-26 | The sound of the gym | The sound part of PR-25 |
+| OQ-26 | The sound of the gym. Resolved 2026-10-01: D-155 | The sound part of PR-25 |
 | OQ-21 | Gamepad support | Phase 8. PR-21 keeps the input ready for it |

@@ -27,7 +27,7 @@ This file gives each metric of the movement with a value and a unit. Phase 5 rea
 | Lowest mantle height | 50 | cm, above the feet | `MantleMinHeight` | Owner pick (D-143). It is above the step height, so a step is never a mantle. |
 | Highest mantle height | 130 | cm, above the feet | `MantleMaxHeight` | Owner pick (D-143). Chest height (D-116). |
 | Mantle time | 0.4 | s | `MantleTime` | Owner pick (D-143). The player has no control in the climb. |
-| Interact reach | 200 | cm, from the eye along the view | `InteractReach` | Owner pick (D-144). |
+| Interact reach | 400 | cm, from the eye along the view | `InteractReach` | Owner pick (D-163). The first value was 200 cm (D-144). |
 
 ## The rules of the class
 
@@ -62,7 +62,7 @@ The automation tests of PR-21 measure the movement in a test world at 120 frames
 
 ## The stations of the gym
 
-The gym `L_Gym` has five rows of stations along the view at the start (D-133). A label above each station gives its size in centimeters.
+The gym `L_Gym` has five rows of stations along the view at the start (D-133). Correction of 2026-10-01: PR-25 adds the targets of the weapon and the ammo station. A label above each station gives its size in centimeters.
 
 | Row | Stations | What the player tests |
 |---|---|---|
@@ -72,6 +72,7 @@ The gym `L_Gym` has five rows of stations along the view at the start (D-133). A
 | Steps and ramps | Stairs with steps of 15, 30, 45, and 60 cm, and ramps of 30, 40, 45, and 50 degrees | The step height and the walkable slope |
 | Halls | Halls 100, 150, 200, 300, and 400 cm wide, with walls 300 cm high | The width that feels right for a fight or a path |
 | Door | A wall 300 cm high to the right of the start, with a door 200 cm wide and 250 cm high, and a switch | The verb "interact" and its reach (D-146) |
+| Targets | Three boards between the distance row and the ledge row, at 10 m, 25 m, and 50 m from the start, and an ammo station to the left of the start | The weapon (PR-25). `docs/game/weapon-tuning.md` gives the values |
 
 ## The mantle
 
@@ -87,7 +88,7 @@ A thin wall is not a ledge. The capsule must fit on the top, 40 cm past the edge
 
 ## Interact
 
-The E key uses the switch or the door on the line of the view, up to 200 cm from the eye (D-144). A wall between the eye and the target blocks the use. An outline and a glow in the color of the labels show the target in reach (D-145, D-148).
+The E key uses the target on the line of the view, up to 400 cm from the eye (D-144, D-163). A target is a switch, a door, or the ammo station. A wall between the eye and the target blocks the use. An outline and a glow in the color of the labels show the target in reach (D-145, D-148).
 
 ## The aim settings
 

@@ -6,12 +6,17 @@
 #include "InputAction.h"
 #include "InputMappingContext.h"
 #include "InputModifiers.h"
+#include "IronAmmoStation.h"
 #include "IronDoor.h"
+#include "IronHUD.h"
 #include "IronMovementTuning.h"
 #include "IronPlayerCharacter.h"
 #include "IronPlayerController.h"
 #include "IronSwitch.h"
+#include "IronTarget.h"
+#include "IronWeaponTuning.h"
 #include "Materials/Material.h"
+#include "Sound/SoundWave.h"
 #include "Misc/AutomationTest.h"
 
 #if WITH_DEV_AUTOMATION_TESTS
@@ -44,6 +49,10 @@ namespace IronAbsolution::Tests::PlayerAssets
 		if (const UInputModifierSwizzleAxis* Swizzle = Cast<UInputModifierSwizzleAxis>(Modifier))
 		{
 			return FString::Printf(TEXT("Swizzle(%s)"), *StaticEnum<EInputAxisSwizzle>()->GetNameStringByValue(static_cast<int64>(Swizzle->Order)));
+		}
+		if (const UInputModifierScalar* Scalar = Cast<UInputModifierScalar>(Modifier))
+		{
+			return FString::Printf(TEXT("Scalar(%s)"), *FString::SanitizeFloat(Scalar->Scalar.X));
 		}
 		return GetNameSafe(Modifier ? Modifier->GetClass() : nullptr);
 	}
@@ -97,6 +106,9 @@ bool FIronAbsolutionPlayerAssetsTest::RunTest(const FString& Parameters)
 		{TEXT("LookAction"), TEXT("/Game/Input/IA_Look.IA_Look"), EInputActionValueType::Axis2D},
 		{TEXT("JumpAction"), TEXT("/Game/Input/IA_Jump.IA_Jump"), EInputActionValueType::Boolean},
 		{TEXT("InteractAction"), TEXT("/Game/Input/IA_Interact.IA_Interact"), EInputActionValueType::Boolean},
+		{TEXT("FireAction"), TEXT("/Game/Input/IA_Fire.IA_Fire"), EInputActionValueType::Boolean},
+		{TEXT("ChangeWeaponAction"), TEXT("/Game/Input/IA_ChangeWeapon.IA_ChangeWeapon"), EInputActionValueType::Boolean},
+		{TEXT("SelectWeaponAction"), TEXT("/Game/Input/IA_SelectWeapon.IA_SelectWeapon"), EInputActionValueType::Axis1D},
 	};
 	for (const FActionCase& Case : Actions)
 	{
@@ -133,6 +145,35 @@ bool FIronAbsolutionPlayerAssetsTest::RunTest(const FString& Parameters)
 		TestTrue(TEXT("The glow material is unlit"), GlowBase->GetShadingModels().HasOnlyShadingModel(MSM_Unlit));
 	}
 
+	// The two data assets of the weapon rule, each valid, with different tuning (D-128, D-153).
+	const TArray<TObjectPtr<UIronWeaponTuning>>& Weapons = CharacterDefaults->GetWeapons();
+	if (TestEqual(TEXT("The character has two weapons"), Weapons.Num(), 2))
+	{
+		TestEqual(TEXT("The weapon of slot 1"), GetPathNameSafe(Weapons[0]), FString(TEXT("/Game/Weapons/DA_WeaponRifle.DA_WeaponRifle")));
+		TestEqual(TEXT("The weapon of slot 2"), GetPathNameSafe(Weapons[1]), FString(TEXT("/Game/Weapons/DA_WeaponScatter.DA_WeaponScatter")));
+		for (const TObjectPtr<UIronWeaponTuning>& Weapon : Weapons)
+		{
+			if (Weapon != nullptr)
+			{
+				TestEqual(FString::Printf(TEXT("The invalid values of %s: %s"), *Weapon->GetPathName(), *FString::Join(Weapon->FindInvalidValues(), TEXT(" | "))), Weapon->FindInvalidValues().Num(), 0);
+			}
+		}
+		if (Weapons[0] != nullptr && Weapons[1] != nullptr)
+		{
+			TestTrue(TEXT("One weapon is automatic and the other is not"), Weapons[0]->bAutomatic != Weapons[1]->bAutomatic);
+			TestTrue(TEXT("The two weapons have different counts of pellets"), Weapons[0]->PelletCount != Weapons[1]->PelletCount);
+
+			// The mix of D-168: the rifle fires 10 shots each second and its sounds overlap, so each
+			// shot of the rifle plays quieter than a shot of the scatter gun.
+			const USoundWave* RifleShot = Cast<USoundWave>(Weapons[0]->ShotSound);
+			const USoundWave* ScatterShot = Cast<USoundWave>(Weapons[1]->ShotSound);
+			if (TestNotNull(TEXT("The shot sound of the rifle is a sound wave"), RifleShot) && TestNotNull(TEXT("The shot sound of the scatter gun is a sound wave"), ScatterShot))
+			{
+				TestTrue(FString::Printf(TEXT("The rifle shot, at volume %f, is quieter than the scatter shot, at volume %f"), RifleShot->Volume, ScatterShot->Volume), RifleShot->Volume < ScatterShot->Volume);
+			}
+		}
+	}
+
 	// The controller: the mapping context of the keyboard and the mouse, alone (OQ-21).
 	const TArray<TObjectPtr<UInputMappingContext>>& Contexts = GetDefault<AIronPlayerController>(Controller)->GetMappingContexts();
 	TestEqual(TEXT("The controller has one mapping context"), Contexts.Num(), 1);
@@ -162,6 +203,12 @@ bool FIronAbsolutionPlayerAssetsTest::RunTest(const FString& Parameters)
 		TEXT("E IA_Interact"),
 		TEXT("Escape IA_Quit"),
 		TEXT("Mouse2D IA_Look"),
+		// The weapon keys of D-151 and D-152. The scalar gives the key 2 the value of slot 2.
+		TEXT("LeftMouseButton IA_Fire"),
+		TEXT("MouseScrollUp IA_ChangeWeapon"),
+		TEXT("MouseScrollDown IA_ChangeWeapon"),
+		TEXT("One IA_SelectWeapon"),
+		TEXT("Two IA_SelectWeapon Scalar(2.0)"),
 	};
 	Expected.Sort();
 	TestEqual(TEXT("The key mappings of the keyboard and the mouse"), FString::Join(Mappings, TEXT(", ")), FString::Join(Expected, TEXT(", ")));
@@ -173,13 +220,29 @@ bool FIronAbsolutionPlayerAssetsTest::RunTest(const FString& Parameters)
 		const AGameModeBase* GameModeDefaults = GameMode->GetDefaultObject<AGameModeBase>();
 		TestEqual(TEXT("The pawn of the game mode of the gym"), GetPathNameSafe(GameModeDefaults->DefaultPawnClass.Get()), FString(CharacterClass));
 		TestEqual(TEXT("The controller of the game mode of the gym"), GetPathNameSafe(GameModeDefaults->PlayerControllerClass.Get()), FString(ControllerClass));
+		TestEqual(TEXT("The HUD of the game mode of the gym"), GetPathNameSafe(GameModeDefaults->HUDClass.Get()), FString(TEXT("/Game/Player/BP_PlayerHUD.BP_PlayerHUD_C")));
+		if (GameModeDefaults->HUDClass != nullptr && GameModeDefaults->HUDClass->IsChildOf<AIronHUD>())
+		{
+			const TArray<FString> HudErrors = GetDefault<AIronHUD>(GameModeDefaults->HUDClass)->FindInvalidValues();
+			TestEqual(FString::Printf(TEXT("The invalid values of the HUD: %s"), *FString::Join(HudErrors, TEXT(" | "))), HudErrors.Num(), 0);
+		}
 	}
 
 	// The gym has one test switch that names the one test door, and the door moves when it opens (D-146).
 	TArray<const AIronSwitch*> Switches;
 	TArray<const AIronDoor*> Doors;
+	TArray<const AIronTarget*> Targets;
+	TArray<const AIronAmmoStation*> Stations;
 	for (const AActor* Actor : Gym->PersistentLevel->Actors)
 	{
+		if (const AIronTarget* Target = Cast<AIronTarget>(Actor))
+		{
+			Targets.Add(Target);
+		}
+		if (const AIronAmmoStation* Station = Cast<AIronAmmoStation>(Actor))
+		{
+			Stations.Add(Station);
+		}
 		if (const AIronSwitch* Switch = Cast<AIronSwitch>(Actor))
 		{
 			Switches.Add(Switch);
@@ -195,6 +258,19 @@ bool FIronAbsolutionPlayerAssetsTest::RunTest(const FString& Parameters)
 		TestFalse(TEXT("The test door has an open offset"), Doors[0]->GetOpenOffset().IsNearlyZero());
 		TestNotNull(TEXT("The panel of the test door has a mesh"), Doors[0]->GetPanel()->GetStaticMesh().Get());
 		TestNotNull(TEXT("The button of the test switch has a mesh"), Switches[0]->GetButton()->GetStaticMesh().Get());
+	}
+
+	// The targets of the weapon at 10 m, 25 m, and 50 m, and one ammo station (D-156).
+	if (TestEqual(TEXT("The gym has three targets"), Targets.Num(), 3))
+	{
+		for (const AIronTarget* Target : Targets)
+		{
+			TestNotNull(FString::Printf(TEXT("The board of %s has a mesh"), *Target->GetName()), Target->GetBoard()->GetStaticMesh().Get());
+		}
+	}
+	if (TestEqual(TEXT("The gym has one ammo station"), Stations.Num(), 1))
+	{
+		TestNotNull(TEXT("The body of the ammo station has a mesh"), Stations[0]->GetBody()->GetStaticMesh().Get());
 	}
 
 	return !HasAnyErrors();

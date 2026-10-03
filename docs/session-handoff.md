@@ -1,3 +1,142 @@
+## Session 76: 2026-10-03, Codex
+
+Author: Codex
+Session: reviewer PR-25, round 2. Repository: iron-absolution. Branch: `feat/pr-25-weapon`. PR: #26. Role: reviewer. Base: `d2dfaa395dbeac6c5480da10fed6f881fe579d1b`.
+
+### What this session did, and why
+
+- Reviewed PR #26 at effective head `b3e62080217702f719e16b9faa090390302975da`.
+- Verified the finite-value correction and the new regression cases for the flash and HUD (T-2, T-3).
+- Added the round 2 review record. P2-1 is fixed, and the verdict is Ready for owner merge.
+
+### The state of the build
+
+- The effective head is `b3e62080217702f719e16b9faa090390302975da`. The branch holds this session's review and handoff metadata.
+- `run.ps1 verify`, `run.ps1 toolchain-check`, `run.ps1 editor-build`, and all 39 headless editor tests pass.
+- GitHub CI passes all five required checks. A first build and test run had one unrelated Linux test failure. The required rerun passed.
+
+### What is in flight
+
+- The author must give the owner the four-part merge summary and get merge confirmation.
+
+### Traps and gotchas
+
+- Unreal binary assets did not change in this correction. The editor build and tests ran from this worktree.
+
+### The questions that block progress
+
+- None.
+
+### The next concrete action
+
+- The author gives the owner the merge summary, then gets merge confirmation.
+
+## Session 75: 2026-10-03, Claude Code
+
+Author: Claude Code
+Session: author PR-25, round 2. Repository: iron-absolution. Branch: `feat/pr-25-weapon`. PR: #26. Role: author. Base: `d2dfaa395dbeac6c5480da10fed6f881fe579d1b`.
+
+### What this session did, and why
+
+- Answered the review of round 1 in `docs/reviews/pr-26-response.md`. P2-1 has full merit.
+- The flash and the HUD now refuse a value that is not finite, with an error that names the actor and the value (T-2).
+- The weapon error test sets an infinite value on each Blueprint through reflection. It failed on the old code and passes now.
+- The PR has no review threads and no other comments.
+
+### The state of the build
+
+- The remote head is the head of `feat/pr-25-weapon`, pending merge.
+- On the Windows PC: `verify`, `editor-build`, and the 39 headless tests pass with the correction.
+- The correction changes no content and no render path, so the package and M-3 of session 73 still hold.
+
+### What is in flight
+
+- Round 2 of the cross-provider review of PR #26.
+
+### Traps and gotchas
+
+- `Copy-Item` keeps the old write time of a file, so the build can skip a changed source file. Touch the file before the build.
+
+### The questions that block progress
+
+- None.
+
+### The next concrete action
+
+- Run `run.ps1 codex-review -PR 26`. On an approval, give the owner the merge summary.
+
+## Session 74: 2026-10-03, Codex
+Author: Codex
+Session: reviewer PR-25, round 1. Repository: iron-absolution. Branch: `feat/pr-25-weapon`. PR: #26. Role: reviewer. Base: `d2dfaa395dbeac6c5480da10fed6f881fe579d1b`.
+
+### What this session did, and why
+
+- Reviewed PR #26 at effective head `3becf704562b81a2a497e3b5738391ad8bb8333c`.
+- Added P2-1 for positive infinity in the flash lifetime and hit-marker duration (T-2, D-154).
+- `run.ps1 verify` passes with 600 tests, format, and STE checks.
+- The review record gives Changes required for the current work head.
+
+### The state of the build
+
+- The effective head is `3becf704562b81a2a497e3b5738391ad8bb8333c`. The remote branch holds this session's metadata commit.
+- The owner reports a Windows editor build, content build, 39 automation tests, package checks, play tests, and frame capture at this head.
+- CI passes `ste-check`, `doc-gate`, build, test, and format, and coverage. `review-gate` failed before the review record existed.
+
+### What is in flight
+
+- The author must answer finding P2-1 and add regression tests.
+
+### Traps and gotchas
+
+- The flash and the HUD reject zero and NaN, but accept positive infinity.
+- The Unreal assets are LFS files. The content script sets their generated values.
+
+### The questions that block progress
+
+- None.
+
+### The next concrete action
+
+- The author adds finite-value checks and regression tests for the flash and the hit marker.
+
+## Session 73: 2026-10-03, Claude Code
+
+Author: Claude Code
+Session: author PR-25, round 1. Repository: iron-absolution. Branch: `feat/pr-25-weapon`. PR: #26. Role: author. Base: `d2dfaa395dbeac6c5480da10fed6f881fe579d1b`.
+
+### What this session did, and why
+
+- Added the weapon rule, two data assets, the ammo, change weapon, the HUD, the gym target, the ammo station, the flash, the recoil, and the sounds of the gym (D-151 to D-168).
+- Five play tests of the package changed the recoil, the spread, the reach of interact, and the sounds (D-159 to D-168).
+- The owner removed the hit sound, because the hit marker is enough (D-167). The owner set the mix of the shots: the rifle 0.35, the scatter gun 1.0 (D-168).
+- A test keeps each rifle shot quieter than a scatter shot.
+
+### The state of the build
+
+- The remote head is the head of `feat/pr-25-weapon`, pending merge.
+- On the Windows PC: `verify`, `toolchain-check`, `editor-build`, `content-build`, 39 headless tests, `package-build`, and `package-run` pass.
+- The owner played the last package. Exit tests 1 and 2 pass.
+- M-3 on record: a mean of 3.33 ms and a 99th percentile of 3.65 ms, from the earlier package of this PR. The changes since then are sound alone. The last capture had another game open, and the owner kept the earlier values.
+
+### What is in flight
+
+- The cross-provider review of PR #26.
+
+### Traps and gotchas
+
+- Each sound asset holds its volume, and `Game/Scripts/build_content.py` sets it (D-29). Edit the script, not the asset.
+- The rifle file and the scatter file have about the same level. The tails of a rifle burst overlap, so the rifle sounds louder.
+- A frame capture with another program open is not a clean value of M-3.
+- The token of freesound.org stays out of the repository (G-6).
+
+### The questions that block progress
+
+- None.
+
+### The next concrete action
+
+- Run `run.ps1 codex-review -PR 26`, and answer the findings with the review-response skill.
+
 ## Session 72: 2026-10-01, Codex
 
 Author: Codex
@@ -214,148 +353,3 @@ Session: author PR-23, round 1. Repository: iron-absolution. Branch: `feat/pr-23
 ### The next concrete action
 
 - Run `run.ps1 codex-review -PR 24`, and answer the findings.
-
-## Session 66: 2026-09-30, Codex
-
-Author: Codex
-Session: reviewer PR-22, round 2. Repository: iron-absolution. Branch: `feat/pr-22-frame-time-capture`. PR: #23. Role: reviewer. Base: `09633599fc73f3c93e52535830c78b852a120cf4`.
-
-### What this session did, and why
-
-- Reviewed PR #23 at work head `09ac7904991b5c6cb301e5cfd82605bbbd011a1c`.
-- Verified the two fixes and their regression tests. P2-1 and P2-2 are fixed. The Linux CI issue is F-28, and its required rerun passed.
-- Updated the test count in the PR description to 46 C# tests.
-- `run.ps1 verify` passes on Windows with 598 tests, format, and STE checks.
-- The review record gives `Ready for owner merge` for the current work head.
-
-### The state of the build
-
-- The reviewed work head is `09ac7904991b5c6cb301e5cfd82605bbbd011a1c`.
-- The metadata commit of this entry and the review record is the remote head on `feat/pr-22-frame-time-capture`.
-- The current GitHub CI code checks pass. The review-gate check awaits this record.
-
-### What is in flight
-
-- PR #23, pending merge: the merge summary and owner confirmation.
-
-### Traps and gotchas
-
-- Do not run `frame-capture` without owner confirmation. It opens a game window (D-96).
-- F-28 caused three short CI failures on this PR. Each failed job passed on its required rerun.
-
-### The questions that block progress
-
-- None.
-
-### The next concrete action
-
-- Give the owner the merge summary for PR #23 after the review-gate check passes.
-
-## Session 65: 2026-09-30, Claude Code
-
-Author: Claude Code
-Session: author PR-22, round 2. Repository: iron-absolution. Branch: `feat/pr-22-frame-time-capture`. PR: #23. Role: author. Base: `09633599fc73f3c93e52535830c78b852a120cf4`.
-
-### What this session did, and why
-
-- Answered the review of `13bdbb1` in `docs/reviews/pr-23-response.md`.
-- P1-1, partial merit: the Linux failure is F-28. The rerun passed. The F-28 row of `docs/design.md` records each failure of PR #23.
-- P2-1, full merit: the reader needs `[HasHeaderRowAtEnd],1`.
-- P2-2, partial merit: an absent or invalid view count now fails. The session refuted a second copy of "4" in C#, because the content script and the gym views test hold the set (D-134).
-- Six new test cases fail on the old code and pass on the new code.
-
-### The state of the build
-
-- The new work head is the commit of this entry on `feat/pr-22-frame-time-capture`. `verify` passes on Windows with 598 tests.
-- The game code, the content, and the value of M-3 do not change. The change is in the C# rules alone.
-
-### What is in flight
-
-- PR #23, pending merge: round 2 of the Codex review, then the merge summary.
-
-### Traps and gotchas
-
-- F-28 hit PR #23 three times, the third in the `coverage report` job of `09ac790`. Run each failed job again one time, and record it here.
-
-### The questions that block progress
-
-- None for PR-22.
-
-### The next concrete action
-
-- When each check is green, run `run.ps1 codex-review -PR 23`.
-
-## Session 64: 2026-09-30, Codex
-
-Author: Codex
-Session: reviewer PR-22, round 1. Repository: iron-absolution. Branch: `feat/pr-22-frame-time-capture`. PR: #23. Role: reviewer. Base: `09633599fc73f3c93e52535830c78b852a120cf4`.
-
-### What this session did, and why
-
-- Reviewed PR #23 at effective head `13bdbb1c6cd187e867b644be9afaf5c4ec95db2c`.
-- Recorded P1-1 for a failing Linux CI test, P2-1 for an incomplete CSV marker, and P2-2 for the missing four-view check.
-- `run.ps1 verify` passed with 592 tests, format, and STE checks.
-- The review record gives `Changes required`. A metadata update records the post-push CI failure.
-
-### The state of the build
-
-- The effective work head is `13bdbb1c6cd187e867b644be9afaf5c4ec95db2c`.
-- The remote PR tip is the metadata commit on `feat/pr-22-frame-time-capture`.
-- GitHub build, coverage, doc-gate, and ste-check pass after a rerun. Review-gate rejects the verdict `Changes required`.
-
-### What is in flight
-
-- The author must answer both findings.
-- The author must fix the Linux CI test failure.
-
-### Traps and gotchas
-
-- Do not run `frame-capture` without owner confirmation. It opens a game window (D-96).
-
-### The questions that block progress
-
-- None.
-
-### The next concrete action
-
-- The author answers P1-1, P2-1, and P2-2, then requests a repeat review.
-
-## Session 63: 2026-09-30, Claude Code
-
-Author: Claude Code
-Session: author PR-22, round 1. Repository: iron-absolution. Branch: `feat/pr-22-frame-time-capture`. PR: #23. Role: author. Base: `09633599fc73f3c93e52535830c78b852a120cf4`.
-
-### What this session did, and why
-
-- Ran `verify` (552 tests) and `toolchain-check` (5 pins) on `main` before any change.
-- Asked OQ-25. The owner picked the Development package, a fixed set of views, the mean and the 99th percentile, and borderless fullscreen with no cap (D-137).
-- The owner wants the game borderless fullscreen (D-138). The engine default already gives it, so the owner asked for no change.
-- Added `AFrameTimeView`, `UFrameTimeCaptureSubsystem`, 4 views in the content script, 4 automation tests, the `frame-capture` command with 40 new C# tests, and `run.ps1 frame-capture`.
-- First value of M-3: a mean of 3.33 ms and a 99th percentile of 3.67 ms, inside 8.33 ms. Section 4 of `docs/design.md` and `docs/research/frame-time-method.md` give the settings.
-
-### The state of the build
-
-- The effective head is `13bdbb1`. A documents commit follows it. The remote head is the tip of `feat/pr-22-frame-time-capture`.
-- On the Windows PC: `verify` passes with 592 tests. `editor-build`, `editor-test` (13 tests), `content-build`, `package-build`, `frame-capture`, and `package-run` pass.
-
-### What is in flight
-
-- PR #23, pending merge: the Codex review, then the merge summary.
-
-### Traps and gotchas
-
-- Close each other game before `frame-capture`. A game in the background gave a mean of 7.36 ms, and that capture is void.
-- The CSV profiler adds columns during a capture, and the place of `FrameTime` changes between captures. The reader uses the closing header and the column name.
-- `content-build` writes `IMC_KeyboardMouse` again with new ids. This PR restored it.
-- F-28 on the first push: `EditorTestCommandTests.AStubRunThatWritesTheReportAndTheSuccessLinePasses` failed after 9 ms in the `coverage report` job. The session ran the failed job again one time.
-- A Python heredoc through the Bash tool halves each backslash. Check each Windows path after such an edit.
-
-### The questions that block progress
-
-- None for PR-22. OQ-16 stays out of each PR (D-7).
-
-### The next concrete action
-
-- Run `run.ps1 codex-review -PR 23`, answer the findings, then give the owner the merge summary.
-
-

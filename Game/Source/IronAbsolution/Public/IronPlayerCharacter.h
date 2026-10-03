@@ -12,7 +12,10 @@ class UInputAction;
 class UInputComponent;
 class UIronCharacterMovementComponent;
 class UIronMovementTuning;
+class UIronWeaponComponent;
+class UIronWeaponTuning;
 class UMaterialInterface;
+class UStaticMeshComponent;
 struct FInputActionValue;
 
 /**
@@ -20,10 +23,12 @@ struct FInputActionValue;
  * (D-29, D-34). The player moves at full speed with no run key (D-132), jumps, and turns the view
  * with the mouse for the verb "aim" (D-116). In the air, a forward move into a ledge starts a mantle
  * (D-143). The interact key uses the switch or the door in reach, and an outline and a glow show
- * the target in reach (D-144, D-145, D-148).
+ * the target in reach (D-144, D-145, D-148). The fire key fires the weapon in hand, and the verb
+ * "change weapon" takes another weapon in hand (D-128, D-151, D-152).
  *
- * The class holds the rules. A Blueprint subclass holds the content: the movement tuning and the
- * input actions. No C++ names a key, so a new device needs a new mapping context alone (OQ-21).
+ * The class holds the rules. A Blueprint subclass holds the content: the movement tuning, the data
+ * assets of the weapons, and the input actions. No C++ names a key, so a new device needs a new
+ * mapping context alone (OQ-21).
  */
 UCLASS(Abstract)
 class IRONABSOLUTION_API AIronPlayerCharacter : public ACharacter
@@ -81,6 +86,22 @@ public:
 	/** Gives the movement component of the player, with the mantle. */
 	UIronCharacterMovementComponent* GetIronMovement() const;
 
+	/** Gives the weapon rule of the player: the shot, the ammo, and change weapon. */
+	UIronWeaponComponent* GetWeapon() const;
+
+	/** Gives the data assets of the weapons that the Blueprint subclass sets, one for each slot. */
+	const TArray<TObjectPtr<UIronWeaponTuning>>& GetWeapons() const;
+
+	/** Gives the mesh of the weapon in hand in the view. */
+	UStaticMeshComponent* GetWeaponViewMesh() const;
+
+	/**
+	 * Gives the rotation of the view: the control rotation, with the recoil of the weapon added to
+	 * the pitch and the yaw (D-159, D-161). The camera, the shot, and interact read it. The control
+	 * rotation does not change, so the view comes back to the aim of the player when the recoil is gone.
+	 */
+	virtual FRotator GetViewRotation() const override;
+
 	virtual void Tick(float DeltaSeconds) override;
 
 protected:
@@ -92,6 +113,15 @@ private:
 	void HandleMove(const FInputActionValue& Value);
 	void HandleLook(const FInputActionValue& Value);
 	void HandleInteract(const FInputActionValue& Value);
+	void HandleFireStarted(const FInputActionValue& Value);
+	void HandleFireCompleted(const FInputActionValue& Value);
+	void HandleChangeWeapon(const FInputActionValue& Value);
+
+	/** Takes the weapon of a slot in hand. The value of the action is the number of the slot, from 1. */
+	void HandleSelectWeapon(const FInputActionValue& Value);
+
+	/** Shows the mesh of the weapon in hand in the view. A new weapon comes up from below during its raise. */
+	void UpdateWeaponView();
 
 	/** Moves the cue to the target in reach, or removes it (D-145, D-148). */
 	void UpdateInteractCue();
@@ -108,6 +138,18 @@ private:
 	/** The camera at the eye height of the tuning. The view follows the control rotation. */
 	UPROPERTY(VisibleAnywhere, Category = "Camera")
 	TObjectPtr<UCameraComponent> FirstPersonCamera;
+
+	/** The weapon rule of the player. BeginPlay gives it the data assets of the weapons. */
+	UPROPERTY(VisibleAnywhere, Category = "Weapon")
+	TObjectPtr<UIronWeaponComponent> Weapon;
+
+	/** The mesh of the weapon in hand, on the camera. The data asset of the weapon gives its mesh, scale, and place. */
+	UPROPERTY(VisibleAnywhere, Category = "Weapon")
+	TObjectPtr<UStaticMeshComponent> WeaponViewMesh;
+
+	/** The data asset of each weapon, one for each slot, in the order of the slots. The Blueprint subclass sets them (D-128). */
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon", meta = (AllowPrivateAccess = "true"))
+	TArray<TObjectPtr<UIronWeaponTuning>> Weapons;
 
 	/** The tuning of the movement and the camera. The Blueprint subclass sets it (D-29). */
 	UPROPERTY(EditDefaultsOnly, Category = "Movement", meta = (AllowPrivateAccess = "true"))
@@ -128,6 +170,18 @@ private:
 	/** The input action of the verb "interact", with a true or false value. */
 	UPROPERTY(EditDefaultsOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputAction> InteractAction;
+
+	/** The input action of the verb "shoot", with a true or false value. */
+	UPROPERTY(EditDefaultsOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputAction> FireAction;
+
+	/** The input action that takes the next weapon in hand, with a true or false value (D-152). */
+	UPROPERTY(EditDefaultsOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputAction> ChangeWeaponAction;
+
+	/** The input action that takes the weapon of one slot in hand. Its 1D value is the number of the slot, from 1 (D-152). */
+	UPROPERTY(EditDefaultsOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputAction> SelectWeaponAction;
 
 	/**
 	 * The post-process material that draws the outline of the target in reach, from the custom
