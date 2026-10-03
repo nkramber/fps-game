@@ -1,3 +1,34 @@
+## Session 79: 2026-10-03, Claude Code
+
+Author: Claude Code
+Session: author PR-26, round 1. Repository: iron-absolution. Branch: `feat/pr-26-melee`. PR: #27. Role: author. Base: `e7c29f9454f6ff2945702b2e864981d02ecd9e4b`.
+
+### What this session did, and why
+
+- Read the round 1 review record of PR #27. The verdict is Ready for owner merge for the effective head `59e546ab460d528c7834f0996e50f68557a0d6b9`, with no finding.
+- Gave the owner the merge summary, and asked for the merge confirmation (D-5).
+
+### The state of the build
+
+- The remote head is the head of `feat/pr-26-melee`, pending merge. The effective head stays `59e546a`.
+- Each of the five required checks passes, `review-gate` included.
+
+### What is in flight
+
+- The owner confirmation of the merge of PR #27.
+
+### Traps and gotchas
+
+- The jab is a placeholder. The feel pass of PR-27 can tune it (D-171).
+
+### The questions that block progress
+
+- None.
+
+### The next concrete action
+
+- On the owner confirmation, run `gh pr merge 27 --auto --squash`. After the merge, write the prompt of PR-27.
+
 ## Session 78: 2026-10-03, Codex
 
 Author: Codex
@@ -316,44 +347,3 @@ Session: reviewer PR-25, round 1. Repository: iron-absolution. Branch: `feat/pr-
 ### The next concrete action
 
 - Commit the correction to the record and entry, then push it to the PR branch.
-
-## Session 69: 2026-10-01, Claude Code
-
-Author: Claude Code
-Session: author PR-24, round 1. Repository: iron-absolution. Branch: `feat/pr-24-mantle-interact`. PR: #25. Role: author. Base: `a32d9904eb465f81946988a0c08272a70b656b84`.
-
-### What this session did, and why
-
-- Built section 7.4 of `docs/roadmaps/phase-3-core-feel.md`: the mantle and interact. The owner gave D-143 to D-150.
-- The mantle: `UIronCharacterMovementComponent` adds a custom mode. In the air, a forward move into a ledge from 50 cm to 130 cm above the feet starts a climb of 0.4 s (D-143).
-- Interact: the interface `IIronInteractable`, with `AIronDoor` and `AIronSwitch`. The E key uses a target up to 200 cm from the eye (D-144, D-146).
-- The cue: an outline before the bloom and an overlay glow, only while a target is in reach (D-145, D-148).
-- The owner put two more changes in this PR and set G-7 aside: no motion blur (D-149), and Escape closes the game (D-150).
-- D-147 records the animation of the arms for a later PR.
-- The owner asked for a PowerShell command `iron-absolution` that starts the package. It is in the profile of the owner, not in the repository.
-
-### The state of the build
-
-- The remote head is the commit of this entry on `feat/pr-24-mantle-interact`, pending merge.
-- `verify`, `toolchain-check`, `editor-build`, `content-build`, and `package-build` pass. `editor-test` passes 29 tests headless.
-- `package-run` passes. `frame-capture` gives a mean of 3.33 ms and a 99th percentile of 3.64 ms at 2560x1440.
-- The owner played the package on 2026-10-01. Each exit test passed.
-
-### What is in flight
-
-- The Codex review of PR #25.
-
-### Traps and gotchas
-
-- `frame-capture` needs a desktop at 2560x1440 (D-137, D-138). The first capture of this session ran at 1920x1080 and failed its settings check.
-- The game target builds the automation tests with no editor-only data. A test that reads a material graph needs `WITH_EDITORONLY_DATA`.
-- The test of the quit key reads the binding alone, because a quit closes the editor that runs the tests.
-- `content-build` rewrites each scripted asset. Run it after each change of `Game/Scripts/build_content.py`, and commit the assets.
-
-### The questions that block progress
-
-- None.
-
-### The next concrete action
-
-- Run the review loop of PR #25 with `run.ps1 codex-review -PR 25`, and answer each finding.
