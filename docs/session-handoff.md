@@ -1,3 +1,37 @@
+## Session 75: 2026-10-03, Claude Code
+
+Author: Claude Code
+Session: author PR-25, round 2. Repository: iron-absolution. Branch: `feat/pr-25-weapon`. PR: #26. Role: author. Base: `d2dfaa395dbeac6c5480da10fed6f881fe579d1b`.
+
+### What this session did, and why
+
+- Answered the review of round 1 in `docs/reviews/pr-26-response.md`. P2-1 has full merit.
+- The flash and the HUD now refuse a value that is not finite, with an error that names the actor and the value (T-2).
+- The weapon error test sets an infinite value on each Blueprint through reflection. It failed on the old code and passes now.
+- The PR has no review threads and no other comments.
+
+### The state of the build
+
+- The remote head is the head of `feat/pr-25-weapon`, pending merge.
+- On the Windows PC: `verify`, `editor-build`, and the 39 headless tests pass with the correction.
+- The correction changes no content and no render path, so the package and M-3 of session 73 still hold.
+
+### What is in flight
+
+- Round 2 of the cross-provider review of PR #26.
+
+### Traps and gotchas
+
+- `Copy-Item` keeps the old write time of a file, so the build can skip a changed source file. Touch the file before the build.
+
+### The questions that block progress
+
+- None.
+
+### The next concrete action
+
+- Run `run.ps1 codex-review -PR 26`. On an approval, give the owner the merge summary.
+
 ## Session 74: 2026-10-03, Codex
 Author: Codex
 Session: reviewer PR-25, round 1. Repository: iron-absolution. Branch: `feat/pr-25-weapon`. PR: #26. Role: reviewer. Base: `d2dfaa395dbeac6c5480da10fed6f881fe579d1b`.
@@ -322,37 +356,3 @@ Session: reviewer PR-22, round 2. Repository: iron-absolution. Branch: `feat/pr-
 ### The next concrete action
 
 - Give the owner the merge summary for PR #23 after the review-gate check passes.
-
-## Session 65: 2026-09-30, Claude Code
-
-Author: Claude Code
-Session: author PR-22, round 2. Repository: iron-absolution. Branch: `feat/pr-22-frame-time-capture`. PR: #23. Role: author. Base: `09633599fc73f3c93e52535830c78b852a120cf4`.
-
-### What this session did, and why
-
-- Answered the review of `13bdbb1` in `docs/reviews/pr-23-response.md`.
-- P1-1, partial merit: the Linux failure is F-28. The rerun passed. The F-28 row of `docs/design.md` records each failure of PR #23.
-- P2-1, full merit: the reader needs `[HasHeaderRowAtEnd],1`.
-- P2-2, partial merit: an absent or invalid view count now fails. The session refuted a second copy of "4" in C#, because the content script and the gym views test hold the set (D-134).
-- Six new test cases fail on the old code and pass on the new code.
-
-### The state of the build
-
-- The new work head is the commit of this entry on `feat/pr-22-frame-time-capture`. `verify` passes on Windows with 598 tests.
-- The game code, the content, and the value of M-3 do not change. The change is in the C# rules alone.
-
-### What is in flight
-
-- PR #23, pending merge: round 2 of the Codex review, then the merge summary.
-
-### Traps and gotchas
-
-- F-28 hit PR #23 three times, the third in the `coverage report` job of `09ac790`. Run each failed job again one time, and record it here.
-
-### The questions that block progress
-
-- None for PR-22.
-
-### The next concrete action
-
-- When each check is green, run `run.ps1 codex-review -PR 23`.

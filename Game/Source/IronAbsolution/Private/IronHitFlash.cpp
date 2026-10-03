@@ -32,9 +32,12 @@ void AIronHitFlash::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (FlashMesh == nullptr || FlashMaterial == nullptr || !(Diameter > 0.0f) || !(Lifetime > 0.0f))
+	// A NaN fails the comparison. An infinite life never ends, so each size and time must also be finite.
+	const bool bDiameterValid = FMath::IsFinite(Diameter) && Diameter > 0.0f;
+	const bool bLifetimeValid = FMath::IsFinite(Lifetime) && Lifetime > 0.0f;
+	if (FlashMesh == nullptr || FlashMaterial == nullptr || !bDiameterValid || !bLifetimeValid)
 	{
-		UE_LOG(LogIronHitFlash, Error, TEXT("%s has an absent or invalid value: FlashMesh %s, FlashMaterial %s, Diameter %f, Lifetime %f. Set each one in the Blueprint subclass (D-154). The flash removes itself."),
+		UE_LOG(LogIronHitFlash, Error, TEXT("%s has an absent or invalid value: FlashMesh %s, FlashMaterial %s, Diameter %f, Lifetime %f. Each size and time must be finite and above 0. Set each one in the Blueprint subclass (D-154). The flash removes itself."),
 			*GetPathName(), *GetPathNameSafe(FlashMesh), *GetPathNameSafe(FlashMaterial), Diameter, Lifetime);
 		Destroy();
 		return;

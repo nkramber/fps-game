@@ -26,6 +26,23 @@
 // these tests (D-131). The asset test reads the numbers of the data assets.
 namespace IronAbsolution::Tests::Weapon
 {
+	// The Blueprint classes of the flash and the HUD (D-154).
+	const TCHAR* const HitFlashClassPath = TEXT("/Game/Weapons/BP_HitFlash.BP_HitFlash_C");
+	const TCHAR* const PlayerHUDClassPath = TEXT("/Game/Player/BP_PlayerHUD.BP_PlayerHUD_C");
+
+	// Sets a float property by name. A test gives a value that the clamp of the editor refuses, as a
+	// script or a bad save can. Returns false when the class has no such float property.
+	bool WriteFloatProperty(UObject& Owner, const TCHAR* Name, float Value)
+	{
+		const FFloatProperty* Property = CastField<FFloatProperty>(Owner.GetClass()->FindPropertyByName(Name));
+		if (Property == nullptr)
+		{
+			return false;
+		}
+		Property->SetPropertyValue_InContainer(&Owner, Value);
+		return true;
+	}
+
 	// The board of a gym target: 10 cm deep, 100 cm wide, and 180 cm high.
 	const FVector TargetSize(10.0, 100.0, 180.0);
 
@@ -674,6 +691,42 @@ bool FIronAbsolutionWeaponErrorsTest::RunTest(const FString& Parameters)
 
 	// The base HUD has no Blueprint values, so each size, time, and color is an error.
 	TestEqual(TEXT("The errors of the base HUD"), GetDefault<AIronHUD>()->FindInvalidValues().Num(), 10);
+
+	// An infinite size or life of a flash is an error, and the flash removes itself. An infinite life
+	// leaves each flash in the world at full brightness.
+	const float Infinity = std::numeric_limits<float>::infinity();
+	UClass* FlashClass = LoadClass<AIronHitFlash>(nullptr, HitFlashClassPath);
+	if (TestNotNull(TEXT("The Blueprint of the flash loads"), FlashClass))
+	{
+		for (const TCHAR* Name : {TEXT("Lifetime"), TEXT("Diameter")})
+		{
+			AIronHitFlash* Flash = World.GetWorld()->SpawnActorDeferred<AIronHitFlash>(FlashClass, FTransform(PointOnView(*Character, 3000.0)));
+			if (TestNotNull(FString::Printf(TEXT("The flash with an infinite %s spawns"), Name), Flash))
+			{
+				TestTrue(FString::Printf(TEXT("The flash has the float property %s"), Name), WriteFloatProperty(*Flash, Name, Infinity));
+				AddExpectedMessagePlain(TEXT("has an absent or invalid value"), ELogVerbosity::Error, EAutomationExpectedMessageFlags::Contains, 1);
+				Flash->FinishSpawning(FTransform(PointOnView(*Character, 3000.0)));
+				TestEqual(FString::Printf(TEXT("A flash with an infinite %s removes itself"), Name), FindFlashes(World.GetWorld()).Num(), 0);
+			}
+		}
+	}
+
+	// An infinite time of the hit marker is an error. The marker never goes away with it.
+	UClass* HUDClass = LoadClass<AIronHUD>(nullptr, PlayerHUDClassPath);
+	if (TestNotNull(TEXT("The Blueprint of the HUD loads"), HUDClass))
+	{
+		AIronHUD* HUD = World.GetWorld()->SpawnActor<AIronHUD>(HUDClass);
+		if (TestNotNull(TEXT("The HUD spawns"), HUD))
+		{
+			TestEqual(TEXT("The HUD of the Blueprint has no invalid value"), HUD->FindInvalidValues().Num(), 0);
+			TestTrue(TEXT("The HUD has the float property HitMarkerSeconds"), WriteFloatProperty(*HUD, TEXT("HitMarkerSeconds"), Infinity));
+			const TArray<FString> Errors = HUD->FindInvalidValues();
+			if (TestEqual(TEXT("An infinite time of the hit marker is one error"), Errors.Num(), 1))
+			{
+				TestTrue(FString::Printf(TEXT("The error names the value and the HUD: %s"), *Errors[0]), Errors[0].Contains(TEXT("HitMarkerSeconds")) && Errors[0].Contains(HUD->GetPathName()));
+			}
+		}
+	}
 
 	return !HasAnyErrors();
 }

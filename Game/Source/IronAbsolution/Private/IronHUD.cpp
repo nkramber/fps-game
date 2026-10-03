@@ -45,10 +45,10 @@ TArray<FString> AIronHUD::FindInvalidValues() const
 	TArray<FString> Errors;
 	for (const FValueCase& Case : Values)
 	{
-		// A NaN fails the comparison too.
-		if (!(Case.Value > 0.0f))
+		// A NaN fails the comparison. An infinite time keeps the hit marker on, so each value must also be finite.
+		if (!FMath::IsFinite(Case.Value) || !(Case.Value > 0.0f))
 		{
-			Errors.Add(FString::Printf(TEXT("%s of %s is %s. It must be above 0."), Case.Name, *GetPathName(), *FString::SanitizeFloat(Case.Value)));
+			Errors.Add(FString::Printf(TEXT("%s of %s is %s. It must be finite and above 0."), Case.Name, *GetPathName(), *FString::SanitizeFloat(Case.Value)));
 		}
 	}
 	return Errors;

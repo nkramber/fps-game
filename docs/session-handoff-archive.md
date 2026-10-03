@@ -2,6 +2,40 @@
 
 This file holds the entries that the rotation moves out of `docs/session-handoff.md`, newest first.
 
+## Session 65: 2026-09-30, Claude Code
+
+Author: Claude Code
+Session: author PR-22, round 2. Repository: iron-absolution. Branch: `feat/pr-22-frame-time-capture`. PR: #23. Role: author. Base: `09633599fc73f3c93e52535830c78b852a120cf4`.
+
+### What this session did, and why
+
+- Answered the review of `13bdbb1` in `docs/reviews/pr-23-response.md`.
+- P1-1, partial merit: the Linux failure is F-28. The rerun passed. The F-28 row of `docs/design.md` records each failure of PR #23.
+- P2-1, full merit: the reader needs `[HasHeaderRowAtEnd],1`.
+- P2-2, partial merit: an absent or invalid view count now fails. The session refuted a second copy of "4" in C#, because the content script and the gym views test hold the set (D-134).
+- Six new test cases fail on the old code and pass on the new code.
+
+### The state of the build
+
+- The new work head is the commit of this entry on `feat/pr-22-frame-time-capture`. `verify` passes on Windows with 598 tests.
+- The game code, the content, and the value of M-3 do not change. The change is in the C# rules alone.
+
+### What is in flight
+
+- PR #23, pending merge: round 2 of the Codex review, then the merge summary.
+
+### Traps and gotchas
+
+- F-28 hit PR #23 three times, the third in the `coverage report` job of `09ac790`. Run each failed job again one time, and record it here.
+
+### The questions that block progress
+
+- None for PR-22.
+
+### The next concrete action
+
+- When each check is green, run `run.ps1 codex-review -PR 23`.
+
 ## Session 64: 2026-09-30, Codex
 
 Author: Codex
