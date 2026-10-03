@@ -11,14 +11,13 @@ Session: reviewer PR-25, round 2. Repository: iron-absolution. Branch: `feat/pr-
 
 ### The state of the build
 
-- The effective head is `b3e62080217702f719e16b9faa090390302975da`. This session's metadata commit goes to `feat/pr-25-weapon`.
+- The effective head is `b3e62080217702f719e16b9faa090390302975da`. The branch holds this session's review and handoff metadata.
 - `run.ps1 verify`, `run.ps1 toolchain-check`, `run.ps1 editor-build`, and all 39 headless editor tests pass.
-- GitHub CI passes `ste-check`, `doc-gate`, build, test, and format, and coverage. `review-gate` failed before this review record was pushed.
+- GitHub CI passes all five required checks. A first build and test run had one unrelated Linux test failure. The required rerun passed.
 
 ### What is in flight
 
-- The review record and this handoff entry need the requested push.
-- The owner must confirm the merge after the four-part summary.
+- The author must give the owner the four-part merge summary and get merge confirmation.
 
 ### Traps and gotchas
 
@@ -30,7 +29,7 @@ Session: reviewer PR-25, round 2. Repository: iron-absolution. Branch: `feat/pr-
 
 ### The next concrete action
 
-- Push the metadata commit to `feat/pr-25-weapon`, then verify the PR head and review gate.
+- The author gives the owner the merge summary, then gets merge confirmation.
 
 ## Session 75: 2026-10-03, Claude Code
 
